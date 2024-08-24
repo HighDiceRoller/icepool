@@ -14,7 +14,7 @@
     },
     {
       "name": "@codemirror/autocomplete",
-      "versionInfo": "6.9.0",
+      "versionInfo": "6.16.0",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -32,13 +32,13 @@
     },
     {
       "name": "@codemirror/lang-css",
-      "versionInfo": "6.2.0",
+      "versionInfo": "6.2.1",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
     {
       "name": "@codemirror/lang-html",
-      "versionInfo": "6.4.5",
+      "versionInfo": "6.4.9",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -122,13 +122,13 @@
     },
     {
       "name": "@codemirror/state",
-      "versionInfo": "6.2.1",
+      "versionInfo": "6.4.1",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
     {
       "name": "@codemirror/view",
-      "versionInfo": "6.16.0",
+      "versionInfo": "6.26.3",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -212,667 +212,667 @@
     },
     {
       "name": "@jupyterlab/application",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/application-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/apputils",
-      "versionInfo": "4.3.0",
+      "versionInfo": "4.3.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/apputils-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/attachments",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cell-toolbar",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cell-toolbar-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/cells",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/celltags-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codeeditor",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codemirror",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/codemirror-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/completer",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/completer-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/console",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/console-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/coreutils",
-      "versionInfo": "6.2.0",
+      "versionInfo": "6.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/csvviewer",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/csvviewer-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docmanager",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docmanager-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/docregistry",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/documentsearch",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/documentsearch-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/filebrowser",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/filebrowser-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/fileeditor",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/fileeditor-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/help-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/htmlviewer",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/htmlviewer-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/imageviewer",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/imageviewer-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/inspector",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/inspector-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/javascript-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/json-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/launcher",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/launcher-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/logconsole",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/logconsole-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/lsp",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/lsp-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mainmenu",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mainmenu-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markdownviewer",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markdownviewer-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/markedparser-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mathjax-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mermaid",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/mermaid-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/metadataform",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/metadataform-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/nbformat",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/notebook",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/notebook-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/observables",
-      "versionInfo": "5.2.0",
+      "versionInfo": "5.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/outputarea",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/pdf-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/pluginmanager",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/property-inspector",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/rendermime-interfaces",
-      "versionInfo": "3.10.0",
+      "versionInfo": "3.10.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/running",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/running-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/services",
-      "versionInfo": "7.2.0",
+      "versionInfo": "7.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingeditor",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingeditor-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/settingregistry",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/shortcuts-extension",
-      "versionInfo": "5.0.1",
+      "versionInfo": "5.0.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statedb",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statusbar",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/statusbar-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/terminal",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/terminal-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-dark-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-dark-high-contrast-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/theme-light-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/toc",
-      "versionInfo": "6.2.0",
+      "versionInfo": "6.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/toc-extension",
-      "versionInfo": "6.2.1",
+      "versionInfo": "6.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/tooltip",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/tooltip-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/translation",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.2",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/translation-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/ui-components",
-      "versionInfo": "4.2.0",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/ui-components-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/vega5-extension",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlab/workspaces",
-      "versionInfo": "4.2.1",
+      "versionInfo": "4.2.4",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-consoles",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-edit",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-lab",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-notebooks",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-repl",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/app-tree",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/application-extension",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/contents",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/iframe-extension",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/kernel",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/licenses",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/localforage",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/notebook-application-extension",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/repl-extension",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/server-extension",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/session",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/settings",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/translation",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@jupyterlite/ui-components",
-      "versionInfo": "0.4.0-beta.0",
+      "versionInfo": "0.4.0",
       "licenseId": "BSD-3-Clause",
       "extractedText": ""
     },
     {
       "name": "@lezer/common",
-      "versionInfo": "1.0.3",
+      "versionInfo": "1.2.1",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -896,7 +896,7 @@
     },
     {
       "name": "@lezer/highlight",
-      "versionInfo": "1.1.6",
+      "versionInfo": "1.2.0",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2018 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -932,7 +932,7 @@
     },
     {
       "name": "@lezer/markdown",
-      "versionInfo": "1.0.5",
+      "versionInfo": "1.3.0",
       "licenseId": "MIT",
       "extractedText": "MIT License\n\nCopyright (C) 2020 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
@@ -1814,7 +1814,7 @@
     },
     {
       "name": "nanoid",
-      "versionInfo": "3.3.6",
+      "versionInfo": "3.3.7",
       "licenseId": "MIT",
       "extractedText": "The MIT License (MIT)\n\nCopyright 2017 Andrey Sitnik <andrey@sitnik.ru>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
     },
@@ -1946,7 +1946,7 @@
     },
     {
       "name": "style-mod",
-      "versionInfo": "4.0.3",
+      "versionInfo": "4.1.2",
       "licenseId": "MIT",
       "extractedText": "Copyright (C) 2018 by Marijn Haverbeke <marijn@haverbeke.berlin> and others\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
     },
