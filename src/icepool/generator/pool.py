@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.expression
 import icepool.math
-import icepool.generator.pool_cost
+import icepool.generator.pop_order
 import icepool.creation_args
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
@@ -181,7 +181,7 @@ class Pool(KeepGenerator[T]):
             pop_min_cost
             pop_max_cost
         """
-        return icepool.generator.pool_cost.estimate_costs(self)
+        return icepool.generator.pop_order.estimate_costs(self)
 
     @cached_property
     def _min_outcome(self) -> T:

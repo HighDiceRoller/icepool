@@ -2,60 +2,60 @@ import icepool
 import pytest
 
 from icepool import d4, d6, d8, d10, d12
-import icepool.generator.pool_cost
+import icepool.generator.pop_order
 
 
 def test_pool_single_type():
     pool = icepool.Pool([d6, d6, d6])
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost == pop_max_cost
 
 
 def test_pool_standard():
     pool = icepool.Pool([d8, d12, d6])
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost > pop_max_cost
 
 
 def test_pool_standard_negative():
     pool = icepool.Pool([-d8, -d12, -d6])
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost < pop_max_cost
 
 
 def test_pool_non_truncate():
     pool = icepool.Pool([-d8, d12, -d6])
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost == pop_max_cost
 
 
 def test_pool_skip_min():
     pool = icepool.Pool([d6, d6, d6])[0, 1, 1]
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost > pop_max_cost
 
 
 def test_pool_skip_max():
     pool = icepool.Pool([d6, d6, d6])[1, 1, 0]
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost < pop_max_cost
 
 
 def test_pool_skip_min_but_truncate():
     pool = icepool.Pool([-d6, -d6, -d8])[0, 1, 1]
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost < pop_max_cost
 
 
 def test_pool_skip_max_but_truncate():
     pool = icepool.Pool([d6, d6, d8])[1, 1, 0]
-    pop_min_cost, pop_max_cost = icepool.generator.pool_cost.estimate_costs(
+    pop_min_cost, pop_max_cost = icepool.generator.pop_order.estimate_costs(
         pool)
     assert pop_min_cost > pop_max_cost
