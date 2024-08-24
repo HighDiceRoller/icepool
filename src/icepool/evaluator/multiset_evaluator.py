@@ -399,7 +399,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             result = {None: 1}
         else:
             outcome, prev_alignment, iterators = MultisetEvaluator._pop_generators(
-                order, alignment, generators)
+                Order(-order), alignment, generators)
             for p in itertools.product(*iterators):
                 prev_generators, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
@@ -446,7 +446,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             result = {state: 1}
         else:
             outcome, next_alignment, iterators = MultisetEvaluator._pop_generators(
-                -order, alignment, generators)
+                order, alignment, generators)
             for p in itertools.product(*iterators):
                 next_generators, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
@@ -469,10 +469,16 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     @staticmethod
     def _pop_generators(
-        side: int, alignment: 'Alignment[T_contra]',
+        order: Order, alignment: 'Alignment[T_contra]',
         generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
     ) -> 'tuple[T_contra, Alignment[T_contra], tuple[icepool.NextMultisetGenerator, ...]]':
         """Pops a single outcome from the generators.
+
+        Args:
+            order: The order in which to pop. Descending order pops from the top
+            and ascending from the bottom.
+            alignment: Any extra alignment to use.
+            generators: The generators to pop from.
 
         Returns:
             * The popped outcome.
@@ -480,7 +486,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             * A tuple of iterators over the resulting generators, counts, and weights.
         """
         alignment_and_generators = (alignment, ) + generators
-        if side >= 0:
+        if order < 0:
             outcome = max(generator.max_outcome()
                           for generator in alignment_and_generators
                           if generator.outcomes())
