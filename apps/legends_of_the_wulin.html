@@ -169,7 +169,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==1.0.0')
+                await micropip.install('icepool==1.5.0')
                 
                 import js
                 import pyodide
@@ -242,8 +242,8 @@
                 js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities()])
                 js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities_ge()])
-                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities_ge()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities('>=')])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities('>=')])
             `);
 
             totalChart.update();

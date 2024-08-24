@@ -337,7 +337,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.0.0')
+await micropip.install('icepool==1.5.0')
 
 import js
 import pyodide
@@ -493,9 +493,9 @@ def calc_opposition():
 
 def total_data(die, selected_dist):
     if selected_dist == 'pmf':
-        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities(range(2, 26))])
+        return pyodide.ffi.to_js([die.probability(x, percent=True) for x in range(2, 26)])
     else:
-        return pyodide.ffi.to_js([float(x) * 100.0 for x in die.probabilities_gt(range(2, 26))])
+        return pyodide.ffi.to_js([die.probability('>', x, percent=True) for x in range(2, 26)])
             `);
 
             totalChart.options.plugins.title = {
@@ -625,8 +625,8 @@ def total_data(die, selected_dist):
                 js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities()])
                 js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities()])
             else:
-                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities_ge()])
-                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities_ge()])
+                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities('>=')])
+                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities('>=')])
             `);
 
             hitchChart.update();

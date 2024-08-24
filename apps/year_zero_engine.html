@@ -200,7 +200,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.0.0')
+await micropip.install('icepool==1.5.0')
 
 import js
 import pyodide
@@ -278,7 +278,7 @@ def calc_maximize_win(success, bane, z6, z8, z10, z12, s10, s12):
         return icepool.vectorize(success, 0)
     
     best = calc_push_everything(success, bane, z6, z8, z10, z12, s10, s12)
-    best_win = icepool.Die([best]).marginals[0].probability_gt(0)
+    best_win = icepool.Die([best]).marginals[0].probability('>', 0)
     while True:
         if s10 > 0:
             s10 -= 1
@@ -287,7 +287,7 @@ def calc_maximize_win(success, bane, z6, z8, z10, z12, s10, s12):
         else:
             break
         candidate = calc_push_everything(success, bane, z6, z8, z10, z12, s10, s12)
-        candidate_win = icepool.Die([candidate]).marginals[0].probability_gt(0)
+        candidate_win = icepool.Die([candidate]).marginals[0].probability('>', 0)
         if candidate_win >= best_win:
             # candidate wins ties, since it has fewer rerolls = fewer banes
             best = candidate
