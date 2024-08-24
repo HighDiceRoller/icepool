@@ -12,7 +12,7 @@
 * Rename `func` parameters to `function`.
 * `MultisetExpression.order()` is now public. 
 * Improved sorting for `Symbols`; now compares counts in alphabetical order.
-* Experimental `sort_match`, `maximum_match` expressions. `sort_match` replaces the `compair` evaluations.
+* Experimental `sort_match`, `maximum_match_highest`, `maximum_match_lowest` expressions. `sort_match` replaces the `compair` evaluations.
 * Experimental `all_straights_reduce_counts` and `argsort` multiset evaluations.
 * Breaking change: `nearest`, `quantity`, `quantities`, `probability`, `probabilities`, `keep_counts` no longer have separate variants for each comparison; instead, they now take a comparison argument. `quantities` and  `probabilities` now accept a comparison argument but no longer accept a list of outcomes.
 
