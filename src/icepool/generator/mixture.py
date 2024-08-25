@@ -24,7 +24,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
 
     # Note that the total weight of an inner is the product of the factor here
     # and the denominator of the inner.
-    _inners: Mapping[MultisetGenerator[T, tuple[int]], int]
+    _inner_generators: Mapping[MultisetGenerator[T, tuple[int]], int]
 
     def __init__(self,
                  inners: Sequence[MultisetGenerator[T, tuple[int]]]
@@ -45,12 +45,12 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
               for inner, weight in data.items()
               if inner.denominator() > 0 and weight > 0))
 
-        self._inners = defaultdict(int)
+        self._inner_generators = defaultdict(int)
         min_denominator = 0
         for inner, weight in data.items():
             factor = denominator_lcm * weight // inner.denominator(
             ) if inner.denominator() else 0
-            self._inners[inner] += factor
+            self._inner_generators[inner] += factor
             min_denominator += factor * inner.denominator()
 
         if denominator is not None:
@@ -59,15 +59,16 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
                 raise ValueError(
                     f'Specified denominator of {denominator} is not consistent with the minimum possible denominator {min_denominator}.'
                 )
-            for inner in self._inners:
-                self._inners[inner] *= scale
+            for inner in self._inner_generators:
+                self._inner_generators[inner] *= scale
 
     def outcomes(self) -> Sequence[T]:
-        return sorted_union(*(inner.outcomes() for inner in self._inners))
+        return sorted_union(*(inner.outcomes()
+                              for inner in self._inner_generators))
 
     def output_arity(self) -> int:
         result = None
-        for inner in self._inners:
+        for inner in self._inner_generators:
             if result is None:
                 result = inner.output_arity()
             elif result != inner.output_arity():
@@ -77,10 +78,10 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
         return result
 
     def _is_resolvable(self) -> bool:
-        return all(inner._is_resolvable() for inner in self._inners)
+        return all(inner._is_resolvable() for inner in self._inner_generators)
 
     def _generate_initial(self) -> InitialMultisetGenerator:
-        yield from self._inners.items()
+        yield from self._inner_generators.items()
 
     def _generate_min(self, min_outcome) -> NextMultisetGenerator:
         raise RuntimeError(
@@ -94,12 +95,12 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
 
     def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
         return merge_pop_orders(*(inner._preferred_pop_order()
-                                  for inner in self._inners))
+                                  for inner in self._inner_generators))
 
     @cached_property
     def _denominator(self) -> int:
         result = 0
-        for inner, weight in self._inners.items():
+        for inner, weight in self._inner_generators.items():
             result += weight * inner.denominator()
         return result
 
@@ -109,17 +110,17 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
     @property
     def _hash_key(self) -> Hashable:
         # This is not intended to be cached directly, so we are a little loose here.
-        return MixtureGenerator, tuple(self._inners.items())
+        return MixtureGenerator, tuple(self._inner_generators.items())
 
     # Forwarding if inners are all KeepGenerators.
 
     @property
     def _can_keep(self) -> bool:
-        return all(inner._can_keep for inner in self._inners)
+        return all(inner._can_keep for inner in self._inner_generators)
 
     def _unary_operation(self, op: Callable) -> 'MixtureGenerator[T]':
         data: MutableMapping = defaultdict(int)
-        for inner, factor in self._inners.items():
+        for inner, factor in self._inner_generators.items():
             data[op(inner)] += inner.denominator() * factor
         return MixtureGenerator(data, denominator=self.denominator())
 
@@ -154,4 +155,4 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
 
     def __str__(self) -> str:
         return 'MixtureGenerator({\n' + ',\n'.join(
-            f'{k}: {v}' for k, v in self._inners.items()) + '})'
+            f'{k}: {v}' for k, v in self._inner_generators.items()) + '})'

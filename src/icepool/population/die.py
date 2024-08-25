@@ -1003,7 +1003,7 @@ class Die(Population[T_co]):
     def map_to_pool(
         self,
         repl:
-        'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.Reroll] | None' = None,
+        'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.RerollType] | None' = None,
         /,
         *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
         star: bool | None = None,
