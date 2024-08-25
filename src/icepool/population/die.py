@@ -1272,32 +1272,6 @@ class Die(Population[T_co]):
 
     __ceil__ = ceil
 
-    @staticmethod
-    def _zero(x):
-        return x * 0
-
-    def zero(self) -> 'Die[T_co]':
-        """Zeros all outcomes of this die.
-
-        This is done by multiplying all outcomes by `0`.
-
-        The result will have the same denominator as this die.
-
-        Raises:
-            ValueError: If the zeros did not resolve to a single outcome.
-        """
-        result = self.unary_operator(Die._zero)
-        if len(result) != 1:
-            raise ValueError('zero() did not resolve to a single outcome.')
-        return result
-
-    def zero_outcome(self) -> T_co:
-        """A zero-outcome for this die.
-
-        E.g. `0` for a `Die` whose outcomes are `int`s.
-        """
-        return self.zero().outcomes()[0]
-
     # Binary operators.
 
     def __add__(self, other) -> 'Die':

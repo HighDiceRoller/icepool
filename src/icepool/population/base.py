@@ -146,6 +146,32 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             case _:
                 raise ValueError(f'Invalid comparison {comparison}')
 
+    @staticmethod
+    def _zero(x):
+        return x * 0
+
+    def zero(self: C) -> C:
+        """Zeros all outcomes of this population.
+
+        This is done by multiplying all outcomes by `0`.
+
+        The result will have the same denominator.
+
+        Raises:
+            ValueError: If the zeros did not resolve to a single outcome.
+        """
+        result = self._unary_operator(Population._zero)
+        if len(result) != 1:
+            raise ValueError('zero() did not resolve to a single outcome.')
+        return result
+
+    def zero_outcome(self) -> T_co:
+        """A zero-outcome for this population.
+
+        E.g. `0` for a `Population` whose outcomes are `int`s.
+        """
+        return self.zero().outcomes()[0]
+
     # Quantities.
 
     @overload
@@ -278,6 +304,35 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def has_zero_quantities(self) -> bool:
         """`True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()
+
+    def pad_denominator(self: C, target: int, /, outcome: Hashable) -> C:
+        """Changes the denominator to a target number by changing the quantity of a specified outcome.
+        
+        Args:
+            `target`: The denominator of the result.
+            `outcome`: The outcome whose quantity will be adjusted.
+
+        Returns:
+            A `Population` like `self` but with the quantity of `outcome`
+            adjusted so that the overall denominator is equal to  `target`.
+            If the denominator is reduced to zero, it will be removed.
+
+        Raises:
+            `ValueError` if this would require the quantity of the specified
+            outcome to be negative.
+        """
+        adjustment = target - self.denominator()
+        data = {outcome: quantity for outcome, quantity in self.items()}
+        new_quantity = data.get(outcome, 0) + adjustment
+        if new_quantity > 0:
+            data[outcome] = new_quantity
+        elif new_quantity == 0:
+            del data[outcome]
+        else:
+            raise ValueError(
+                f'Padding to denominator of {target} would require a negative quantity of {new_quantity} for {outcome}'
+            )
+        return self._new_type(data)
 
     # Probabilities.
 
