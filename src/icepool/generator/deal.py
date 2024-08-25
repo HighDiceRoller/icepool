@@ -1,13 +1,14 @@
 __docformat__ = 'google'
 
-from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 import icepool
+from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
+from icepool.generator.pop_order import PopOrderReason
 
 from functools import cached_property
 
-from icepool.typing import T
+from icepool.typing import Order, T
 from typing import Hashable
 
 
@@ -120,9 +121,9 @@ class Deal(KeepGenerator[T]):
             weight = icepool.math.comb(deck_count, count)
             yield popped_deal, (result_count, ), weight
 
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        result = len(self.outcomes()) * self._hand_size
-        return result, result
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        # TODO: implement skips
+        return Order.Any, PopOrderReason.NoPreference
 
     @cached_property
     def _hash_key(self) -> Hashable:

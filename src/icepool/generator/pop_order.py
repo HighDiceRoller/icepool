@@ -2,9 +2,65 @@ __docformat__ = 'google'
 
 import icepool
 
+import enum
 import math
 
-from typing import Collection
+from typing import Collection, Iterable
+
+from icepool.typing import Order
+
+
+class PopOrderReason(enum.IntEnum):
+    """Greater values represent higher priorities, which strictly override lower priorities."""
+    PoolComposition = 2
+    """The composition of dice in the pool favor this pop order."""
+    KeepSkip = 1
+    """The keep_tuple for allows more skips in this pop order."""
+    NoPreference = 0
+    """There is no preference for either pop order."""
+
+
+def merge_pop_orders(
+    *preferences: tuple[Order | None, PopOrderReason],
+) -> tuple[Order | None, PopOrderReason]:
+    """Returns a pop order that fits the highest priority preferences.
+    
+    Greater priorities strictly outrank lower priorities.
+    An order of `None` represents conflicting orders and can occur in the 
+    argument and/or return value.
+    """
+    result_order: Order | None = Order.Any
+    result_reason = PopOrderReason.NoPreference
+    for order, reason in preferences:
+        if order == Order.Any or reason == PopOrderReason.NoPreference:
+            continue
+        elif reason > result_reason:
+            result_order = order
+            result_reason = reason
+        elif reason == result_reason:
+            if result_order == Order.Any:
+                result_order = order
+            elif result_order == order:
+                continue
+            else:
+                result_order = None
+    return result_order, result_reason
+
+
+def pool_pop_order(pool: 'icepool.Pool') -> tuple[Order, PopOrderReason]:
+    can_truncate_min, can_truncate_max = can_truncate(pool.unique_dice())
+    if can_truncate_min and not can_truncate_max:
+        return Order.Ascending, PopOrderReason.PoolComposition
+    if can_truncate_max and not can_truncate_min:
+        return Order.Descending, PopOrderReason.PoolComposition
+
+    lo_skip, hi_skip = lo_hi_skip(pool.keep_tuple())
+    if lo_skip > hi_skip:
+        return Order.Ascending, PopOrderReason.KeepSkip
+    if hi_skip > lo_skip:
+        return Order.Descending, PopOrderReason.KeepSkip
+
+    return Order.Any, PopOrderReason.NoPreference
 
 
 def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:
@@ -69,32 +125,3 @@ def lo_hi_skip(keep_tuple: tuple[int, ...]) -> tuple[int, int]:
 
     # Should never reach here.
     raise RuntimeError('Should not be reached.')
-
-
-def estimate_costs(pool: 'icepool.Pool') -> tuple[int, int]:
-    """Estimates the cost of popping from the min and max sides.
-
-    Returns:
-        pop_min_cost: A positive `int`.
-        pop_max_cost: A positive `int`.
-    """
-    can_truncate_min, can_truncate_max = can_truncate(pool.unique_dice())
-    if can_truncate_min or can_truncate_max:
-        lo_skip, hi_skip = lo_hi_skip(pool.keep_tuple())
-        die_sizes: list[int] = sum(
-            ([len(die)] * count for die, count in pool._dice), start=[])
-        die_sizes = sorted(die_sizes, reverse=True)
-    if not can_truncate_min or not can_truncate_max:
-        prod_cost = math.prod(len(die)**count for die, count in pool._dice)
-
-    if can_truncate_min:
-        pop_min_cost = sum(die_sizes[hi_skip:])
-    else:
-        pop_min_cost = prod_cost
-
-    if can_truncate_max:
-        pop_max_cost = sum(die_sizes[lo_skip:])
-    else:
-        pop_max_cost = prod_cost
-
-    return pop_min_cost, pop_max_cost

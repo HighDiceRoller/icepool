@@ -3,10 +3,11 @@ __docformat__ = 'google'
 import icepool
 import icepool.expression
 import icepool.math
-import icepool.generator.pop_order
 import icepool.creation_args
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
+import icepool.generator.pop_order
+from icepool.generator.pop_order import PopOrderReason
 
 import itertools
 import math
@@ -14,7 +15,7 @@ import operator
 from collections import defaultdict
 from functools import cache, cached_property, reduce
 
-from icepool.typing import T
+from icepool.typing import T, Order
 from typing import TYPE_CHECKING, Any, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
 
 if TYPE_CHECKING:
@@ -174,14 +175,22 @@ class Pool(KeepGenerator[T]):
     def output_arity(self) -> int:
         return 1
 
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        """Estimates the cost of popping from the min and max sides.
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        can_truncate_min, can_truncate_max = icepool.generator.pop_order.can_truncate(
+            self.unique_dice())
+        if can_truncate_min and not can_truncate_max:
+            return Order.Ascending, PopOrderReason.PoolComposition
+        if can_truncate_max and not can_truncate_min:
+            return Order.Descending, PopOrderReason.PoolComposition
 
-        Returns:
-            pop_min_cost
-            pop_max_cost
-        """
-        return icepool.generator.pop_order.estimate_costs(self)
+        lo_skip, hi_skip = icepool.generator.pop_order.lo_hi_skip(
+            self.keep_tuple())
+        if lo_skip > hi_skip:
+            return Order.Descending, PopOrderReason.KeepSkip
+        if hi_skip > lo_skip:
+            return Order.Ascending, PopOrderReason.KeepSkip
+
+        return Order.Any, PopOrderReason.NoPreference
 
     @cached_property
     def _min_outcome(self) -> T:

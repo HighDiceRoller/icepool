@@ -33,7 +33,8 @@ def test_order(eval_pool, pool):
     eval_pool(pool)
 
 
-# The auto order should maximize skips if numerous enough.
+# The auto order should maximize skips if there are no other considerations.
+# Note that this is the *opposite* of the preferred pop order.
 def test_auto_order_uniform():
     algorithm, order = icepool.evaluator.sum_evaluator._select_algorithm(
         icepool.d6.pool([0, 0, 1, 1]))

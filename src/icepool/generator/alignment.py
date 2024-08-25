@@ -1,10 +1,11 @@
 __docformat__ = 'google'
 
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.typing import Outcome, T
+from icepool.generator.pop_order import PopOrderReason
 
 from functools import cached_property
 
+from icepool.typing import Order, T
 from typing import Collection, Hashable, Iterator, Sequence, TypeAlias
 
 InitialAlignmentGenerator: TypeAlias = Iterator[tuple['Alignment', int]]
@@ -49,9 +50,8 @@ class Alignment(MultisetGenerator[T, tuple[()]]):
         else:
             yield Alignment(self.outcomes()[:-1]), (), 1
 
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        result = len(self.outcomes())
-        return result, result
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        return Order.Any, PopOrderReason.NoPreference
 
     def denominator(self) -> int:
         return 0

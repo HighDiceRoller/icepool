@@ -4,12 +4,13 @@ import icepool
 from icepool.collection.counts import sorted_union
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
+from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 
 import itertools
 import math
 
 from typing import Hashable, Sequence
-from icepool.typing import T
+from icepool.typing import Order, T
 
 
 class CompoundKeepGenerator(KeepGenerator[T]):
@@ -54,14 +55,9 @@ class CompoundKeepGenerator(KeepGenerator[T]):
             yield CompoundKeepGenerator(
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        total_pop_min_cost = 1
-        total_pop_max_cost = 1
-        for inner in self._inners:
-            pop_min_cost, pop_max_cost = inner._estimate_order_costs()
-            total_pop_min_cost *= pop_min_cost
-            total_pop_max_cost *= pop_max_cost
-        return total_pop_min_cost, total_pop_max_cost
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        return merge_pop_orders(*(inner._preferred_pop_order()
+                                  for inner in self._inners))
 
     def denominator(self) -> int:
         return math.prod(inner.denominator() for inner in self._inners)

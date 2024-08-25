@@ -6,6 +6,7 @@ import icepool
 import icepool.generator
 from icepool.collection.counts import Counts
 from icepool.expression.multiset_expression import MultisetExpression
+from icepool.generator.pop_order import PopOrderReason
 from icepool.typing import Order, Outcome, Qs, T
 
 import bisect
@@ -108,12 +109,12 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         """
 
     @abstractmethod
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        """Estimates the cost of popping from the min and max sides during an evaluation.
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        """Returns the preferred pop order of the generator, along with the priority of that pop order.
 
-        Returns:
-            pop_min_cost: A positive `int`.
-            pop_max_cost: A positive `int`.
+        Greater priorities strictly outrank lower priorities.
+        An order of `None` represents conflicting orders and can occur in the 
+        argument and/or return value.
         """
 
     @abstractmethod
@@ -236,9 +237,9 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
 
-        min_cost, max_cost = self._estimate_order_costs()
+        preferred_pop_order, pop_order_reason = self._preferred_pop_order()
 
-        if min_cost < max_cost:
+        if preferred_pop_order is not None and preferred_pop_order > 0:
             outcome = self.min_outcome()
             generated = tuple(self._generate_min(outcome))
         else:

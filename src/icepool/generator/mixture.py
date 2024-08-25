@@ -4,12 +4,14 @@ import icepool
 
 from icepool.collection.counts import sorted_union
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
-from icepool.typing import Outcome, Qs, T, U
+from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 
 import math
 
 from collections import defaultdict
 from functools import cached_property
+
+from icepool.typing import Order, Qs, T, U
 from types import EllipsisType
 from typing import TYPE_CHECKING, Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
 
@@ -90,14 +92,9 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
             'MixtureMultisetGenerator should have decayed to another generator type by this point.'
         )
 
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        total_pop_min_cost = 0
-        total_pop_max_cost = 0
-        for inner in self._inners:
-            pop_min_cost, pop_max_cost = inner._estimate_order_costs()
-            total_pop_min_cost += pop_min_cost
-            total_pop_max_cost += pop_max_cost
-        return total_pop_min_cost, total_pop_max_cost
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        return merge_pop_orders(*(inner._preferred_pop_order()
+                                  for inner in self._inners))
 
     @cached_property
     def _denominator(self) -> int:

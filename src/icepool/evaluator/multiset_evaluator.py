@@ -2,8 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collection.counts import sorted_union
-
-from icepool.typing import Order, T_contra, U_co
+from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -11,6 +10,8 @@ import enum
 from functools import cached_property
 import itertools
 import math
+
+from icepool.typing import Order, T_contra, U_co
 
 from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING, overload
 
@@ -338,35 +339,25 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             # No generators.
             return self._eval_internal, eval_order
 
-        pop_min_costs, pop_max_costs = zip(*(generator._estimate_order_costs()
-                                             for generator in generators))
+        preferred_pop_order, pop_order_reason = merge_pop_orders(
+            *(generator._preferred_pop_order() for generator in generators))
 
-        pop_min_cost = math.prod(pop_min_costs)
-        pop_max_cost = math.prod(pop_max_costs)
+        if preferred_pop_order is None:
+            preferred_pop_order = Order.Any
+            pop_order_reason = PopOrderReason.NoPreference
 
-        # No preferred order case: go directly with cost.
+        # No mandatory evaluation order, go with preferred algorithm.
+        # Note that this has order *opposite* the pop order.
         if eval_order == Order.Any:
-            if pop_max_cost <= pop_min_cost:
-                return self._eval_internal, Order.Ascending
-            else:
-                return self._eval_internal, Order.Descending
+            return self._eval_internal, Order(-preferred_pop_order
+                                              or Order.Ascending)
 
-        # Preferred order case.
-        # Go with the preferred order unless there is a "significant"
-        # cost factor.
-
-        if PREFERRED_ORDER_COST_FACTOR * pop_max_cost < pop_min_cost:
-            cost_order = Order.Ascending
-        elif PREFERRED_ORDER_COST_FACTOR * pop_min_cost < pop_max_cost:
-            cost_order = Order.Descending
-        else:
-            cost_order = Order.Any
-
-        if cost_order == Order.Any or eval_order == cost_order:
-            # Use the preferred algorithm.
+        # Mandatory evaluation order.
+        if preferred_pop_order == Order.Any:
+            return self._eval_internal, eval_order
+        elif eval_order != preferred_pop_order:
             return self._eval_internal, eval_order
         else:
-            # Use the less-preferred algorithm.
             return self._eval_internal_forward, eval_order
 
     def _eval_internal(

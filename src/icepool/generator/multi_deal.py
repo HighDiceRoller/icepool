@@ -1,12 +1,13 @@
 __docformat__ = 'google'
 
-from icepool.typing import Outcome, Qs, T
+from icepool.typing import Order, Qs, T
 
 from typing import Any, Hashable, cast
 import icepool
 from icepool.collection.counts import CountsKeysView
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.math import iter_hypergeom
+from icepool.generator.pop_order import PopOrderReason
 
 from functools import cached_property
 import math
@@ -129,9 +130,8 @@ class MultiDeal(MultisetGenerator[T, Qs]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _estimate_order_costs(self) -> tuple[int, int]:
-        result = len(self.outcomes()) * math.prod(self.hand_sizes())
-        return result, result
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        return Order.Any, PopOrderReason.NoPreference
 
     @cached_property
     def _hash_key(self) -> Hashable:
