@@ -95,3 +95,15 @@ def test_pool_skip_max_but_truncate():
     pool = icepool.Pool([d6, d6, d8])[1, 1, 0]
     assert pool._preferred_pop_order() == (Order.Descending,
                                            PopOrderReason.PoolComposition)
+
+
+def test_deck_skip_min():
+    deck = icepool.Deck(range(10)).deal(4)[..., 1, 1]
+    assert deck._preferred_pop_order() == (Order.Descending,
+                                           PopOrderReason.KeepSkip)
+
+
+def test_deck_skip_max():
+    deck = icepool.Deck(range(10)).deal(4)[1, 1, ...]
+    assert deck._preferred_pop_order() == (Order.Ascending,
+                                           PopOrderReason.KeepSkip)

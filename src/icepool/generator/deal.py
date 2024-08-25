@@ -4,6 +4,7 @@ import icepool
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
+import icepool.generator.pop_order
 from icepool.generator.pop_order import PopOrderReason
 
 from functools import cached_property
@@ -52,6 +53,14 @@ class Deal(KeepGenerator[T]):
         self._keep_tuple = keep_tuple
         return self
 
+    @classmethod
+    def _new_empty(cls):
+        self = super(Deal, cls).__new__(cls)
+        self._deck = icepool.Deck(())
+        self._hand_size = 0
+        self._keep_tuple = ()
+        return self
+
     def _set_keep_tuple(self, keep_tuple: tuple[int, ...]) -> 'Deal[T]':
         return Deal._new_raw(self._deck, self._hand_size, keep_tuple)
 
@@ -96,13 +105,22 @@ class Deal(KeepGenerator[T]):
 
         min_count = max(0, deck_count + self._hand_size - self.deck().size())
         max_count = min(deck_count, self._hand_size)
+        skip_weight = None
         for count in range(min_count, max_count + 1):
             popped_keep_tuple, result_count = pop_min_from_keep_tuple(
                 self.keep_tuple(), count)
             popped_deal = Deal._new_raw(popped_deck, self._hand_size - count,
                                         popped_keep_tuple)
             weight = icepool.math.comb(deck_count, count)
+            if not any(popped_keep_tuple):
+                # Dump all dice in exchange for the denominator.
+                skip_weight = (skip_weight
+                               or 0) + weight * popped_deal.denominator()
+                continue
             yield popped_deal, (result_count, ), weight
+
+        if skip_weight is not None:
+            yield Deal._new_empty(), (sum(self.keep_tuple()), ), skip_weight
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
@@ -113,16 +131,31 @@ class Deal(KeepGenerator[T]):
 
         min_count = max(0, deck_count + self._hand_size - self.deck().size())
         max_count = min(deck_count, self._hand_size)
+        skip_weight = None
         for count in range(min_count, max_count + 1):
             popped_keep_tuple, result_count = pop_max_from_keep_tuple(
                 self.keep_tuple(), count)
             popped_deal = Deal._new_raw(popped_deck, self._hand_size - count,
                                         popped_keep_tuple)
             weight = icepool.math.comb(deck_count, count)
+            if not any(popped_keep_tuple):
+                # Dump all dice in exchange for the denominator.
+                skip_weight = (skip_weight
+                               or 0) + weight * popped_deal.denominator()
+                continue
             yield popped_deal, (result_count, ), weight
 
+        if skip_weight is not None:
+            yield Deal._new_empty(), (sum(self.keep_tuple()), ), skip_weight
+
     def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
-        # TODO: implement skips
+        lo_skip, hi_skip = icepool.generator.pop_order.lo_hi_skip(
+            self.keep_tuple())
+        if lo_skip > hi_skip:
+            return Order.Descending, PopOrderReason.KeepSkip
+        if hi_skip > lo_skip:
+            return Order.Ascending, PopOrderReason.KeepSkip
+
         return Order.Any, PopOrderReason.NoPreference
 
     @cached_property

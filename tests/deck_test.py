@@ -94,3 +94,17 @@ def test_mul():
 def test_floordiv():
     deck = Deck([1, 1, 1, 2, 2, 3]) // 2
     assert deck == Deck([1, 2])
+
+
+def test_highest():
+    deck = Deck(range(10))
+    result = deck.deal(4).highest(2).expand().simplify()
+    expected = deck.deal(4).expand().map(lambda x: x[2:]).simplify()
+    assert result == expected
+
+
+def test_lowest():
+    deck = Deck(range(10))
+    result = deck.deal(4).lowest(2).expand().simplify()
+    expected = deck.deal(4).expand().map(lambda x: x[:-2]).simplify()
+    assert result == expected
