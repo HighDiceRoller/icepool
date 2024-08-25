@@ -1,3 +1,13 @@
+## v1.5.1
+
+* Add `Population.pad_denominator()` method.
+* Move `zero()` and `zero_outcome()` from `Die` to `Population`.
+* Add skip optimization for single deals with keep tuples.
+* Remove old `compair` evaluation.
+* Simplify determination of outcome order for multiset evaluations.
+* Forward algorithm now has a persistent cache.
+* Simplify implementation of generator unbinding.
+
 ## v1.5.0
 
 * Providing only a `drop` argument to `lowest()` or `highest()` will now keep all other elements rather than just the first non-dropped element.
