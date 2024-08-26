@@ -56,20 +56,20 @@ def test_percent(comparison):
 
 
 def test_pad_to_denominator_add():
-    deck = Deck([0, 1, 2, 3]).pad_denominator(6, 0)
+    deck = Deck([0, 1, 2, 3]).pad_to_denominator(6, 0)
     assert deck == Deck([0, 0, 0, 1, 2, 3])
 
 
 def test_pad_to_denominator_remove():
-    deck = Deck([0, 0, 0, 1, 2, 3]).pad_denominator(4, 0)
+    deck = Deck([0, 0, 0, 1, 2, 3]).pad_to_denominator(4, 0)
     assert deck == Deck([0, 1, 2, 3])
 
 
 def test_pad_to_denominator_zero():
-    deck = Deck([0, 0, 0, 1, 2, 3]).pad_denominator(3, 0)
+    deck = Deck([0, 0, 0, 1, 2, 3]).pad_to_denominator(3, 0)
     assert deck == Deck([1, 2, 3])
 
 
 def test_pad_to_denominator_negative_error():
     with pytest.raises(ValueError):
-        deck = Deck([0, 0, 0, 1, 2, 3]).pad_denominator(2, 0)
+        deck = Deck([0, 0, 0, 1, 2, 3]).pad_to_denominator(2, 0)

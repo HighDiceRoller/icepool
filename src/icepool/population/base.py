@@ -305,7 +305,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """`True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()
 
-    def pad_denominator(self: C, target: int, /, outcome: Hashable) -> C:
+    def pad_to_denominator(self: C, target: int, /, outcome: Hashable) -> C:
         """Changes the denominator to a target number by changing the quantity of a specified outcome.
         
         Args:
