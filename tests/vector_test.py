@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d, d4, d6, d8, vectorize, Die, Vector
+from icepool import d, d4, d6, d8, vectorize, Die, Vector, map, Deck
 from collections import namedtuple
 
 
@@ -150,3 +150,24 @@ def test_named_tuple():
 
 def test_auto_tupleize():
     assert Die([(d6, d6, 6)]).map(sum) == 2 @ d6 + 6
+
+
+def test_die_sequence():
+    assert d6.sequence(3) == map(lambda a, b, c: (a, b, c), d6, d6, d6)
+
+
+def test_deck_sequence():
+    result = Deck(range(5)).sequence(3)
+    assert len(result) == 5 * 4 * 3
+    assert result.map(
+        lambda a, b, c: a != b and a != c and b != c).probability(True) == 1
+
+
+def test_deck_sequence_with_dups():
+    result = Deck([0, 0, 1, 1]).sequence(2)
+    assert result == Die({
+        (0, 0): 2,
+        (0, 1): 4,
+        (1, 0): 4,
+        (1, 1): 2,
+    })

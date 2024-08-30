@@ -13,7 +13,7 @@ import operator
 
 from collections import Counter, defaultdict
 from functools import cached_property
-from typing import Any, Callable, Iterable, Iterator, Mapping, Sequence, Type, overload
+from typing import Any, Callable, Iterable, Iterator, Mapping, MutableSequence, Sequence, Type, overload
 
 
 class Deck(Population[T_co]):
@@ -291,6 +291,31 @@ class Deck(Population[T_co]):
         return Deck(
             [transition_function(outcome) for outcome in self.outcomes()],
             times=self.quantities())
+
+    @cached_property
+    def _sequence_cache(
+            self) -> 'MutableSequence[icepool.Die[tuple[T_co, ...]]]':
+        return [icepool.Die([()])]
+
+    def sequence(self, deals: int, /) -> 'icepool.Die[tuple[T_co, ...]]':
+        """Possible sequences produced by dealing from this deck a number of times.
+        
+        This is extremely expensive computationally. If you don't care about
+        order, use `deal()` instead.
+        """
+        if deals < 0:
+            raise ValueError('The number of deals cannot be negative.')
+        for i in range(len(self._sequence_cache), deals + 1):
+
+            def transition(curr):
+                remaining = icepool.Die(self - curr)
+                return icepool.map(lambda curr, next: curr + (next, ), curr,
+                                   remaining)
+
+            result: 'icepool.Die[tuple[T_co, ...]]' = self._sequence_cache[
+                i - 1].map(transition)
+            self._sequence_cache.append(result)
+        return result
 
     @cached_property
     def _hash_key(self) -> tuple:

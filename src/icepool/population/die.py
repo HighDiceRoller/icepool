@@ -794,6 +794,15 @@ class Die(Population[T_co]):
         other = implicit_convert_to_die(other)
         return other.__matmul__(self)
 
+    def sequence(self, rolls: int) -> 'icepool.Die[tuple[T_co, ...]]':
+        """Possible sequences produced by rolling this die a number of times.
+        
+        This is extremely expensive computationally. If possible, use `reduce()`
+        instead; if you don't care about order, `Die.pool()` is better.
+        """
+        return icepool.cartesian_product(*(self for _ in range(rolls)),
+                                         outcome_type=tuple)  # type: ignore
+
     def pool(self, rolls: int | Sequence[int] = 1, /) -> 'icepool.Pool[T_co]':
         """Creates a `Pool` from this `Die`.
 
