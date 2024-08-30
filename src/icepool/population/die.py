@@ -734,8 +734,8 @@ class Die(Population[T_co]):
     def _sum_all(self, rolls: int, /) -> 'Die':
         """Roll this `Die` `rolls` times and sum the results.
 
-        The sum is computed one at a time, with the new item on the right,
-        similar to `functools.reduce()`.
+        The sum is computed one at a time, with each additional item on the 
+        right, similar to `functools.reduce()`.
 
         If `rolls` is negative, roll the `Die` `abs(rolls)` times and negate
         the result.
@@ -761,7 +761,11 @@ class Die(Population[T_co]):
         return result
 
     def __matmul__(self: 'Die[int]', other) -> 'Die':
-        """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
+        """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes.
+        
+        The sum is computed one at a time, with each additional item on the 
+        right, similar to `functools.reduce()`.
+        """
         if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
@@ -780,7 +784,11 @@ class Die(Population[T_co]):
         return icepool.Die(data)
 
     def __rmatmul__(self, other: 'int | Die[int]') -> 'Die':
-        """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes."""
+        """Roll the left `Die`, then roll the right `Die` that many times and sum the outcomes.
+        
+        The sum is computed one at a time, with each additional item on the 
+        right, similar to `functools.reduce()`.
+        """
         if isinstance(other, icepool.AgainExpression):
             return NotImplemented
         other = implicit_convert_to_die(other)
