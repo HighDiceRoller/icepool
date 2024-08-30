@@ -734,6 +734,9 @@ class Die(Population[T_co]):
     def _sum_all(self, rolls: int, /) -> 'Die':
         """Roll this `Die` `rolls` times and sum the results.
 
+        The sum is computed one at a time, with the new item on the right,
+        similar to `functools.reduce()`.
+
         If `rolls` is negative, roll the `Die` `abs(rolls)` times and negate
         the result.
 
@@ -750,8 +753,9 @@ class Die(Population[T_co]):
         elif rolls == 1:
             result = self
         else:
-            # Binary split seems to perform much worse.
-            result = self + self._sum_all(rolls - 1)
+            # In addition to working similar to reduce(), this seems to perform
+            # better than binary split.
+            result = self._sum_all(rolls - 1) + self
 
         self._sum_cache[rolls] = result
         return result
