@@ -1,7 +1,9 @@
 ## v1.5.1
 
+* Add `Deck.sequence()` and `Die.sequence()` method.
 * Add `Population.pad_to_denominator()` method.
 * Move `zero()` and `zero_outcome()` from `Die` to `Population`.
+* `@` operator now sums left-to-right.
 * Remove old `compair` evaluation.
 * Forward algorithm now has a persistent cache.
 * Add skip optimization for single deals with keep tuples.
