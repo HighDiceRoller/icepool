@@ -928,7 +928,7 @@ are considered.</li>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;google&#39;</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;1.5.1a0&#39;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;1.5.1a1&#39;</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Final</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
@@ -17245,7 +17245,7 @@ The union of the outcomes of the generator(s) must be totally orderable.</p>
 </span><span id="Deck-305"><a href="#Deck-305"><span class="linenos">305</span></a><span class="sd">        order, use `deal()` instead.</span>
 </span><span id="Deck-306"><a href="#Deck-306"><span class="linenos">306</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deck-307"><a href="#Deck-307"><span class="linenos">307</span></a>        <span class="k">if</span> <span class="n">deals</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Deck-308"><a href="#Deck-308"><span class="linenos">308</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of deals cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Deck-308"><a href="#Deck-308"><span class="linenos">308</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of cards dealt cannot be negative.&#39;</span><span class="p">)</span>
 </span><span id="Deck-309"><a href="#Deck-309"><span class="linenos">309</span></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sequence_cache</span><span class="p">),</span> <span class="n">deals</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
 </span><span id="Deck-310"><a href="#Deck-310"><span class="linenos">310</span></a>
 </span><span id="Deck-311"><a href="#Deck-311"><span class="linenos">311</span></a>            <span class="k">def</span> <span class="nf">transition</span><span class="p">(</span><span class="n">curr</span><span class="p">):</span>
@@ -17769,7 +17769,7 @@ signature.</li>
 </span><span id="Deck.sequence-305"><a href="#Deck.sequence-305"><span class="linenos">305</span></a><span class="sd">        order, use `deal()` instead.</span>
 </span><span id="Deck.sequence-306"><a href="#Deck.sequence-306"><span class="linenos">306</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deck.sequence-307"><a href="#Deck.sequence-307"><span class="linenos">307</span></a>        <span class="k">if</span> <span class="n">deals</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="Deck.sequence-308"><a href="#Deck.sequence-308"><span class="linenos">308</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of deals cannot be negative.&#39;</span><span class="p">)</span>
+</span><span id="Deck.sequence-308"><a href="#Deck.sequence-308"><span class="linenos">308</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of cards dealt cannot be negative.&#39;</span><span class="p">)</span>
 </span><span id="Deck.sequence-309"><a href="#Deck.sequence-309"><span class="linenos">309</span></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sequence_cache</span><span class="p">),</span> <span class="n">deals</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
 </span><span id="Deck.sequence-310"><a href="#Deck.sequence-310"><span class="linenos">310</span></a>
 </span><span id="Deck.sequence-311"><a href="#Deck.sequence-311"><span class="linenos">311</span></a>            <span class="k">def</span> <span class="nf">transition</span><span class="p">(</span><span class="n">curr</span><span class="p">):</span>
