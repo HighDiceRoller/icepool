@@ -304,7 +304,7 @@ class Deck(Population[T_co]):
         order, use `deal()` instead.
         """
         if deals < 0:
-            raise ValueError('The number of deals cannot be negative.')
+            raise ValueError('The number of cards dealt cannot be negative.')
         for i in range(len(self._sequence_cache), deals + 1):
 
             def transition(curr):
