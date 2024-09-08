@@ -291,12 +291,34 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """
         return self._denominator
 
-    def scale_quantities(self: C, scale: int) -> C:
-        """Scales all quantities by an integer."""
+    def multiply_quantities(self: C, scale: int, /) -> C:
+        """Multiplies all quantities by an integer."""
         if scale == 1:
             return self
         data = {
             outcome: quantity * scale
+            for outcome, quantity in self.items()
+        }
+        return self._new_type(data)
+
+    def divide_quantities(self: C, divisor: int, /) -> C:
+        """Divides all quantities by an integer, rounding down.
+        
+        Resulting zero quantities are dropped.
+        """
+        if divisor == 0:
+            return self
+        data = {
+            outcome: quantity // divisor
+            for outcome, quantity in self.items()
+            if quantity >= divisor
+        }
+        return self._new_type(data)
+    
+    def modulo_quantities(self: C, divisor: int, /) -> C:
+        """Modulus of all quantities with an integer."""
+        data = {
+            outcome: quantity % divisor
             for outcome, quantity in self.items()
         }
         return self._new_type(data)

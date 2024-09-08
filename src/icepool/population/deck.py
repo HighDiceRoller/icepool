@@ -216,37 +216,22 @@ class Deck(Population[T_co]):
             data[outcome] = abs(data[outcome] - count)
         return Deck(+data)
 
-    def multiply_counts(self, other: int) -> 'Deck[T_co]':
-        """Merge multiple copies of the deck."""
-        return self * other
-
     def __mul__(self, other: int) -> 'Deck[T_co]':
         if not isinstance(other, int):
             return NotImplemented
-        data = Counter({s: count * other for s, count in self.items()})
-        return Deck(+data)
+        return self.multiply_quantities(other)
 
     __rmul__ = __mul__
-
-    def divide_counts(self, other: int) -> 'Deck[T_co]':
-        """Divide all card counts, rounding down."""
-        return self // other
 
     def __floordiv__(self, other: int) -> 'Deck[T_co]':
         if not isinstance(other, int):
             return NotImplemented
-        data = Counter({s: count // other for s, count in self.items()})
-        return Deck(+data)
-
-    def modulo_counts(self, other: int) -> 'Deck[T_co]':
-        """Modulo all card counts."""
-        return self % other
+        return self.divide_quantities(other)
 
     def __mod__(self, other: int) -> 'Deck[T_co]':
         if not isinstance(other, int):
             return NotImplemented
-        data = Counter({s: count % other for s, count in self.items()})
-        return Deck(+data)
+        return self.modulo_quantities(other)
 
     def map(
             self,

@@ -278,7 +278,7 @@ def commonize_denominator(
     denominator_lcm = math.lcm(*(die.denominator() for die in converted_dice
                                  if die.denominator() > 0))
     return tuple(
-        die.scale_quantities(denominator_lcm //
+        die.multiply_quantities(denominator_lcm //
                              die.denominator() if die.denominator() > 0 else 1)
         for die in converted_dice)
 
