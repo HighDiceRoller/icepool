@@ -46,22 +46,6 @@ class Die(Population[T_co]):
     Dice are immutable. Methods do not modify the `Die` in-place;
     rather they return a `Die` representing the result.
 
-    It *is* (mostly) well-defined to have a `Die` with zero-quantity outcomes.
-    These can be useful in a few cases, such as:
-
-    * `MultisetEvaluator` will iterate through zero-quantity outcomes,
-        rather than possibly skipping that outcome. (Though in most cases it's
-        better to use `MultisetEvaluator.alignment()`.)
-    * `icepool.align()` and the like are convenient for making dice share the
-        same set of outcomes.
-
-    However, zero-quantity outcomes have a computational cost like any other
-    outcome. Unless you have a specific use case in mind, it's best to leave
-    them out.
-
-    Most operators and methods will not introduce zero-quantity outcomes if
-    their arguments do not have any; nor remove zero-quantity outcomes.
-
     It's also possible to have "empty" dice with no outcomes at all,
     though these have little use other than being sentinel values.
     """
@@ -486,7 +470,7 @@ class Die(Population[T_co]):
 
         This is not the same as rerolling outcomes beyond this range;
         the outcome is simply adjusted to fit within the range.
-        This will typically cause some quantity to bunch up at the endpoint.
+        This will typically cause some quantity to bunch up at the endpoint(s).
         If you want to reroll outcomes beyond this range, use `truncate()`.
         """
         data: MutableMapping[Any, int] = defaultdict(int)
@@ -502,7 +486,7 @@ class Die(Population[T_co]):
     def set_range(self: 'Die[int]',
                   min_outcome: int | None = None,
                   max_outcome: int | None = None) -> 'Die[int]':
-        """Sets the outcomes of this `Die` to the given `int` range (inclusive).
+        """DEPRECATED: Sets the outcomes of this `Die` to the given `int` range (inclusive).
 
         This may remove outcomes (if they are not within the range)
         and/or add zero-quantity outcomes (if they are in range but not present
@@ -522,7 +506,7 @@ class Die(Population[T_co]):
         return self.set_outcomes(range(min_outcome, max_outcome + 1))
 
     def set_outcomes(self, outcomes: Iterable[T_co]) -> 'Die[T_co]':
-        """Sets the set of outcomes to the argument.
+        """DEPRECATED: Sets the set of outcomes to the argument.
 
         This may remove outcomes (if they are not present in the argument)
         and/or add zero-quantity outcomes (if they are not present in this `Die`).
@@ -531,7 +515,7 @@ class Die(Population[T_co]):
         return icepool.Die(data)
 
     def trim(self) -> 'Die[T_co]':
-        """Removes all zero-quantity outcomes. """
+        """DEPRECATED: Removes all zero-quantity outcomes. """
         data = {k: v for k, v in self.items() if v > 0}
         return icepool.Die(data)
 
@@ -1500,8 +1484,6 @@ class Die(Population[T_co]):
 
         The quantities are equal to the positive outcome of `self > other`,
         `self < other`, and the remainder respectively.
-
-        This will include all three outcomes even if they have zero quantity.
         """
         other = implicit_convert_to_die(other)
 

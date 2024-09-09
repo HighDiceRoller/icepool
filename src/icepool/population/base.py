@@ -286,8 +286,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
     def denominator(self) -> int:
         """The sum of all quantities (e.g. weights or duplicates).
 
-        For the number of unique outcomes, including those with zero quantity,
-        use `len()`.
+        For the number of unique outcomes, use `len()`.
         """
         return self._denominator
 
@@ -324,7 +323,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         return self._new_type(data)
 
     def has_zero_quantities(self) -> bool:
-        """`True` iff `self` contains at least one outcome with zero quantity. """
+        """DEPRECATED: `True` iff `self` contains at least one outcome with zero quantity. """
         return 0 in self.values()
 
     def pad_to_denominator(self: C, target: int, /, outcome: Hashable) -> C:

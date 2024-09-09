@@ -244,7 +244,7 @@ def sorted_union(*args: Iterable[T]) -> Sequence[T]:
     return tuple(sorted(set.union(*(set(arg) for arg in args))))
 
 def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
-    """Pads dice with zero quantities so that all have the same set of outcomes.
+    """DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.
 
     Args:
         *dice: Any number of dice or single outcomes convertible to dice.
@@ -261,7 +261,7 @@ def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
 
 def align_range(
         *dice: 'int | icepool.Die[int]') -> tuple['icepool.Die[int]', ...]:
-    """Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
+    """DEPRECATED: Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
 
     Args:
         *dice: Any number of dice or single outcomes convertible to dice.
