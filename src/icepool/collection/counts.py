@@ -183,10 +183,3 @@ class CountsItemsView(ItemsView[T, int], Sequence[tuple[T, int]]):
 
     def __eq__(self, other):
         return self._mapping._items == other
-
-
-def sorted_union(*args: Iterable[T]) -> Sequence[T]:
-    """Merge sets into a sorted sequence."""
-    if not args:
-        return ()
-    return tuple(sorted(set.union(*(set(arg) for arg in args))))

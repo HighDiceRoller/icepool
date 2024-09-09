@@ -50,7 +50,7 @@ Operation in specific cases:
 
 from icepool.function import (d, z, __getattr__, coin, stochastic_round,
                               one_hot, iter_cartesian_product, from_cumulative,
-                              from_rv, min_outcome, max_outcome, align,
+                              from_rv, min_outcome, max_outcome, sorted_union, align,
                               align_range, commonize_denominator, reduce,
                               accumulate, map, map_function, map_and_time,
                               map_to_pool)
@@ -149,7 +149,7 @@ __all__ = [
     'd', 'z', 'coin', 'stochastic_round', 'one_hot', 'Outcome', 'Die',
     'Population', 'tupleize', 'vectorize', 'Vector', 'Symbols', 'Again',
     'CountsKeysView', 'CountsValuesView', 'CountsItemsView', 'from_cumulative',
-    'from_rv', 'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome',
+    'from_rv', 'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome', 'sorted_union',
     'align', 'align_range', 'commonize_denominator', 'reduce', 'accumulate',
     'map', 'map_function', 'map_and_time', 'map_to_pool', 'Reroll',
     'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator', 'Alignment',

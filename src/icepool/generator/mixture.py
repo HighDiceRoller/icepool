@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.collection.counts import sorted_union
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 
@@ -63,7 +62,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
                 self._inner_generators[inner] *= scale
 
     def outcomes(self) -> Sequence[T]:
-        return sorted_union(*(inner.outcomes()
+        return icepool.sorted_union(*(inner.outcomes()
                               for inner in self._inner_generators))
 
     def output_arity(self) -> int:

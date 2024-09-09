@@ -5,7 +5,6 @@ __docformat__ = 'google'
 from functools import cached_property
 import itertools
 import icepool
-from icepool.collection.counts import sorted_union
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Outcome, Order, T_contra, U_co
 
@@ -80,7 +79,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         return Order.merge(*(inner.order() for inner in self._inners))
 
     def alignment(self, outcomes) -> Collection[T_contra]:
-        return sorted_union(*(evaluator.alignment(outcomes)
+        return icepool.sorted_union(*(evaluator.alignment(outcomes)
                               for evaluator in self._inners))
 
     @cached_property

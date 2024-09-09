@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.collection.counts import sorted_union
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
 from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
@@ -22,7 +21,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
         self._keep_tuple = tuple(keep_tuple)
 
     def outcomes(self) -> Sequence[T]:
-        return sorted_union(*(inner.outcomes()
+        return icepool.sorted_union(*(inner.outcomes()
                               for inner in self._inner_generators))
 
     def output_arity(self) -> int:

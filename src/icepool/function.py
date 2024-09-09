@@ -229,6 +229,11 @@ def max_outcome(*dice: 'T | icepool.Die[T]') -> T:
     converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
     return max(die.outcomes()[-1] for die in converted_dice)
 
+def sorted_union(*args: Iterable[T]) -> Sequence[T]:
+    """Merge sets into a sorted sequence."""
+    if not args:
+        return ()
+    return tuple(sorted(set.union(*(set(arg) for arg in args))))
 
 def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """Pads dice with zero quantities so that all have the same set of outcomes.
