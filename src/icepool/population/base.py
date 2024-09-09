@@ -487,20 +487,19 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """The highest quantity of any single outcome. """
         return max(self.quantities())
 
-    def kolmogorov_smirnov(self, other) -> Fraction:
+    def kolmogorov_smirnov(self, other: 'Population') -> Fraction:
         """Kolmogorov–Smirnov statistic. The maximum absolute difference between CDFs. """
-        a, b = icepool.align(self, other)
+        outcomes = icepool.sorted_union(self, other)
         return max(
-            abs(a - b)
-            for a, b in zip(a.probabilities('<='), b.probabilities('<=')))
+            abs(self.probability('<=', outcome) - other.probability('<=', outcome))
+            for outcome in outcomes)
 
-    def cramer_von_mises(self, other) -> Fraction:
+    def cramer_von_mises(self, other: 'Population') -> Fraction:
         """Cramér-von Mises statistic. The sum-of-squares difference between CDFs. """
-        a, b = icepool.align(self, other)
+        outcomes = icepool.sorted_union(self, other)
         return sum(
-            ((a - b)**2
-             for a, b in zip(a.probabilities('<='), b.probabilities('<='))),
-            start=Fraction(0, 1))
+            ((self.probability('<=', outcome) - other.probability('<=', outcome)) ** 2
+            for outcome in outcomes), start=Fraction(0, 1))
 
     def median(self):
         """The median, taking the mean in case of a tie.

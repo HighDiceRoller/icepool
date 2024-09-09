@@ -297,10 +297,11 @@ def _lowest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
     dice = tuple(icepool.implicit_convert_to_die(arg) for arg in args)
     max_outcome = min(die.max_outcome() for die in dice)
     dice = tuple(die.clip(max_outcome=max_outcome) for die in dice)
-    dice = icepool.align(*dice)
+    outcomes = icepool.sorted_union(*dice)
     quantities_ge = tuple(
-        math.prod(t) for t in zip(*(die.quantities('>=') for die in dice)))
-    return icepool.from_cumulative(dice[0].outcomes(),
+        math.prod(die.quantity('>=', outcome) for die in dice)
+        for outcome in outcomes)
+    return icepool.from_cumulative(outcomes,
                                    quantities_ge,
                                    reverse=True)
 
@@ -314,7 +315,8 @@ def _highest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
     dice = tuple(icepool.implicit_convert_to_die(arg) for arg in args)
     min_outcome = max(die.min_outcome() for die in dice)
     dice = tuple(die.clip(min_outcome=min_outcome) for die in dice)
-    dice = icepool.align(*dice)
+    outcomes = icepool.sorted_union(*dice)
     quantities_le = tuple(
-        math.prod(t) for t in zip(*(die.quantities('<=') for die in dice)))
-    return icepool.from_cumulative(dice[0].outcomes(), quantities_le)
+        math.prod(die.quantity('<=', outcome) for die in dice)
+        for outcome in outcomes)
+    return icepool.from_cumulative(outcomes, quantities_le)

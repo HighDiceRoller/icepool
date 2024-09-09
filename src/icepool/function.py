@@ -229,6 +229,14 @@ def max_outcome(*dice: 'T | icepool.Die[T]') -> T:
     converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
     return max(die.outcomes()[-1] for die in converted_dice)
 
+def range_union(*args: Iterable[int]) -> Sequence[int]:
+    """Produces a sequence of consecutive ints covering the argument sets."""
+    start = min((x for x in itertools.chain(*args)), default=None)
+    if start is None:
+        return ()
+    stop = max(x for x in itertools.chain(*args))
+    return tuple(range(start, stop+1))
+
 def sorted_union(*args: Iterable[T]) -> Sequence[T]:
     """Merge sets into a sorted sequence."""
     if not args:
