@@ -360,7 +360,7 @@
 </span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">))))</span>
 </span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>
 </span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a><span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of outcomes.</span>
+</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.</span>
 </span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>
 </span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a><span class="sd">    Args:</span>
 </span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
@@ -377,7 +377,7 @@
 </span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>
 </span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a><span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span>
 </span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;int | icepool.Die[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.</span>
+</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED: Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.</span>
 </span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>
 </span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a><span class="sd">    Args:</span>
 </span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
@@ -1311,7 +1311,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
     </div>
     <a class="headerlink" href="#align"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="align-247"><a href="#align-247"><span class="linenos">247</span></a><span class="k">def</span> <span class="nf">align</span><span class="p">(</span><span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="align-248"><a href="#align-248"><span class="linenos">248</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of outcomes.</span>
+</span><span id="align-248"><a href="#align-248"><span class="linenos">248</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.</span>
 </span><span id="align-249"><a href="#align-249"><span class="linenos">249</span></a>
 </span><span id="align-250"><a href="#align-250"><span class="linenos">250</span></a><span class="sd">    Args:</span>
 </span><span id="align-251"><a href="#align-251"><span class="linenos">251</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
@@ -1327,7 +1327,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of outcomes.</p>
+            <div class="docstring"><p>DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -1357,7 +1357,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
     <a class="headerlink" href="#align_range"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="align_range-263"><a href="#align_range-263"><span class="linenos">263</span></a><span class="k">def</span> <span class="nf">align_range</span><span class="p">(</span>
 </span><span id="align_range-264"><a href="#align_range-264"><span class="linenos">264</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;int | icepool.Die[int]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="align_range-265"><a href="#align_range-265"><span class="linenos">265</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.</span>
+</span><span id="align_range-265"><a href="#align_range-265"><span class="linenos">265</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;DEPRECATED: Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.</span>
 </span><span id="align_range-266"><a href="#align_range-266"><span class="linenos">266</span></a>
 </span><span id="align_range-267"><a href="#align_range-267"><span class="linenos">267</span></a><span class="sd">    Args:</span>
 </span><span id="align_range-268"><a href="#align_range-268"><span class="linenos">268</span></a><span class="sd">        *dice: Any number of dice or single outcomes convertible to dice.</span>
@@ -1372,7 +1372,7 @@ If the distribution is discrete, outcomes must be <code>int</code>s.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Pads dice with zero quantities so that all have the same set of consecutive <code>int</code> outcomes.</p>
+            <div class="docstring"><p>DEPRECATED: Pads dice with zero quantities so that all have the same set of consecutive <code>int</code> outcomes.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
