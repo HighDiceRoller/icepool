@@ -229,19 +229,22 @@ def max_outcome(*dice: 'T | icepool.Die[T]') -> T:
     converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
     return max(die.outcomes()[-1] for die in converted_dice)
 
+
 def range_union(*args: Iterable[int]) -> Sequence[int]:
     """Produces a sequence of consecutive ints covering the argument sets."""
     start = min((x for x in itertools.chain(*args)), default=None)
     if start is None:
         return ()
     stop = max(x for x in itertools.chain(*args))
-    return tuple(range(start, stop+1))
+    return tuple(range(start, stop + 1))
 
-def sorted_union(*args: Iterable[T]) -> Sequence[T]:
+
+def sorted_union(*args: Iterable[T]) -> tuple[T, ...]:
     """Merge sets into a sorted sequence."""
     if not args:
         return ()
     return tuple(sorted(set.union(*(set(arg) for arg in args))))
+
 
 def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.
@@ -277,7 +280,7 @@ def align_range(
 
 def commonize_denominator(
         *dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
-    """Scale the weights of the dice so that all of them have the same denominator.
+    """Scale the quantities of the dice so that all of them have the same denominator.
 
     Args:
         *dice: Any number of dice or single outcomes convertible to dice.
@@ -292,8 +295,8 @@ def commonize_denominator(
                                  if die.denominator() > 0))
     return tuple(
         die.multiply_quantities(denominator_lcm //
-                             die.denominator() if die.denominator() > 0 else 1)
-        for die in converted_dice)
+                                die.denominator() if die.denominator() >
+                                0 else 1) for die in converted_dice)
 
 
 def reduce(

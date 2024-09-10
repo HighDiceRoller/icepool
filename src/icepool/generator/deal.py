@@ -53,14 +53,6 @@ class Deal(KeepGenerator[T]):
         self._keep_tuple = keep_tuple
         return self
 
-    @classmethod
-    def _new_empty(cls):
-        self = super(Deal, cls).__new__(cls)
-        self._deck = icepool.Deck(())
-        self._hand_size = 0
-        self._keep_tuple = ()
-        return self
-
     def _set_keep_tuple(self, keep_tuple: tuple[int, ...]) -> 'Deal[T]':
         return Deal._new_raw(self._deck, self._hand_size, keep_tuple)
 
@@ -120,7 +112,8 @@ class Deal(KeepGenerator[T]):
             yield popped_deal, (result_count, ), weight
 
         if skip_weight is not None:
-            yield Deal._new_empty(), (sum(self.keep_tuple()), ), skip_weight
+            popped_deal = Deal._new_raw(popped_deck, 0, ())
+            yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         if not self.outcomes() or max_outcome != self.max_outcome():
@@ -146,7 +139,8 @@ class Deal(KeepGenerator[T]):
             yield popped_deal, (result_count, ), weight
 
         if skip_weight is not None:
-            yield Deal._new_empty(), (sum(self.keep_tuple()), ), skip_weight
+            popped_deal = Deal._new_raw(popped_deck, 0, ())
+            yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
     def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
         lo_skip, hi_skip = icepool.generator.pop_order.lo_hi_skip(

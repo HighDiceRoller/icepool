@@ -85,17 +85,11 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             outcome: The current outcome.
                 `next_state` will see all rolled outcomes in monotonic order;
                 either ascending or descending depending on `order()`.
-                If there are multiple generators, the set of outcomes is the
-                union of the outcomes of the invididual generators. All outcomes
-                with nonzero count will be seen. Outcomes with zero count
-                may or may not be seen. If you need to enforce that certain
-                outcomes are seen even if they have zero count, see
-                `alignment()`.
+                If there are multiple generators, the set of outcomes is at 
+                least the union of the outcomes of the invididual generators. 
+                You can use `alignment()` to add additional outcomes.
             *counts: One value (usually an `int`) for each generator output
                 indicating how many of the current outcome were produced.
-                All outcomes with nonzero count are guaranteed to be seen.
-                To guarantee that outcomes are seen even if they have zero
-                count, override `alignment()`.
 
         Returns:
             A hashable object indicating the next state.
@@ -144,18 +138,13 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     def alignment(self, outcomes: Sequence[T_contra]) -> Collection[T_contra]:
         """Optional method to specify additional outcomes that should be seen by `next_state()`.
 
-        These will be seen by `next_state` even if they have zero count or do
-        not appear in the generator(s) at all.
-
-        The default implementation returns `()`; this means outcomes with zero
-        count may or may not be seen by `next_state`.
+        These will be seen by `next_state` even if they do not appear in the
+        generator(s). The default implementation returns `()`, or no additional
+        outcomes.
 
         If you want `next_state` to see consecutive `int` outcomes, you can set
         `alignment = icepool.MultisetEvaluator.range_alignment`.
         See `range_alignment()` below.
-
-        If you want `next_state` to see all generator outcomes, you can return
-        `outcomes` as-is.
 
         Args:
             outcomes: The outcomes that could be produced by the generators, in
@@ -291,7 +280,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         # We use a separate class to guarantee all outcomes are visited.
         outcomes = icepool.sorted_union(*(generator.outcomes()
-                                  for generator in generators))
+                                          for generator in generators))
         alignment = Alignment(self.alignment(outcomes))
 
         dist: MutableMapping[Any, int] = defaultdict(int)

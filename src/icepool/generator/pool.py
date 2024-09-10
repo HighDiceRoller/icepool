@@ -36,6 +36,7 @@ class Pool(KeepGenerator[T]):
     """
 
     _dice: tuple[tuple['icepool.Die[T]', int]]
+    _outcomes: tuple[T, ...]
 
     def __new__(
             cls,
@@ -50,8 +51,9 @@ class Pool(KeepGenerator[T]):
 
         It is permissible to create a `Pool` without providing dice, but not all
         evaluators will handle this case, especially if they depend on the
-        outcome type. In this case you may want to provide a die with zero
-        quantity.
+        outcome type. Dice may be in the pool zero times, in which case their
+        outcomes will be considered but without any count (unless another die
+        has that outcome).
 
         Args:
             dice: The dice to put in the `Pool`. This can be one of the following:
@@ -87,17 +89,19 @@ class Pool(KeepGenerator[T]):
 
         dice_counts: MutableMapping['icepool.Die[T]', int] = defaultdict(int)
         for die, qty in zip(converted_dice, times):
-            if die.is_empty() and qty == 0:
-                # zero empty dice is considered to have no effect
+            if qty == 0:
                 continue
             dice_counts[die] += qty
         keep_tuple = (1, ) * sum(times)
-        return cls._new_from_mapping(dice_counts, keep_tuple)
+
+        # Includes dice with zero qty.
+        outcomes = icepool.sorted_union(*converted_dice)
+        return cls._new_from_mapping(dice_counts, outcomes, keep_tuple)
 
     @classmethod
     @cache
     def _new_raw(cls, dice: tuple[tuple['icepool.Die[T]', int]],
-                 keep_tuple: tuple[int, ...]) -> 'Pool[T]':
+                 outcomes: tuple[T], keep_tuple: tuple[int, ...]) -> 'Pool[T]':
         """All pool creation ends up here. This method is cached.
 
         Args:
@@ -106,12 +110,9 @@ class Pool(KeepGenerator[T]):
         """
         self = super(Pool, cls).__new__(cls)
         self._dice = dice
+        self._outcomes = outcomes
         self._keep_tuple = keep_tuple
         return self
-
-    @classmethod
-    def _new_empty(cls) -> 'Pool':
-        return cls._new_raw((), ())
 
     @classmethod
     def clear_cache(cls):
@@ -120,6 +121,7 @@ class Pool(KeepGenerator[T]):
 
     @classmethod
     def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T]', int],
+                          outcomes: tuple[T, ...],
                           keep_tuple: Sequence[int]) -> 'Pool[T]':
         """Creates a new pool.
 
@@ -129,7 +131,7 @@ class Pool(KeepGenerator[T]):
         """
         dice = tuple(
             sorted(dice_counts.items(), key=lambda kv: kv[0]._hash_key))
-        return Pool._new_raw(dice, keep_tuple)
+        return Pool._new_raw(dice, outcomes, keep_tuple)
 
     @cached_property
     def _raw_size(self) -> int:
@@ -161,13 +163,6 @@ class Pool(KeepGenerator[T]):
         """The collection of unique dice in this pool."""
         return self._unique_dice
 
-    @cached_property
-    def _outcomes(self) -> Sequence[T]:
-        outcome_set = set(
-            itertools.chain.from_iterable(die.outcomes()
-                                          for die in self.unique_dice()))
-        return tuple(sorted(outcome_set))
-
     def outcomes(self) -> Sequence[T]:
         """The union of possible outcomes among all dice in this pool in ascending order."""
         return self._outcomes
@@ -192,21 +187,13 @@ class Pool(KeepGenerator[T]):
 
         return Order.Any, PopOrderReason.NoPreference
 
-    @cached_property
-    def _min_outcome(self) -> T:
-        return min(die.min_outcome() for die in self.unique_dice())
-
     def min_outcome(self) -> T:
         """The min outcome among all dice in this pool."""
-        return self._min_outcome
-
-    @cached_property
-    def _max_outcome(self) -> T:
-        return max(die.max_outcome() for die in self.unique_dice())
+        return self._outcomes[0]
 
     def max_outcome(self) -> T:
         """The max outcome among all dice in this pool."""
-        return self._max_outcome
+        return self._outcomes[-1]
 
     def _generate_initial(self) -> InitialMultisetGenerator:
         yield self, 1
@@ -223,6 +210,9 @@ class Pool(KeepGenerator[T]):
         if not self.outcomes():
             yield self, (0, ), 1
             return
+        if min_outcome != self.min_outcome():
+            yield self, (0, ), 1
+            return
         generators = [
             iter_die_pop_min(die, die_count, min_outcome)
             for die, die_count in self._dice
@@ -233,13 +223,14 @@ class Pool(KeepGenerator[T]):
             result_weight = 1
             next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
             for popped_die, misses, hits, weight in pop:
-                if not popped_die.is_empty():
+                if not popped_die.is_empty() and misses > 0:
                     next_dice_counts[popped_die] += misses
                 total_hits += hits
                 result_weight *= weight
             popped_keep_tuple, result_count = pop_min_from_keep_tuple(
                 self.keep_tuple(), total_hits)
             popped_pool = Pool._new_from_mapping(next_dice_counts,
+                                                 self._outcomes[1:],
                                                  popped_keep_tuple)
             if not any(popped_keep_tuple):
                 # Dump all dice in exchange for the denominator.
@@ -250,7 +241,8 @@ class Pool(KeepGenerator[T]):
             yield popped_pool, (result_count, ), result_weight
 
         if skip_weight is not None:
-            yield Pool._new_empty(), (sum(self.keep_tuple()), ), skip_weight
+            popped_pool = Pool._new_raw((), self._outcomes[1:], ())
+            yield popped_pool, (sum(self.keep_tuple()), ), skip_weight
 
     def _generate_max(self, max_outcome) -> NextMultisetGenerator:
         """Pops the given outcome from this pool, if it is the max outcome.
@@ -264,6 +256,9 @@ class Pool(KeepGenerator[T]):
         if not self.outcomes():
             yield self, (0, ), 1
             return
+        if max_outcome != self.max_outcome():
+            yield self, (0, ), 1
+            return
         generators = [
             iter_die_pop_max(die, die_count, max_outcome)
             for die, die_count in self._dice
@@ -274,13 +269,14 @@ class Pool(KeepGenerator[T]):
             result_weight = 1
             next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
             for popped_die, misses, hits, weight in pop:
-                if not popped_die.is_empty():
+                if not popped_die.is_empty() and misses > 0:
                     next_dice_counts[popped_die] += misses
                 total_hits += hits
                 result_weight *= weight
             popped_keep_tuple, result_count = pop_max_from_keep_tuple(
                 self.keep_tuple(), total_hits)
             popped_pool = Pool._new_from_mapping(next_dice_counts,
+                                                 self._outcomes[:-1],
                                                  popped_keep_tuple)
             if not any(popped_keep_tuple):
                 # Dump all dice in exchange for the denominator.
@@ -291,11 +287,12 @@ class Pool(KeepGenerator[T]):
             yield popped_pool, (result_count, ), result_weight
 
         if skip_weight is not None:
-            yield Pool._new_empty(), (sum(self.keep_tuple()), ), skip_weight
+            popped_pool = Pool._new_raw((), self._outcomes[:-1], ())
+            yield popped_pool, (sum(self.keep_tuple()), ), skip_weight
 
     def _set_keep_tuple(self, keep_tuple: tuple[int,
                                                 ...]) -> 'KeepGenerator[T]':
-        return Pool._new_raw(self._dice, keep_tuple)
+        return Pool._new_raw(self._dice, self._outcomes, keep_tuple)
 
     def additive_union(
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
@@ -304,21 +301,21 @@ class Pool(KeepGenerator[T]):
             icepool.expression.implicit_convert_to_expression(arg)
             for arg in args)
         if all(isinstance(arg, Pool) for arg in args):
-            pools = cast(tuple[Pool, ...], args)
+            pools = cast(tuple[Pool[T], ...], args)
             keep_tuple: tuple[int, ...] = tuple(
                 reduce(operator.add, (pool.keep_tuple() for pool in pools),
                        ()))
-            if len(keep_tuple) == 0:
-                # All empty.
-                return Pool._new_empty()
-            if all(x == keep_tuple[0] for x in keep_tuple):
+            if len(keep_tuple) == 0 or all(x == keep_tuple[0]
+                                           for x in keep_tuple):
                 # All sorted positions count the same, so we can merge the
                 # pools.
                 dice: 'MutableMapping[icepool.Die, int]' = defaultdict(int)
                 for pool in pools:
                     for die, die_count in pool._dice:
                         dice[die] += die_count
-                return Pool._new_from_mapping(dice, keep_tuple)
+                outcomes = icepool.sorted_union(*(pool.outcomes()
+                                                  for pool in pools))
+                return Pool._new_from_mapping(dice, outcomes, keep_tuple)
         return KeepGenerator.additive_union(*args)
 
     def __str__(self) -> str:
@@ -329,7 +326,7 @@ class Pool(KeepGenerator[T]):
 
     @cached_property
     def _hash_key(self) -> tuple:
-        return Pool, self._dice, self._keep_tuple
+        return Pool, self._dice, self._outcomes, self._keep_tuple
 
 
 def standard_pool(
