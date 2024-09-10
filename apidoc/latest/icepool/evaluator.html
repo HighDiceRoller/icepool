@@ -818,18 +818,13 @@ ascending and others are descending.</li>
 
             <div class="docstring"><p>Optional method to specify additional outcomes that should be seen by <code><a href="#JointEvaluator.next_state">next_state()</a></code>.</p>
 
-<p>These will be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code> even if they have zero count or do
-not appear in the generator(s) at all.</p>
-
-<p>The default implementation returns <code>()</code>; this means outcomes with zero
-count may or may not be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code>.</p>
+<p>These will be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code> even if they do not appear in the
+generator(s). The default implementation returns <code>()</code>, or no additional
+outcomes.</p>
 
 <p>If you want <code><a href="#JointEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
 <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
 See <code><a href="#JointEvaluator.range_alignment">range_alignment()</a></code> below.</p>
-
-<p>If you want <code><a href="#JointEvaluator.next_state">next_state</a></code> to see all generator outcomes, you can return
-<code>outcomes</code> as-is.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -1946,17 +1941,11 @@ current outcome. If this is the first outcome being considered,
 <li><strong>outcome:</strong>  The current outcome.
 <code><a href="#CountSubsetEvaluator.next_state">next_state</a></code> will see all rolled outcomes in monotonic order;
 either ascending or descending depending on <code><a href="#CountSubsetEvaluator.order">order()</a></code>.
-If there are multiple generators, the set of outcomes is the
-union of the outcomes of the invididual generators. All outcomes
-with nonzero count will be seen. Outcomes with zero count
-may or may not be seen. If you need to enforce that certain
-outcomes are seen even if they have zero count, see
-<code><a href="#CountSubsetEvaluator.alignment">alignment()</a></code>.</li>
+If there are multiple generators, the set of outcomes is at 
+least the union of the outcomes of the invididual generators. 
+You can use <code><a href="#CountSubsetEvaluator.alignment">alignment()</a></code> to add additional outcomes.</li>
 <li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each generator output
-indicating how many of the current outcome were produced.
-All outcomes with nonzero count are guaranteed to be seen.
-To guarantee that outcomes are seen even if they have zero
-count, override <code><a href="#CountSubsetEvaluator.alignment">alignment()</a></code>.</li>
+indicating how many of the current outcome were produced.</li>
 </ul>
 
 <h6 id="returns">Returns:</h6>
@@ -2354,32 +2343,32 @@ If <code>None</code>, no filtering will be done.</li>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.alignment-167"><a href="#LargestStraightEvaluator.alignment-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightEvaluator.alignment-168"><a href="#LargestStraightEvaluator.alignment-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.alignment-156"><a href="#LargestStraightEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightEvaluator.alignment-157"><a href="#LargestStraightEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightEvaluator.alignment-158"><a href="#LargestStraightEvaluator.alignment-158"><span class="linenos">158</span></a>
+</span><span id="LargestStraightEvaluator.alignment-159"><a href="#LargestStraightEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="LargestStraightEvaluator.alignment-160"><a href="#LargestStraightEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="LargestStraightEvaluator.alignment-161"><a href="#LargestStraightEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="LargestStraightEvaluator.alignment-162"><a href="#LargestStraightEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
+</span><span id="LargestStraightEvaluator.alignment-163"><a href="#LargestStraightEvaluator.alignment-163"><span class="linenos">163</span></a>
+</span><span id="LargestStraightEvaluator.alignment-164"><a href="#LargestStraightEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="LargestStraightEvaluator.alignment-165"><a href="#LargestStraightEvaluator.alignment-165"><span class="linenos">165</span></a>
+</span><span id="LargestStraightEvaluator.alignment-166"><a href="#LargestStraightEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightEvaluator.alignment-167"><a href="#LargestStraightEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="LargestStraightEvaluator.alignment-168"><a href="#LargestStraightEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
 </span><span id="LargestStraightEvaluator.alignment-169"><a href="#LargestStraightEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="LargestStraightEvaluator.alignment-170"><a href="#LargestStraightEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="LargestStraightEvaluator.alignment-171"><a href="#LargestStraightEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="LargestStraightEvaluator.alignment-172"><a href="#LargestStraightEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="LargestStraightEvaluator.alignment-173"><a href="#LargestStraightEvaluator.alignment-173"><span class="linenos">173</span></a><span class="sd">        set of parameters.</span>
-</span><span id="LargestStraightEvaluator.alignment-174"><a href="#LargestStraightEvaluator.alignment-174"><span class="linenos">174</span></a>
-</span><span id="LargestStraightEvaluator.alignment-175"><a href="#LargestStraightEvaluator.alignment-175"><span class="linenos">175</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="LargestStraightEvaluator.alignment-176"><a href="#LargestStraightEvaluator.alignment-176"><span class="linenos">176</span></a>
-</span><span id="LargestStraightEvaluator.alignment-177"><a href="#LargestStraightEvaluator.alignment-177"><span class="linenos">177</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightEvaluator.alignment-178"><a href="#LargestStraightEvaluator.alignment-178"><span class="linenos">178</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="LargestStraightEvaluator.alignment-179"><a href="#LargestStraightEvaluator.alignment-179"><span class="linenos">179</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightEvaluator.alignment-170"><a href="#LargestStraightEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightEvaluator.alignment-171"><a href="#LargestStraightEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="LargestStraightEvaluator.alignment-172"><a href="#LargestStraightEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.alignment-173"><a href="#LargestStraightEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.alignment-174"><a href="#LargestStraightEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightEvaluator.alignment-175"><a href="#LargestStraightEvaluator.alignment-175"><span class="linenos">175</span></a>
+</span><span id="LargestStraightEvaluator.alignment-176"><a href="#LargestStraightEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.alignment-177"><a href="#LargestStraightEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightEvaluator.alignment-178"><a href="#LargestStraightEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightEvaluator.alignment-179"><a href="#LargestStraightEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
 </span><span id="LargestStraightEvaluator.alignment-180"><a href="#LargestStraightEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="LargestStraightEvaluator.alignment-181"><a href="#LargestStraightEvaluator.alignment-181"><span class="linenos">181</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightEvaluator.alignment-182"><a href="#LargestStraightEvaluator.alignment-182"><span class="linenos">182</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="LargestStraightEvaluator.alignment-183"><a href="#LargestStraightEvaluator.alignment-183"><span class="linenos">183</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.alignment-184"><a href="#LargestStraightEvaluator.alignment-184"><span class="linenos">184</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.alignment-185"><a href="#LargestStraightEvaluator.alignment-185"><span class="linenos">185</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightEvaluator.alignment-186"><a href="#LargestStraightEvaluator.alignment-186"><span class="linenos">186</span></a>
-</span><span id="LargestStraightEvaluator.alignment-187"><a href="#LargestStraightEvaluator.alignment-187"><span class="linenos">187</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.alignment-188"><a href="#LargestStraightEvaluator.alignment-188"><span class="linenos">188</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.alignment-189"><a href="#LargestStraightEvaluator.alignment-189"><span class="linenos">189</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightEvaluator.alignment-190"><a href="#LargestStraightEvaluator.alignment-190"><span class="linenos">190</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightEvaluator.alignment-191"><a href="#LargestStraightEvaluator.alignment-191"><span class="linenos">191</span></a>
-</span><span id="LargestStraightEvaluator.alignment-192"><a href="#LargestStraightEvaluator.alignment-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="LargestStraightEvaluator.alignment-181"><a href="#LargestStraightEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2545,32 +2534,32 @@ set of parameters.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.alignment-167"><a href="#LargestStraightAndOutcomeEvaluator.alignment-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-168"><a href="#LargestStraightAndOutcomeEvaluator.alignment-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.alignment-156"><a href="#LargestStraightAndOutcomeEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-157"><a href="#LargestStraightAndOutcomeEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-158"><a href="#LargestStraightAndOutcomeEvaluator.alignment-158"><span class="linenos">158</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-159"><a href="#LargestStraightAndOutcomeEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-160"><a href="#LargestStraightAndOutcomeEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-161"><a href="#LargestStraightAndOutcomeEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-162"><a href="#LargestStraightAndOutcomeEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-163"><a href="#LargestStraightAndOutcomeEvaluator.alignment-163"><span class="linenos">163</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-164"><a href="#LargestStraightAndOutcomeEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-165"><a href="#LargestStraightAndOutcomeEvaluator.alignment-165"><span class="linenos">165</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-166"><a href="#LargestStraightAndOutcomeEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-167"><a href="#LargestStraightAndOutcomeEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-168"><a href="#LargestStraightAndOutcomeEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.alignment-169"><a href="#LargestStraightAndOutcomeEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-170"><a href="#LargestStraightAndOutcomeEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-171"><a href="#LargestStraightAndOutcomeEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-172"><a href="#LargestStraightAndOutcomeEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-173"><a href="#LargestStraightAndOutcomeEvaluator.alignment-173"><span class="linenos">173</span></a><span class="sd">        set of parameters.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-174"><a href="#LargestStraightAndOutcomeEvaluator.alignment-174"><span class="linenos">174</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-175"><a href="#LargestStraightAndOutcomeEvaluator.alignment-175"><span class="linenos">175</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-176"><a href="#LargestStraightAndOutcomeEvaluator.alignment-176"><span class="linenos">176</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-177"><a href="#LargestStraightAndOutcomeEvaluator.alignment-177"><span class="linenos">177</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-178"><a href="#LargestStraightAndOutcomeEvaluator.alignment-178"><span class="linenos">178</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-179"><a href="#LargestStraightAndOutcomeEvaluator.alignment-179"><span class="linenos">179</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-170"><a href="#LargestStraightAndOutcomeEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-171"><a href="#LargestStraightAndOutcomeEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-172"><a href="#LargestStraightAndOutcomeEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-173"><a href="#LargestStraightAndOutcomeEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-174"><a href="#LargestStraightAndOutcomeEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-175"><a href="#LargestStraightAndOutcomeEvaluator.alignment-175"><span class="linenos">175</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-176"><a href="#LargestStraightAndOutcomeEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-177"><a href="#LargestStraightAndOutcomeEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-178"><a href="#LargestStraightAndOutcomeEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-179"><a href="#LargestStraightAndOutcomeEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.alignment-180"><a href="#LargestStraightAndOutcomeEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-181"><a href="#LargestStraightAndOutcomeEvaluator.alignment-181"><span class="linenos">181</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-182"><a href="#LargestStraightAndOutcomeEvaluator.alignment-182"><span class="linenos">182</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-183"><a href="#LargestStraightAndOutcomeEvaluator.alignment-183"><span class="linenos">183</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-184"><a href="#LargestStraightAndOutcomeEvaluator.alignment-184"><span class="linenos">184</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-185"><a href="#LargestStraightAndOutcomeEvaluator.alignment-185"><span class="linenos">185</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-186"><a href="#LargestStraightAndOutcomeEvaluator.alignment-186"><span class="linenos">186</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-187"><a href="#LargestStraightAndOutcomeEvaluator.alignment-187"><span class="linenos">187</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-188"><a href="#LargestStraightAndOutcomeEvaluator.alignment-188"><span class="linenos">188</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-189"><a href="#LargestStraightAndOutcomeEvaluator.alignment-189"><span class="linenos">189</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-190"><a href="#LargestStraightAndOutcomeEvaluator.alignment-190"><span class="linenos">190</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-191"><a href="#LargestStraightAndOutcomeEvaluator.alignment-191"><span class="linenos">191</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-192"><a href="#LargestStraightAndOutcomeEvaluator.alignment-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.alignment-181"><a href="#LargestStraightAndOutcomeEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2755,32 +2744,32 @@ elements are preferentially assigned to the longer straight.</p>
 
     </div>
     <a class="headerlink" href="#AllStraightsEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.alignment-167"><a href="#AllStraightsEvaluator.alignment-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="AllStraightsEvaluator.alignment-168"><a href="#AllStraightsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.alignment-156"><a href="#AllStraightsEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator.alignment-157"><a href="#AllStraightsEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsEvaluator.alignment-158"><a href="#AllStraightsEvaluator.alignment-158"><span class="linenos">158</span></a>
+</span><span id="AllStraightsEvaluator.alignment-159"><a href="#AllStraightsEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="AllStraightsEvaluator.alignment-160"><a href="#AllStraightsEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="AllStraightsEvaluator.alignment-161"><a href="#AllStraightsEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="AllStraightsEvaluator.alignment-162"><a href="#AllStraightsEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
+</span><span id="AllStraightsEvaluator.alignment-163"><a href="#AllStraightsEvaluator.alignment-163"><span class="linenos">163</span></a>
+</span><span id="AllStraightsEvaluator.alignment-164"><a href="#AllStraightsEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="AllStraightsEvaluator.alignment-165"><a href="#AllStraightsEvaluator.alignment-165"><span class="linenos">165</span></a>
+</span><span id="AllStraightsEvaluator.alignment-166"><a href="#AllStraightsEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsEvaluator.alignment-167"><a href="#AllStraightsEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="AllStraightsEvaluator.alignment-168"><a href="#AllStraightsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
 </span><span id="AllStraightsEvaluator.alignment-169"><a href="#AllStraightsEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="AllStraightsEvaluator.alignment-170"><a href="#AllStraightsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="AllStraightsEvaluator.alignment-171"><a href="#AllStraightsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="AllStraightsEvaluator.alignment-172"><a href="#AllStraightsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="AllStraightsEvaluator.alignment-173"><a href="#AllStraightsEvaluator.alignment-173"><span class="linenos">173</span></a><span class="sd">        set of parameters.</span>
-</span><span id="AllStraightsEvaluator.alignment-174"><a href="#AllStraightsEvaluator.alignment-174"><span class="linenos">174</span></a>
-</span><span id="AllStraightsEvaluator.alignment-175"><a href="#AllStraightsEvaluator.alignment-175"><span class="linenos">175</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="AllStraightsEvaluator.alignment-176"><a href="#AllStraightsEvaluator.alignment-176"><span class="linenos">176</span></a>
-</span><span id="AllStraightsEvaluator.alignment-177"><a href="#AllStraightsEvaluator.alignment-177"><span class="linenos">177</span></a><span class="sd">        Returns:</span>
-</span><span id="AllStraightsEvaluator.alignment-178"><a href="#AllStraightsEvaluator.alignment-178"><span class="linenos">178</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="AllStraightsEvaluator.alignment-179"><a href="#AllStraightsEvaluator.alignment-179"><span class="linenos">179</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsEvaluator.alignment-170"><a href="#AllStraightsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsEvaluator.alignment-171"><a href="#AllStraightsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="AllStraightsEvaluator.alignment-172"><a href="#AllStraightsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.alignment-173"><a href="#AllStraightsEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator.alignment-174"><a href="#AllStraightsEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsEvaluator.alignment-175"><a href="#AllStraightsEvaluator.alignment-175"><span class="linenos">175</span></a>
+</span><span id="AllStraightsEvaluator.alignment-176"><a href="#AllStraightsEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.alignment-177"><a href="#AllStraightsEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsEvaluator.alignment-178"><a href="#AllStraightsEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsEvaluator.alignment-179"><a href="#AllStraightsEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
 </span><span id="AllStraightsEvaluator.alignment-180"><a href="#AllStraightsEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="AllStraightsEvaluator.alignment-181"><a href="#AllStraightsEvaluator.alignment-181"><span class="linenos">181</span></a><span class="sd">        Raises:</span>
-</span><span id="AllStraightsEvaluator.alignment-182"><a href="#AllStraightsEvaluator.alignment-182"><span class="linenos">182</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="AllStraightsEvaluator.alignment-183"><a href="#AllStraightsEvaluator.alignment-183"><span class="linenos">183</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllStraightsEvaluator.alignment-184"><a href="#AllStraightsEvaluator.alignment-184"><span class="linenos">184</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="AllStraightsEvaluator.alignment-185"><a href="#AllStraightsEvaluator.alignment-185"><span class="linenos">185</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllStraightsEvaluator.alignment-186"><a href="#AllStraightsEvaluator.alignment-186"><span class="linenos">186</span></a>
-</span><span id="AllStraightsEvaluator.alignment-187"><a href="#AllStraightsEvaluator.alignment-187"><span class="linenos">187</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="AllStraightsEvaluator.alignment-188"><a href="#AllStraightsEvaluator.alignment-188"><span class="linenos">188</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsEvaluator.alignment-189"><a href="#AllStraightsEvaluator.alignment-189"><span class="linenos">189</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="AllStraightsEvaluator.alignment-190"><a href="#AllStraightsEvaluator.alignment-190"><span class="linenos">190</span></a>            <span class="p">)</span>
-</span><span id="AllStraightsEvaluator.alignment-191"><a href="#AllStraightsEvaluator.alignment-191"><span class="linenos">191</span></a>
-</span><span id="AllStraightsEvaluator.alignment-192"><a href="#AllStraightsEvaluator.alignment-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="AllStraightsEvaluator.alignment-181"><a href="#AllStraightsEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -3008,32 +2997,32 @@ elements for each straight, e.g. cribbage.</li>
 
     </div>
     <a class="headerlink" href="#AllStraightsReduceCountsEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.alignment-167"><a href="#AllStraightsReduceCountsEvaluator.alignment-167"><span class="linenos">167</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-168"><a href="#AllStraightsReduceCountsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.alignment-156"><a href="#AllStraightsReduceCountsEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-157"><a href="#AllStraightsReduceCountsEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-158"><a href="#AllStraightsReduceCountsEvaluator.alignment-158"><span class="linenos">158</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-159"><a href="#AllStraightsReduceCountsEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-160"><a href="#AllStraightsReduceCountsEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-161"><a href="#AllStraightsReduceCountsEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-162"><a href="#AllStraightsReduceCountsEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-163"><a href="#AllStraightsReduceCountsEvaluator.alignment-163"><span class="linenos">163</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-164"><a href="#AllStraightsReduceCountsEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-165"><a href="#AllStraightsReduceCountsEvaluator.alignment-165"><span class="linenos">165</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-166"><a href="#AllStraightsReduceCountsEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-167"><a href="#AllStraightsReduceCountsEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-168"><a href="#AllStraightsReduceCountsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
 </span><span id="AllStraightsReduceCountsEvaluator.alignment-169"><a href="#AllStraightsReduceCountsEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-170"><a href="#AllStraightsReduceCountsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-171"><a href="#AllStraightsReduceCountsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-172"><a href="#AllStraightsReduceCountsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-173"><a href="#AllStraightsReduceCountsEvaluator.alignment-173"><span class="linenos">173</span></a><span class="sd">        set of parameters.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-174"><a href="#AllStraightsReduceCountsEvaluator.alignment-174"><span class="linenos">174</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-175"><a href="#AllStraightsReduceCountsEvaluator.alignment-175"><span class="linenos">175</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-176"><a href="#AllStraightsReduceCountsEvaluator.alignment-176"><span class="linenos">176</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-177"><a href="#AllStraightsReduceCountsEvaluator.alignment-177"><span class="linenos">177</span></a><span class="sd">        Returns:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-178"><a href="#AllStraightsReduceCountsEvaluator.alignment-178"><span class="linenos">178</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-179"><a href="#AllStraightsReduceCountsEvaluator.alignment-179"><span class="linenos">179</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-170"><a href="#AllStraightsReduceCountsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-171"><a href="#AllStraightsReduceCountsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-172"><a href="#AllStraightsReduceCountsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-173"><a href="#AllStraightsReduceCountsEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-174"><a href="#AllStraightsReduceCountsEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-175"><a href="#AllStraightsReduceCountsEvaluator.alignment-175"><span class="linenos">175</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-176"><a href="#AllStraightsReduceCountsEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-177"><a href="#AllStraightsReduceCountsEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-178"><a href="#AllStraightsReduceCountsEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-179"><a href="#AllStraightsReduceCountsEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
 </span><span id="AllStraightsReduceCountsEvaluator.alignment-180"><a href="#AllStraightsReduceCountsEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-181"><a href="#AllStraightsReduceCountsEvaluator.alignment-181"><span class="linenos">181</span></a><span class="sd">        Raises:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-182"><a href="#AllStraightsReduceCountsEvaluator.alignment-182"><span class="linenos">182</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-183"><a href="#AllStraightsReduceCountsEvaluator.alignment-183"><span class="linenos">183</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-184"><a href="#AllStraightsReduceCountsEvaluator.alignment-184"><span class="linenos">184</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-185"><a href="#AllStraightsReduceCountsEvaluator.alignment-185"><span class="linenos">185</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-186"><a href="#AllStraightsReduceCountsEvaluator.alignment-186"><span class="linenos">186</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-187"><a href="#AllStraightsReduceCountsEvaluator.alignment-187"><span class="linenos">187</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-188"><a href="#AllStraightsReduceCountsEvaluator.alignment-188"><span class="linenos">188</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-189"><a href="#AllStraightsReduceCountsEvaluator.alignment-189"><span class="linenos">189</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-190"><a href="#AllStraightsReduceCountsEvaluator.alignment-190"><span class="linenos">190</span></a>            <span class="p">)</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-191"><a href="#AllStraightsReduceCountsEvaluator.alignment-191"><span class="linenos">191</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-192"><a href="#AllStraightsReduceCountsEvaluator.alignment-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="AllStraightsReduceCountsEvaluator.alignment-181"><a href="#AllStraightsReduceCountsEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4029,17 +4018,11 @@ current outcome. If this is the first outcome being considered,
 <li><strong>outcome:</strong>  The current outcome.
 <code><a href="#ConstantEvaluator.next_state">next_state</a></code> will see all rolled outcomes in monotonic order;
 either ascending or descending depending on <code><a href="#ConstantEvaluator.order">order()</a></code>.
-If there are multiple generators, the set of outcomes is the
-union of the outcomes of the invididual generators. All outcomes
-with nonzero count will be seen. Outcomes with zero count
-may or may not be seen. If you need to enforce that certain
-outcomes are seen even if they have zero count, see
-<code><a href="#ConstantEvaluator.alignment">alignment()</a></code>.</li>
+If there are multiple generators, the set of outcomes is at 
+least the union of the outcomes of the invididual generators. 
+You can use <code><a href="#ConstantEvaluator.alignment">alignment()</a></code> to add additional outcomes.</li>
 <li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each generator output
-indicating how many of the current outcome were produced.
-All outcomes with nonzero count are guaranteed to be seen.
-To guarantee that outcomes are seen even if they have zero
-count, override <code><a href="#ConstantEvaluator.alignment">alignment()</a></code>.</li>
+indicating how many of the current outcome were produced.</li>
 </ul>
 
 <h6 id="returns">Returns:</h6>
