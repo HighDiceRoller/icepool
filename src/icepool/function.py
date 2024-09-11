@@ -218,16 +218,55 @@ def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
     return from_cumulative(outcomes, quantities_le)
 
 
-def min_outcome(*dice: 'T | icepool.Die[T]') -> T:
-    """The minimum outcome among the dice. """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    return min(die.outcomes()[0] for die in converted_dice)
+def _iter_outcomes(
+        *args: 'Iterable[T | icepool.Population[T]] | T') -> Iterator[T]:
+    if len(args) == 1:
+        iter_args = cast('Iterable[T | icepool.Population[T]]', args[0])
+    else:
+        iter_args = cast('Iterable[T | icepool.Population[T]]', args)
+    for arg in iter_args:
+        if isinstance(arg, icepool.Population):
+            yield from arg
+        else:
+            yield arg
 
 
-def max_outcome(*dice: 'T | icepool.Die[T]') -> T:
-    """The maximum outcome among the dice. """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    return max(die.outcomes()[-1] for die in converted_dice)
+@overload
+def min_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
+    ...
+
+
+@overload
+def min_outcome(*args: 'T | icepool.Population[T]') -> T:
+    ...
+
+
+def min_outcome(*args: 'Iterable[T | icepool.Population[T]] | T') -> T:
+    """The minimum possible outcome among the populations.
+    
+    Args:
+        Populations or single outcomes. Alternatively, a single iterable argument of such.
+    """
+    return min(_iter_outcomes(*args))
+
+
+@overload
+def max_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
+    ...
+
+
+@overload
+def max_outcome(*args: 'T | icepool.Population[T]') -> T:
+    ...
+
+
+def max_outcome(*args: 'Iterable[T | icepool.Population[T]] | T') -> T:
+    """The maximum possible outcome among the populations.
+    
+    Args:
+        Populations or single outcomes. Alternatively, a single iterable argument of such.
+    """
+    return max(_iter_outcomes(*args))
 
 
 def range_union(*args: Iterable[int]) -> Sequence[int]:

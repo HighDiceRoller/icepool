@@ -80,7 +80,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
     def alignment(self, outcomes) -> Collection[T_contra]:
         return icepool.sorted_union(*(evaluator.alignment(outcomes)
-                              for evaluator in self._inners))
+                                      for evaluator in self._inners))
 
     @cached_property
     def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
