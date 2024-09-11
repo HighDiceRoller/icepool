@@ -684,7 +684,7 @@ def map_and_time(
 
 def map_to_pool(
     repl:
-    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
+    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]',
     /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
