@@ -4,8 +4,7 @@ import pytest
 from icepool import d, d6, Die, coin
 from fractions import Fraction
 
-expected_d6x1 = icepool.Die(range(1, 13),
-                            times=[6, 6, 6, 6, 6, 0, 1, 1, 1, 1, 1, 1]).trim()
+expected_d6x1 = icepool.Die([1, 2, 3, 4, 5] * 6 + [7, 8, 9, 10, 11, 12])
 
 
 def test_map_dict():

@@ -246,38 +246,6 @@ def sorted_union(*args: Iterable[T]) -> tuple[T, ...]:
     return tuple(sorted(set.union(*(set(arg) for arg in args))))
 
 
-def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
-    """DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.
-
-    Args:
-        *dice: Any number of dice or single outcomes convertible to dice.
-
-    Returns:
-        A tuple of aligned dice.
-    """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    outcomes = set(
-        itertools.chain.from_iterable(die.outcomes()
-                                      for die in converted_dice))
-    return tuple(die.set_outcomes(outcomes) for die in converted_dice)
-
-
-def align_range(
-        *dice: 'int | icepool.Die[int]') -> tuple['icepool.Die[int]', ...]:
-    """DEPRECATED: Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
-
-    Args:
-        *dice: Any number of dice or single outcomes convertible to dice.
-
-    Returns:
-        A tuple of aligned dice.
-    """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    outcomes = range(icepool.min_outcome(*converted_dice),
-                     icepool.max_outcome(*converted_dice) + 1)
-    return tuple(die.set_outcomes(outcomes) for die in converted_dice)
-
-
 def commonize_denominator(
         *dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """Scale the quantities of the dice so that all of them have the same denominator.

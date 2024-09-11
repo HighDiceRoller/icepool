@@ -483,42 +483,6 @@ class Die(Population[T_co]):
                 data[outcome] += quantity
         return icepool.Die(data)
 
-    def set_range(self: 'Die[int]',
-                  min_outcome: int | None = None,
-                  max_outcome: int | None = None) -> 'Die[int]':
-        """DEPRECATED: Sets the outcomes of this `Die` to the given `int` range (inclusive).
-
-        This may remove outcomes (if they are not within the range)
-        and/or add zero-quantity outcomes (if they are in range but not present
-        in this `Die`).
-
-        Args:
-            min_outcome: The min outcome of the result.
-                If omitted, the min outcome of this `Die` will be used.
-            max_outcome: The max outcome of the result.
-                If omitted, the max outcome of this `Die` will be used.
-        """
-        if min_outcome is None:
-            min_outcome = self.min_outcome()
-        if max_outcome is None:
-            max_outcome = self.max_outcome()
-
-        return self.set_outcomes(range(min_outcome, max_outcome + 1))
-
-    def set_outcomes(self, outcomes: Iterable[T_co]) -> 'Die[T_co]':
-        """DEPRECATED: Sets the set of outcomes to the argument.
-
-        This may remove outcomes (if they are not present in the argument)
-        and/or add zero-quantity outcomes (if they are not present in this `Die`).
-        """
-        data = {x: self.quantity(x) for x in outcomes}
-        return icepool.Die(data)
-
-    def trim(self) -> 'Die[T_co]':
-        """DEPRECATED: Removes all zero-quantity outcomes. """
-        data = {k: v for k, v in self.items() if v > 0}
-        return icepool.Die(data)
-
     @cached_property
     def _popped_min(self) -> tuple['Die[T_co]', int]:
         die = Die._new_raw(self._data.remove_min())
