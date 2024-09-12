@@ -153,6 +153,6 @@ __all__ = [
     'bounding_range', 'sorted_union', 'commonize_denominator', 'reduce',
     'accumulate', 'map', 'map_function', 'map_and_time', 'map_to_pool',
     'Reroll', 'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',
-    'Alignment', 'MultisetExpression', 'MultisetEvaluator', 'Order', 'Deck',
-    'Deal', 'MultiDeal', 'multiset_function', 'function', 'typing', 'evaluator'
+    'MultisetExpression', 'MultisetEvaluator', 'Order', 'Deck', 'Deal',
+    'MultiDeal', 'multiset_function', 'function', 'typing', 'evaluator'
 ]
