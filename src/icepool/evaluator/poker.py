@@ -2,15 +2,13 @@
 
 __docformat__ = 'google'
 
-from typing_extensions import Final
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.population.die import Die
 
 import operator
 
-from icepool.typing import Outcome, Order, RerollType
-from typing import Any, Callable, Collection, Hashable, Literal, Sequence
+from icepool.typing import Order
+from typing import Any, Callable, Collection, Final, Literal, Sequence
 
 
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
