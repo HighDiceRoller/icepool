@@ -98,7 +98,7 @@ def test_one_hot():
         def final_outcome(self, final_state):
             return icepool.Vector(final_state)
 
-        def alignment(self, *_):
+        def extra_outcomes(self, *_):
             return [1, 2, 3, 4, 5, 6]
 
     result = 3 @ icepool.one_hot(6)

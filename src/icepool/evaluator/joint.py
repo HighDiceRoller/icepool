@@ -78,8 +78,8 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         """
         return Order.merge(*(inner.order() for inner in self._inners))
 
-    def alignment(self, outcomes) -> Collection[T_contra]:
-        return icepool.sorted_union(*(evaluator.alignment(outcomes)
+    def extra_outcomes(self, outcomes) -> Collection[T_contra]:
+        return icepool.sorted_union(*(evaluator.extra_outcomes(outcomes)
                                       for evaluator in self._inners))
 
     @cached_property

@@ -87,7 +87,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                 either ascending or descending depending on `order()`.
                 If there are multiple generators, the set of outcomes is at 
                 least the union of the outcomes of the invididual generators. 
-                You can use `alignment()` to add additional outcomes.
+                You can use `extra_outcomes()` to add extra outcomes.
             *counts: One value (usually an `int`) for each generator output
                 indicating how many of the current outcome were produced.
 
@@ -135,16 +135,17 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
         return Order.Ascending
 
-    def alignment(self, outcomes: Sequence[T_contra]) -> Collection[T_contra]:
-        """Optional method to specify additional outcomes that should be seen by `next_state()`.
+    def extra_outcomes(self,
+                       outcomes: Sequence[T_contra]) -> Collection[T_contra]:
+        """Optional method to specify extra outcomes that should be seen by `next_state()`.
 
         These will be seen by `next_state` even if they do not appear in the
         generator(s). The default implementation returns `()`, or no additional
         outcomes.
 
         If you want `next_state` to see consecutive `int` outcomes, you can set
-        `alignment = icepool.MultisetEvaluator.range_alignment`.
-        See `range_alignment()` below.
+        `extra_outcomes = icepool.MultisetEvaluator.bounding_range`.
+        See `bounding_range()` below.
 
         Args:
             outcomes: The outcomes that could be produced by the generators, in
@@ -152,15 +153,15 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
         return ()
 
-    def range_alignment(self, outcomes: Sequence[int]) -> Collection[int]:
-        """Example implementation of `alignment()` that produces consecutive `int` outcomes.
+    def bounding_range(self, outcomes: Sequence[int]) -> Collection[int]:
+        """Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.
 
         There is no expectation that a subclass be able to handle
         an arbitrary number of generators. Thus, you are free to rename any of
         the parameters in a subclass, or to replace `*generators` with a fixed
         set of parameters.
 
-        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.
+        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.
 
         Returns:
             All `int`s from the min outcome to the max outcome among the generators,
@@ -174,7 +175,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         if any(not isinstance(x, int) for x in outcomes):
             raise TypeError(
-                "range_alignment cannot be used with outcomes of type other than 'int'."
+                "bounding_range cannot be used with outcomes of type other than 'int'."
             )
 
         return range(outcomes[0], outcomes[-1] + 1)
@@ -202,9 +203,9 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     ) -> 'MutableMapping[tuple[Order, Alignment, tuple[MultisetGenerator, ...], Hashable], Mapping[Any, int]]':
         """Cached results.
         
-        The key is `(order, alignment, generators, state)`.
+        The key is `(order, extra_outcomes, generators, state)`.
         The value is another mapping `final_state: quantity` representing the
-        state distribution produced by `order, alignment, generators` when
+        state distribution produced by `order, extra_outcomes, generators` when
         starting at state `state`.
         """
         return {}
@@ -280,14 +281,14 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         outcomes = icepool.sorted_union(*(generator.outcomes()
                                           for generator in generators))
-        alignment = Alignment(self.alignment(outcomes))
+        extra_outcomes = Alignment(self.extra_outcomes(outcomes))
 
         dist: MutableMapping[Any, int] = defaultdict(int)
         iterators = MultisetEvaluator._initialize_generators(generators)
         for p in itertools.product(*iterators):
             sub_generators, sub_weights = zip(*p)
             prod_weight = math.prod(sub_weights)
-            sub_result = algorithm(order, alignment, sub_generators)
+            sub_result = algorithm(order, extra_outcomes, sub_generators)
             for sub_state, sub_weight in sub_result.items():
                 dist[sub_state] += sub_weight * prod_weight
 
@@ -348,7 +349,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             return self._eval_internal_forward, eval_order
 
     def _eval_internal(
-        self, order: Order, alignment: 'Alignment[T_contra]',
+        self, order: Order, extra_outcomes: 'Alignment[T_contra]',
         generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order.
@@ -357,7 +358,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         Arguments:
             order: The order in which to send outcomes to `next_state()`.
-            alignment: As `alignment()`. Elements will be popped off this
+            extra_outcomes: As `extra_outcomes()`. Elements will be popped off this
                 during recursion.
             generators: One or more `MultisetGenerators`s to evaluate. Elements
                 will be popped off this during recursion.
@@ -366,23 +367,23 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (order, alignment, generators, None)
+        cache_key = (order, extra_outcomes, generators, None)
         if cache_key in self._cache:
             return self._cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
         if all(not generator.outcomes()
-               for generator in generators) and not alignment.outcomes():
+               for generator in generators) and not extra_outcomes.outcomes():
             result = {None: 1}
         else:
-            outcome, prev_alignment, iterators = MultisetEvaluator._pop_generators(
-                Order(-order), alignment, generators)
+            outcome, prev_extra_outcomes, iterators = MultisetEvaluator._pop_generators(
+                Order(-order), extra_outcomes, generators)
             for p in itertools.product(*iterators):
                 prev_generators, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
-                prev = self._eval_internal(order, prev_alignment,
+                prev = self._eval_internal(order, prev_extra_outcomes,
                                            prev_generators)
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, outcome, *counts)
@@ -395,7 +396,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     def _eval_internal_forward(
             self,
             order: Order,
-            alignment: 'Alignment[T_contra]',
+            extra_outcomes: 'Alignment[T_contra]',
             generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]',
             state: Hashable = None) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order.
@@ -404,7 +405,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         Arguments:
             order: The order in which to send outcomes to `next_state()`.
-            alignment: As `alignment()`. Elements will be popped off this
+            extra_outcomes: As `extra_outcomes()`. Elements will be popped off this
                 during recursion.
             generators: One or more `MultisetGenerators`s to evaluate. Elements
                 will be popped off this during recursion.
@@ -413,18 +414,18 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (order, alignment, generators, state)
+        cache_key = (order, extra_outcomes, generators, state)
         if cache_key in self._cache:
             return self._cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
         if all(not generator.outcomes()
-               for generator in generators) and not alignment.outcomes():
+               for generator in generators) and not extra_outcomes.outcomes():
             result = {state: 1}
         else:
-            outcome, next_alignment, iterators = MultisetEvaluator._pop_generators(
-                order, alignment, generators)
+            outcome, next_extra_outcomes, iterators = MultisetEvaluator._pop_generators(
+                order, extra_outcomes, generators)
             for p in itertools.product(*iterators):
                 next_generators, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
@@ -432,7 +433,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
                 next_state = self.next_state(state, outcome, *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self._eval_internal_forward(
-                        order, next_alignment, next_generators, next_state)
+                        order, next_extra_outcomes, next_generators,
+                        next_state)
                     for final_state, weight in final_dist.items():
                         result[final_state] += weight * prod_weight
 
@@ -447,7 +449,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     @staticmethod
     def _pop_generators(
-        order: Order, alignment: 'Alignment[T_contra]',
+        order: Order, extra_outcomes: 'Alignment[T_contra]',
         generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
     ) -> 'tuple[T_contra, Alignment[T_contra], tuple[icepool.NextMultisetGenerator, ...]]':
         """Pops a single outcome from the generators.
@@ -455,32 +457,34 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         Args:
             order: The order in which to pop. Descending order pops from the top
             and ascending from the bottom.
-            alignment: Any extra alignment to use.
+            extra_outcomes: Any extra outcomes to use.
             generators: The generators to pop from.
 
         Returns:
             * The popped outcome.
-            * The remaining alignment.
+            * The remaining extra outcomes.
             * A tuple of iterators over the resulting generators, counts, and weights.
         """
-        alignment_and_generators = (alignment, ) + generators
+        extra_outcomes_and_generators = (extra_outcomes, ) + generators
         if order < 0:
             outcome = max(generator.max_outcome()
-                          for generator in alignment_and_generators
+                          for generator in extra_outcomes_and_generators
                           if generator.outcomes())
 
-            next_alignment, _, _ = next(alignment._generate_max(outcome))
+            next_extra_outcomes, _, _ = next(
+                extra_outcomes._generate_max(outcome))
 
-            return outcome, next_alignment, tuple(
+            return outcome, next_extra_outcomes, tuple(
                 generator._generate_max(outcome) for generator in generators)
         else:
             outcome = min(generator.min_outcome()
-                          for generator in alignment_and_generators
+                          for generator in extra_outcomes_and_generators
                           if generator.outcomes())
 
-            next_alignment, _, _ = next(alignment._generate_min(outcome))
+            next_extra_outcomes, _, _ = next(
+                extra_outcomes._generate_min(outcome))
 
-            return outcome, next_alignment, tuple(
+            return outcome, next_extra_outcomes, tuple(
                 generator._generate_min(outcome) for generator in generators)
 
     def sample(

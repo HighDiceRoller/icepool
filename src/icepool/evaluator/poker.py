@@ -37,7 +37,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
         """Allows any order."""
         return Order.Any
 
-    def alignment(self, outcomes: Sequence) -> Collection:
+    def extra_outcomes(self, outcomes: Sequence) -> Collection:
         """Always sees zero counts."""
         return outcomes
 
@@ -77,7 +77,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         """Allows any order."""
         return Order.Any
 
-    def alignment(self, outcomes: Sequence) -> Collection:
+    def extra_outcomes(self, outcomes: Sequence) -> Collection:
         """Always sees zero counts."""
         return outcomes
 
@@ -160,7 +160,7 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
             return 0
         return final_state[0]
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.bounding_range
 
 
 class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
@@ -184,7 +184,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         """Ascending order."""
         return Order.Ascending
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.bounding_range
 
 
 class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
@@ -218,7 +218,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         """Ascending order."""
         return Order.Ascending
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.bounding_range
 
 
 class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
@@ -271,4 +271,4 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
                 sorted(ended_runs + (current_run, ), reverse=True))
         return ended_runs
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.bounding_range
