@@ -1,7 +1,7 @@
 ## v1.6.0
 
 * Breaking change: outcomes with zero quantities are removed when constructing `Die` and `Deck`.
-  * Zero-quantity functions and methods are removed: `align`, `align_range`, `Population.has_zero_quantities`, `Die.trim`, `Die.set_range`, `Die.set_outcomes`.
+  * Zero-quantity functions and methods are removed: `align()`, `align_range()`, `Population.has_zero_quantities()`, `Die.trim()`, `Die.set_range()`, `Die.set_outcomes()`.
   * You can use `bounding_range()` or `sorted_union()` to get an appropriate superset of sets of outcomes.
 * Breaking change: `MultisetEvaluator.alignment()` is renamed to `MultisetEvaluator.extra_outcomes()`.
   * `MultisetEvaluator.range_alignment()` is renamed to `MultisetEvaluator.bounding_range()`.
@@ -12,7 +12,7 @@
 * Move `zero()` and `zero_outcome()` from `Die` to `Population`.
 * `@` operator now sums left-to-right.
 * Remove old `compair` evaluation.
-* `min_outcome` and `max_outcome` free functions can now be called using a single iterable argument.
+* `min_outcome()` and `max_outcome()` free functions can now be called using a single iterable argument.
 * Forward algorithm now has a persistent cache.
 * Add skip optimization for single deals with keep tuples.
 * Pools now only skip dice, not outcomes. This is a bit slower in some cases but provides more consistent iteration order.
