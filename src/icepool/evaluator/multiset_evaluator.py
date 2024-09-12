@@ -278,7 +278,6 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         algorithm, order = self._select_algorithm(*generators)
 
-        # We use a separate class to guarantee all outcomes are visited.
         outcomes = icepool.sorted_union(*(generator.outcomes()
                                           for generator in generators))
         alignment = Alignment(self.alignment(outcomes))
