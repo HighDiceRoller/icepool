@@ -274,7 +274,7 @@ def max_outcome(*args: 'Iterable[T | icepool.Population[T]] | T') -> T:
     return max(_iter_outcomes(*args))
 
 
-def bounding_range(*args: Iterable[int]) -> Sequence[int]:
+def consecutive(*args: Iterable[int]) -> Sequence[int]:
     """A minimal sequence of consecutive ints covering the argument sets."""
     start = min((x for x in itertools.chain(*args)), default=None)
     if start is None:

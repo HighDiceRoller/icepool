@@ -18,7 +18,7 @@ class OutcomeRangeEvaluator(MultisetEvaluator):
     def next_state(self, state, outcome, *pools):
         return (state or 0) + 1
 
-    extra_outcomes = MultisetEvaluator.bounding_range
+    extra_outcomes = MultisetEvaluator.consecutive
 
 
 outcome_range = OutcomeRangeEvaluator()

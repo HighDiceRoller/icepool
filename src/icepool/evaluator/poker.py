@@ -171,7 +171,7 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
             return 0
         return final_state[0]
 
-    extra_outcomes = MultisetEvaluator.bounding_range
+    extra_outcomes = MultisetEvaluator.consecutive
 
 
 largest_straight_evaluator: Final = LargestStraightEvaluator()
@@ -199,7 +199,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         """Ascending order."""
         return Order.Ascending
 
-    extra_outcomes = MultisetEvaluator.bounding_range
+    extra_outcomes = MultisetEvaluator.consecutive
 
 
 largest_straight_and_outcome_evaluator: Final = LargestStraightAndOutcomeEvaluator(
@@ -238,7 +238,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         """Ascending order."""
         return Order.Ascending
 
-    extra_outcomes = MultisetEvaluator.bounding_range
+    extra_outcomes = MultisetEvaluator.consecutive
 
 
 all_straights_evaluator: Final = AllStraightsEvaluator()
@@ -295,4 +295,4 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
                 sorted(ended_runs + (current_run, ), reverse=True))
         return ended_runs
 
-    extra_outcomes = MultisetEvaluator.bounding_range
+    extra_outcomes = MultisetEvaluator.consecutive

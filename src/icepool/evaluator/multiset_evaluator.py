@@ -144,8 +144,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         outcomes.
 
         If you want `next_state` to see consecutive `int` outcomes, you can set
-        `extra_outcomes = icepool.MultisetEvaluator.bounding_range`.
-        See `bounding_range()` below.
+        `extra_outcomes = icepool.MultisetEvaluator.consecutive`.
+        See `consecutive()` below.
 
         Args:
             outcomes: The outcomes that could be produced by the generators, in
@@ -153,7 +153,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
         return ()
 
-    def bounding_range(self, outcomes: Sequence[int]) -> Collection[int]:
+    def consecutive(self, outcomes: Sequence[int]) -> Collection[int]:
         """Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.
 
         There is no expectation that a subclass be able to handle
@@ -161,7 +161,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         the parameters in a subclass, or to replace `*generators` with a fixed
         set of parameters.
 
-        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.
+        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.
 
         Returns:
             All `int`s from the min outcome to the max outcome among the generators,
@@ -175,7 +175,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
         if any(not isinstance(x, int) for x in outcomes):
             raise TypeError(
-                "bounding_range cannot be used with outcomes of type other than 'int'."
+                "consecutive cannot be used with outcomes of type other than 'int'."
             )
 
         return range(outcomes[0], outcomes[-1] + 1)

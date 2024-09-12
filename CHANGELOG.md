@@ -1,10 +1,10 @@
 ## v1.6.0
 
 * Breaking change: outcomes with zero quantities are removed when constructing `Die` and `Deck`.
-  * Zero-quantity functions and methods are removed: `align()`, `align_range()`, `Population.has_zero_quantities()`, `Die.trim()`, `Die.set_range()`, `Die.set_outcomes()`.
-  * You can use `bounding_range()` or `sorted_union()` to get an appropriate superset of sets of outcomes.
+  * Functions and methods relating to zero-quantities are removed: `align()`, `align_range()`, `Population.has_zero_quantities()`, `Die.trim()`, `Die.set_range()`, `Die.set_outcomes()`.
+  * You can use `consecutive()` or `sorted_union()` to get an appropriate superset of sets of outcomes.
 * Breaking change: `MultisetEvaluator.alignment()` is renamed to `MultisetEvaluator.extra_outcomes()`.
-  * `MultisetEvaluator.range_alignment()` is renamed to `MultisetEvaluator.bounding_range()`.
+  * `MultisetEvaluator.range_alignment()` is renamed to `MultisetEvaluator.consecutive()`.
   * The `Alignment` class is no longer public.
 * Breaking change: `Deck.multiply_counts()` and `Population.scale_quantities()` are replaced/renamed to `Population.multiply_quantities()` etc.
 * Add `Deck.sequence()` and `Die.sequence()` method.
