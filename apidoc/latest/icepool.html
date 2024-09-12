@@ -12872,7 +12872,7 @@ secure.</p>
 </span><span id="MultisetExpression-940"><a href="#MultisetExpression-940"><span class="linenos"> 940</span></a><span class="sd">        If no outcomes have positive count, the min outcome will be returned with 0 count.</span>
 </span><span id="MultisetExpression-941"><a href="#MultisetExpression-941"><span class="linenos"> 941</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-942"><a href="#MultisetExpression-942"><span class="linenos"> 942</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression-943"><a href="#MultisetExpression-943"><span class="linenos"> 943</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">HighestOutcomeAndCountEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression-943"><a href="#MultisetExpression-943"><span class="linenos"> 943</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">highest_outcome_and_count_evaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-944"><a href="#MultisetExpression-944"><span class="linenos"> 944</span></a>
 </span><span id="MultisetExpression-945"><a href="#MultisetExpression-945"><span class="linenos"> 945</span></a>    <span class="k">def</span> <span class="nf">all_counts</span><span class="p">(</span>
 </span><span id="MultisetExpression-946"><a href="#MultisetExpression-946"><span class="linenos"> 946</span></a>        <span class="bp">self</span><span class="p">,</span>
@@ -12887,8 +12887,8 @@ secure.</p>
 </span><span id="MultisetExpression-955"><a href="#MultisetExpression-955"><span class="linenos"> 955</span></a><span class="sd">                For example, `filter=2` will only produce pairs and better.</span>
 </span><span id="MultisetExpression-956"><a href="#MultisetExpression-956"><span class="linenos"> 956</span></a><span class="sd">                If `None`, no filtering will be done.</span>
 </span><span id="MultisetExpression-957"><a href="#MultisetExpression-957"><span class="linenos"> 957</span></a>
-</span><span id="MultisetExpression-958"><a href="#MultisetExpression-958"><span class="linenos"> 958</span></a><span class="sd">                Why not just place `keep_countss_ge()` before this?</span>
-</span><span id="MultisetExpression-959"><a href="#MultisetExpression-959"><span class="linenos"> 959</span></a><span class="sd">                `keep_countss_ge()` operates by setting counts to zero, so you</span>
+</span><span id="MultisetExpression-958"><a href="#MultisetExpression-958"><span class="linenos"> 958</span></a><span class="sd">                Why not just place `keep_counts_ge()` before this?</span>
+</span><span id="MultisetExpression-959"><a href="#MultisetExpression-959"><span class="linenos"> 959</span></a><span class="sd">                `keep_counts_ge()` operates by setting counts to zero, so you</span>
 </span><span id="MultisetExpression-960"><a href="#MultisetExpression-960"><span class="linenos"> 960</span></a><span class="sd">                would still need an argument to specify whether you want to</span>
 </span><span id="MultisetExpression-961"><a href="#MultisetExpression-961"><span class="linenos"> 961</span></a><span class="sd">                output zero counts. So we might as well use the argument to do</span>
 </span><span id="MultisetExpression-962"><a href="#MultisetExpression-962"><span class="linenos"> 962</span></a><span class="sd">                both.</span>
@@ -12901,14 +12901,14 @@ secure.</p>
 </span><span id="MultisetExpression-969"><a href="#MultisetExpression-969"><span class="linenos"> 969</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression-970"><a href="#MultisetExpression-970"><span class="linenos"> 970</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: The size of the largest matching set among the elements.&quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-971"><a href="#MultisetExpression-971"><span class="linenos"> 971</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression-972"><a href="#MultisetExpression-972"><span class="linenos"> 972</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestCountEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression-972"><a href="#MultisetExpression-972"><span class="linenos"> 972</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_count_evaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-973"><a href="#MultisetExpression-973"><span class="linenos"> 973</span></a>
 </span><span id="MultisetExpression-974"><a href="#MultisetExpression-974"><span class="linenos"> 974</span></a>    <span class="k">def</span> <span class="nf">largest_count_and_outcome</span><span class="p">(</span>
 </span><span id="MultisetExpression-975"><a href="#MultisetExpression-975"><span class="linenos"> 975</span></a>        <span class="bp">self</span>
 </span><span id="MultisetExpression-976"><a href="#MultisetExpression-976"><span class="linenos"> 976</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression-977"><a href="#MultisetExpression-977"><span class="linenos"> 977</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: The largest matching set among the elements and the corresponding outcome.&quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-978"><a href="#MultisetExpression-978"><span class="linenos"> 978</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression-979"><a href="#MultisetExpression-979"><span class="linenos"> 979</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestCountAndOutcomeEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression-979"><a href="#MultisetExpression-979"><span class="linenos"> 979</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_count_and_outcome_evaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-980"><a href="#MultisetExpression-980"><span class="linenos"> 980</span></a>
 </span><span id="MultisetExpression-981"><a href="#MultisetExpression-981"><span class="linenos"> 981</span></a>    <span class="k">def</span> <span class="fm">__rfloordiv__</span><span class="p">(</span>
 </span><span id="MultisetExpression-982"><a href="#MultisetExpression-982"><span class="linenos"> 982</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span>
@@ -12950,7 +12950,7 @@ secure.</p>
 </span><span id="MultisetExpression-1018"><a href="#MultisetExpression-1018"><span class="linenos">1018</span></a><span class="sd">        Outcomes must be `int`s.</span>
 </span><span id="MultisetExpression-1019"><a href="#MultisetExpression-1019"><span class="linenos">1019</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-1020"><a href="#MultisetExpression-1020"><span class="linenos">1020</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression-1021"><a href="#MultisetExpression-1021"><span class="linenos">1021</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestStraightEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression-1021"><a href="#MultisetExpression-1021"><span class="linenos">1021</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_straight_evaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-1022"><a href="#MultisetExpression-1022"><span class="linenos">1022</span></a>
 </span><span id="MultisetExpression-1023"><a href="#MultisetExpression-1023"><span class="linenos">1023</span></a>    <span class="k">def</span> <span class="nf">largest_straight_and_outcome</span><span class="p">(</span>
 </span><span id="MultisetExpression-1024"><a href="#MultisetExpression-1024"><span class="linenos">1024</span></a>        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;MultisetExpression[int]&#39;</span>
@@ -12960,7 +12960,7 @@ secure.</p>
 </span><span id="MultisetExpression-1028"><a href="#MultisetExpression-1028"><span class="linenos">1028</span></a><span class="sd">        Outcomes must be `int`s.</span>
 </span><span id="MultisetExpression-1029"><a href="#MultisetExpression-1029"><span class="linenos">1029</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-1030"><a href="#MultisetExpression-1030"><span class="linenos">1030</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression-1031"><a href="#MultisetExpression-1031"><span class="linenos">1031</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestStraightAndOutcomeEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression-1031"><a href="#MultisetExpression-1031"><span class="linenos">1031</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_straight_and_outcome_evaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-1032"><a href="#MultisetExpression-1032"><span class="linenos">1032</span></a>
 </span><span id="MultisetExpression-1033"><a href="#MultisetExpression-1033"><span class="linenos">1033</span></a>    <span class="k">def</span> <span class="nf">all_straights</span><span class="p">(</span>
 </span><span id="MultisetExpression-1034"><a href="#MultisetExpression-1034"><span class="linenos">1034</span></a>        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;MultisetExpression[int]&#39;</span>
@@ -12974,7 +12974,7 @@ secure.</p>
 </span><span id="MultisetExpression-1042"><a href="#MultisetExpression-1042"><span class="linenos">1042</span></a><span class="sd">        elements are preferentially assigned to the longer straight.</span>
 </span><span id="MultisetExpression-1043"><a href="#MultisetExpression-1043"><span class="linenos">1043</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-1044"><a href="#MultisetExpression-1044"><span class="linenos">1044</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression-1045"><a href="#MultisetExpression-1045"><span class="linenos">1045</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">AllStraightsEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression-1045"><a href="#MultisetExpression-1045"><span class="linenos">1045</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">all_straights_evaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-1046"><a href="#MultisetExpression-1046"><span class="linenos">1046</span></a>
 </span><span id="MultisetExpression-1047"><a href="#MultisetExpression-1047"><span class="linenos">1047</span></a>    <span class="k">def</span> <span class="nf">all_straights_reduce_counts</span><span class="p">(</span>
 </span><span id="MultisetExpression-1048"><a href="#MultisetExpression-1048"><span class="linenos">1048</span></a>        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;MultisetExpression[int]&#39;</span><span class="p">,</span>
@@ -14759,7 +14759,7 @@ performed first. Examples:</p>
 </span><span id="MultisetExpression.highest_outcome_and_count-940"><a href="#MultisetExpression.highest_outcome_and_count-940"><span class="linenos">940</span></a><span class="sd">        If no outcomes have positive count, the min outcome will be returned with 0 count.</span>
 </span><span id="MultisetExpression.highest_outcome_and_count-941"><a href="#MultisetExpression.highest_outcome_and_count-941"><span class="linenos">941</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression.highest_outcome_and_count-942"><a href="#MultisetExpression.highest_outcome_and_count-942"><span class="linenos">942</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression.highest_outcome_and_count-943"><a href="#MultisetExpression.highest_outcome_and_count-943"><span class="linenos">943</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">HighestOutcomeAndCountEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression.highest_outcome_and_count-943"><a href="#MultisetExpression.highest_outcome_and_count-943"><span class="linenos">943</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">highest_outcome_and_count_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -14794,8 +14794,8 @@ performed first. Examples:</p>
 </span><span id="MultisetExpression.all_counts-955"><a href="#MultisetExpression.all_counts-955"><span class="linenos">955</span></a><span class="sd">                For example, `filter=2` will only produce pairs and better.</span>
 </span><span id="MultisetExpression.all_counts-956"><a href="#MultisetExpression.all_counts-956"><span class="linenos">956</span></a><span class="sd">                If `None`, no filtering will be done.</span>
 </span><span id="MultisetExpression.all_counts-957"><a href="#MultisetExpression.all_counts-957"><span class="linenos">957</span></a>
-</span><span id="MultisetExpression.all_counts-958"><a href="#MultisetExpression.all_counts-958"><span class="linenos">958</span></a><span class="sd">                Why not just place `keep_countss_ge()` before this?</span>
-</span><span id="MultisetExpression.all_counts-959"><a href="#MultisetExpression.all_counts-959"><span class="linenos">959</span></a><span class="sd">                `keep_countss_ge()` operates by setting counts to zero, so you</span>
+</span><span id="MultisetExpression.all_counts-958"><a href="#MultisetExpression.all_counts-958"><span class="linenos">958</span></a><span class="sd">                Why not just place `keep_counts_ge()` before this?</span>
+</span><span id="MultisetExpression.all_counts-959"><a href="#MultisetExpression.all_counts-959"><span class="linenos">959</span></a><span class="sd">                `keep_counts_ge()` operates by setting counts to zero, so you</span>
 </span><span id="MultisetExpression.all_counts-960"><a href="#MultisetExpression.all_counts-960"><span class="linenos">960</span></a><span class="sd">                would still need an argument to specify whether you want to</span>
 </span><span id="MultisetExpression.all_counts-961"><a href="#MultisetExpression.all_counts-961"><span class="linenos">961</span></a><span class="sd">                output zero counts. So we might as well use the argument to do</span>
 </span><span id="MultisetExpression.all_counts-962"><a href="#MultisetExpression.all_counts-962"><span class="linenos">962</span></a><span class="sd">                both.</span>
@@ -14816,8 +14816,8 @@ performed first. Examples:</p>
 For example, <code>filter=2</code> will only produce pairs and better.
 If <code>None</code>, no filtering will be done.</p>
 
-<p>Why not just place <code>keep_countss_ge()</code> before this?
-<code>keep_countss_ge()</code> operates by setting counts to zero, so you
+<p>Why not just place <code>keep_counts_ge()</code> before this?
+<code>keep_counts_ge()</code> operates by setting counts to zero, so you
 would still need an argument to specify whether you want to
 output zero counts. So we might as well use the argument to do
 both.</p></li>
@@ -14842,7 +14842,7 @@ both.</p></li>
 </span><span id="MultisetExpression.largest_count-969"><a href="#MultisetExpression.largest_count-969"><span class="linenos">969</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression.largest_count-970"><a href="#MultisetExpression.largest_count-970"><span class="linenos">970</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: The size of the largest matching set among the elements.&quot;&quot;&quot;</span>
 </span><span id="MultisetExpression.largest_count-971"><a href="#MultisetExpression.largest_count-971"><span class="linenos">971</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression.largest_count-972"><a href="#MultisetExpression.largest_count-972"><span class="linenos">972</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestCountEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression.largest_count-972"><a href="#MultisetExpression.largest_count-972"><span class="linenos">972</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_count_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -14867,7 +14867,7 @@ both.</p></li>
 </span><span id="MultisetExpression.largest_count_and_outcome-976"><a href="#MultisetExpression.largest_count_and_outcome-976"><span class="linenos">976</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]&#39;</span><span class="p">:</span>
 </span><span id="MultisetExpression.largest_count_and_outcome-977"><a href="#MultisetExpression.largest_count_and_outcome-977"><span class="linenos">977</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluation: The largest matching set among the elements and the corresponding outcome.&quot;&quot;&quot;</span>
 </span><span id="MultisetExpression.largest_count_and_outcome-978"><a href="#MultisetExpression.largest_count_and_outcome-978"><span class="linenos">978</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression.largest_count_and_outcome-979"><a href="#MultisetExpression.largest_count_and_outcome-979"><span class="linenos">979</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestCountAndOutcomeEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression.largest_count_and_outcome-979"><a href="#MultisetExpression.largest_count_and_outcome-979"><span class="linenos">979</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_count_and_outcome_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -14954,7 +14954,7 @@ empty_divisor_outcome is not set.</li>
 </span><span id="MultisetExpression.largest_straight-1018"><a href="#MultisetExpression.largest_straight-1018"><span class="linenos">1018</span></a><span class="sd">        Outcomes must be `int`s.</span>
 </span><span id="MultisetExpression.largest_straight-1019"><a href="#MultisetExpression.largest_straight-1019"><span class="linenos">1019</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression.largest_straight-1020"><a href="#MultisetExpression.largest_straight-1020"><span class="linenos">1020</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression.largest_straight-1021"><a href="#MultisetExpression.largest_straight-1021"><span class="linenos">1021</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestStraightEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression.largest_straight-1021"><a href="#MultisetExpression.largest_straight-1021"><span class="linenos">1021</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_straight_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -14984,7 +14984,7 @@ empty_divisor_outcome is not set.</li>
 </span><span id="MultisetExpression.largest_straight_and_outcome-1028"><a href="#MultisetExpression.largest_straight_and_outcome-1028"><span class="linenos">1028</span></a><span class="sd">        Outcomes must be `int`s.</span>
 </span><span id="MultisetExpression.largest_straight_and_outcome-1029"><a href="#MultisetExpression.largest_straight_and_outcome-1029"><span class="linenos">1029</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression.largest_straight_and_outcome-1030"><a href="#MultisetExpression.largest_straight_and_outcome-1030"><span class="linenos">1030</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression.largest_straight_and_outcome-1031"><a href="#MultisetExpression.largest_straight_and_outcome-1031"><span class="linenos">1031</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">LargestStraightAndOutcomeEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression.largest_straight_and_outcome-1031"><a href="#MultisetExpression.largest_straight_and_outcome-1031"><span class="linenos">1031</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">largest_straight_and_outcome_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -15018,7 +15018,7 @@ empty_divisor_outcome is not set.</li>
 </span><span id="MultisetExpression.all_straights-1042"><a href="#MultisetExpression.all_straights-1042"><span class="linenos">1042</span></a><span class="sd">        elements are preferentially assigned to the longer straight.</span>
 </span><span id="MultisetExpression.all_straights-1043"><a href="#MultisetExpression.all_straights-1043"><span class="linenos">1043</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression.all_straights-1044"><a href="#MultisetExpression.all_straights-1044"><span class="linenos">1044</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-</span><span id="MultisetExpression.all_straights-1045"><a href="#MultisetExpression.all_straights-1045"><span class="linenos">1045</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">AllStraightsEvaluator</span><span class="p">())</span>
+</span><span id="MultisetExpression.all_straights-1045"><a href="#MultisetExpression.all_straights-1045"><span class="linenos">1045</span></a>            <span class="n">evaluator</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">all_straights_evaluator</span><span class="p">)</span>
 </span></pre></div>
 
 
