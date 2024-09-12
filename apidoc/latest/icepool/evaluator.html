@@ -47,7 +47,7 @@
                                 <a class="function" href="#JointEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="function" href="#JointEvaluator.alignment">alignment</a>
+                                <a class="function" href="#JointEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
                                 <a class="function" href="#JointEvaluator.prefix_generators">prefix_generators</a>
@@ -140,7 +140,7 @@
                                 <a class="function" href="#HighestOutcomeAndCountEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="function" href="#HighestOutcomeAndCountEvaluator.alignment">alignment</a>
+                                <a class="function" href="#HighestOutcomeAndCountEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                 </ul>
 
@@ -203,7 +203,7 @@
                                 <a class="function" href="#AllCountsEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="function" href="#AllCountsEvaluator.alignment">alignment</a>
+                                <a class="function" href="#AllCountsEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                 </ul>
 
@@ -218,7 +218,7 @@
                                 <a class="function" href="#LargestStraightEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="function" href="#LargestStraightEvaluator.alignment">alignment</a>
+                                <a class="function" href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                 </ul>
 
@@ -236,7 +236,7 @@
                                 <a class="function" href="#LargestStraightAndOutcomeEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="function" href="#LargestStraightAndOutcomeEvaluator.alignment">alignment</a>
+                                <a class="function" href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                 </ul>
 
@@ -254,7 +254,7 @@
                                 <a class="function" href="#AllStraightsEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="function" href="#AllStraightsEvaluator.alignment">alignment</a>
+                                <a class="function" href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                 </ul>
 
@@ -272,7 +272,7 @@
                                 <a class="function" href="#AllStraightsReduceCountsEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="function" href="#AllStraightsReduceCountsEvaluator.alignment">alignment</a>
+                                <a class="function" href="#AllStraightsReduceCountsEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                 </ul>
 
@@ -449,7 +449,7 @@
                                 <a class="function" href="#ExpressionEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="function" href="#ExpressionEvaluator.alignment">alignment</a>
+                                <a class="function" href="#ExpressionEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
                                 <a class="function" href="#ExpressionEvaluator.prefix_generators">prefix_generators</a>
@@ -601,8 +601,8 @@
 </span><span id="JointEvaluator-79"><a href="#JointEvaluator-79"><span class="linenos"> 79</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="JointEvaluator-80"><a href="#JointEvaluator-80"><span class="linenos"> 80</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">inner</span><span class="o">.</span><span class="n">order</span><span class="p">()</span> <span class="k">for</span> <span class="n">inner</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">))</span>
 </span><span id="JointEvaluator-81"><a href="#JointEvaluator-81"><span class="linenos"> 81</span></a>
-</span><span id="JointEvaluator-82"><a href="#JointEvaluator-82"><span class="linenos"> 82</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
-</span><span id="JointEvaluator-83"><a href="#JointEvaluator-83"><span class="linenos"> 83</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="JointEvaluator-82"><a href="#JointEvaluator-82"><span class="linenos"> 82</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
+</span><span id="JointEvaluator-83"><a href="#JointEvaluator-83"><span class="linenos"> 83</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
 </span><span id="JointEvaluator-84"><a href="#JointEvaluator-84"><span class="linenos"> 84</span></a>                                      <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">))</span>
 </span><span id="JointEvaluator-85"><a href="#JointEvaluator-85"><span class="linenos"> 85</span></a>
 </span><span id="JointEvaluator-86"><a href="#JointEvaluator-86"><span class="linenos"> 86</span></a>    <span class="nd">@cached_property</span>
@@ -799,32 +799,32 @@ ascending and others are descending.</li>
 
 
                             </div>
-                            <div id="JointEvaluator.alignment" class="classattr">
-                                        <input id="JointEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="JointEvaluator.extra_outcomes" class="classattr">
+                                        <input id="JointEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="JointEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="JointEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#JointEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.alignment-82"><a href="#JointEvaluator.alignment-82"><span class="linenos">82</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
-</span><span id="JointEvaluator.alignment-83"><a href="#JointEvaluator.alignment-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
-</span><span id="JointEvaluator.alignment-84"><a href="#JointEvaluator.alignment-84"><span class="linenos">84</span></a>                                      <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">))</span>
+    <a class="headerlink" href="#JointEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JointEvaluator.extra_outcomes-82"><a href="#JointEvaluator.extra_outcomes-82"><span class="linenos">82</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
+</span><span id="JointEvaluator.extra_outcomes-83"><a href="#JointEvaluator.extra_outcomes-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">evaluator</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="JointEvaluator.extra_outcomes-84"><a href="#JointEvaluator.extra_outcomes-84"><span class="linenos">84</span></a>                                      <span class="k">for</span> <span class="n">evaluator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inners</span><span class="p">))</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to specify additional outcomes that should be seen by <code><a href="#JointEvaluator.next_state">next_state()</a></code>.</p>
+            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen by <code><a href="#JointEvaluator.next_state">next_state()</a></code>.</p>
 
 <p>These will be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code> even if they do not appear in the
 generator(s). The default implementation returns <code>()</code>, or no additional
 outcomes.</p>
 
 <p>If you want <code><a href="#JointEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
-<code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code>.
-See <code><a href="#JointEvaluator.range_alignment">range_alignment()</a></code> below.</p>
+<code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code>.
+See <code><a href="#JointEvaluator.bounding_range">bounding_range()</a></code> below.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -895,7 +895,7 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="JointEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="JointEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="JointEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="JointEvaluator.sample" class="function">sample</dd>
 
@@ -1041,8 +1041,8 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="ExpandEvaluator.alignment" class="function">alignment</dd>
-                <dd id="ExpandEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="ExpandEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="ExpandEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="ExpandEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ExpandEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ExpandEvaluator.evaluate" class="function">evaluate</dd>
@@ -1209,8 +1209,8 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="SumEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="SumEvaluator.alignment" class="function">alignment</dd>
-                <dd id="SumEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="SumEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="SumEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="SumEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="SumEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="SumEvaluator.evaluate" class="function">evaluate</dd>
@@ -1341,8 +1341,8 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="CountEvaluator.alignment" class="function">alignment</dd>
-                <dd id="CountEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="CountEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="CountEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="CountEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="CountEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="CountEvaluator.evaluate" class="function">evaluate</dd>
@@ -1466,8 +1466,8 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="AnyEvaluator.alignment" class="function">alignment</dd>
-                <dd id="AnyEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="AnyEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="AnyEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="AnyEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AnyEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AnyEvaluator.evaluate" class="function">evaluate</dd>
@@ -1525,7 +1525,7 @@ check redundant.</p>
 </span><span id="HighestOutcomeAndCountEvaluator-38"><a href="#HighestOutcomeAndCountEvaluator-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
 </span><span id="HighestOutcomeAndCountEvaluator-39"><a href="#HighestOutcomeAndCountEvaluator-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="HighestOutcomeAndCountEvaluator-40"><a href="#HighestOutcomeAndCountEvaluator-40"><span class="linenos">40</span></a>
-</span><span id="HighestOutcomeAndCountEvaluator-41"><a href="#HighestOutcomeAndCountEvaluator-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator-41"><a href="#HighestOutcomeAndCountEvaluator-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
 </span><span id="HighestOutcomeAndCountEvaluator-42"><a href="#HighestOutcomeAndCountEvaluator-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Always sees zero counts.&quot;&quot;&quot;</span>
 </span><span id="HighestOutcomeAndCountEvaluator-43"><a href="#HighestOutcomeAndCountEvaluator-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
 </span></pre></div>
@@ -1592,20 +1592,20 @@ check redundant.</p>
 
 
                             </div>
-                            <div id="HighestOutcomeAndCountEvaluator.alignment" class="classattr">
-                                        <input id="HighestOutcomeAndCountEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="HighestOutcomeAndCountEvaluator.extra_outcomes" class="classattr">
+                                        <input id="HighestOutcomeAndCountEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span></span><span class="return-annotation">) -> <span class="n">Collection</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span></span><span class="return-annotation">) -> <span class="n">Collection</span>:</span></span>
 
-                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator.alignment-41"><a href="#HighestOutcomeAndCountEvaluator.alignment-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
-</span><span id="HighestOutcomeAndCountEvaluator.alignment-42"><a href="#HighestOutcomeAndCountEvaluator.alignment-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Always sees zero counts.&quot;&quot;&quot;</span>
-</span><span id="HighestOutcomeAndCountEvaluator.alignment-43"><a href="#HighestOutcomeAndCountEvaluator.alignment-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
+    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator.extra_outcomes-41"><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+</span><span id="HighestOutcomeAndCountEvaluator.extra_outcomes-42"><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Always sees zero counts.&quot;&quot;&quot;</span>
+</span><span id="HighestOutcomeAndCountEvaluator.extra_outcomes-43"><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
 </span></pre></div>
 
 
@@ -1619,7 +1619,7 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="HighestOutcomeAndCountEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="HighestOutcomeAndCountEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="HighestOutcomeAndCountEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.evaluate" class="function">evaluate</dd>
@@ -1706,8 +1706,8 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestCountEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="LargestCountEvaluator.alignment" class="function">alignment</dd>
-                <dd id="LargestCountEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="LargestCountEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="LargestCountEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="LargestCountEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestCountEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestCountEvaluator.evaluate" class="function">evaluate</dd>
@@ -1794,8 +1794,8 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestCountAndOutcomeEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="LargestCountAndOutcomeEvaluator.alignment" class="function">alignment</dd>
-                <dd id="LargestCountAndOutcomeEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
@@ -1943,7 +1943,7 @@ current outcome. If this is the first outcome being considered,
 either ascending or descending depending on <code><a href="#CountSubsetEvaluator.order">order()</a></code>.
 If there are multiple generators, the set of outcomes is at 
 least the union of the outcomes of the invididual generators. 
-You can use <code><a href="#CountSubsetEvaluator.alignment">alignment()</a></code> to add additional outcomes.</li>
+You can use <code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
 <li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each generator output
 indicating how many of the current outcome were produced.</li>
 </ul>
@@ -2033,8 +2033,8 @@ happens.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="CountSubsetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="CountSubsetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="CountSubsetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="CountSubsetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="CountSubsetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="CountSubsetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="CountSubsetEvaluator.evaluate" class="function">evaluate</dd>
@@ -2090,7 +2090,7 @@ happens.</p>
 </span><span id="AllCountsEvaluator-78"><a href="#AllCountsEvaluator-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows any order.&quot;&quot;&quot;</span>
 </span><span id="AllCountsEvaluator-79"><a href="#AllCountsEvaluator-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Any</span>
 </span><span id="AllCountsEvaluator-80"><a href="#AllCountsEvaluator-80"><span class="linenos">80</span></a>
-</span><span id="AllCountsEvaluator-81"><a href="#AllCountsEvaluator-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator-81"><a href="#AllCountsEvaluator-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
 </span><span id="AllCountsEvaluator-82"><a href="#AllCountsEvaluator-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Always sees zero counts.&quot;&quot;&quot;</span>
 </span><span id="AllCountsEvaluator-83"><a href="#AllCountsEvaluator-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
 </span></pre></div>
@@ -2208,20 +2208,20 @@ If <code>None</code>, no filtering will be done.</li>
 
 
                             </div>
-                            <div id="AllCountsEvaluator.alignment" class="classattr">
-                                        <input id="AllCountsEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="AllCountsEvaluator.extra_outcomes" class="classattr">
+                                        <input id="AllCountsEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span></span><span class="return-annotation">) -> <span class="n">Collection</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span></span><span class="return-annotation">) -> <span class="n">Collection</span>:</span></span>
 
-                <label class="view-source-button" for="AllCountsEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="AllCountsEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AllCountsEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.alignment-81"><a href="#AllCountsEvaluator.alignment-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
-</span><span id="AllCountsEvaluator.alignment-82"><a href="#AllCountsEvaluator.alignment-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Always sees zero counts.&quot;&quot;&quot;</span>
-</span><span id="AllCountsEvaluator.alignment-83"><a href="#AllCountsEvaluator.alignment-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
+    <a class="headerlink" href="#AllCountsEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.extra_outcomes-81"><a href="#AllCountsEvaluator.extra_outcomes-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+</span><span id="AllCountsEvaluator.extra_outcomes-82"><a href="#AllCountsEvaluator.extra_outcomes-82"><span class="linenos">82</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Always sees zero counts.&quot;&quot;&quot;</span>
+</span><span id="AllCountsEvaluator.extra_outcomes-83"><a href="#AllCountsEvaluator.extra_outcomes-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
 </span></pre></div>
 
 
@@ -2234,7 +2234,7 @@ If <code>None</code>, no filtering will be done.</li>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="AllCountsEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="AllCountsEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="AllCountsEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AllCountsEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AllCountsEvaluator.evaluate" class="function">evaluate</dd>
@@ -2273,7 +2273,7 @@ If <code>None</code>, no filtering will be done.</li>
 </span><span id="LargestStraightEvaluator-161"><a href="#LargestStraightEvaluator-161"><span class="linenos">161</span></a>            <span class="k">return</span> <span class="mi">0</span>
 </span><span id="LargestStraightEvaluator-162"><a href="#LargestStraightEvaluator-162"><span class="linenos">162</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="LargestStraightEvaluator-163"><a href="#LargestStraightEvaluator-163"><span class="linenos">163</span></a>
-</span><span id="LargestStraightEvaluator-164"><a href="#LargestStraightEvaluator-164"><span class="linenos">164</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+</span><span id="LargestStraightEvaluator-164"><a href="#LargestStraightEvaluator-164"><span class="linenos">164</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
 </span></pre></div>
 
 
@@ -2332,54 +2332,54 @@ If <code>None</code>, no filtering will be done.</li>
 
 
                             </div>
-                            <div id="LargestStraightEvaluator.alignment" class="classattr">
-                                        <input id="LargestStraightEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestStraightEvaluator.extra_outcomes" class="classattr">
+                                        <input id="LargestStraightEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="LargestStraightEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestStraightEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestStraightEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.alignment-156"><a href="#LargestStraightEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightEvaluator.alignment-157"><a href="#LargestStraightEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
-</span><span id="LargestStraightEvaluator.alignment-158"><a href="#LargestStraightEvaluator.alignment-158"><span class="linenos">158</span></a>
-</span><span id="LargestStraightEvaluator.alignment-159"><a href="#LargestStraightEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="LargestStraightEvaluator.alignment-160"><a href="#LargestStraightEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="LargestStraightEvaluator.alignment-161"><a href="#LargestStraightEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="LargestStraightEvaluator.alignment-162"><a href="#LargestStraightEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
-</span><span id="LargestStraightEvaluator.alignment-163"><a href="#LargestStraightEvaluator.alignment-163"><span class="linenos">163</span></a>
-</span><span id="LargestStraightEvaluator.alignment-164"><a href="#LargestStraightEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="LargestStraightEvaluator.alignment-165"><a href="#LargestStraightEvaluator.alignment-165"><span class="linenos">165</span></a>
-</span><span id="LargestStraightEvaluator.alignment-166"><a href="#LargestStraightEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightEvaluator.alignment-167"><a href="#LargestStraightEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="LargestStraightEvaluator.alignment-168"><a href="#LargestStraightEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
-</span><span id="LargestStraightEvaluator.alignment-169"><a href="#LargestStraightEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="LargestStraightEvaluator.alignment-170"><a href="#LargestStraightEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightEvaluator.alignment-171"><a href="#LargestStraightEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="LargestStraightEvaluator.alignment-172"><a href="#LargestStraightEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.alignment-173"><a href="#LargestStraightEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.alignment-174"><a href="#LargestStraightEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightEvaluator.alignment-175"><a href="#LargestStraightEvaluator.alignment-175"><span class="linenos">175</span></a>
-</span><span id="LargestStraightEvaluator.alignment-176"><a href="#LargestStraightEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.alignment-177"><a href="#LargestStraightEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.alignment-178"><a href="#LargestStraightEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightEvaluator.alignment-179"><a href="#LargestStraightEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightEvaluator.alignment-180"><a href="#LargestStraightEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="LargestStraightEvaluator.alignment-181"><a href="#LargestStraightEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <a class="headerlink" href="#LargestStraightEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.extra_outcomes-157"><a href="#LargestStraightEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-158"><a href="#LargestStraightEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-159"><a href="#LargestStraightEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-160"><a href="#LargestStraightEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-161"><a href="#LargestStraightEvaluator.extra_outcomes-161"><span class="linenos">161</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-162"><a href="#LargestStraightEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-163"><a href="#LargestStraightEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-164"><a href="#LargestStraightEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-165"><a href="#LargestStraightEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-166"><a href="#LargestStraightEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-167"><a href="#LargestStraightEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-168"><a href="#LargestStraightEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-169"><a href="#LargestStraightEvaluator.extra_outcomes-169"><span class="linenos">169</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-170"><a href="#LargestStraightEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-171"><a href="#LargestStraightEvaluator.extra_outcomes-171"><span class="linenos">171</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-172"><a href="#LargestStraightEvaluator.extra_outcomes-172"><span class="linenos">172</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-173"><a href="#LargestStraightEvaluator.extra_outcomes-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-174"><a href="#LargestStraightEvaluator.extra_outcomes-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-175"><a href="#LargestStraightEvaluator.extra_outcomes-175"><span class="linenos">175</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-176"><a href="#LargestStraightEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-177"><a href="#LargestStraightEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-178"><a href="#LargestStraightEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-179"><a href="#LargestStraightEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-180"><a href="#LargestStraightEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-181"><a href="#LargestStraightEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-182"><a href="#LargestStraightEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Example implementation of <code><a href="#LargestStraightEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
+            <div class="docstring"><p>Example implementation of <code><a href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes()</a></code> that produces consecutive <code>int</code> outcomes.</p>
 
 <p>There is no expectation that a subclass be able to handle
 an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -2402,7 +2402,7 @@ set of parameters.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestStraightEvaluator.order" class="function">order</dd>
-                <dd id="LargestStraightEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="LargestStraightEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="LargestStraightEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestStraightEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestStraightEvaluator.evaluate" class="function">evaluate</dd>
@@ -2444,7 +2444,7 @@ set of parameters.</p>
 </span><span id="LargestStraightAndOutcomeEvaluator-185"><a href="#LargestStraightAndOutcomeEvaluator-185"><span class="linenos">185</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
 </span><span id="LargestStraightAndOutcomeEvaluator-186"><a href="#LargestStraightAndOutcomeEvaluator-186"><span class="linenos">186</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span><span id="LargestStraightAndOutcomeEvaluator-187"><a href="#LargestStraightAndOutcomeEvaluator-187"><span class="linenos">187</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-188"><a href="#LargestStraightAndOutcomeEvaluator-188"><span class="linenos">188</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-188"><a href="#LargestStraightAndOutcomeEvaluator-188"><span class="linenos">188</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
 </span></pre></div>
 
 
@@ -2523,54 +2523,54 @@ set of parameters.</p>
 
 
                             </div>
-                            <div id="LargestStraightAndOutcomeEvaluator.alignment" class="classattr">
-                                        <input id="LargestStraightAndOutcomeEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestStraightAndOutcomeEvaluator.extra_outcomes" class="classattr">
+                                        <input id="LargestStraightAndOutcomeEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="LargestStraightAndOutcomeEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestStraightAndOutcomeEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.alignment-156"><a href="#LargestStraightAndOutcomeEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-157"><a href="#LargestStraightAndOutcomeEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-158"><a href="#LargestStraightAndOutcomeEvaluator.alignment-158"><span class="linenos">158</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-159"><a href="#LargestStraightAndOutcomeEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-160"><a href="#LargestStraightAndOutcomeEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-161"><a href="#LargestStraightAndOutcomeEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-162"><a href="#LargestStraightAndOutcomeEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-163"><a href="#LargestStraightAndOutcomeEvaluator.alignment-163"><span class="linenos">163</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-164"><a href="#LargestStraightAndOutcomeEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-165"><a href="#LargestStraightAndOutcomeEvaluator.alignment-165"><span class="linenos">165</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-166"><a href="#LargestStraightAndOutcomeEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-167"><a href="#LargestStraightAndOutcomeEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-168"><a href="#LargestStraightAndOutcomeEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-169"><a href="#LargestStraightAndOutcomeEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-170"><a href="#LargestStraightAndOutcomeEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-171"><a href="#LargestStraightAndOutcomeEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-172"><a href="#LargestStraightAndOutcomeEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-173"><a href="#LargestStraightAndOutcomeEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-174"><a href="#LargestStraightAndOutcomeEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-175"><a href="#LargestStraightAndOutcomeEvaluator.alignment-175"><span class="linenos">175</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-176"><a href="#LargestStraightAndOutcomeEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-177"><a href="#LargestStraightAndOutcomeEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-178"><a href="#LargestStraightAndOutcomeEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-179"><a href="#LargestStraightAndOutcomeEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-180"><a href="#LargestStraightAndOutcomeEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.alignment-181"><a href="#LargestStraightAndOutcomeEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-158"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-159"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-160"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-161"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-161"><span class="linenos">161</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-162"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-163"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-164"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-166"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-167"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-168"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-169"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-169"><span class="linenos">169</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-170"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-171"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-171"><span class="linenos">171</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-172"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-172"><span class="linenos">172</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-173"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-174"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-175"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-175"><span class="linenos">175</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-176"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-177"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-178"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-179"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-180"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-181"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-182"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Example implementation of <code><a href="#LargestStraightAndOutcomeEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
+            <div class="docstring"><p>Example implementation of <code><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code> that produces consecutive <code>int</code> outcomes.</p>
 
 <p>There is no expectation that a subclass be able to handle
 an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -2592,7 +2592,7 @@ set of parameters.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="LargestStraightAndOutcomeEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="LargestStraightAndOutcomeEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
@@ -2644,7 +2644,7 @@ set of parameters.</p>
 </span><span id="AllStraightsEvaluator-219"><a href="#AllStraightsEvaluator-219"><span class="linenos">219</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
 </span><span id="AllStraightsEvaluator-220"><a href="#AllStraightsEvaluator-220"><span class="linenos">220</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span><span id="AllStraightsEvaluator-221"><a href="#AllStraightsEvaluator-221"><span class="linenos">221</span></a>
-</span><span id="AllStraightsEvaluator-222"><a href="#AllStraightsEvaluator-222"><span class="linenos">222</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+</span><span id="AllStraightsEvaluator-222"><a href="#AllStraightsEvaluator-222"><span class="linenos">222</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
 </span></pre></div>
 
 
@@ -2733,54 +2733,54 @@ elements are preferentially assigned to the longer straight.</p>
 
 
                             </div>
-                            <div id="AllStraightsEvaluator.alignment" class="classattr">
-                                        <input id="AllStraightsEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="AllStraightsEvaluator.extra_outcomes" class="classattr">
+                                        <input id="AllStraightsEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="AllStraightsEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="AllStraightsEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AllStraightsEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.alignment-156"><a href="#AllStraightsEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="AllStraightsEvaluator.alignment-157"><a href="#AllStraightsEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
-</span><span id="AllStraightsEvaluator.alignment-158"><a href="#AllStraightsEvaluator.alignment-158"><span class="linenos">158</span></a>
-</span><span id="AllStraightsEvaluator.alignment-159"><a href="#AllStraightsEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="AllStraightsEvaluator.alignment-160"><a href="#AllStraightsEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="AllStraightsEvaluator.alignment-161"><a href="#AllStraightsEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="AllStraightsEvaluator.alignment-162"><a href="#AllStraightsEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
-</span><span id="AllStraightsEvaluator.alignment-163"><a href="#AllStraightsEvaluator.alignment-163"><span class="linenos">163</span></a>
-</span><span id="AllStraightsEvaluator.alignment-164"><a href="#AllStraightsEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="AllStraightsEvaluator.alignment-165"><a href="#AllStraightsEvaluator.alignment-165"><span class="linenos">165</span></a>
-</span><span id="AllStraightsEvaluator.alignment-166"><a href="#AllStraightsEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
-</span><span id="AllStraightsEvaluator.alignment-167"><a href="#AllStraightsEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="AllStraightsEvaluator.alignment-168"><a href="#AllStraightsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
-</span><span id="AllStraightsEvaluator.alignment-169"><a href="#AllStraightsEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="AllStraightsEvaluator.alignment-170"><a href="#AllStraightsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
-</span><span id="AllStraightsEvaluator.alignment-171"><a href="#AllStraightsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="AllStraightsEvaluator.alignment-172"><a href="#AllStraightsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllStraightsEvaluator.alignment-173"><a href="#AllStraightsEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="AllStraightsEvaluator.alignment-174"><a href="#AllStraightsEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllStraightsEvaluator.alignment-175"><a href="#AllStraightsEvaluator.alignment-175"><span class="linenos">175</span></a>
-</span><span id="AllStraightsEvaluator.alignment-176"><a href="#AllStraightsEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="AllStraightsEvaluator.alignment-177"><a href="#AllStraightsEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsEvaluator.alignment-178"><a href="#AllStraightsEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="AllStraightsEvaluator.alignment-179"><a href="#AllStraightsEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
-</span><span id="AllStraightsEvaluator.alignment-180"><a href="#AllStraightsEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="AllStraightsEvaluator.alignment-181"><a href="#AllStraightsEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <a class="headerlink" href="#AllStraightsEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.extra_outcomes-157"><a href="#AllStraightsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-158"><a href="#AllStraightsEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-159"><a href="#AllStraightsEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-160"><a href="#AllStraightsEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-161"><a href="#AllStraightsEvaluator.extra_outcomes-161"><span class="linenos">161</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-162"><a href="#AllStraightsEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-163"><a href="#AllStraightsEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-164"><a href="#AllStraightsEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-165"><a href="#AllStraightsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-166"><a href="#AllStraightsEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-167"><a href="#AllStraightsEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-168"><a href="#AllStraightsEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-169"><a href="#AllStraightsEvaluator.extra_outcomes-169"><span class="linenos">169</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-170"><a href="#AllStraightsEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-171"><a href="#AllStraightsEvaluator.extra_outcomes-171"><span class="linenos">171</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-172"><a href="#AllStraightsEvaluator.extra_outcomes-172"><span class="linenos">172</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-173"><a href="#AllStraightsEvaluator.extra_outcomes-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-174"><a href="#AllStraightsEvaluator.extra_outcomes-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-175"><a href="#AllStraightsEvaluator.extra_outcomes-175"><span class="linenos">175</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-176"><a href="#AllStraightsEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-177"><a href="#AllStraightsEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-178"><a href="#AllStraightsEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-179"><a href="#AllStraightsEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-180"><a href="#AllStraightsEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-181"><a href="#AllStraightsEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-182"><a href="#AllStraightsEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Example implementation of <code><a href="#AllStraightsEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
+            <div class="docstring"><p>Example implementation of <code><a href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes()</a></code> that produces consecutive <code>int</code> outcomes.</p>
 
 <p>There is no expectation that a subclass be able to handle
 an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -2802,7 +2802,7 @@ set of parameters.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="AllStraightsEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="AllStraightsEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="AllStraightsEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AllStraightsEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AllStraightsEvaluator.evaluate" class="function">evaluate</dd>
@@ -2873,7 +2873,7 @@ set of parameters.</p>
 </span><span id="AllStraightsReduceCountsEvaluator-272"><a href="#AllStraightsReduceCountsEvaluator-272"><span class="linenos">272</span></a>                <span class="nb">sorted</span><span class="p">(</span><span class="n">ended_runs</span> <span class="o">+</span> <span class="p">(</span><span class="n">current_run</span><span class="p">,</span> <span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </span><span id="AllStraightsReduceCountsEvaluator-273"><a href="#AllStraightsReduceCountsEvaluator-273"><span class="linenos">273</span></a>        <span class="k">return</span> <span class="n">ended_runs</span>
 </span><span id="AllStraightsReduceCountsEvaluator-274"><a href="#AllStraightsReduceCountsEvaluator-274"><span class="linenos">274</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator-275"><a href="#AllStraightsReduceCountsEvaluator-275"><span class="linenos">275</span></a>    <span class="n">alignment</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">range_alignment</span>
+</span><span id="AllStraightsReduceCountsEvaluator-275"><a href="#AllStraightsReduceCountsEvaluator-275"><span class="linenos">275</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
 </span></pre></div>
 
 
@@ -2986,54 +2986,54 @@ elements for each straight, e.g. cribbage.</li>
 
 
                             </div>
-                            <div id="AllStraightsReduceCountsEvaluator.alignment" class="classattr">
-                                        <input id="AllStraightsReduceCountsEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="AllStraightsReduceCountsEvaluator.extra_outcomes" class="classattr">
+                                        <input id="AllStraightsReduceCountsEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="AllStraightsReduceCountsEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="AllStraightsReduceCountsEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AllStraightsReduceCountsEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.alignment-156"><a href="#AllStraightsReduceCountsEvaluator.alignment-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">range_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-157"><a href="#AllStraightsReduceCountsEvaluator.alignment-157"><span class="linenos">157</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `alignment()` that produces consecutive `int` outcomes.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-158"><a href="#AllStraightsReduceCountsEvaluator.alignment-158"><span class="linenos">158</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-159"><a href="#AllStraightsReduceCountsEvaluator.alignment-159"><span class="linenos">159</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-160"><a href="#AllStraightsReduceCountsEvaluator.alignment-160"><span class="linenos">160</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-161"><a href="#AllStraightsReduceCountsEvaluator.alignment-161"><span class="linenos">161</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-162"><a href="#AllStraightsReduceCountsEvaluator.alignment-162"><span class="linenos">162</span></a><span class="sd">        set of parameters.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-163"><a href="#AllStraightsReduceCountsEvaluator.alignment-163"><span class="linenos">163</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-164"><a href="#AllStraightsReduceCountsEvaluator.alignment-164"><span class="linenos">164</span></a><span class="sd">        Set `alignment = icepool.MultisetEvaluator.range_alignment` to use this.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-165"><a href="#AllStraightsReduceCountsEvaluator.alignment-165"><span class="linenos">165</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-166"><a href="#AllStraightsReduceCountsEvaluator.alignment-166"><span class="linenos">166</span></a><span class="sd">        Returns:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-167"><a href="#AllStraightsReduceCountsEvaluator.alignment-167"><span class="linenos">167</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-168"><a href="#AllStraightsReduceCountsEvaluator.alignment-168"><span class="linenos">168</span></a><span class="sd">            inclusive.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-169"><a href="#AllStraightsReduceCountsEvaluator.alignment-169"><span class="linenos">169</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-170"><a href="#AllStraightsReduceCountsEvaluator.alignment-170"><span class="linenos">170</span></a><span class="sd">        Raises:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-171"><a href="#AllStraightsReduceCountsEvaluator.alignment-171"><span class="linenos">171</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-172"><a href="#AllStraightsReduceCountsEvaluator.alignment-172"><span class="linenos">172</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-173"><a href="#AllStraightsReduceCountsEvaluator.alignment-173"><span class="linenos">173</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-174"><a href="#AllStraightsReduceCountsEvaluator.alignment-174"><span class="linenos">174</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-175"><a href="#AllStraightsReduceCountsEvaluator.alignment-175"><span class="linenos">175</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-176"><a href="#AllStraightsReduceCountsEvaluator.alignment-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-177"><a href="#AllStraightsReduceCountsEvaluator.alignment-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-178"><a href="#AllStraightsReduceCountsEvaluator.alignment-178"><span class="linenos">178</span></a>                <span class="s2">&quot;range_alignment cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-179"><a href="#AllStraightsReduceCountsEvaluator.alignment-179"><span class="linenos">179</span></a>            <span class="p">)</span>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-180"><a href="#AllStraightsReduceCountsEvaluator.alignment-180"><span class="linenos">180</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.alignment-181"><a href="#AllStraightsReduceCountsEvaluator.alignment-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <a class="headerlink" href="#AllStraightsReduceCountsEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-157"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-158"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-159"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-160"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-161"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-161"><span class="linenos">161</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-162"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-163"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-164"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-165"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-166"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-167"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-168"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-169"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-169"><span class="linenos">169</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-170"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-171"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-171"><span class="linenos">171</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-172"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-172"><span class="linenos">172</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-173"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-174"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-175"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-175"><span class="linenos">175</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-176"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-177"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-178"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-179"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-180"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-181"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-182"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Example implementation of <code><a href="#AllStraightsReduceCountsEvaluator.alignment">alignment()</a></code> that produces consecutive <code>int</code> outcomes.</p>
+            <div class="docstring"><p>Example implementation of <code><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes">extra_outcomes()</a></code> that produces consecutive <code>int</code> outcomes.</p>
 
 <p>There is no expectation that a subclass be able to handle
 an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>alignment = <a href="../icepool.html#MultisetEvaluator.range_alignment">icepool.MultisetEvaluator.range_alignment</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -3056,7 +3056,7 @@ set of parameters.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="AllStraightsReduceCountsEvaluator.order" class="function">order</dd>
-                <dd id="AllStraightsReduceCountsEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="AllStraightsReduceCountsEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="AllStraightsReduceCountsEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AllStraightsReduceCountsEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AllStraightsReduceCountsEvaluator.evaluate" class="function">evaluate</dd>
@@ -3250,8 +3250,8 @@ bool are <code>True</code>.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="ComparisonEvaluator.alignment" class="function">alignment</dd>
-                <dd id="ComparisonEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="ComparisonEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="ComparisonEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="ComparisonEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ComparisonEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ComparisonEvaluator.evaluate" class="function">evaluate</dd>
@@ -3344,8 +3344,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsSubsetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsSubsetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsSubsetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsSubsetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsSubsetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsSubsetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsSubsetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3438,8 +3438,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsProperSubsetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsProperSubsetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsProperSubsetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsProperSubsetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsProperSubsetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsProperSubsetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsProperSubsetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3532,8 +3532,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsSupersetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsSupersetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsSupersetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsSupersetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsSupersetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsSupersetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsSupersetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3626,8 +3626,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsProperSupersetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsProperSupersetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsProperSupersetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsProperSupersetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsProperSupersetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsProperSupersetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsProperSupersetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3720,8 +3720,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsEqualSetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsEqualSetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsEqualSetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsEqualSetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsEqualSetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsEqualSetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsEqualSetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3814,8 +3814,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsNotEqualSetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsNotEqualSetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsNotEqualSetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsNotEqualSetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsNotEqualSetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsNotEqualSetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsNotEqualSetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3914,8 +3914,8 @@ bool are <code>True</code>.</p>
 
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="IsDisjointSetEvaluator.alignment" class="function">alignment</dd>
-                <dd id="IsDisjointSetEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="IsDisjointSetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="IsDisjointSetEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="IsDisjointSetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsDisjointSetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsDisjointSetEvaluator.evaluate" class="function">evaluate</dd>
@@ -4020,7 +4020,7 @@ current outcome. If this is the first outcome being considered,
 either ascending or descending depending on <code><a href="#ConstantEvaluator.order">order()</a></code>.
 If there are multiple generators, the set of outcomes is at 
 least the union of the outcomes of the invididual generators. 
-You can use <code><a href="#ConstantEvaluator.alignment">alignment()</a></code> to add additional outcomes.</li>
+You can use <code><a href="#ConstantEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
 <li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each generator output
 indicating how many of the current outcome were produced.</li>
 </ul>
@@ -4082,8 +4082,8 @@ happens.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="ConstantEvaluator.order" class="function">order</dd>
-                <dd id="ConstantEvaluator.alignment" class="function">alignment</dd>
-                <dd id="ConstantEvaluator.range_alignment" class="function">range_alignment</dd>
+                <dd id="ConstantEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="ConstantEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="ConstantEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ConstantEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ConstantEvaluator.evaluate" class="function">evaluate</dd>
@@ -4306,8 +4306,8 @@ the sorted index; otherwise, this raises <code>IndexError</code>.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="KeepEvaluator.alignment" class="function">alignment</dd>
-                <dd id="KeepEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="KeepEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="KeepEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="KeepEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="KeepEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="KeepEvaluator.evaluate" class="function">evaluate</dd>
@@ -4494,8 +4494,8 @@ mixed standard dice.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="ArgsortEvaluator.alignment" class="function">alignment</dd>
-                <dd id="ArgsortEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="ArgsortEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
+                <dd id="ArgsortEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="ArgsortEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ArgsortEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ArgsortEvaluator.evaluate" class="function">evaluate</dd>
@@ -4577,9 +4577,9 @@ mixed standard dice.</p>
 </span><span id="ExpressionEvaluator-73"><a href="#ExpressionEvaluator-73"><span class="linenos"> 73</span></a>                                         <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span><span class="p">))</span>
 </span><span id="ExpressionEvaluator-74"><a href="#ExpressionEvaluator-74"><span class="linenos"> 74</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">expression_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">order</span><span class="p">())</span>
 </span><span id="ExpressionEvaluator-75"><a href="#ExpressionEvaluator-75"><span class="linenos"> 75</span></a>
-</span><span id="ExpressionEvaluator-76"><a href="#ExpressionEvaluator-76"><span class="linenos"> 76</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
+</span><span id="ExpressionEvaluator-76"><a href="#ExpressionEvaluator-76"><span class="linenos"> 76</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
 </span><span id="ExpressionEvaluator-77"><a href="#ExpressionEvaluator-77"><span class="linenos"> 77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Forwards to inner.&quot;&quot;&quot;</span>
-</span><span id="ExpressionEvaluator-78"><a href="#ExpressionEvaluator-78"><span class="linenos"> 78</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
+</span><span id="ExpressionEvaluator-78"><a href="#ExpressionEvaluator-78"><span class="linenos"> 78</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
 </span><span id="ExpressionEvaluator-79"><a href="#ExpressionEvaluator-79"><span class="linenos"> 79</span></a>
 </span><span id="ExpressionEvaluator-80"><a href="#ExpressionEvaluator-80"><span class="linenos"> 80</span></a>    <span class="nd">@cached_property</span>
 </span><span id="ExpressionEvaluator-81"><a href="#ExpressionEvaluator-81"><span class="linenos"> 81</span></a>    <span class="k">def</span> <span class="nf">_prefix_generators</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[icepool.MultisetGenerator, ...]&#39;</span><span class="p">:</span>
@@ -4763,20 +4763,20 @@ happens.</p>
 
 
                             </div>
-                            <div id="ExpressionEvaluator.alignment" class="classattr">
-                                        <input id="ExpressionEvaluator.alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ExpressionEvaluator.extra_outcomes" class="classattr">
+                                        <input id="ExpressionEvaluator.extra_outcomes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">alignment</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">generators</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">generators</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="o">-</span><span class="n">T_contra</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="ExpressionEvaluator.alignment-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ExpressionEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ExpressionEvaluator.alignment"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ExpressionEvaluator.alignment-76"><a href="#ExpressionEvaluator.alignment-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
-</span><span id="ExpressionEvaluator.alignment-77"><a href="#ExpressionEvaluator.alignment-77"><span class="linenos">77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Forwards to inner.&quot;&quot;&quot;</span>
-</span><span id="ExpressionEvaluator.alignment-78"><a href="#ExpressionEvaluator.alignment-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">alignment</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
+    <a class="headerlink" href="#ExpressionEvaluator.extra_outcomes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ExpressionEvaluator.extra_outcomes-76"><a href="#ExpressionEvaluator.extra_outcomes-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
+</span><span id="ExpressionEvaluator.extra_outcomes-77"><a href="#ExpressionEvaluator.extra_outcomes-77"><span class="linenos">77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Forwards to inner.&quot;&quot;&quot;</span>
+</span><span id="ExpressionEvaluator.extra_outcomes-78"><a href="#ExpressionEvaluator.extra_outcomes-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4845,7 +4845,7 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="ExpressionEvaluator.range_alignment" class="function">range_alignment</dd>
+                                <dd id="ExpressionEvaluator.bounding_range" class="function">bounding_range</dd>
                 <dd id="ExpressionEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="ExpressionEvaluator.sample" class="function">sample</dd>
 
