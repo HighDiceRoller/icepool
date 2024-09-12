@@ -34,6 +34,9 @@ class Deck(Population[T_co]):
                 times: Sequence[int] | int = 1) -> 'Deck[T_co]':
         """Constructor for a `Deck`.
 
+        All quantities must be non-negative. Outcomes with zero quantity will be
+        omitted.
+
         Args:
             outcomes: The cards of the `Deck`. This can be one of the following:
                 * A `Sequence` of outcomes. Duplicates will contribute

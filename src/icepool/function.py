@@ -198,11 +198,16 @@ def from_rv(rv, outcomes: Sequence[float], denominator: int,
 def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
             **kwargs) -> 'icepool.Die[int] | icepool.Die[float]':
     """Constructs a `Die` from a rv object (as `scipy.stats`).
+
+    This is done using the CDF.
+
     Args:
         rv: A rv object (as `scipy.stats`).
         outcomes: An iterable of `int`s or `float`s that will be the outcomes
             of the resulting `Die`.
             If the distribution is discrete, outcomes must be `int`s.
+            Some outcomes may be omitted if their probability is too small
+            compared to the denominator.
         denominator: The denominator of the resulting `Die` will be set to this.
         **kwargs: These will be forwarded to `rv.cdf()`.
     """

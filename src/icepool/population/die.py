@@ -87,7 +87,8 @@ class Die(Population[T_co]):
         * Use a dict: `Die({1:1, 2:1, 3:1, 4:1, 5:1, 6:1})`
         * Give the faces as a sequence: `Die([1, 2, 3, 4, 5, 6])`
 
-        All quantities must be non-negative, though they can be zero.
+        All quantities must be non-negative. Outcomes with zero quantity will be
+        omitted.
 
         Several methods and functions foward **kwargs to this constructor.
         However, these only affect the construction of the returned or yielded
