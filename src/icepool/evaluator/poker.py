@@ -2,6 +2,7 @@
 
 __docformat__ = 'google'
 
+from typing_extensions import Final
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.population.die import Die
@@ -40,6 +41,10 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
     def extra_outcomes(self, outcomes: Sequence) -> Collection:
         """Always sees zero counts."""
         return outcomes
+
+
+highest_outcome_and_count_evaluator: Final = HighestOutcomeAndCountEvaluator()
+"""Shared instance for caching."""
 
 
 class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
@@ -94,6 +99,10 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
         return Order.Any
 
 
+largest_count_evaluator: Final = LargestCountEvaluator()
+"""Shared instance for caching."""
+
+
 class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     """The largest count of any outcome, along with that outcome."""
 
@@ -104,6 +113,10 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
+
+
+largest_count_and_outcome_evaluator: Final = LargestCountAndOutcomeEvaluator()
+"""Shared instance for caching."""
 
 
 class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
@@ -163,6 +176,10 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
     extra_outcomes = MultisetEvaluator.bounding_range
 
 
+largest_straight_evaluator: Final = LargestStraightEvaluator()
+"""Shared instance for caching."""
+
+
 class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
                                                                       int]]):
     """The size of the largest straight, along with the greatest outcome in that straight."""
@@ -185,6 +202,11 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         return Order.Ascending
 
     extra_outcomes = MultisetEvaluator.bounding_range
+
+
+largest_straight_and_outcome_evaluator: Final = LargestStraightAndOutcomeEvaluator(
+)
+"""Shared instance for caching."""
 
 
 class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
@@ -219,6 +241,10 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         return Order.Ascending
 
     extra_outcomes = MultisetEvaluator.bounding_range
+
+
+all_straights_evaluator: Final = AllStraightsEvaluator()
+"""Shared instance for caching."""
 
 
 class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
