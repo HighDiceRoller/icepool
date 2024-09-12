@@ -453,7 +453,7 @@
                     <a class="function" href="#max_outcome">max_outcome</a>
             </li>
             <li>
-                    <a class="function" href="#bounding_range">bounding_range</a>
+                    <a class="function" href="#consecutive">consecutive</a>
             </li>
             <li>
                     <a class="function" href="#sorted_union">sorted_union</a>
@@ -696,7 +696,7 @@
                                 <a class="function" href="#MultisetEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultisetEvaluator.bounding_range">bounding_range</a>
+                                <a class="function" href="#MultisetEvaluator.consecutive">consecutive</a>
                         </li>
                         <li>
                                 <a class="function" href="#MultisetEvaluator.prefix_generators">prefix_generators</a>
@@ -926,10 +926,10 @@ are considered.</li>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="kn">from</span> <span class="nn">icepool.function</span> <span class="kn">import</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="fm">__getattr__</span><span class="p">,</span> <span class="n">coin</span><span class="p">,</span> <span class="n">stochastic_round</span><span class="p">,</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>                              <span class="n">one_hot</span><span class="p">,</span> <span class="n">iter_cartesian_product</span><span class="p">,</span> <span class="n">from_cumulative</span><span class="p">,</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>                              <span class="n">from_rv</span><span class="p">,</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">,</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>                              <span class="n">bounding_range</span><span class="p">,</span> <span class="n">sorted_union</span><span class="p">,</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>                              <span class="n">commonize_denominator</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>                              <span class="n">map_function</span><span class="p">,</span> <span class="n">map_and_time</span><span class="p">,</span> <span class="n">map_to_pool</span><span class="p">)</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>                              <span class="n">from_rv</span><span class="p">,</span> <span class="n">min_outcome</span><span class="p">,</span> <span class="n">max_outcome</span><span class="p">,</span> <span class="n">consecutive</span><span class="p">,</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>                              <span class="n">sorted_union</span><span class="p">,</span> <span class="n">commonize_denominator</span><span class="p">,</span> <span class="n">reduce</span><span class="p">,</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>                              <span class="n">accumulate</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">map_function</span><span class="p">,</span> <span class="n">map_and_time</span><span class="p">,</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>                              <span class="n">map_to_pool</span><span class="p">)</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="kn">from</span> <span class="nn">icepool.population.base</span> <span class="kn">import</span> <span class="n">Population</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="kn">from</span> <span class="nn">icepool.population.die</span> <span class="kn">import</span> <span class="n">implicit_convert_to_die</span><span class="p">,</span> <span class="n">Die</span>
@@ -1026,7 +1026,7 @@ are considered.</li>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="s1">&#39;tupleize&#39;</span><span class="p">,</span> <span class="s1">&#39;vectorize&#39;</span><span class="p">,</span> <span class="s1">&#39;Vector&#39;</span><span class="p">,</span> <span class="s1">&#39;Symbols&#39;</span><span class="p">,</span> <span class="s1">&#39;Again&#39;</span><span class="p">,</span>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>    <span class="s1">&#39;CountsKeysView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsValuesView&#39;</span><span class="p">,</span> <span class="s1">&#39;CountsItemsView&#39;</span><span class="p">,</span> <span class="s1">&#39;from_cumulative&#39;</span><span class="p">,</span>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="s1">&#39;from_rv&#39;</span><span class="p">,</span> <span class="s1">&#39;lowest&#39;</span><span class="p">,</span> <span class="s1">&#39;highest&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;min_outcome&#39;</span><span class="p">,</span> <span class="s1">&#39;max_outcome&#39;</span><span class="p">,</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>    <span class="s1">&#39;bounding_range&#39;</span><span class="p">,</span> <span class="s1">&#39;sorted_union&#39;</span><span class="p">,</span> <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>    <span class="s1">&#39;consecutive&#39;</span><span class="p">,</span> <span class="s1">&#39;sorted_union&#39;</span><span class="p">,</span> <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;map_function&#39;</span><span class="p">,</span> <span class="s1">&#39;map_and_time&#39;</span><span class="p">,</span> <span class="s1">&#39;map_to_pool&#39;</span><span class="p">,</span>
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span>
 </span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span>
@@ -9781,24 +9781,24 @@ always rolls this value.</li>
 
 
                 </section>
-                <section id="bounding_range">
-                            <input id="bounding_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="consecutive">
+                            <input id="consecutive-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">bounding_range</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">consecutive</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="bounding_range-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="consecutive-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#bounding_range"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="bounding_range-278"><a href="#bounding_range-278"><span class="linenos">278</span></a><span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="bounding_range-279"><a href="#bounding_range-279"><span class="linenos">279</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
-</span><span id="bounding_range-280"><a href="#bounding_range-280"><span class="linenos">280</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="bounding_range-281"><a href="#bounding_range-281"><span class="linenos">281</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="bounding_range-282"><a href="#bounding_range-282"><span class="linenos">282</span></a>        <span class="k">return</span> <span class="p">()</span>
-</span><span id="bounding_range-283"><a href="#bounding_range-283"><span class="linenos">283</span></a>    <span class="n">stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
-</span><span id="bounding_range-284"><a href="#bounding_range-284"><span class="linenos">284</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <a class="headerlink" href="#consecutive"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="consecutive-278"><a href="#consecutive-278"><span class="linenos">278</span></a><span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="consecutive-279"><a href="#consecutive-279"><span class="linenos">279</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
+</span><span id="consecutive-280"><a href="#consecutive-280"><span class="linenos">280</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="consecutive-281"><a href="#consecutive-281"><span class="linenos">281</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="consecutive-282"><a href="#consecutive-282"><span class="linenos">282</span></a>        <span class="k">return</span> <span class="p">()</span>
+</span><span id="consecutive-283"><a href="#consecutive-283"><span class="linenos">283</span></a>    <span class="n">stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
+</span><span id="consecutive-284"><a href="#consecutive-284"><span class="linenos">284</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -15424,8 +15424,8 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-145"><a href="#MultisetEvaluator-145"><span class="linenos">145</span></a><span class="sd">        outcomes.</span>
 </span><span id="MultisetEvaluator-146"><a href="#MultisetEvaluator-146"><span class="linenos">146</span></a>
 </span><span id="MultisetEvaluator-147"><a href="#MultisetEvaluator-147"><span class="linenos">147</span></a><span class="sd">        If you want `next_state` to see consecutive `int` outcomes, you can set</span>
-</span><span id="MultisetEvaluator-148"><a href="#MultisetEvaluator-148"><span class="linenos">148</span></a><span class="sd">        `extra_outcomes = icepool.MultisetEvaluator.bounding_range`.</span>
-</span><span id="MultisetEvaluator-149"><a href="#MultisetEvaluator-149"><span class="linenos">149</span></a><span class="sd">        See `bounding_range()` below.</span>
+</span><span id="MultisetEvaluator-148"><a href="#MultisetEvaluator-148"><span class="linenos">148</span></a><span class="sd">        `extra_outcomes = icepool.MultisetEvaluator.consecutive`.</span>
+</span><span id="MultisetEvaluator-149"><a href="#MultisetEvaluator-149"><span class="linenos">149</span></a><span class="sd">        See `consecutive()` below.</span>
 </span><span id="MultisetEvaluator-150"><a href="#MultisetEvaluator-150"><span class="linenos">150</span></a>
 </span><span id="MultisetEvaluator-151"><a href="#MultisetEvaluator-151"><span class="linenos">151</span></a><span class="sd">        Args:</span>
 </span><span id="MultisetEvaluator-152"><a href="#MultisetEvaluator-152"><span class="linenos">152</span></a><span class="sd">            outcomes: The outcomes that could be produced by the generators, in</span>
@@ -15433,7 +15433,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-154"><a href="#MultisetEvaluator-154"><span class="linenos">154</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetEvaluator-155"><a href="#MultisetEvaluator-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="p">()</span>
 </span><span id="MultisetEvaluator-156"><a href="#MultisetEvaluator-156"><span class="linenos">156</span></a>
-</span><span id="MultisetEvaluator-157"><a href="#MultisetEvaluator-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="MultisetEvaluator-157"><a href="#MultisetEvaluator-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="MultisetEvaluator-158"><a href="#MultisetEvaluator-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
 </span><span id="MultisetEvaluator-159"><a href="#MultisetEvaluator-159"><span class="linenos">159</span></a>
 </span><span id="MultisetEvaluator-160"><a href="#MultisetEvaluator-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
@@ -15441,7 +15441,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-162"><a href="#MultisetEvaluator-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
 </span><span id="MultisetEvaluator-163"><a href="#MultisetEvaluator-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
 </span><span id="MultisetEvaluator-164"><a href="#MultisetEvaluator-164"><span class="linenos">164</span></a>
-</span><span id="MultisetEvaluator-165"><a href="#MultisetEvaluator-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="MultisetEvaluator-165"><a href="#MultisetEvaluator-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
 </span><span id="MultisetEvaluator-166"><a href="#MultisetEvaluator-166"><span class="linenos">166</span></a>
 </span><span id="MultisetEvaluator-167"><a href="#MultisetEvaluator-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
 </span><span id="MultisetEvaluator-168"><a href="#MultisetEvaluator-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
@@ -15455,7 +15455,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-176"><a href="#MultisetEvaluator-176"><span class="linenos">176</span></a>
 </span><span id="MultisetEvaluator-177"><a href="#MultisetEvaluator-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
 </span><span id="MultisetEvaluator-178"><a href="#MultisetEvaluator-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="MultisetEvaluator-179"><a href="#MultisetEvaluator-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="MultisetEvaluator-179"><a href="#MultisetEvaluator-179"><span class="linenos">179</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
 </span><span id="MultisetEvaluator-180"><a href="#MultisetEvaluator-180"><span class="linenos">180</span></a>            <span class="p">)</span>
 </span><span id="MultisetEvaluator-181"><a href="#MultisetEvaluator-181"><span class="linenos">181</span></a>
 </span><span id="MultisetEvaluator-182"><a href="#MultisetEvaluator-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -16063,8 +16063,8 @@ mixed standard dice.</p>
 </span><span id="MultisetEvaluator.extra_outcomes-145"><a href="#MultisetEvaluator.extra_outcomes-145"><span class="linenos">145</span></a><span class="sd">        outcomes.</span>
 </span><span id="MultisetEvaluator.extra_outcomes-146"><a href="#MultisetEvaluator.extra_outcomes-146"><span class="linenos">146</span></a>
 </span><span id="MultisetEvaluator.extra_outcomes-147"><a href="#MultisetEvaluator.extra_outcomes-147"><span class="linenos">147</span></a><span class="sd">        If you want `next_state` to see consecutive `int` outcomes, you can set</span>
-</span><span id="MultisetEvaluator.extra_outcomes-148"><a href="#MultisetEvaluator.extra_outcomes-148"><span class="linenos">148</span></a><span class="sd">        `extra_outcomes = icepool.MultisetEvaluator.bounding_range`.</span>
-</span><span id="MultisetEvaluator.extra_outcomes-149"><a href="#MultisetEvaluator.extra_outcomes-149"><span class="linenos">149</span></a><span class="sd">        See `bounding_range()` below.</span>
+</span><span id="MultisetEvaluator.extra_outcomes-148"><a href="#MultisetEvaluator.extra_outcomes-148"><span class="linenos">148</span></a><span class="sd">        `extra_outcomes = icepool.MultisetEvaluator.consecutive`.</span>
+</span><span id="MultisetEvaluator.extra_outcomes-149"><a href="#MultisetEvaluator.extra_outcomes-149"><span class="linenos">149</span></a><span class="sd">        See `consecutive()` below.</span>
 </span><span id="MultisetEvaluator.extra_outcomes-150"><a href="#MultisetEvaluator.extra_outcomes-150"><span class="linenos">150</span></a>
 </span><span id="MultisetEvaluator.extra_outcomes-151"><a href="#MultisetEvaluator.extra_outcomes-151"><span class="linenos">151</span></a><span class="sd">        Args:</span>
 </span><span id="MultisetEvaluator.extra_outcomes-152"><a href="#MultisetEvaluator.extra_outcomes-152"><span class="linenos">152</span></a><span class="sd">            outcomes: The outcomes that could be produced by the generators, in</span>
@@ -16081,8 +16081,8 @@ generator(s). The default implementation returns <code>()</code>, or no addition
 outcomes.</p>
 
 <p>If you want <code><a href="#MultisetEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
-<code>extra_outcomes = <a href="#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code>.
-See <code><a href="#MultisetEvaluator.bounding_range">bounding_range()</a></code> below.</p>
+<code>extra_outcomes = <a href="#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code>.
+See <code><a href="#MultisetEvaluator.consecutive">consecutive()</a></code> below.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -16094,43 +16094,43 @@ See <code><a href="#MultisetEvaluator.bounding_range">bounding_range()</a></code
 
 
                             </div>
-                            <div id="MultisetEvaluator.bounding_range" class="classattr">
-                                        <input id="MultisetEvaluator.bounding_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="MultisetEvaluator.consecutive" class="classattr">
+                                        <input id="MultisetEvaluator.consecutive-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">bounding_range</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">consecutive</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="MultisetEvaluator.bounding_range-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="MultisetEvaluator.consecutive-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#MultisetEvaluator.bounding_range"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetEvaluator.bounding_range-157"><a href="#MultisetEvaluator.bounding_range-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="MultisetEvaluator.bounding_range-158"><a href="#MultisetEvaluator.bounding_range-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
-</span><span id="MultisetEvaluator.bounding_range-159"><a href="#MultisetEvaluator.bounding_range-159"><span class="linenos">159</span></a>
-</span><span id="MultisetEvaluator.bounding_range-160"><a href="#MultisetEvaluator.bounding_range-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
-</span><span id="MultisetEvaluator.bounding_range-161"><a href="#MultisetEvaluator.bounding_range-161"><span class="linenos">161</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
-</span><span id="MultisetEvaluator.bounding_range-162"><a href="#MultisetEvaluator.bounding_range-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
-</span><span id="MultisetEvaluator.bounding_range-163"><a href="#MultisetEvaluator.bounding_range-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
-</span><span id="MultisetEvaluator.bounding_range-164"><a href="#MultisetEvaluator.bounding_range-164"><span class="linenos">164</span></a>
-</span><span id="MultisetEvaluator.bounding_range-165"><a href="#MultisetEvaluator.bounding_range-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
-</span><span id="MultisetEvaluator.bounding_range-166"><a href="#MultisetEvaluator.bounding_range-166"><span class="linenos">166</span></a>
-</span><span id="MultisetEvaluator.bounding_range-167"><a href="#MultisetEvaluator.bounding_range-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
-</span><span id="MultisetEvaluator.bounding_range-168"><a href="#MultisetEvaluator.bounding_range-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
-</span><span id="MultisetEvaluator.bounding_range-169"><a href="#MultisetEvaluator.bounding_range-169"><span class="linenos">169</span></a><span class="sd">            inclusive.</span>
-</span><span id="MultisetEvaluator.bounding_range-170"><a href="#MultisetEvaluator.bounding_range-170"><span class="linenos">170</span></a>
-</span><span id="MultisetEvaluator.bounding_range-171"><a href="#MultisetEvaluator.bounding_range-171"><span class="linenos">171</span></a><span class="sd">        Raises:</span>
-</span><span id="MultisetEvaluator.bounding_range-172"><a href="#MultisetEvaluator.bounding_range-172"><span class="linenos">172</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
-</span><span id="MultisetEvaluator.bounding_range-173"><a href="#MultisetEvaluator.bounding_range-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="MultisetEvaluator.bounding_range-174"><a href="#MultisetEvaluator.bounding_range-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="MultisetEvaluator.bounding_range-175"><a href="#MultisetEvaluator.bounding_range-175"><span class="linenos">175</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="MultisetEvaluator.bounding_range-176"><a href="#MultisetEvaluator.bounding_range-176"><span class="linenos">176</span></a>
-</span><span id="MultisetEvaluator.bounding_range-177"><a href="#MultisetEvaluator.bounding_range-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="MultisetEvaluator.bounding_range-178"><a href="#MultisetEvaluator.bounding_range-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="MultisetEvaluator.bounding_range-179"><a href="#MultisetEvaluator.bounding_range-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="MultisetEvaluator.bounding_range-180"><a href="#MultisetEvaluator.bounding_range-180"><span class="linenos">180</span></a>            <span class="p">)</span>
-</span><span id="MultisetEvaluator.bounding_range-181"><a href="#MultisetEvaluator.bounding_range-181"><span class="linenos">181</span></a>
-</span><span id="MultisetEvaluator.bounding_range-182"><a href="#MultisetEvaluator.bounding_range-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <a class="headerlink" href="#MultisetEvaluator.consecutive"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetEvaluator.consecutive-157"><a href="#MultisetEvaluator.consecutive-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="MultisetEvaluator.consecutive-158"><a href="#MultisetEvaluator.consecutive-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="MultisetEvaluator.consecutive-159"><a href="#MultisetEvaluator.consecutive-159"><span class="linenos">159</span></a>
+</span><span id="MultisetEvaluator.consecutive-160"><a href="#MultisetEvaluator.consecutive-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
+</span><span id="MultisetEvaluator.consecutive-161"><a href="#MultisetEvaluator.consecutive-161"><span class="linenos">161</span></a><span class="sd">        an arbitrary number of generators. Thus, you are free to rename any of</span>
+</span><span id="MultisetEvaluator.consecutive-162"><a href="#MultisetEvaluator.consecutive-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
+</span><span id="MultisetEvaluator.consecutive-163"><a href="#MultisetEvaluator.consecutive-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
+</span><span id="MultisetEvaluator.consecutive-164"><a href="#MultisetEvaluator.consecutive-164"><span class="linenos">164</span></a>
+</span><span id="MultisetEvaluator.consecutive-165"><a href="#MultisetEvaluator.consecutive-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
+</span><span id="MultisetEvaluator.consecutive-166"><a href="#MultisetEvaluator.consecutive-166"><span class="linenos">166</span></a>
+</span><span id="MultisetEvaluator.consecutive-167"><a href="#MultisetEvaluator.consecutive-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
+</span><span id="MultisetEvaluator.consecutive-168"><a href="#MultisetEvaluator.consecutive-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
+</span><span id="MultisetEvaluator.consecutive-169"><a href="#MultisetEvaluator.consecutive-169"><span class="linenos">169</span></a><span class="sd">            inclusive.</span>
+</span><span id="MultisetEvaluator.consecutive-170"><a href="#MultisetEvaluator.consecutive-170"><span class="linenos">170</span></a>
+</span><span id="MultisetEvaluator.consecutive-171"><a href="#MultisetEvaluator.consecutive-171"><span class="linenos">171</span></a><span class="sd">        Raises:</span>
+</span><span id="MultisetEvaluator.consecutive-172"><a href="#MultisetEvaluator.consecutive-172"><span class="linenos">172</span></a><span class="sd">            TypeError: if any generator has any non-`int` outcome.</span>
+</span><span id="MultisetEvaluator.consecutive-173"><a href="#MultisetEvaluator.consecutive-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetEvaluator.consecutive-174"><a href="#MultisetEvaluator.consecutive-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="MultisetEvaluator.consecutive-175"><a href="#MultisetEvaluator.consecutive-175"><span class="linenos">175</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="MultisetEvaluator.consecutive-176"><a href="#MultisetEvaluator.consecutive-176"><span class="linenos">176</span></a>
+</span><span id="MultisetEvaluator.consecutive-177"><a href="#MultisetEvaluator.consecutive-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="MultisetEvaluator.consecutive-178"><a href="#MultisetEvaluator.consecutive-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="MultisetEvaluator.consecutive-179"><a href="#MultisetEvaluator.consecutive-179"><span class="linenos">179</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="MultisetEvaluator.consecutive-180"><a href="#MultisetEvaluator.consecutive-180"><span class="linenos">180</span></a>            <span class="p">)</span>
+</span><span id="MultisetEvaluator.consecutive-181"><a href="#MultisetEvaluator.consecutive-181"><span class="linenos">181</span></a>
+</span><span id="MultisetEvaluator.consecutive-182"><a href="#MultisetEvaluator.consecutive-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -16141,7 +16141,7 @@ an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>extra_outcomes = <a href="#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 

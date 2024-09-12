@@ -830,8 +830,8 @@ generator(s). The default implementation returns <code>()</code>, or no addition
 outcomes.</p>
 
 <p>If you want <code><a href="#JointEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
-<code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code>.
-See <code><a href="#JointEvaluator.bounding_range">bounding_range()</a></code> below.</p>
+<code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code>.
+See <code><a href="#JointEvaluator.consecutive">consecutive()</a></code> below.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -902,7 +902,7 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="JointEvaluator.bounding_range" class="function">bounding_range</dd>
+                                <dd id="JointEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="JointEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="JointEvaluator.sample" class="function">sample</dd>
 
@@ -1049,7 +1049,7 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="ExpandEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="ExpandEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="ExpandEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="ExpandEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ExpandEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ExpandEvaluator.evaluate" class="function">evaluate</dd>
@@ -1217,7 +1217,7 @@ check redundant.</p>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="SumEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="SumEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="SumEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="SumEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="SumEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="SumEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="SumEvaluator.evaluate" class="function">evaluate</dd>
@@ -1349,7 +1349,7 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="CountEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="CountEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="CountEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="CountEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="CountEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="CountEvaluator.evaluate" class="function">evaluate</dd>
@@ -1474,7 +1474,7 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="AnyEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="AnyEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="AnyEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="AnyEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AnyEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AnyEvaluator.evaluate" class="function">evaluate</dd>
@@ -1626,7 +1626,7 @@ check redundant.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="HighestOutcomeAndCountEvaluator.final_outcome" class="function">final_outcome</dd>
-                <dd id="HighestOutcomeAndCountEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="HighestOutcomeAndCountEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="HighestOutcomeAndCountEvaluator.evaluate" class="function">evaluate</dd>
@@ -1726,7 +1726,7 @@ check redundant.</p>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestCountEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="LargestCountEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="LargestCountEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="LargestCountEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="LargestCountEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestCountEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestCountEvaluator.evaluate" class="function">evaluate</dd>
@@ -1826,7 +1826,7 @@ check redundant.</p>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestCountAndOutcomeEvaluator.final_outcome" class="function">final_outcome</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="LargestCountAndOutcomeEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="LargestCountAndOutcomeEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestCountAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
@@ -2077,7 +2077,7 @@ happens.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="CountSubsetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="CountSubsetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="CountSubsetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="CountSubsetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="CountSubsetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="CountSubsetEvaluator.evaluate" class="function">evaluate</dd>
@@ -2277,7 +2277,7 @@ If <code>None</code>, no filtering will be done.</li>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="AllCountsEvaluator.bounding_range" class="function">bounding_range</dd>
+                                <dd id="AllCountsEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="AllCountsEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AllCountsEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AllCountsEvaluator.evaluate" class="function">evaluate</dd>
@@ -2316,7 +2316,7 @@ If <code>None</code>, no filtering will be done.</li>
 </span><span id="LargestStraightEvaluator-172"><a href="#LargestStraightEvaluator-172"><span class="linenos">172</span></a>            <span class="k">return</span> <span class="mi">0</span>
 </span><span id="LargestStraightEvaluator-173"><a href="#LargestStraightEvaluator-173"><span class="linenos">173</span></a>        <span class="k">return</span> <span class="n">final_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="LargestStraightEvaluator-174"><a href="#LargestStraightEvaluator-174"><span class="linenos">174</span></a>
-</span><span id="LargestStraightEvaluator-175"><a href="#LargestStraightEvaluator-175"><span class="linenos">175</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
+</span><span id="LargestStraightEvaluator-175"><a href="#LargestStraightEvaluator-175"><span class="linenos">175</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span></pre></div>
 
 
@@ -2386,7 +2386,7 @@ If <code>None</code>, no filtering will be done.</li>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.extra_outcomes-157"><a href="#LargestStraightEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.extra_outcomes-157"><a href="#LargestStraightEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-158"><a href="#LargestStraightEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-159"><a href="#LargestStraightEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
 </span><span id="LargestStraightEvaluator.extra_outcomes-160"><a href="#LargestStraightEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
@@ -2394,7 +2394,7 @@ If <code>None</code>, no filtering will be done.</li>
 </span><span id="LargestStraightEvaluator.extra_outcomes-162"><a href="#LargestStraightEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-163"><a href="#LargestStraightEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-164"><a href="#LargestStraightEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
-</span><span id="LargestStraightEvaluator.extra_outcomes-165"><a href="#LargestStraightEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-165"><a href="#LargestStraightEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-166"><a href="#LargestStraightEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
 </span><span id="LargestStraightEvaluator.extra_outcomes-167"><a href="#LargestStraightEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-168"><a href="#LargestStraightEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
@@ -2408,7 +2408,7 @@ If <code>None</code>, no filtering will be done.</li>
 </span><span id="LargestStraightEvaluator.extra_outcomes-176"><a href="#LargestStraightEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
 </span><span id="LargestStraightEvaluator.extra_outcomes-177"><a href="#LargestStraightEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-178"><a href="#LargestStraightEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-179"><a href="#LargestStraightEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-179"><a href="#LargestStraightEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-180"><a href="#LargestStraightEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
 </span><span id="LargestStraightEvaluator.extra_outcomes-181"><a href="#LargestStraightEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
 </span><span id="LargestStraightEvaluator.extra_outcomes-182"><a href="#LargestStraightEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -2422,7 +2422,7 @@ an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -2445,7 +2445,7 @@ set of parameters.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="LargestStraightEvaluator.order" class="function">order</dd>
-                <dd id="LargestStraightEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="LargestStraightEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="LargestStraightEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestStraightEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestStraightEvaluator.evaluate" class="function">evaluate</dd>
@@ -2499,7 +2499,7 @@ set of parameters.</p>
 </span><span id="LargestStraightAndOutcomeEvaluator-200"><a href="#LargestStraightAndOutcomeEvaluator-200"><span class="linenos">200</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
 </span><span id="LargestStraightAndOutcomeEvaluator-201"><a href="#LargestStraightAndOutcomeEvaluator-201"><span class="linenos">201</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span><span id="LargestStraightAndOutcomeEvaluator-202"><a href="#LargestStraightAndOutcomeEvaluator-202"><span class="linenos">202</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator-203"><a href="#LargestStraightAndOutcomeEvaluator-203"><span class="linenos">203</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-203"><a href="#LargestStraightAndOutcomeEvaluator-203"><span class="linenos">203</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span></pre></div>
 
 
@@ -2589,7 +2589,7 @@ set of parameters.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-158"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-159"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-160"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
@@ -2597,7 +2597,7 @@ set of parameters.</p>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-162"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-163"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-164"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-166"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-167"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-168"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
@@ -2611,7 +2611,7 @@ set of parameters.</p>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-176"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-177"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-178"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-179"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-179"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-180"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-181"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
 </span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-182"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -2625,7 +2625,7 @@ an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -2647,7 +2647,7 @@ set of parameters.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="LargestStraightAndOutcomeEvaluator.bounding_range" class="function">bounding_range</dd>
+                                <dd id="LargestStraightAndOutcomeEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="LargestStraightAndOutcomeEvaluator.evaluate" class="function">evaluate</dd>
@@ -2711,7 +2711,7 @@ set of parameters.</p>
 </span><span id="AllStraightsEvaluator-239"><a href="#AllStraightsEvaluator-239"><span class="linenos">239</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ascending order.&quot;&quot;&quot;</span>
 </span><span id="AllStraightsEvaluator-240"><a href="#AllStraightsEvaluator-240"><span class="linenos">240</span></a>        <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span>
 </span><span id="AllStraightsEvaluator-241"><a href="#AllStraightsEvaluator-241"><span class="linenos">241</span></a>
-</span><span id="AllStraightsEvaluator-242"><a href="#AllStraightsEvaluator-242"><span class="linenos">242</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
+</span><span id="AllStraightsEvaluator-242"><a href="#AllStraightsEvaluator-242"><span class="linenos">242</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span></pre></div>
 
 
@@ -2811,7 +2811,7 @@ elements are preferentially assigned to the longer straight.</p>
 
     </div>
     <a class="headerlink" href="#AllStraightsEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.extra_outcomes-157"><a href="#AllStraightsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.extra_outcomes-157"><a href="#AllStraightsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-158"><a href="#AllStraightsEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-159"><a href="#AllStraightsEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
 </span><span id="AllStraightsEvaluator.extra_outcomes-160"><a href="#AllStraightsEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
@@ -2819,7 +2819,7 @@ elements are preferentially assigned to the longer straight.</p>
 </span><span id="AllStraightsEvaluator.extra_outcomes-162"><a href="#AllStraightsEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-163"><a href="#AllStraightsEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-164"><a href="#AllStraightsEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
-</span><span id="AllStraightsEvaluator.extra_outcomes-165"><a href="#AllStraightsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-165"><a href="#AllStraightsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-166"><a href="#AllStraightsEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
 </span><span id="AllStraightsEvaluator.extra_outcomes-167"><a href="#AllStraightsEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-168"><a href="#AllStraightsEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
@@ -2833,7 +2833,7 @@ elements are preferentially assigned to the longer straight.</p>
 </span><span id="AllStraightsEvaluator.extra_outcomes-176"><a href="#AllStraightsEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
 </span><span id="AllStraightsEvaluator.extra_outcomes-177"><a href="#AllStraightsEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-178"><a href="#AllStraightsEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-179"><a href="#AllStraightsEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-179"><a href="#AllStraightsEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-180"><a href="#AllStraightsEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
 </span><span id="AllStraightsEvaluator.extra_outcomes-181"><a href="#AllStraightsEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
 </span><span id="AllStraightsEvaluator.extra_outcomes-182"><a href="#AllStraightsEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -2847,7 +2847,7 @@ an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -2869,7 +2869,7 @@ set of parameters.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="AllStraightsEvaluator.bounding_range" class="function">bounding_range</dd>
+                                <dd id="AllStraightsEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="AllStraightsEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AllStraightsEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AllStraightsEvaluator.evaluate" class="function">evaluate</dd>
@@ -2952,7 +2952,7 @@ set of parameters.</p>
 </span><span id="AllStraightsReduceCountsEvaluator-296"><a href="#AllStraightsReduceCountsEvaluator-296"><span class="linenos">296</span></a>                <span class="nb">sorted</span><span class="p">(</span><span class="n">ended_runs</span> <span class="o">+</span> <span class="p">(</span><span class="n">current_run</span><span class="p">,</span> <span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </span><span id="AllStraightsReduceCountsEvaluator-297"><a href="#AllStraightsReduceCountsEvaluator-297"><span class="linenos">297</span></a>        <span class="k">return</span> <span class="n">ended_runs</span>
 </span><span id="AllStraightsReduceCountsEvaluator-298"><a href="#AllStraightsReduceCountsEvaluator-298"><span class="linenos">298</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator-299"><a href="#AllStraightsReduceCountsEvaluator-299"><span class="linenos">299</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">bounding_range</span>
+</span><span id="AllStraightsReduceCountsEvaluator-299"><a href="#AllStraightsReduceCountsEvaluator-299"><span class="linenos">299</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span></pre></div>
 
 
@@ -3076,7 +3076,7 @@ elements for each straight, e.g. cribbage.</li>
 
     </div>
     <a class="headerlink" href="#AllStraightsReduceCountsEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-157"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-157"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-158"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-159"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-159"><span class="linenos">159</span></a>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-160"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">        There is no expectation that a subclass be able to handle</span>
@@ -3084,7 +3084,7 @@ elements for each straight, e.g. cribbage.</li>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-162"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        the parameters in a subclass, or to replace `*generators` with a fixed</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-163"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">        set of parameters.</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-164"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-164"><span class="linenos">164</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-165"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.bounding_range` to use this.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-165"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-166"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-167"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-167"><span class="linenos">167</span></a><span class="sd">        Returns:</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-168"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-168"><span class="linenos">168</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the generators,</span>
@@ -3098,7 +3098,7 @@ elements for each straight, e.g. cribbage.</li>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-176"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-176"><span class="linenos">176</span></a>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-177"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-178"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-179"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;bounding_range cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-179"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-179"><span class="linenos">179</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-180"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-180"><span class="linenos">180</span></a>            <span class="p">)</span>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-181"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-181"><span class="linenos">181</span></a>
 </span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-182"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -3112,7 +3112,7 @@ an arbitrary number of generators. Thus, you are free to rename any of
 the parameters in a subclass, or to replace <code>*generators</code> with a fixed
 set of parameters.</p>
 
-<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.bounding_range">icepool.MultisetEvaluator.bounding_range</a></code> to use this.</p>
+<p>Set <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code> to use this.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -3135,7 +3135,7 @@ set of parameters.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="AllStraightsReduceCountsEvaluator.order" class="function">order</dd>
-                <dd id="AllStraightsReduceCountsEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="AllStraightsReduceCountsEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="AllStraightsReduceCountsEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="AllStraightsReduceCountsEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="AllStraightsReduceCountsEvaluator.evaluate" class="function">evaluate</dd>
@@ -3330,7 +3330,7 @@ bool are <code>True</code>.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="ComparisonEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="ComparisonEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="ComparisonEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="ComparisonEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ComparisonEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ComparisonEvaluator.evaluate" class="function">evaluate</dd>
@@ -3424,7 +3424,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsSubsetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsSubsetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsSubsetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsSubsetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsSubsetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsSubsetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3518,7 +3518,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsProperSubsetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsProperSubsetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsProperSubsetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsProperSubsetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsProperSubsetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsProperSubsetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3612,7 +3612,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsSupersetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsSupersetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsSupersetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsSupersetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsSupersetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsSupersetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3706,7 +3706,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsProperSupersetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsProperSupersetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsProperSupersetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsProperSupersetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsProperSupersetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsProperSupersetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3800,7 +3800,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsEqualSetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsEqualSetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsEqualSetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsEqualSetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsEqualSetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsEqualSetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3894,7 +3894,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsNotEqualSetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsNotEqualSetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsNotEqualSetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsNotEqualSetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsNotEqualSetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsNotEqualSetEvaluator.evaluate" class="function">evaluate</dd>
@@ -3994,7 +3994,7 @@ bool are <code>True</code>.</p>
             </div>
             <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="IsDisjointSetEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="IsDisjointSetEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="IsDisjointSetEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="IsDisjointSetEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="IsDisjointSetEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="IsDisjointSetEvaluator.evaluate" class="function">evaluate</dd>
@@ -4218,7 +4218,7 @@ the sorted index; otherwise, this raises <code>IndexError</code>.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="KeepEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="KeepEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="KeepEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="KeepEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="KeepEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="KeepEvaluator.evaluate" class="function">evaluate</dd>
@@ -4406,7 +4406,7 @@ mixed standard dice.</p>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
                                 <dd id="ArgsortEvaluator.extra_outcomes" class="function">extra_outcomes</dd>
-                <dd id="ArgsortEvaluator.bounding_range" class="function">bounding_range</dd>
+                <dd id="ArgsortEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="ArgsortEvaluator.prefix_generators" class="function">prefix_generators</dd>
                 <dd id="ArgsortEvaluator.validate_arity" class="function">validate_arity</dd>
                 <dd id="ArgsortEvaluator.evaluate" class="function">evaluate</dd>
@@ -4756,7 +4756,7 @@ check redundant.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt>icepool.evaluator.multiset_evaluator.MultisetEvaluator</dt>
-                                <dd id="ExpressionEvaluator.bounding_range" class="function">bounding_range</dd>
+                                <dd id="ExpressionEvaluator.consecutive" class="function">consecutive</dd>
                 <dd id="ExpressionEvaluator.evaluate" class="function">evaluate</dd>
                 <dd id="ExpressionEvaluator.sample" class="function">sample</dd>
 

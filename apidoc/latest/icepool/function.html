@@ -59,7 +59,7 @@
                     <a class="function" href="#max_outcome">max_outcome</a>
             </li>
             <li>
-                    <a class="function" href="#bounding_range">bounding_range</a>
+                    <a class="function" href="#consecutive">consecutive</a>
             </li>
             <li>
                     <a class="function" href="#sorted_union">sorted_union</a>
@@ -384,7 +384,7 @@
 </span><span id="L-274"><a href="#L-274"><span class="linenos">274</span></a>    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">_iter_outcomes</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
 </span><span id="L-275"><a href="#L-275"><span class="linenos">275</span></a>
 </span><span id="L-276"><a href="#L-276"><span class="linenos">276</span></a>
-</span><span id="L-277"><a href="#L-277"><span class="linenos">277</span></a><span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="L-277"><a href="#L-277"><span class="linenos">277</span></a><span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="L-278"><a href="#L-278"><span class="linenos">278</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
 </span><span id="L-279"><a href="#L-279"><span class="linenos">279</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </span><span id="L-280"><a href="#L-280"><span class="linenos">280</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1285,24 +1285,24 @@ compared to the denominator.</li>
 
 
                 </section>
-                <section id="bounding_range">
-                            <input id="bounding_range-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="consecutive">
+                            <input id="consecutive-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">bounding_range</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
+        <span class="name">consecutive</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="bounding_range-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="consecutive-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#bounding_range"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="bounding_range-278"><a href="#bounding_range-278"><span class="linenos">278</span></a><span class="k">def</span> <span class="nf">bounding_range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="bounding_range-279"><a href="#bounding_range-279"><span class="linenos">279</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
-</span><span id="bounding_range-280"><a href="#bounding_range-280"><span class="linenos">280</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="bounding_range-281"><a href="#bounding_range-281"><span class="linenos">281</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="bounding_range-282"><a href="#bounding_range-282"><span class="linenos">282</span></a>        <span class="k">return</span> <span class="p">()</span>
-</span><span id="bounding_range-283"><a href="#bounding_range-283"><span class="linenos">283</span></a>    <span class="n">stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
-</span><span id="bounding_range-284"><a href="#bounding_range-284"><span class="linenos">284</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <a class="headerlink" href="#consecutive"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="consecutive-278"><a href="#consecutive-278"><span class="linenos">278</span></a><span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="consecutive-279"><a href="#consecutive-279"><span class="linenos">279</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
+</span><span id="consecutive-280"><a href="#consecutive-280"><span class="linenos">280</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="consecutive-281"><a href="#consecutive-281"><span class="linenos">281</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="consecutive-282"><a href="#consecutive-282"><span class="linenos">282</span></a>        <span class="k">return</span> <span class="p">()</span>
+</span><span id="consecutive-283"><a href="#consecutive-283"><span class="linenos">283</span></a>    <span class="n">stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
+</span><span id="consecutive-284"><a href="#consecutive-284"><span class="linenos">284</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 </span></pre></div>
 
 
