@@ -677,7 +677,7 @@ def map_and_time(
 
     result: 'icepool.Die[tuple[T, int]]' = state.map(lambda x: (x, 0))
 
-    def transition_with_steps(outcome_and_steps):
+    def transition_with_steps(outcome_and_steps, *extra_args):
         outcome, steps = outcome_and_steps
         next_outcome = transition_function(outcome, *extra_args)
         if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
@@ -687,7 +687,7 @@ def map_and_time(
 
     for _ in range(repeat):
         next_result: 'icepool.Die[tuple[T, int]]' = map(
-            transition_with_steps, result)
+            transition_with_steps, result, *extra_args)
         if result == next_result:
             return next_result
         result = next_result
