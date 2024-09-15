@@ -30,13 +30,6 @@ def test_list_no_min_outcome():
     assert result.equals(expected)
 
 
-def test_zero_outcomes():
-    die = icepool.Die(range(7), times=[0, 1, 1, 1, 1, 1, 1])
-    other = icepool.d6
-    assert die.has_zero_quantities()
-    assert not die.equals(other)
-
-
 def test_d6s():
     d6 = icepool.d6
     assert d6.equals(icepool.d(6))

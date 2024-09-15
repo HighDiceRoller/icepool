@@ -27,5 +27,5 @@ def test_from_rv_norm():
                                1000000,
                                loc=die.mean(),
                                scale=die.standard_deviation())
-    assert die.probabilities('<=') == pytest.approx(
-        norm_die.probabilities('<='), abs=1e-3)
+    assert [die.probability('<=', x) for x in range(600)] == pytest.approx(
+        [norm_die.probability('<=', x) for x in range(600)], abs=1e-3)

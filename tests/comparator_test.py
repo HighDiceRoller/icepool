@@ -106,7 +106,7 @@ def test_cmp_len():
     assert len(icepool.d6.cmp(0)) == 1
     assert len(icepool.d6.cmp(7)) == 1
     assert len(icepool.Die([1]).cmp(1)) == 1
-    assert len(icepool.Die({-1: 0, 0: 0, 1: 0}).cmp(0)) == 3
+    assert len(icepool.Die({-1: 0, 0: 0, 1: 0}).cmp(0)) == 0
 
 
 def test_quantity_le():

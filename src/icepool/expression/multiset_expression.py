@@ -939,7 +939,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         If no outcomes have positive count, the min outcome will be returned with 0 count.
         """
         return self.evaluate(
-            evaluator=icepool.evaluator.HighestOutcomeAndCountEvaluator())
+            evaluator=icepool.evaluator.highest_outcome_and_count_evaluator)
 
     def all_counts(
         self,
@@ -954,8 +954,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
                 For example, `filter=2` will only produce pairs and better.
                 If `None`, no filtering will be done.
 
-                Why not just place `keep_countss_ge()` before this?
-                `keep_countss_ge()` operates by setting counts to zero, so you
+                Why not just place `keep_counts_ge()` before this?
+                `keep_counts_ge()` operates by setting counts to zero, so you
                 would still need an argument to specify whether you want to
                 output zero counts. So we might as well use the argument to do
                 both.
@@ -968,14 +968,14 @@ class MultisetExpression(ABC, Generic[T_contra]):
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T_contra, int]':
         """Evaluation: The size of the largest matching set among the elements."""
         return self.evaluate(
-            evaluator=icepool.evaluator.LargestCountEvaluator())
+            evaluator=icepool.evaluator.largest_count_evaluator)
 
     def largest_count_and_outcome(
         self
     ) -> 'icepool.Die[tuple[int, T_contra]] | icepool.MultisetEvaluator[T_contra, tuple[int, T_contra]]':
         """Evaluation: The largest matching set among the elements and the corresponding outcome."""
         return self.evaluate(
-            evaluator=icepool.evaluator.LargestCountAndOutcomeEvaluator())
+            evaluator=icepool.evaluator.largest_count_and_outcome_evaluator)
 
     def __rfloordiv__(
         self, other:
@@ -1017,7 +1017,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Outcomes must be `int`s.
         """
         return self.evaluate(
-            evaluator=icepool.evaluator.LargestStraightEvaluator())
+            evaluator=icepool.evaluator.largest_straight_evaluator)
 
     def largest_straight_and_outcome(
         self: 'MultisetExpression[int]'
@@ -1027,7 +1027,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Outcomes must be `int`s.
         """
         return self.evaluate(
-            evaluator=icepool.evaluator.LargestStraightAndOutcomeEvaluator())
+            evaluator=icepool.evaluator.largest_straight_and_outcome_evaluator)
 
     def all_straights(
         self: 'MultisetExpression[int]'
@@ -1041,7 +1041,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
         elements are preferentially assigned to the longer straight.
         """
         return self.evaluate(
-            evaluator=icepool.evaluator.AllStraightsEvaluator())
+            evaluator=icepool.evaluator.all_straights_evaluator)
 
     def all_straights_reduce_counts(
         self: 'MultisetExpression[int]',

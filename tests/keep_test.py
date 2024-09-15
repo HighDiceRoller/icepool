@@ -52,14 +52,6 @@ def test_keep_highest(keep):
 
 
 @pytest.mark.parametrize('keep', range(1, 6))
-def test_keep_highest_zero_weights(keep):
-    die = icepool.Die(range(6), times=[0, 0, 1, 1, 1, 1])
-    result = die.highest(4, keep).trim()
-    expected = bf_keep_highest(icepool.d4 + 1, 4, keep)
-    assert result == expected
-
-
-@pytest.mark.parametrize('keep', range(1, 6))
 def test_keep_highest_drop_highest(keep):
     die = icepool.d12
     result = die.highest(4, keep, drop=1)

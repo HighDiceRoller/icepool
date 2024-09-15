@@ -72,9 +72,9 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
                                          for expression in self._expressions))
         return Order.merge(expression_order, self._evaluator.order())
 
-    def alignment(self, *generators) -> Collection[T_contra]:
+    def extra_outcomes(self, *generators) -> Collection[T_contra]:
         """Forwards to inner."""
-        return self._evaluator.alignment(*generators)
+        return self._evaluator.extra_outcomes(*generators)
 
     @cached_property
     def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':

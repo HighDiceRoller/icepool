@@ -198,11 +198,16 @@ def from_rv(rv, outcomes: Sequence[float], denominator: int,
 def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
             **kwargs) -> 'icepool.Die[int] | icepool.Die[float]':
     """Constructs a `Die` from a rv object (as `scipy.stats`).
+
+    This is done using the CDF.
+
     Args:
         rv: A rv object (as `scipy.stats`).
         outcomes: An iterable of `int`s or `float`s that will be the outcomes
             of the resulting `Die`.
             If the distribution is discrete, outcomes must be `int`s.
+            Some outcomes may be omitted if their probability is too small
+            compared to the denominator.
         denominator: The denominator of the resulting `Die` will be set to this.
         **kwargs: These will be forwarded to `rv.cdf()`.
     """
@@ -218,66 +223,76 @@ def from_rv(rv, outcomes: Sequence[int] | Sequence[float], denominator: int,
     return from_cumulative(outcomes, quantities_le)
 
 
-def min_outcome(*dice: 'T | icepool.Die[T]') -> T:
-    """The minimum outcome among the dice. """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    return min(die.outcomes()[0] for die in converted_dice)
+def _iter_outcomes(
+        *args: 'Iterable[T | icepool.Population[T]] | T') -> Iterator[T]:
+    if len(args) == 1:
+        iter_args = cast('Iterable[T | icepool.Population[T]]', args[0])
+    else:
+        iter_args = cast('Iterable[T | icepool.Population[T]]', args)
+    for arg in iter_args:
+        if isinstance(arg, icepool.Population):
+            yield from arg
+        else:
+            yield arg
 
 
-def max_outcome(*dice: 'T | icepool.Die[T]') -> T:
-    """The maximum outcome among the dice. """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    return max(die.outcomes()[-1] for die in converted_dice)
+@overload
+def min_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
+    ...
 
-def range_union(*args: Iterable[int]) -> Sequence[int]:
-    """Produces a sequence of consecutive ints covering the argument sets."""
+
+@overload
+def min_outcome(*args: 'T | icepool.Population[T]') -> T:
+    ...
+
+
+def min_outcome(*args: 'Iterable[T | icepool.Population[T]] | T') -> T:
+    """The minimum possible outcome among the populations.
+    
+    Args:
+        Populations or single outcomes. Alternatively, a single iterable argument of such.
+    """
+    return min(_iter_outcomes(*args))
+
+
+@overload
+def max_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
+    ...
+
+
+@overload
+def max_outcome(*args: 'T | icepool.Population[T]') -> T:
+    ...
+
+
+def max_outcome(*args: 'Iterable[T | icepool.Population[T]] | T') -> T:
+    """The maximum possible outcome among the populations.
+    
+    Args:
+        Populations or single outcomes. Alternatively, a single iterable argument of such.
+    """
+    return max(_iter_outcomes(*args))
+
+
+def consecutive(*args: Iterable[int]) -> Sequence[int]:
+    """A minimal sequence of consecutive ints covering the argument sets."""
     start = min((x for x in itertools.chain(*args)), default=None)
     if start is None:
         return ()
     stop = max(x for x in itertools.chain(*args))
-    return tuple(range(start, stop+1))
+    return tuple(range(start, stop + 1))
 
-def sorted_union(*args: Iterable[T]) -> Sequence[T]:
+
+def sorted_union(*args: Iterable[T]) -> tuple[T, ...]:
     """Merge sets into a sorted sequence."""
     if not args:
         return ()
     return tuple(sorted(set.union(*(set(arg) for arg in args))))
 
-def align(*dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
-    """DEPRECATED: Pads dice with zero quantities so that all have the same set of outcomes.
-
-    Args:
-        *dice: Any number of dice or single outcomes convertible to dice.
-
-    Returns:
-        A tuple of aligned dice.
-    """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    outcomes = set(
-        itertools.chain.from_iterable(die.outcomes()
-                                      for die in converted_dice))
-    return tuple(die.set_outcomes(outcomes) for die in converted_dice)
-
-
-def align_range(
-        *dice: 'int | icepool.Die[int]') -> tuple['icepool.Die[int]', ...]:
-    """DEPRECATED: Pads dice with zero quantities so that all have the same set of consecutive `int` outcomes.
-
-    Args:
-        *dice: Any number of dice or single outcomes convertible to dice.
-
-    Returns:
-        A tuple of aligned dice.
-    """
-    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    outcomes = range(icepool.min_outcome(*converted_dice),
-                     icepool.max_outcome(*converted_dice) + 1)
-    return tuple(die.set_outcomes(outcomes) for die in converted_dice)
-
 
 def commonize_denominator(
         *dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
-    """Scale the weights of the dice so that all of them have the same denominator.
+    """Scale the quantities of the dice so that all of them have the same denominator.
 
     Args:
         *dice: Any number of dice or single outcomes convertible to dice.
@@ -292,8 +307,8 @@ def commonize_denominator(
                                  if die.denominator() > 0))
     return tuple(
         die.multiply_quantities(denominator_lcm //
-                             die.denominator() if die.denominator() > 0 else 1)
-        for die in converted_dice)
+                                die.denominator() if die.denominator() >
+                                0 else 1) for die in converted_dice)
 
 
 def reduce(
@@ -662,7 +677,7 @@ def map_and_time(
 
     result: 'icepool.Die[tuple[T, int]]' = state.map(lambda x: (x, 0))
 
-    def transition_with_steps(outcome_and_steps):
+    def transition_with_steps(outcome_and_steps, *extra_args):
         outcome, steps = outcome_and_steps
         next_outcome = transition_function(outcome, *extra_args)
         if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
@@ -672,7 +687,7 @@ def map_and_time(
 
     for _ in range(repeat):
         next_result: 'icepool.Die[tuple[T, int]]' = map(
-            transition_with_steps, result)
+            transition_with_steps, result, *extra_args)
         if result == next_result:
             return next_result
         result = next_result
@@ -681,7 +696,7 @@ def map_and_time(
 
 def map_to_pool(
     repl:
-    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.Reroll]',
+    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]',
     /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,

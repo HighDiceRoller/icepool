@@ -1,12 +1,22 @@
-## v1.5.1
+## v1.6.0
 
+* Breaking change: outcomes with zero quantities are removed when constructing `Die` and `Deck`.
+  * Functions and methods relating to zero-quantities are removed: `align()`, `align_range()`, `Population.has_zero_quantities()`, `Die.trim()`, `Die.set_range()`, `Die.set_outcomes()`.
+  * You can use `consecutive()` or `sorted_union()` to get an appropriate superset of sets of outcomes.
+* Breaking change: `MultisetEvaluator.alignment()` is renamed to `MultisetEvaluator.extra_outcomes()`.
+  * `MultisetEvaluator.range_alignment()` is renamed to `MultisetEvaluator.consecutive()`.
+  * The `Alignment` class is no longer public.
+* Breaking change: `Deck.multiply_counts()` and `Population.scale_quantities()` are replaced/renamed to `Population.multiply_quantities()` etc.
 * Add `Deck.sequence()` and `Die.sequence()` method.
 * Add `Population.pad_to_denominator()` method.
 * Move `zero()` and `zero_outcome()` from `Die` to `Population`.
 * `@` operator now sums left-to-right.
 * Remove old `compair` evaluation.
+* `min_outcome()` and `max_outcome()` free functions can now be called using a single iterable argument.
 * Forward algorithm now has a persistent cache.
 * Add skip optimization for single deals with keep tuples.
+* Pools now only skip dice, not outcomes. This is a bit slower in some cases but provides more consistent iteration order.
+* Add shared evaluator instances for some built-in evaluator for caching.
 * Simplify determination of outcome order for multiset evaluations.
 * Simplify implementation of generator unbinding.
 

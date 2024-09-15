@@ -104,8 +104,12 @@ def merge_weights_lcm(subdatas: Sequence[Mapping[T, int]],
     data: MutableMapping[Any, int] = defaultdict(int)
     for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
                                                weights):
-        factor = denominator_lcm * w // subdata_denominator if subdata_denominator else 0
+        if subdata_denominator == 0 or w == 0:
+            continue
+        factor = denominator_lcm * w // subdata_denominator
         for outcome, weight in subdata.items():
+            if weight == 0:
+                continue
             data[outcome] += weight * factor
     return data
 
@@ -122,7 +126,11 @@ def merge_duplicates(subdatas: Sequence[Mapping[T, int]],
 
     data: MutableMapping[Any, int] = defaultdict(int)
     for subdata, subdup in zip(subdatas, duplicates):
+        if subdup == 0:
+            continue
         for outcome, dup in subdata.items():
+            if dup == 0:
+                continue
             data[outcome] += dup * subdup
 
     return data

@@ -309,11 +309,10 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             return self
         data = {
             outcome: quantity // divisor
-            for outcome, quantity in self.items()
-            if quantity >= divisor
+            for outcome, quantity in self.items() if quantity >= divisor
         }
         return self._new_type(data)
-    
+
     def modulo_quantities(self: C, divisor: int, /) -> C:
         """Modulus of all quantities with an integer."""
         data = {
@@ -321,10 +320,6 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
             for outcome, quantity in self.items()
         }
         return self._new_type(data)
-
-    def has_zero_quantities(self) -> bool:
-        """DEPRECATED: `True` iff `self` contains at least one outcome with zero quantity. """
-        return 0 in self.values()
 
     def pad_to_denominator(self: C, target: int, /, outcome: Hashable) -> C:
         """Changes the denominator to a target number by changing the quantity of a specified outcome.
@@ -490,15 +485,17 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         """Kolmogorov–Smirnov statistic. The maximum absolute difference between CDFs. """
         outcomes = icepool.sorted_union(self, other)
         return max(
-            abs(self.probability('<=', outcome) - other.probability('<=', outcome))
-            for outcome in outcomes)
+            abs(
+                self.probability('<=', outcome) -
+                other.probability('<=', outcome)) for outcome in outcomes)
 
     def cramer_von_mises(self, other: 'Population') -> Fraction:
         """Cramér-von Mises statistic. The sum-of-squares difference between CDFs. """
         outcomes = icepool.sorted_union(self, other)
-        return sum(
-            ((self.probability('<=', outcome) - other.probability('<=', outcome)) ** 2
-            for outcome in outcomes), start=Fraction(0, 1))
+        return sum(((self.probability('<=', outcome) -
+                     other.probability('<=', outcome))**2
+                    for outcome in outcomes),
+                   start=Fraction(0, 1))
 
     def median(self):
         """The median, taking the mean in case of a tie.

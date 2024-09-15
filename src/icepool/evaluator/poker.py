@@ -4,12 +4,11 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.population.die import Die
 
 import operator
 
-from icepool.typing import Outcome, Order, RerollType
-from typing import Any, Callable, Collection, Hashable, Literal, Sequence
+from icepool.typing import Order
+from typing import Any, Callable, Collection, Final, Literal, Sequence
 
 
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
@@ -37,9 +36,13 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
         """Allows any order."""
         return Order.Any
 
-    def alignment(self, outcomes: Sequence) -> Collection:
+    def extra_outcomes(self, outcomes: Sequence) -> Collection:
         """Always sees zero counts."""
         return outcomes
+
+
+highest_outcome_and_count_evaluator: Final = HighestOutcomeAndCountEvaluator()
+"""Shared instance for caching."""
 
 
 class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
@@ -77,7 +80,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         """Allows any order."""
         return Order.Any
 
-    def alignment(self, outcomes: Sequence) -> Collection:
+    def extra_outcomes(self, outcomes: Sequence) -> Collection:
         """Always sees zero counts."""
         return outcomes
 
@@ -94,6 +97,10 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
         return Order.Any
 
 
+largest_count_evaluator: Final = LargestCountEvaluator()
+"""Shared instance for caching."""
+
+
 class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     """The largest count of any outcome, along with that outcome."""
 
@@ -104,6 +111,10 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     def order(self) -> Literal[Order.Any]:
         """Allows any order."""
         return Order.Any
+
+
+largest_count_and_outcome_evaluator: Final = LargestCountAndOutcomeEvaluator()
+"""Shared instance for caching."""
 
 
 class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
@@ -160,7 +171,11 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
             return 0
         return final_state[0]
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.consecutive
+
+
+largest_straight_evaluator: Final = LargestStraightEvaluator()
+"""Shared instance for caching."""
 
 
 class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
@@ -184,7 +199,12 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         """Ascending order."""
         return Order.Ascending
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.consecutive
+
+
+largest_straight_and_outcome_evaluator: Final = LargestStraightAndOutcomeEvaluator(
+)
+"""Shared instance for caching."""
 
 
 class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
@@ -218,7 +238,11 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         """Ascending order."""
         return Order.Ascending
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.consecutive
+
+
+all_straights_evaluator: Final = AllStraightsEvaluator()
+"""Shared instance for caching."""
 
 
 class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
@@ -271,4 +295,4 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
                 sorted(ended_runs + (current_run, ), reverse=True))
         return ended_runs
 
-    alignment = MultisetEvaluator.range_alignment
+    extra_outcomes = MultisetEvaluator.consecutive
