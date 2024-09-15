@@ -15376,7 +15376,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-101"><a href="#MultisetEvaluator-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span>
 </span><span id="MultisetEvaluator-102"><a href="#MultisetEvaluator-102"><span class="linenos">102</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">:</span> <span class="n">Hashable</span>
 </span><span id="MultisetEvaluator-103"><a href="#MultisetEvaluator-103"><span class="linenos">103</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;U_co | icepool.Die[U_co] | icepool.RerollType&#39;</span><span class="p">:</span>
-</span><span id="MultisetEvaluator-104"><a href="#MultisetEvaluator-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional function to generate a final outcome from a final state.</span>
+</span><span id="MultisetEvaluator-104"><a href="#MultisetEvaluator-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional function to generate a final output outcome from a final state.</span>
 </span><span id="MultisetEvaluator-105"><a href="#MultisetEvaluator-105"><span class="linenos">105</span></a>
 </span><span id="MultisetEvaluator-106"><a href="#MultisetEvaluator-106"><span class="linenos">106</span></a><span class="sd">        By default, the final outcome is equal to the final state.</span>
 </span><span id="MultisetEvaluator-107"><a href="#MultisetEvaluator-107"><span class="linenos">107</span></a><span class="sd">        Note that `None` is not a valid outcome for a `Die`,</span>
@@ -15413,7 +15413,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-138"><a href="#MultisetEvaluator-138"><span class="linenos">138</span></a>
 </span><span id="MultisetEvaluator-139"><a href="#MultisetEvaluator-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="MultisetEvaluator-140"><a href="#MultisetEvaluator-140"><span class="linenos">140</span></a>                       <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_contra</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
-</span><span id="MultisetEvaluator-141"><a href="#MultisetEvaluator-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional method to specify extra outcomes that should be seen by `next_state()`.</span>
+</span><span id="MultisetEvaluator-141"><a href="#MultisetEvaluator-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.</span>
 </span><span id="MultisetEvaluator-142"><a href="#MultisetEvaluator-142"><span class="linenos">142</span></a>
 </span><span id="MultisetEvaluator-143"><a href="#MultisetEvaluator-143"><span class="linenos">143</span></a><span class="sd">        These will be seen by `next_state` even if they do not appear in the</span>
 </span><span id="MultisetEvaluator-144"><a href="#MultisetEvaluator-144"><span class="linenos">144</span></a><span class="sd">        generator(s). The default implementation returns `()`, or no additional</span>
@@ -15943,7 +15943,7 @@ indicating how many of the current outcome were produced.</li>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetEvaluator.final_outcome-101"><a href="#MultisetEvaluator.final_outcome-101"><span class="linenos">101</span></a>    <span class="k">def</span> <span class="nf">final_outcome</span><span class="p">(</span>
 </span><span id="MultisetEvaluator.final_outcome-102"><a href="#MultisetEvaluator.final_outcome-102"><span class="linenos">102</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">:</span> <span class="n">Hashable</span>
 </span><span id="MultisetEvaluator.final_outcome-103"><a href="#MultisetEvaluator.final_outcome-103"><span class="linenos">103</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;U_co | icepool.Die[U_co] | icepool.RerollType&#39;</span><span class="p">:</span>
-</span><span id="MultisetEvaluator.final_outcome-104"><a href="#MultisetEvaluator.final_outcome-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional function to generate a final outcome from a final state.</span>
+</span><span id="MultisetEvaluator.final_outcome-104"><a href="#MultisetEvaluator.final_outcome-104"><span class="linenos">104</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional function to generate a final output outcome from a final state.</span>
 </span><span id="MultisetEvaluator.final_outcome-105"><a href="#MultisetEvaluator.final_outcome-105"><span class="linenos">105</span></a>
 </span><span id="MultisetEvaluator.final_outcome-106"><a href="#MultisetEvaluator.final_outcome-106"><span class="linenos">106</span></a><span class="sd">        By default, the final outcome is equal to the final state.</span>
 </span><span id="MultisetEvaluator.final_outcome-107"><a href="#MultisetEvaluator.final_outcome-107"><span class="linenos">107</span></a><span class="sd">        Note that `None` is not a valid outcome for a `Die`,</span>
@@ -15964,7 +15964,7 @@ indicating how many of the current outcome were produced.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional function to generate a final outcome from a final state.</p>
+            <div class="docstring"><p>Optional function to generate a final output outcome from a final state.</p>
 
 <p>By default, the final outcome is equal to the final state.
 Note that <code>None</code> is not a valid outcome for a <code><a href="#Die">Die</a></code>,
@@ -16052,7 +16052,7 @@ mixed standard dice.</p>
     <a class="headerlink" href="#MultisetEvaluator.extra_outcomes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetEvaluator.extra_outcomes-139"><a href="#MultisetEvaluator.extra_outcomes-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span id="MultisetEvaluator.extra_outcomes-140"><a href="#MultisetEvaluator.extra_outcomes-140"><span class="linenos">140</span></a>                       <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T_contra</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T_contra</span><span class="p">]:</span>
-</span><span id="MultisetEvaluator.extra_outcomes-141"><a href="#MultisetEvaluator.extra_outcomes-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional method to specify extra outcomes that should be seen by `next_state()`.</span>
+</span><span id="MultisetEvaluator.extra_outcomes-141"><a href="#MultisetEvaluator.extra_outcomes-141"><span class="linenos">141</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.</span>
 </span><span id="MultisetEvaluator.extra_outcomes-142"><a href="#MultisetEvaluator.extra_outcomes-142"><span class="linenos">142</span></a>
 </span><span id="MultisetEvaluator.extra_outcomes-143"><a href="#MultisetEvaluator.extra_outcomes-143"><span class="linenos">143</span></a><span class="sd">        These will be seen by `next_state` even if they do not appear in the</span>
 </span><span id="MultisetEvaluator.extra_outcomes-144"><a href="#MultisetEvaluator.extra_outcomes-144"><span class="linenos">144</span></a><span class="sd">        generator(s). The default implementation returns `()`, or no additional</span>
@@ -16070,7 +16070,7 @@ mixed standard dice.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen by <code><a href="#MultisetEvaluator.next_state">next_state()</a></code>.</p>
+            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen as inputs to <code><a href="#MultisetEvaluator.next_state">next_state()</a></code>.</p>
 
 <p>These will be seen by <code><a href="#MultisetEvaluator.next_state">next_state</a></code> even if they do not appear in the
 generator(s). The default implementation returns <code>()</code>, or no additional

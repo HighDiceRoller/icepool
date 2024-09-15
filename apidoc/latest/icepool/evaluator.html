@@ -823,7 +823,7 @@ ascending and others are descending.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen by <code><a href="#JointEvaluator.next_state">next_state()</a></code>.</p>
+            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen as inputs to <code><a href="#JointEvaluator.next_state">next_state()</a></code>.</p>
 
 <p>These will be seen by <code><a href="#JointEvaluator.next_state">next_state</a></code> even if they do not appear in the
 generator(s). The default implementation returns <code>()</code>, or no additional
@@ -2047,7 +2047,7 @@ indicating how many of the current outcome were produced.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional function to generate a final outcome from a final state.</p>
+            <div class="docstring"><p>Optional function to generate a final output outcome from a final state.</p>
 
 <p>By default, the final outcome is equal to the final state.
 Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
@@ -4339,7 +4339,7 @@ the sorted index; otherwise, this raises <code>IndexError</code>.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional function to generate a final outcome from a final state.</p>
+            <div class="docstring"><p>Optional function to generate a final output outcome from a final state.</p>
 
 <p>By default, the final outcome is equal to the final state.
 Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
@@ -4625,7 +4625,7 @@ mixed standard dice.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional function to generate a final outcome from a final state.</p>
+            <div class="docstring"><p>Optional function to generate a final output outcome from a final state.</p>
 
 <p>By default, the final outcome is equal to the final state.
 Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
