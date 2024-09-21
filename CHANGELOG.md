@@ -1,4 +1,4 @@
-## v1.6.0
+## v1.6.0 - 20 September 2024
 
 * Breaking change: outcomes with zero quantities are removed when constructing `Die` and `Deck`.
   * Functions and methods relating to zero-quantities are removed: `align()`, `align_range()`, `Population.has_zero_quantities()`, `Die.trim()`, `Die.set_range()`, `Die.set_outcomes()`.
@@ -19,6 +19,7 @@
 * Add shared evaluator instances for some built-in evaluator for caching.
 * Simplify determination of outcome order for multiset evaluations.
 * Simplify implementation of generator unbinding.
+* Fix `extra_args` expansion for `map_and_time`.
 
 ## v1.5.0 - 23 August 2024
 
