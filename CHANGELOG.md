@@ -1,4 +1,4 @@
-## v1.6.0
+## v1.6.0 - 20 September 2024
 
 * Breaking change: outcomes with zero quantities are removed when constructing `Die` and `Deck`.
   * Functions and methods relating to zero-quantities are removed: `align()`, `align_range()`, `Population.has_zero_quantities()`, `Die.trim()`, `Die.set_range()`, `Die.set_outcomes()`.
@@ -21,7 +21,7 @@
 * Simplify implementation of generator unbinding.
 * Fix `extra_args` expansion for `map_and_time`.
 
-## v1.5.0
+## v1.5.0 - 23 August 2024
 
 * Providing only a `drop` argument to `lowest()` or `highest()` will now keep all other elements rather than just the first non-dropped element.
 * `depth` argument to `Die.reroll()` is now mandatory.
@@ -39,7 +39,7 @@
 * Experimental `all_straights_reduce_counts` and `argsort` multiset evaluations.
 * Breaking change: `nearest`, `quantity`, `quantities`, `probability`, `probabilities`, `keep_counts` no longer have separate variants for each comparison; instead, they now take a comparison argument. `quantities` and  `probabilities` now accept a comparison argument but no longer accept a list of outcomes.
 
-## v1.4.0
+## v1.4.0 - 1 February 2024
 
 * Rename `keep_counts` to `keep_counts_ge`. Add `le`, `lt`, `gt`, `eq`, and `ne` variants.
 * Add `count_subset` evaluation that counts how many times the right side is contained in the left.
@@ -50,14 +50,14 @@
 * Fix `Symbols` intersection.
 * Fix argument order in `__rfloordiv__`.
 
-## v1.3.0
+## v1.3.0 - 30 December 2023
 
 * Fix `Symbols` operator priority with `Population`, `AgainExpression`.
 * Added experimental `map_to_pool` and `explode_to_pool` methods.
 * Split `compair` into `compare_lt` etc.
 * Constructing a mixture of dice now effectively uses the old `lcm_joint` method, which reduces the denominator more aggressively.
 
-## v1.2.0
+## v1.2.0 - 23 December 2023
 
 * Experimental `Symbols` class representing a multiset of characters.
 * `marginals` now forwards `__getattr__` to outcomes, as long as the attribute name doesn't begin with an underscore.
@@ -69,19 +69,19 @@
 * `Mapping`s are now properly excluded from `Population.common_outcome_length`.
 * Fixed quoting in `repr` for populations.
 
-## v1.1.2
+## v1.1.2 - 10 December 2023
 
 * Add `z(n)`, which produces a die that runs from 0 to `n - 1` inclusive.
 * Add `Population.to_one_hot()`, which converts the die or deck to a one-hot representation.
 * Add `Die.mean_time_to_sum()`, which computes the mean number of rolls until the cumulative sum is greater or equal to the target.
 
-## v1.1.1
+## v1.1.1 - 16 November 2023
 
 * Fix non-fully-bound case of `MultisetEvaluator.evaluate()`.
 * Add `default` argument to `lowest(), highest(), middle()`.
 * Add `Population.entropy()`.
 
-## v1.1.0
+## v1.1.0 - 15 October 2023
 
 * `mean()`, `variance()`, etc. now return an exact `fractions.Fraction` when possible. (Note that `Fraction`s only support float-style formatting from Python 3.12.)
 * Rename `disjoint_union` to `additive_union`.
@@ -89,21 +89,21 @@
 * Symmetric difference (`^`) for multiset expressions is now a straight absolute difference of counts.
 * Add unary `+` operator for multiset expressions, which is the same as `keep_counts(0)`.
 
-## v1.0.0
+## v1.0.0 - 22 July 2023
 
 Improve some error messages.
 
-## v0.29.3
+## v0.29.3 - 13 July 2023
 
 Fix a bug in `MultisetExpression.keep_outcomes()` and `drop_outcomes()` regarding unbinding variables.
 
-## v0.29.2
+## v0.29.2 - 12 July 2023
 
 * `MultisetExpression.map_counts()` now accepts multiple arguments.
 * `MultisetExpression.keep_outcomes()` and `drop_outcomes()` now accept an expression as an argument.
 * `MultisetExpression.highest_outcome_and_count()` now returns the min outcome if no outcomes have positive count.
 
-## v0.29.1
+## v0.29.1 - 2 July 2023
 
 * `highest`, `lowest`, and `middle` can now take a single iterable argument.
 * Add `all_straights` evaluation.
@@ -113,18 +113,18 @@ Fix a bug in `MultisetExpression.keep_outcomes()` and `drop_outcomes()` regardin
 * `expand` evaluator now allows order to be set.
 * Experimental `compair` evaluation.
 
-## v0.29.0
+## v0.29.0 - 30 April 2023
 
 * Add HTML and BBCode options for population formatting.
 * Renamed `apply` to `map` and the decorator version to `map_function`.
 * The above now uses `guess_star`.
 * Add default of 1 die for `Die.pool()`.
 
-## v0.28.1
+## v0.28.1 - 23 April 2023
 
 Fix mathematical bug in `Die.reroll` for limited depth.
 
-## v0.28.0
+## v0.28.0 - 16 April 2023
 
 Retired implicit elementwise operations on tuples. This is now handled by a new explicit `Vector` container.
 `cartesian_product()` is replaced by two new functions: `tupleize()` and `vectorize()`.
@@ -140,27 +140,27 @@ Retired the linear algorithm for comparators for `Die`. While the quadratic algo
 
 `die.tuple_len()` renamed to `common_outcome_length`. Now applies to all sized outcome types.
 
-## v0.27.1
+## v0.27.1 - 9 April 2023
 
 * Counts type `Qs` is now invariant with more detailed typing in `Deal`.
 
-## v0.27.0
+## v0.27.0 - 29 March 2023
 
 Incremented two versions because I messed up the last version number.
 
 * `commonize_denominator` visible at top level.
 
-## v0.25.6
+## v0.25.6 - 28 March 2023
 
 * Rename `from_cumulative_quantities` to `from_cumulative` and allow die inputs.
 * Mark `multiset_function` experimental again and note more caveats in the docstring.
 
-## v0.25.5
+## v0.25.5 - 11 March 2023
 
 * Add missing variants of `nearest` and `quantities` methods.
 * Add optional `outcomes` argument to `quantities` and `probabilities` methods.
 
-## v0.25.4
+## v0.25.4 - 17 February 2023
 
 * `map` and similar functions will attempt to guess `star`.
 * Changed `positive_only` parameter to `expression.all_counts` to `filter`.
@@ -170,7 +170,7 @@ Incremented two versions because I messed up the last version number.
 * Add `map_counts` expression.
 * `Reroll` in tuple outcomes and joint evaluations causes the whole thing to be rerolled.
 
-## v0.25.3
+## v0.25.3 - 28 January 2023
 
 * Tuple outcomes can now be compared with single outcomes.
 * Add `.keep, .highest, lowest, .middle` variants of `apply_sorted`.
@@ -178,15 +178,15 @@ Incremented two versions because I messed up the last version number.
 * Add `keep_outcomes, drop_outcomes` methods to expressions.
 * Add `any` evaluation to expresions.
 
-## v0.25.2
+## v0.25.2 - 23 January 2023
 
 Comparisons on dice with tuple outcomes are now performed elementwise.
 
-## v0.25.1
+## v0.25.1 - 23 January 2023
 
 Testing GitHub workflows.
 
-## 0.25.0
+## 0.25.0 - 22 January 2023
 
 Expanded multiset processing with multiset expressions.
 
@@ -203,7 +203,7 @@ Expanded multiset processing with multiset expressions.
 * Removed suits.
 * Stop using `__class_getitem__`, which is intended for typing only.
 
-## 0.24.0
+## 0.24.0 - 8 January 2023
 
 Reworked built-in generators and evaluators.
 
@@ -215,7 +215,7 @@ Reworked built-in generators and evaluators.
 * Generators and evaluators are now paramterized by count type as well.
 * Move concrete evaluators to a submodule.
 
-## 0.23.3
+## 0.23.3 - 31 December 2022
 
 * Fixed weighting bug in `__matmul__` when the left die has an outcome of 0.
 * Retired the names `standard` and `bernoulli`. These will be just `d` and `coin` respectively.
@@ -223,17 +223,17 @@ Reworked built-in generators and evaluators.
 * Reinstate automatic Cartesian product in `Population` construction.
 * `if_else` now runs in two stages.
 
-## 0.23.2
+## 0.23.2 - 30 December 2022
 
 * Incremental sorting for `all_matching_sets` to reduce state space.
 * `lowest()` and `highest()` now actually visible.
 * Improved checking for tuple outcome sortability and types.
 
-## 0.23.1
+## 0.23.1 - 29 December 2022
 
 Prepend `sum_` to OutcomeCountGenerator versions of `highest` and `lowest`.
 
-## 0.23.0
+## 0.23.0 - 29 December 2022
 
 Expanded typing, particularly in terms of parameterizing types.
 
@@ -247,7 +247,7 @@ Expanded typing, particularly in terms of parameterizing types.
 * Added `cartesian_product()`, took this functionality out of the `Die` constructor for now.
 * Added `OutcomeCountGenerator.all_matching_sets()`.
 
-## 0.22.0
+## 0.22.0 - 19 December 2022
 
 * `Die.sub()` renamed to `Die.map()`.
 * `Die.map()` can now include the number of steps taken until absorption.
@@ -256,7 +256,7 @@ Expanded typing, particularly in terms of parameterizing types.
 * Only tuples get separate columns in tables and not `str` or `bytes`.
 * Non-recursive algorithm for `Again()` handling.
 
-## 0.21.0
+## 0.21.0 - 3 December 2022
 
 * Nested lists are now allowed in the `Die()` constructor.
 * Single outcomes can be sent to the `Die()` constructor without wrapping them in a list.
@@ -271,12 +271,12 @@ Expanded typing, particularly in terms of parameterizing types.
 * Add comparators to `Again`.
 * Experimental absorbing Markov chain analysis for `Die.sub(depth=None)`.
 
-## 0.20.1
+## 0.20.1 - 10 September 2022
 
 * Added `one_hot` function.
 * Added experimental suit generator that wraps a generator and produces counts for all suits for each value.
 
-## 0.20.0
+## 0.20.0 - 6 September 2022
 
 * Retired `denominator_method`.
 * Renamed `max_depth` parameters to just `depth`.
@@ -285,11 +285,11 @@ Expanded typing, particularly in terms of parameterizing types.
 * `marginals` is now a Sequence, and can be iterated over, unpacked, etc.
 * `Die.sub()` now expands extra die arguments into their outcomes.
 
-## 0.19.1
+## 0.19.1 - 21 August 2022
 
 Fix `contains_again` checking of sequences.
 
-## 0.19.0
+## 0.19.0 - 21 August 2022
 
 New feature: `Again()`, a placeholder that allows to roll again with some modification.
 
@@ -297,29 +297,29 @@ New feature: `Again()`, a placeholder that allows to roll again with some modifi
 * Add optional `final_kwargs` method to evaluators.
 * Rename `max_depth` parameter of `sub()` to `repeat`.
 
-## 0.18.0
+## 0.18.0 - 19 August 2022
 
 * Rename `Die.reduce()` to `Die.simplify()` to avoid confusion with the free function `reduce()`.
 * Rename `OutcomeCountEvaluator.direction()` to `order()` and add explicitly named `Order` enums.
 * Add `is_in`, `count`, and `count_in` methods to dice.
 * Add built-in evaluators as convenience functions of `OutcomeCountGenerator`.
 
-## 0.17.4
+## 0.17.4 - 1 August 2022
 
 * Fixes to `max_depth=None` case of `sub()`.
 * This is now marked experimental.
 
-## 0.17.3
+## 0.17.3 - 1 August 2022
 
 * Pass `star` parameter to `sub()` to recursive calls.
 
-## 0.17.2
+## 0.17.2 - 1 August 2022
 
 * `sub()` with `max_depth=None` now handles "monotonic" transitions with finite states. Full absorbing Markov chain calculation still under consideration.
 * `sub()` no longer accept sequence input.
 * Some minor formatting fixes.
 
-## 0.17.1
+## 0.17.1 - 25 June 2022
 
 * Standardize outcome count of `bernoulli`/`coin` and comparators.
 * `standard_pool` now accepts a `dict` argument.
@@ -328,7 +328,7 @@ New feature: `Again()`, a placeholder that allows to roll again with some modifi
 * Pools are no longer resizable after creation.
 * `Die.pool()` now has mandatory argument, now accepts a sequence argument to set `sorted_roll_counts`.
 
-## 0.17.0
+## 0.17.0 - 19 June 2022
 
 More renaming, experimental `sample()` methods.
 
@@ -341,7 +341,7 @@ More renaming, experimental `sample()` methods.
 * Allow formatting 0-1 probability.
 * Experimental `sample()` methods for `OutcomeCountGenerator` and `OutcomeCountEvaluator`.
 
-## 0.16.1
+## 0.16.1 - 18 June 2022
 
 Development of deck API.
 
@@ -351,7 +351,7 @@ Development of deck API.
 * `Pool`s are not permitted to be constructed using a raw `Die` or `Deck` argument.
 * `reduce` argument of `Die.equals()` renamed to `reduce_weights`.
 
-## 0.16.0
+## 0.16.0 - 17 June 2022
 
 Significant API changes, experimental deck support.
 
@@ -370,7 +370,7 @@ Significant API changes, experimental deck support.
 * Add `clear_pool_cache` function.
 * Forward `*extra_args` for `reroll, reroll_until, explode`.
 
-## 0.15.0
+## 0.15.0 - 10 June 2022
 
 Added type hints. Now requires Python 3.10 or later.
 
@@ -380,11 +380,11 @@ Other changes:
 * Add `Die.set_range()`.
 * `standard()` / `d()` argument is now positional-only.
 
-## 0.14.1
+## 0.14.1 - 30 May 2022
 
 Reinstate alternate internal `EvalPool` algorithm, which provides better performance in some cases. 
 
-## 0.14.0
+## 0.14.0 - 30 May 2022
 
 * Added a new `EvalPool.alignment()` method. This allows to specify an iterable of outcomes that should always be seen by `next_state` even if they have zero count.
 * The free function `d()` is now simply an alias for `standard()`.
@@ -392,17 +392,17 @@ Reinstate alternate internal `EvalPool` algorithm, which provides better perform
 * The `@` operator now casts the right side to a `Die` like other operators.
 * Some internal changes to `EvalPool` algorithm.
 
-## 0.13.2
+## 0.13.2 - 23 May 2022
 
 The data of a die resulting from `==` or `!=` is lazily evaluated.
 
 This saves computation in case the caller is only interested in the truth value.
 
-## 0.13.1
+## 0.13.1 - 23 May 2022
 
 `EvalPool` favors the cached direction more.
 
-## 0.13.0
+## 0.13.0 - 23 May 2022
 
 Major reworking of pool construction.
 
@@ -411,12 +411,12 @@ Major reworking of pool construction.
 * Pools can be of arbitrary dice, though non-truncative sets of dice will have lower performance. There is some performance penalty overall.
 * `apply()` called with no arguments now calls `func` once with no arguments.
 
-## 0.12.1
+## 0.12.1 - 21 May 2022
 
 * Removed `Die.keep()`. Use `Die.pool(...).sum()`.
 * `highest`/`lowest` returns empty die if any of the input dice are empty.
 
-## 0.12.0
+## 0.12.0 - 18 May 2022
 
 * Free-function form of `lowest`, `highest` now selects between algorithms for better performance and generality.
 * Removed `die.lowest, `die.highest`.
@@ -427,7 +427,7 @@ Major reworking of pool construction.
 * `die.zero()` no longer reduces weights to 1.
 * Update PyPi classifiers.
 
-## 0.11.0
+## 0.11.0 - 11 May 2022
 
 * Removed `min_outcome` parameter from die construction.
 * Operations on tuple outcomes are now performed recursively, to match the fact that die expansion on construction is recursive.
@@ -438,18 +438,18 @@ Major reworking of pool construction.
 * Added `star` parameter to `sub`, `explode`, `reroll`, `reroll_until` methods. If set, this unpacks outcomes before giving them to the supplied function.
 * Added experimental `JointEval` class for performing two evals on the same roll of a pool.
 
-## 0.10.2
+## 0.10.2 - 8 May 2022
 
 * Operators other than `[]` are performed element-wise on tuples.
 * Rename `DicePool` to just `Pool`. Merge the old factory function into the constructor.
 
-## 0.10.1
+## 0.10.1 - 8 May 2022
 
 * Fix denominator_method='reduce' in die creation.
 * Fix outcomes consisting of empty tuple `()`.
 * `apply()` with no dice produces an empty die.
 
-## 0.10.0
+## 0.10.0 - 7 May 2022
 
 Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 
@@ -458,20 +458,20 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * The `[]` operator now forwards to the outcome, acting similar to what `VectorDie.dim[]` used to do.
 * Removed `PoolEval.bind_dice()`. It was cute, but I'm not convinced it was worth spending API on.
 
-## 0.9.1
+## 0.9.1 - 1 May 2022
 
 * This will probably be the last version with a `VectorDie` distinction.
 * Dice cannot have negative weights.
 * `VectorDie` cannot be nested inside tuple outcomes.
 
-## 0.9.0
+## 0.9.0 - 28 April 2022
 
 * Die and dict arguments to `Die()` are now expanded, including when nested.
 * Add `Die.if_else()` method, which acts as a ternary conditional operator on outcomes.
 * Dice are now hashable. `==` and `!=` return dice with truth values based on whether the two dice have identical outcomes and weights.
 * `ndim` now uses singletons `icepool.Scalar` and `icepool.Empty`.
 
-## 0.8.0
+## 0.8.0 - 23 April 2022
 
 * `EvalPool.eval()` can now be provided with single rolls of a pool.
     This can be a dict-like mapping individual die outcomes to counts or a sequence of individual die outcomes.
@@ -485,7 +485,7 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * `DicePool` is no longer iterable, since there isn't an intuitive, unambiguous way of doing so.
 * `align_range()` now only operates on scalar outcomes.
 
-## 0.7.0
+## 0.7.0 - 16 April 2022
 
 * Renamed from `hdroller` to `icepool`.
 * Primary repository is now https://github.com/HighDiceRoller/icepool.

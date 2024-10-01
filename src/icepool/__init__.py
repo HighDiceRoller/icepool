@@ -13,13 +13,11 @@ General conventions:
 * Instances are immutable (apart from internal caching). Anything that looks
     like it mutates an instance actually returns a separate instance with the
     change.
-* Unless explictly specified otherwise, elements with zero quantity, rolls, etc.
-    are considered.
 """
 
 __docformat__ = 'google'
 
-__version__ = '1.6.0a0'
+__version__ = '1.6.0'
 
 from typing import Final
 

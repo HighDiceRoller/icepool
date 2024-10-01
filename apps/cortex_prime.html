@@ -75,7 +75,7 @@
             Show:
             <select id="distSelect">
                 <option value="pmf">Chance of total exactly</option>
-                <option value="ccdf" selected="selected"><i>Chance of beating difficulty</option>
+                <option value="ccdf" selected="selected">Chance of beating difficulty</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
@@ -125,7 +125,7 @@
             Show:
             <select id="hitchDistSelect">
                 <option value="pmf">Chance of exactly</option>
-                <option value="ccdf" selected><i>Chance of at least</option>
+                <option value="ccdf" selected>Chance of at least</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="hitchChart"></canvas></div>
@@ -337,7 +337,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.5.0')
+await micropip.install('icepool==1.6.0')
 
 import js
 import pyodide
@@ -444,8 +444,8 @@ def apply_heroic_successes(totals):
     result[5] = max(totals[5 - j] - HEROIC_MARGINS[j] for j in range(1, 6))
     return tuple(result)
 
-any_effect, d6_effect, d8_effect, d10_effect, d12_effect, beyond_effect, hitch_player_unaligned = (zero_die,) * 7
-die_opposition_unaligned, hitch_opposition_unaligned = (zero_die,) * 2
+any_effect, d6_effect, d8_effect, d10_effect, d12_effect, beyond_effect, hitch_player = (zero_die,) * 7
+die_opposition, hitch_opposition = (zero_die,) * 2
 
 def calc_player():
     hitch_1 = js.document.getElementById('hitch1').checked
@@ -516,7 +516,7 @@ def total_data(die, selected_dist):
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            any_effect, d6_effect, d8_effect, d10_effect, d12_effect, beyond_effect, hitch_player_unaligned = calc_player()
+            any_effect, d6_effect, d8_effect, d10_effect, d12_effect, beyond_effect, hitch_player = calc_player()
             `);
         }
 
@@ -524,7 +524,7 @@ def total_data(die, selected_dist):
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            opposition, hitch_opposition_unaligned = calc_opposition()
+            opposition, hitch_opposition = calc_opposition()
             `);
         }
 
@@ -615,18 +615,18 @@ def total_data(die, selected_dist):
 
             pyodide.runPython(`
             
-            hitch_player, hitch_opposition = icepool.align_range(hitch_player_unaligned, hitch_opposition_unaligned)
+            outcomes = icepool.consecutive(hitch_player, hitch_opposition)
             
-            js.hitchChart.data.labels = pyodide.ffi.to_js([float(x) for x in hitch_player.outcomes()])
+            js.hitchChart.data.labels = pyodide.ffi.to_js(outcomes)
             
             selected_dist = js.document.getElementById('hitchDistSelect').value
             
             if selected_dist == 'pmf':
-                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities()])
-                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities()])
+                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([hitch_player.probability(x, percent=True) for x in outcomes])
+                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([hitch_opposition.probability(x, percent=True) for x in outcomes])
             else:
-                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_player.probabilities('>=')])
-                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in hitch_opposition.probabilities('>=')])
+                js.hitchChart.data.datasets[0].data = pyodide.ffi.to_js([hitch_player.probability('>=', x, percent=True) for x in outcomes])
+                js.hitchChart.data.datasets[1].data = pyodide.ffi.to_js([hitch_opposition.probability('>=', x, percent=True) for x in outcomes])
             `);
 
             hitchChart.update();

@@ -74,7 +74,7 @@
             Show:
             <select id="distSelect">
                 <option value="pmf">Chance of rolling exactly</option>
-                <option value="ccdf"><i>Chance of rolling at least</option>
+                <option value="ccdf">Chance of rolling at least</option>
             </select>
         </div>
         <div class="chart_container"><canvas id="totalChart"></canvas></div>
@@ -169,7 +169,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
                 import micropip
-                await micropip.install('icepool==1.5.0')
+                await micropip.install('icepool==1.6.0')
                 
                 import js
                 import pyodide
@@ -177,8 +177,8 @@
                 
                 die = icepool.d10 - 1
                 
-                die_player_unaligned = icepool.Die([0])
-                die_opposition_unaligned = icepool.Die([0])
+                die_player = icepool.Die([0])
+                die_opposition = icepool.Die([0])
                 
                 class WulinEvaluator(icepool.MultisetEvaluator):
                     def next_state(self, state, outcome, count):
@@ -210,7 +210,7 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            die_player_unaligned = calc_pool('p')
+            die_player = calc_pool('p')
             `);
         }
 
@@ -218,7 +218,7 @@
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-            die_opposition_unaligned = calc_pool('o')
+            die_opposition = calc_pool('o')
             
             `);
         }
@@ -228,22 +228,22 @@
 
             pyodide.runPython(`
             
-            die_player, die_opposition = icepool.align_range(die_player_unaligned, die_opposition_unaligned)
-            
             js.document.getElementById('successChance').innerHTML = '%0.2f%%' % ((die_player > die_opposition).mean() * 100.0)
             js.document.getElementById('tieChance').innerHTML = '%0.2f%%' % ((die_player == die_opposition).mean() * 100.0)
             js.document.getElementById('loseChance').innerHTML = '%0.2f%%' % ((die_player < die_opposition).mean() * 100.0)
             
-            js.totalChart.data.labels = pyodide.ffi.to_js([float(x) for x in die_player.outcomes()])
+            outcomes = icepool.consecutive(die_player, die_opposition)
+            
+            js.totalChart.data.labels = pyodide.ffi.to_js(outcomes)
             
             selected_dist = js.document.getElementById('distSelect').value
             
             if selected_dist == 'pmf':
-                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities()])
-                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities()])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([die_player.probability(x, percent=True) for x in outcomes])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([die_opposition.probability(x, percent=True) for x in outcomes])
             else:
-                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_player.probabilities('>=')])
-                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([float(x) * 100.0 for x in die_opposition.probabilities('>=')])
+                js.totalChart.data.datasets[0].data = pyodide.ffi.to_js([die_player.probability('>=', x, percent=True) for x in outcomes])
+                js.totalChart.data.datasets[1].data = pyodide.ffi.to_js([die_opposition.probability('>=', x, percent=True) for x in outcomes])
             `);
 
             totalChart.update();

@@ -100,7 +100,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     def final_outcome(
         self, final_state: Hashable
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
-        """Optional function to generate a final outcome from a final state.
+        """Optional function to generate a final output outcome from a final state.
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a `Die`,
@@ -137,7 +137,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     def extra_outcomes(self,
                        outcomes: Sequence[T_contra]) -> Collection[T_contra]:
-        """Optional method to specify extra outcomes that should be seen by `next_state()`.
+        """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
 
         These will be seen by `next_state` even if they do not appear in the
         generator(s). The default implementation returns `()`, or no additional

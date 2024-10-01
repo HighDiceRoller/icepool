@@ -71,7 +71,7 @@
             Show:
             <select id="rankDistSelect">
                 <option value="pmf">Chance of rolling exactly</option>
-                <option value="ccdf"><i>Chance of rolling at least</option>
+                <option value="ccdf">Chance of rolling at least</option>
             </select>
         </div>
         <div class="chart_container">
@@ -196,7 +196,7 @@
             Show:
             <select id="pricesViewDistSelect">
                 <option value="pmf">Chance of rolling exactly</option>
-                <option value="ccdf"><i>Chance of rolling at least</option>
+                <option value="ccdf">Chance of rolling at least</option>
             </select>
         </div>
         <div class="chart_container">
@@ -274,8 +274,6 @@
 
     <script type="text/javascript">
         setInputsFromSearchQuery();
-
-        var maxProb = 1.0;
 
         var rankChartContext = document.getElementById('rankChart').getContext('2d');
         var rankChart = new Chart(rankChartContext, {
@@ -420,7 +418,7 @@
             setLoadingText('Loading icepool')
             await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.5.0')
+await micropip.install('icepool==1.6.0')
 
 import js
 import pyodide
@@ -428,21 +426,20 @@ import math
 import icepool
 from icepool import d4, d6, d8, d10, d12, d20
 
-def set_rank_data(rank, die):
-    data = (0,) * 20
+def set_rank_data(index, die):
     selected_dist = js.document.getElementById('rankDistSelect').value
     if selected_dist == 'pmf':
-        data = [100.0 * x for x in die.probabilities()]
+        data = [die.probability(x, percent=True) for x in range(1, 21)]
     else:
-        data = [100.0 * x for x in die.probabilities('>=')]
+        data = [die.probability('>=', x, percent=True) for x in range(1, 21)]
     for i in range(1, min_ability):
         data[i - 1] = math.nan
     for i in range(max_ability + 1, 21):
         data[i - 1] = math.nan
-    js.rankChart.data.datasets[rank].data = pyodide.ffi.to_js([float(x) for x in data])
-    table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[rank], die.mean())
+    js.rankChart.data.datasets[index].data = pyodide.ffi.to_js(data)
+    table_text = '<td style="text-align: left;">%s</td><td>%0.2f</td>' % (js.rankLabels[index], die.mean())
     table_text += ''.join(('<td></td>' if math.isnan(x) else '<td>%0.2f%%</td>' % x) for x in data)
-    js.document.getElementById('rankTableRow%d' % rank).innerHTML = table_text
+    js.document.getElementById('rankTableRow%d' % index).innerHTML = table_text
     
 class RankWithRestart(icepool.MultisetEvaluator):
     def __init__(self, rank, restart_count, restart_value):
@@ -465,7 +462,7 @@ class RankWithRestart(icepool.MultisetEvaluator):
     def order(self):
         return icepool.Order.Descending
         
-    def alignment(self, outcomes):
+    def extra_outcomes(self, outcomes):
         return range(1, 21)
 
 class SumWithRestart(icepool.MultisetEvaluator):
@@ -488,7 +485,7 @@ class SumWithRestart(icepool.MultisetEvaluator):
     def order(self):
         return icepool.Order.Descending
     
-    def alignment(self, outcomes):
+    def extra_outcomes(self, outcomes):
         return range(1, 21)
 
             `);
@@ -550,19 +547,14 @@ else:
     single_ability = single_ability.reroll(lambda x: x < min_ability or x > max_ability)
 single_ability = single_ability.highest(num_ability_repeat)
 
-max_prob = 0.0
 ranks = []
 
 for i in range(6):
     rank_ability = RankWithRestart(i, restart_count, restart_value).evaluate(single_ability.pool(num_abilities)[-6:])
-    rank_ability, _, _ = icepool.align_range(rank_ability, 1, 20)
     ranks.append(rank_ability)
-    
-    max_prob = max(max_prob, max(rank_ability.probabilities()))
-    
-ranks.append(icepool.Die(ranks))
 
-js.maxProb = max_prob * 100.0
+mean_ability = icepool.Die(ranks)
+ranks.append(mean_ability)
             `);
         }
 
@@ -570,8 +562,8 @@ js.maxProb = max_prob * 100.0
             let pyodide = await pyodideReadyPromise;
 
             pyodide.runPython(`
-                for i, rank_die in enumerate(ranks):
-                    set_rank_data(i, rank_die)
+                for i, rank in enumerate(ranks):
+                    set_rank_data(i, rank)
                 `);
             rankChart.update();
         }
