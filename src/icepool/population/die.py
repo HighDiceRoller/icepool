@@ -791,7 +791,7 @@ class Die(Population[T_co]):
             rolls: The number of dice to roll.
             index: One of the following:
             * An `int`. This will count only the roll at the specified index.
-            In this case, the result is a `Die` rather than a generator.
+                In this case, the result is a `Die` rather than a generator.
             * A `slice`. The selected dice are counted once each.
             * A sequence of one `int` for each `Die`.
                 Each roll is counted that many times, which could be multiple or

@@ -19,6 +19,7 @@
 * Add shared evaluator instances for some built-in evaluator for caching.
 * Simplify determination of outcome order for multiset evaluations.
 * Simplify implementation of generator unbinding.
+* Fix `extra_args` expansion for `map_and_time`.
 
 ## v1.5.0
 
