@@ -336,7 +336,6 @@ def limit(left=None, right=None):
 }
 
 var usedRandom = false;
-var computationTime = 0.0;
 var prevCode = '';
 
 async function runCode(code, probabilityType, transpose) {
@@ -347,16 +346,15 @@ async function runCode(code, probabilityType, transpose) {
         await resetIcepool();
         self.postMessage({ cmd: 'clearError' });
         pyodide.runPython(`_manager.reset()`);
+        let code_in_main = 'def main():\n' + code.replace(/^/gm, '    ') + '\nmain()';
+        self.postMessage({ cmd: 'setStartTime' });
         try {
-            let code_in_main = 'def main():\n' + code.replace(/^/gm, '    ') + '\nmain()';
-            let computationStart = performance.now();
             pyodide.runPython(code_in_main);
             usedRandom = pyodide.runPython(`_manager.used_random()`);
-            computationTime = (performance.now() - computationStart) / 1000.0;
-            self.postMessage({ cmd: 'updateComputationTime', computationTime });
         } catch (err) {
             self.postMessage({ cmd: 'appendError', text: err + '\n'});
         }
+        self.postMessage({ cmd: 'setEndTime' });
         prevCode = code;
     }
     
@@ -383,6 +381,9 @@ self.onmessage = async (msg) => {
 const worker_blob = new Blob([document.getElementById('icecupWorker').textContent],
                              {type: "text/javascript"});
                              
+var startTime = 0.0;
+var endTime = 0.0;
+                             
 function createPyodideWorker() {
     let worker = new Worker(window.URL.createObjectURL(worker_blob));
     worker.onmessage = (msg) => {
@@ -396,8 +397,10 @@ function createPyodideWorker() {
             appendError(msg.data.text);
         } else if (msg.data.cmd === "updateChart") {
             updateChart(msg.data.labels, msg.data.datasets);
-        } else if (msg.data.cmd === "updateComputationTime") {
-            updateComputationTime(msg.data.computationTime);
+        } else if (msg.data.cmd === "setStartTime") {
+            startTime = performance.now();
+        } else if (msg.data.cmd === "setEndTime") {
+            endTime = performance.now();
         } else if (msg.data.cmd === "setLoadingText") {
             setLoadingText(msg.data.text);
         } else if (msg.data.cmd === "setIcepoolVersion") {
@@ -591,10 +594,6 @@ function updateChart(labels, datasets) {
     chart.update();
 }
 
-function updateComputationTime(computationTime) {
-    document.getElementById("computation_time").textContent = 'Computation time: ' + computationTime.toFixed(3) + ' s';
-}
-
 function updateLogScale() {
     updateSearchQuery();
     if (document.getElementById('ls').checked) {
@@ -636,6 +635,17 @@ document.getElementById("copy_url").addEventListener("click", function (e) {
 
 // Initial run.
 updateLogScale();
+
+setInterval(() => {
+  let computationTime = 0.0;
+  if (endTime >= startTime) {
+    computationTime = endTime - startTime;
+  } else {
+    computationTime = performance.now() - startTime;
+  }
+  document.getElementById("computation_time").textContent = 'Computation time: ' + (computationTime * 0.001).toFixed(3) + ' s';
+}, 100)
+
 runCode();
 
 </script>
