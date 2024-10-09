@@ -347,14 +347,14 @@ async function runCode(code, probabilityType, transpose) {
         self.postMessage({ cmd: 'clearError' });
         pyodide.runPython(`_manager.reset()`);
         let code_in_main = 'def main():\n' + code.replace(/^/gm, '    ') + '\nmain()';
-        self.postMessage({ cmd: 'setStartTime' });
+        self.postMessage({ cmd: 'setStartTime', time: performance.now() + performance.timeOrigin });
         try {
             pyodide.runPython(code_in_main);
             usedRandom = pyodide.runPython(`_manager.used_random()`);
         } catch (err) {
             self.postMessage({ cmd: 'appendError', text: err + '\n'});
         }
-        self.postMessage({ cmd: 'setEndTime' });
+        self.postMessage({ cmd: 'setEndTime', time: performance.now() + performance.timeOrigin });
         prevCode = code;
     }
     
@@ -398,9 +398,9 @@ function createPyodideWorker() {
         } else if (msg.data.cmd === "updateChart") {
             updateChart(msg.data.labels, msg.data.datasets);
         } else if (msg.data.cmd === "setStartTime") {
-            startTime = performance.now();
+            startTime = msg.data.time;
         } else if (msg.data.cmd === "setEndTime") {
-            endTime = performance.now();
+            endTime = msg.data.time;
         } else if (msg.data.cmd === "setLoadingText") {
             setLoadingText(msg.data.text);
         } else if (msg.data.cmd === "setIcepoolVersion") {
@@ -641,7 +641,7 @@ setInterval(() => {
   if (endTime >= startTime) {
     computationTime = endTime - startTime;
   } else {
-    computationTime = performance.now() - startTime;
+    computationTime = performance.now() + performance.timeOrigin - startTime;
   }
   document.getElementById("computation_time").textContent = 'Computation time: ' + (computationTime * 0.001).toFixed(3) + ' s';
 }, 100)
