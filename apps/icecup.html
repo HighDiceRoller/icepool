@@ -416,6 +416,8 @@ function interruptExecution() {
     // The signal method seems difficult to implement for now.
     // We use a crude termination instead.
     pyodideWorker.terminate();
+    startTime = 0.0;
+    endTime = 0.0;
     pyodideWorker = createPyodideWorker();
 }
 
