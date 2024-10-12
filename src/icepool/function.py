@@ -236,10 +236,15 @@ def _iter_outcomes(
             yield arg
 
 def highest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
-    """Description TBD
+    """Selects the highest chance of rolling >= each outcome among the arguments.
 
-    For each outcome, the chance of the result rolling >= to that outcome is the
-    same as the highest chance among the arguments.
+    Specifically, for each outcome, the chance of the result rolling >= to that 
+    outcome is the same as the highest chance of rolling >= that outcome among
+    the arguments.
+
+    The result has the same mathematical structure as a probability
+    distribution, hence the result is a `Die`, even if it is difficult to
+    interpret as a physical process.
     
     Args:
         dice: Any number of dice.
@@ -250,10 +255,15 @@ def highest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
     return from_cumulative(outcomes, cumulative, reverse=True)
 
 def lowest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
-    """Description TBD
+    """Selects the highest chance of rolling <= each outcome among the arguments.
     
-    For each outcome, the chance of the result rolling <= to that outcome is the
-    same as the highest chance among the arguments.
+    Specifically, for each outcome, the chance of the result rolling <= to that 
+    outcome is the same as the highest chance of rolling <= that outcome among
+    the arguments.
+
+    The result has the same mathematical structure as a probability
+    distribution, hence the result is a `Die`, even if it is difficult to
+    interpret as a physical process.
     
     Args:
         dice: Any number of dice.
