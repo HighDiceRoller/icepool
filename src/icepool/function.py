@@ -235,6 +235,33 @@ def _iter_outcomes(
         else:
             yield arg
 
+def highest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    """Description TBD
+
+    For each outcome, the chance of the result rolling >= to that outcome is the
+    same as the highest chance among the arguments.
+    
+    Args:
+        dice: Any number of dice.
+    """
+    dice = commonize_denominator(*dice)
+    outcomes = sorted_union(*dice)
+    cumulative = [max(die.quantity('>=', outcome) for die in dice) for outcome in outcomes]
+    return from_cumulative(outcomes, cumulative, reverse=True)
+
+def lowest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    """Description TBD
+    
+    For each outcome, the chance of the result rolling <= to that outcome is the
+    same as the highest chance among the arguments.
+    
+    Args:
+        dice: Any number of dice.
+    """
+    dice = commonize_denominator(*dice)
+    outcomes = sorted_union(*dice)
+    cumulative = [max(die.quantity('<=', outcome) for die in dice) for outcome in outcomes]
+    return from_cumulative(outcomes, cumulative)
 
 @overload
 def min_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
