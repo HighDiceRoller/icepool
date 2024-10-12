@@ -235,35 +235,41 @@ def _iter_outcomes(
         else:
             yield arg
 
-def highest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_highest(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling >= each outcome among the arguments.
 
     Specifically, for each outcome, the chance of the result rolling >= to that 
     outcome is the same as the highest chance of rolling >= that outcome among
     the arguments.
 
-    The result has the same mathematical structure as a probability
-    distribution, hence the result is a `Die`, even if it is difficult to
-    interpret as a physical process.
+    Equivalently, any quantile in the result is the highest of that quantile
+    among the arguments.
+
+    This is useful for selecting from several possible moves where you are
+    trying to get >= a threshold that is known but could change depending on the
+    situation.
     
     Args:
         dice: Any number of dice.
     """
     dice = commonize_denominator(*dice)
     outcomes = sorted_union(*dice)
-    cumulative = [max(die.quantity('>=', outcome) for die in dice) for outcome in outcomes]
-    return from_cumulative(outcomes, cumulative, reverse=True)
+    cumulative = [min(die.quantity('<=', outcome) for die in dice) for outcome in outcomes]
+    return from_cumulative(outcomes, cumulative)
 
-def lowest_threshold(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_lowest(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling <= each outcome among the arguments.
     
     Specifically, for each outcome, the chance of the result rolling <= to that 
     outcome is the same as the highest chance of rolling <= that outcome among
     the arguments.
 
-    The result has the same mathematical structure as a probability
-    distribution, hence the result is a `Die`, even if it is difficult to
-    interpret as a physical process.
+    Equivalently, any quantile in the result is the lowest of that quantile
+    among the arguments.
+
+    This is useful for selecting from several possible moves where you are
+    trying to get <= a threshold that is known but could change depending on the
+    situation.
     
     Args:
         dice: Any number of dice.
