@@ -235,7 +235,15 @@ def _iter_outcomes(
         else:
             yield arg
 
-def pointwise_highest(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
+@overload
+def pointwise_highest(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
+    ...
+
+@overload
+def pointwise_highest(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+def pointwise_highest(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling >= each outcome among the arguments.
 
     Specifically, for each outcome, the chance of the result rolling >= to that 
@@ -250,14 +258,27 @@ def pointwise_highest(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
     situation.
     
     Args:
-        dice: Any number of dice.
+        dice: Either an iterable of dice, or two or more dice as separate
+            arguments.
     """
-    dice = commonize_denominator(*dice)
-    outcomes = sorted_union(*dice)
-    cumulative = [min(die.quantity('<=', outcome) for die in dice) for outcome in outcomes]
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0, ) + more_args
+    args = commonize_denominator(*args)
+    outcomes = sorted_union(*args)
+    cumulative = [min(die.quantity('<=', outcome) for die in args) for outcome in outcomes]
     return from_cumulative(outcomes, cumulative)
 
-def pointwise_lowest(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
+@overload
+def pointwise_lowest(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
+    ...
+
+@overload
+def pointwise_lowest(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+def pointwise_lowest(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling <= each outcome among the arguments.
     
     Specifically, for each outcome, the chance of the result rolling <= to that 
@@ -272,11 +293,16 @@ def pointwise_lowest(*dice: 'icepool.Die[T]') -> 'icepool.Die[T]':
     situation.
     
     Args:
-        dice: Any number of dice.
+        dice: Either an iterable of dice, or two or more dice as separate
+            arguments.
     """
-    dice = commonize_denominator(*dice)
-    outcomes = sorted_union(*dice)
-    cumulative = [max(die.quantity('<=', outcome) for die in dice) for outcome in outcomes]
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0, ) + more_args
+    args = commonize_denominator(*args)
+    outcomes = sorted_union(*args)
+    cumulative = [max(die.quantity('<=', outcome) for die in args) for outcome in outcomes]
     return from_cumulative(outcomes, cumulative)
 
 @overload

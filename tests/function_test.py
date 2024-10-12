@@ -33,9 +33,23 @@ def test_pointwise_highest():
         assert result.probability('>=', outcome) == max(
             (3 @ d6).probability('>=', outcome),
             d20.probability('>=', outcome))
+        
+def test_pointwise_highest_single_argument():
+    result = pointwise_highest([3 @ d6, d20])
+    for outcome in range(1, 21):
+        assert result.probability('>=', outcome) == max(
+            (3 @ d6).probability('>=', outcome),
+            d20.probability('>=', outcome))
 
 def test_pointwise_lowest():
     result = pointwise_lowest(3 @ d6, d20)
+    for outcome in range(1, 21):
+        assert result.probability('<=', outcome) == max(
+            (3 @ d6).probability('<=', outcome),
+            d20.probability('<=', outcome))
+        
+def test_pointwise_lowest_single_argument():
+    result = pointwise_lowest([3 @ d6, d20])
     for outcome in range(1, 21):
         assert result.probability('<=', outcome) == max(
             (3 @ d6).probability('<=', outcome),
