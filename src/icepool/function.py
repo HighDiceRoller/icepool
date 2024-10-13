@@ -236,14 +236,14 @@ def _iter_outcomes(
             yield arg
 
 @overload
-def pointwise_highest(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
+def pointwise_max(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
     ...
 
 @overload
-def pointwise_highest(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_max(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     ...
 
-def pointwise_highest(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_max(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling >= each outcome among the arguments.
 
     Naming not finalized.
@@ -273,14 +273,14 @@ def pointwise_highest(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]'
     return from_cumulative(outcomes, cumulative)
 
 @overload
-def pointwise_lowest(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
+def pointwise_min(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
     ...
 
 @overload
-def pointwise_lowest(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_min(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     ...
 
-def pointwise_lowest(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_min(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling <= each outcome among the arguments.
 
     Naming not finalized.
