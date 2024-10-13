@@ -1,6 +1,6 @@
 ## v1.6.1
 
-* Add `pointwise_highest`, `pointwise_lowest` arguments to take pointwise maximum or minimum of CDFs.
+* Add `pointwise_max`, `pointwise_min` arguments to take pointwise maximum or minimum of CDFs.
 
 ## v1.6.0 - 20 September 2024
 
