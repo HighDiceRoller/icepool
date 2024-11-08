@@ -1,3 +1,7 @@
+## v1.6.1
+
+* Add `pointwise_max`, `pointwise_min` arguments to take pointwise maximum or minimum of CDFs.
+
 ## v1.6.0 - 20 September 2024
 
 * Breaking change: outcomes with zero quantities are removed when constructing `Die` and `Deck`.

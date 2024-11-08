@@ -17,7 +17,7 @@ General conventions:
 
 __docformat__ = 'google'
 
-__version__ = '1.6.0'
+__version__ = '1.6.1a1'
 
 from typing import Final
 
@@ -48,10 +48,10 @@ Operation in specific cases:
 
 from icepool.function import (d, z, __getattr__, coin, stochastic_round,
                               one_hot, iter_cartesian_product, from_cumulative,
-                              from_rv, min_outcome, max_outcome, consecutive,
-                              sorted_union, commonize_denominator, reduce,
-                              accumulate, map, map_function, map_and_time,
-                              map_to_pool)
+                              from_rv, pointwise_max, pointwise_min, min_outcome, 
+                              max_outcome, consecutive, sorted_union,
+                              commonize_denominator, reduce, accumulate, map, 
+                              map_function, map_and_time, map_to_pool)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
@@ -147,7 +147,7 @@ __all__ = [
     'd', 'z', 'coin', 'stochastic_round', 'one_hot', 'Outcome', 'Die',
     'Population', 'tupleize', 'vectorize', 'Vector', 'Symbols', 'Again',
     'CountsKeysView', 'CountsValuesView', 'CountsItemsView', 'from_cumulative',
-    'from_rv', 'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome',
+    'from_rv', 'pointwise_max', 'pointwise_min', 'lowest', 'highest', 'middle', 'min_outcome', 'max_outcome',
     'consecutive', 'sorted_union', 'commonize_denominator', 'reduce',
     'accumulate', 'map', 'map_function', 'map_and_time', 'map_to_pool',
     'Reroll', 'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',

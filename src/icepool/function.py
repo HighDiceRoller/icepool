@@ -235,6 +235,79 @@ def _iter_outcomes(
         else:
             yield arg
 
+@overload
+def pointwise_max(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
+    ...
+
+@overload
+def pointwise_max(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+def pointwise_max(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    """Selects the highest chance of rolling >= each outcome among the arguments.
+
+    Naming not finalized.
+
+    Specifically, for each outcome, the chance of the result rolling >= to that 
+    outcome is the same as the highest chance of rolling >= that outcome among
+    the arguments.
+
+    Equivalently, any quantile in the result is the highest of that quantile
+    among the arguments.
+
+    This is useful for selecting from several possible moves where you are
+    trying to get >= a threshold that is known but could change depending on the
+    situation.
+    
+    Args:
+        dice: Either an iterable of dice, or two or more dice as separate
+            arguments.
+    """
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0, ) + more_args
+    args = commonize_denominator(*args)
+    outcomes = sorted_union(*args)
+    cumulative = [min(die.quantity('<=', outcome) for die in args) for outcome in outcomes]
+    return from_cumulative(outcomes, cumulative)
+
+@overload
+def pointwise_min(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
+    ...
+
+@overload
+def pointwise_min(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
+def pointwise_min(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+    """Selects the highest chance of rolling <= each outcome among the arguments.
+
+    Naming not finalized.
+    
+    Specifically, for each outcome, the chance of the result rolling <= to that 
+    outcome is the same as the highest chance of rolling <= that outcome among
+    the arguments.
+
+    Equivalently, any quantile in the result is the lowest of that quantile
+    among the arguments.
+
+    This is useful for selecting from several possible moves where you are
+    trying to get <= a threshold that is known but could change depending on the
+    situation.
+    
+    Args:
+        dice: Either an iterable of dice, or two or more dice as separate
+            arguments.
+    """
+    if len(more_args) == 0:
+        args = arg0
+    else:
+        args = (arg0, ) + more_args
+    args = commonize_denominator(*args)
+    outcomes = sorted_union(*args)
+    cumulative = [max(die.quantity('<=', outcome) for die in args) for outcome in outcomes]
+    return from_cumulative(outcomes, cumulative)
 
 @overload
 def min_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
@@ -294,6 +367,8 @@ def commonize_denominator(
         *dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
     """Scale the quantities of the dice so that all of them have the same denominator.
 
+    The denominator is the LCM of the denominators of the arguments.
+
     Args:
         *dice: Any number of dice or single outcomes convertible to dice.
 
@@ -301,7 +376,7 @@ def commonize_denominator(
         A tuple of dice with the same denominator.
     """
     converted_dice = [
-        icepool.implicit_convert_to_die(die).simplify() for die in dice
+        icepool.implicit_convert_to_die(die) for die in dice
     ]
     denominator_lcm = math.lcm(*(die.denominator() for die in converted_dice
                                  if die.denominator() > 0))
