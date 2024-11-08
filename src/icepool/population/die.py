@@ -560,6 +560,26 @@ class Die(Population[T_co]):
                                     star=star,
                                     repeat=repeat)
 
+    def time_to_sum(self: 'Die[int]', target: int, /,
+                    max_time: int) -> 'Die[int]':
+        """The number of rolls until the cumulative sum is greater or equal to the target.
+        
+        Args:
+            target: The number to stop at once reached.
+            max_time: The maximum number of rolls to run.
+                If the sum is not reached, the outcome is equal to max_time.
+        """
+        if self.min_outcome() < 0:
+            raise ValueError('time_to_sum does not handle negative outcomes.')
+
+        def step(total, roll):
+            return min(total + roll, target)
+
+        result: 'Die[tuple[int, int]]' = Die([0]).map_and_time(step,
+                                                               self,
+                                                               repeat=max_time)
+        return result.marginals[1]
+
     @cached_property
     def _mean_time_to_sum_cache(self) -> list[Fraction]:
         return [Fraction(0)]

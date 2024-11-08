@@ -157,6 +157,10 @@ def test_mean_time_to_sum_d6():
     assert d6.mean_time_to_sum(10) == expected
 
 
+def test_time_to_sum_d6():
+    assert d6.mean_time_to_sum(10) == d6.time_to_sum(10, 11).mean()
+
+
 def test_mean_time_to_sum_z6():
     cdf = []
     for i in range(11):
@@ -179,7 +183,9 @@ def test_stochastic_round():
 
 
 def test_map_and_time_extra_args():
+
     def test_function(current, roll):
         return min(current + roll, 10)
+
     result = Die([0]).map_and_time(test_function, d6, repeat=10)
     assert result.marginals[1].mean() == d6.mean_time_to_sum(10)
