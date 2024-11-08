@@ -1,6 +1,7 @@
 ## v1.6.1
 
 * Add `pointwise_max`, `pointwise_min` arguments to take pointwise maximum or minimum of CDFs.
+* Add `Die.time_to_sum` method.
 
 ## v1.6.0 - 20 September 2024
 
