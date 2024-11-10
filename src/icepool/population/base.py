@@ -731,9 +731,10 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         Columns may optionally be separated using `|` characters.
 
-        The default columns are `*o|q==|%==`, which are the unpacked outcomes,
-        the quantities, and the probabilities. The quantities are omitted from
-        the default columns if any individual quantity is 10**30 or greater.
+        The default setting is equal to `f'{die:md:*o|q==|%==}'`. Here the 
+        columns are the outcomes (unpacked if applicable) the quantities, and 
+        the probabilities. The quantities are omitted from the default columns 
+        if any individual quantity is 10**30 or greater.
         """
         if not self.is_empty() and self.modal_quantity() < 10**30:
             default_column_spec = '*oq==%=='
