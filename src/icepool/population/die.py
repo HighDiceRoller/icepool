@@ -569,9 +569,6 @@ class Die(Population[T_co]):
             max_time: The maximum number of rolls to run.
                 If the sum is not reached, the outcome is equal to max_time.
         """
-        if self.min_outcome() < 0:
-            raise ValueError('time_to_sum does not handle negative outcomes.')
-
         if target <= 0:
             return Die([0])
 
