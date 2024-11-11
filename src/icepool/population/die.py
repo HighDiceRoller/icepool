@@ -560,17 +560,27 @@ class Die(Population[T_co]):
                                     star=star,
                                     repeat=repeat)
 
-    def time_to_sum(self: 'Die[int]', target: int, /,
-                    max_time: int) -> 'Die[int]':
+    def time_to_sum(self: 'Die[int]',
+                    target: int,
+                    /,
+                    max_time: int,
+                    dnf: 'int|icepool.RerollType|None' = None) -> 'Die[int]':
         """The number of rolls until the cumulative sum is greater or equal to the target.
         
         Args:
             target: The number to stop at once reached.
             max_time: The maximum number of rolls to run.
-                If the sum is not reached, the outcome is equal to max_time.
+                If the sum is not reached, the outcome is determined by `dnf`.
+            dnf: What time to assign in cases where the target was not reached
+                in `max_time`. If not provided, this is set to `max_time`.
+                `dnf=icepool.Reroll` will remove this case from the result,
+                effectively rerolling it.
         """
         if target <= 0:
             return Die([0])
+
+        if dnf is None:
+            dnf = max_time
 
         def step(total, roll):
             return min(total + roll, target)
@@ -581,7 +591,7 @@ class Die(Population[T_co]):
 
         def get_time(total, time):
             if total < target:
-                return max_time
+                return dnf
             else:
                 return time
 
