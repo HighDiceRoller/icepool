@@ -189,3 +189,13 @@ def test_map_and_time_extra_args():
 
     result = Die([0]).map_and_time(test_function, d6, repeat=10)
     assert result.marginals[1].mean() == d6.mean_time_to_sum(10)
+
+
+def test_map_and_time_extra_args_with_self_loops():
+
+    def test_function(current, roll):
+        return min(current + roll, 10)
+
+    result = Die([0]).map_and_time(test_function, (d6 - 1), repeat=100)
+    assert result.marginals[1].mean() == pytest.approx(
+        (d6 - 1).mean_time_to_sum(10))

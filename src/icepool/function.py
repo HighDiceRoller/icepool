@@ -730,7 +730,7 @@ def map_function(
 def map_and_time(
         repl:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
-        state,
+        initial_state: 'T | icepool.Die[T]',
         /,
         *extra_args,
         star: bool | None = None,
@@ -756,6 +756,10 @@ def map_and_time(
                 Unmapped old outcomes stay the same.
             The new outcomes may be dice rather than just single outcomes.
             The special value `icepool.Reroll` will reroll that old outcome.
+        initial_state: The initial state of the process, which could be a
+            single state or a `Die`.
+        extra_args: Extra arguments to use, as per `map`. Note that these are
+            rerolled at every time step.
         star: If `True`, the first of the args will be unpacked before giving
             them to `func`.
             If not provided, it will be guessed based on the signature of `func`
@@ -769,11 +773,13 @@ def map_and_time(
     transition_function = _canonicalize_transition_function(
         repl, 1 + len(extra_args), star)
 
-    result: 'icepool.Die[tuple[T, int]]' = state.map(lambda x: (x, 0))
+    result: 'icepool.Die[tuple[T, int]]' = map(lambda x: (x, 0), initial_state)
 
-    def transition_with_steps(outcome_and_steps, *extra_args):
+    # Note that we don't expand extra_args during the outer map.
+    # This is needed to correctly evaluate whether each outcome is absorbing.
+    def transition_with_steps(outcome_and_steps, extra_args):
         outcome, steps = outcome_and_steps
-        next_outcome = transition_function(outcome, *extra_args)
+        next_outcome = map(transition_function, outcome, *extra_args)
         if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
             return outcome, steps
         else:
@@ -781,7 +787,7 @@ def map_and_time(
 
     for _ in range(repeat):
         next_result: 'icepool.Die[tuple[T, int]]' = map(
-            transition_with_steps, result, *extra_args)
+            transition_with_steps, result, extra_args)
         if result == next_result:
             return next_result
         result = next_result
