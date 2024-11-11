@@ -572,6 +572,9 @@ class Die(Population[T_co]):
         if self.min_outcome() < 0:
             raise ValueError('time_to_sum does not handle negative outcomes.')
 
+        if target <= 0:
+            return Die([0])
+
         def step(total, roll):
             return min(total + roll, target)
 
