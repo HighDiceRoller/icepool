@@ -235,13 +235,20 @@ def _iter_outcomes(
         else:
             yield arg
 
-@overload
-def pointwise_max(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
-    ...
 
 @overload
-def pointwise_max(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_max(
+    arg0: 'Iterable[icepool.Die[T]]',
+    /,
+) -> 'icepool.Die[T]':
     ...
+
+
+@overload
+def pointwise_max(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args:
+                  'icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
 
 def pointwise_max(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling >= each outcome among the arguments.
@@ -269,16 +276,26 @@ def pointwise_max(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
         args = (arg0, ) + more_args
     args = commonize_denominator(*args)
     outcomes = sorted_union(*args)
-    cumulative = [min(die.quantity('<=', outcome) for die in args) for outcome in outcomes]
+    cumulative = [
+        min(die.quantity('<=', outcome) for die in args)
+        for outcome in outcomes
+    ]
     return from_cumulative(outcomes, cumulative)
 
-@overload
-def pointwise_min(arg0: 'Iterable[icepool.Die[T]]', /,) -> 'icepool.Die[T]':
-    ...
 
 @overload
-def pointwise_min(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args: 'icepool.Die[T]') -> 'icepool.Die[T]':
+def pointwise_min(
+    arg0: 'Iterable[icepool.Die[T]]',
+    /,
+) -> 'icepool.Die[T]':
     ...
+
+
+@overload
+def pointwise_min(arg0: 'icepool.Die[T]', arg1: 'icepool.Die[T]', /, *args:
+                  'icepool.Die[T]') -> 'icepool.Die[T]':
+    ...
+
 
 def pointwise_min(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
     """Selects the highest chance of rolling <= each outcome among the arguments.
@@ -306,8 +323,12 @@ def pointwise_min(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
         args = (arg0, ) + more_args
     args = commonize_denominator(*args)
     outcomes = sorted_union(*args)
-    cumulative = [max(die.quantity('<=', outcome) for die in args) for outcome in outcomes]
+    cumulative = [
+        max(die.quantity('<=', outcome) for die in args)
+        for outcome in outcomes
+    ]
     return from_cumulative(outcomes, cumulative)
+
 
 @overload
 def min_outcome(arg: 'Iterable[T | icepool.Population[T]]', /) -> T:
@@ -375,9 +396,7 @@ def commonize_denominator(
     Returns:
         A tuple of dice with the same denominator.
     """
-    converted_dice = [
-        icepool.implicit_convert_to_die(die) for die in dice
-    ]
+    converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
     denominator_lcm = math.lcm(*(die.denominator() for die in converted_dice
                                  if die.denominator() > 0))
     return tuple(

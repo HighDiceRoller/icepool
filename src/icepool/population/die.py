@@ -578,7 +578,14 @@ class Die(Population[T_co]):
         result: 'Die[tuple[int, int]]' = Die([0]).map_and_time(step,
                                                                self,
                                                                repeat=max_time)
-        return result.marginals[1]
+
+        def get_time(total, time):
+            if total < target:
+                return max_time
+            else:
+                return time
+
+        return result.map(get_time)
 
     @cached_property
     def _mean_time_to_sum_cache(self) -> list[Fraction]:
