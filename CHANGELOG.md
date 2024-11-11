@@ -2,6 +2,7 @@
 
 * Add `pointwise_max`, `pointwise_min` arguments to take pointwise maximum or minimum of CDFs.
 * Add `Die.time_to_sum` method.
+* Fix identification of absorbing states in the presence of `extra_args` in `map_and_time()`.
 
 ## v1.6.0 - 20 September 2024
 
@@ -497,25 +498,25 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * Only `tuple`s become `VectorDie`.
 * Weights of 10^30 or above are not shown in tables by default.
 
-## 0.6.7
+## 0.6.7 - 18 March 2022
 
 * Add `max_depth` parameter to `sub()`. If set to `None` this seeks a fixed point.
 * Add `'reduce'` option for `denominator_method` parameters.
 * Cache results of `repeat_and_sum()`.
 
-## 0.6.6
+## 0.6.6 - 24 February 2022
 
 * Add `ndim` keyword argument to `d()`.
 * Removed `hitting_time()` method; it seems too niche to commit to.
 * Several arguments are now keyword-only.
 * Fix to `reroll_until()` for vector dice.
 
-## 0.6.5
+## 0.6.5 - 20 February 2022
 
 * Add `VectorDie.all()` and `VectorDie.any()`.
 * More fixes to `ndim` calculation.
 
-## 0.6.4
+## 0.6.4 - 20 February 2022
 
 * `EmptyDie` (a die with no outcomes) is now its own class.
 * `mix()` along with its weights argument is folded into the `Die()` factory.
@@ -527,7 +528,7 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * Slicing a die now refers to (sorted) outcome indexes.
 * Dimension slicing is now `VectorDie.dim[select]`.
 
-## 0.6.3
+## 0.6.3 - 18 February 2022
 
 * `Die()` now takes a variable number of arguments. A sequence provided as a single argument will be treated as a single outcome equal to that sequence.
     To have one outcome per item in the sequence, the sequence must be unpacked into multiple arguments.
@@ -539,7 +540,7 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * `if_else()` is now a method of `ScalarDie` rather than a free function.
 * Fixed the invert operator.
 
-## 0.6.2
+## 0.6.2 - 16 February 2022
 
 * Rerolls in pools, `mix()`, and `sub()` are now triggered by a sentinel value `hdroller.Reroll` (rather than `None`).
 * Single-`int` indexes for `count_dice` and pool `[]` operator now produce a die rather than a pool,
@@ -552,7 +553,7 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * The minimum outcome of `highest()` is equal to the highest minimum outcome among all input dice
     and likewise for `lowest()`. This will prevent introducing zero-weight outcomes where they did not exist before.
 
-## 0.6.1
+## 0.6.1 - 12 February 2022
 
 * Pool `max_outcomes` or `min_outcomes` outside the range of the fundamental die is now an error.
 * Pools no longer automatically shrink the die to fit `max_outcomes` or `min_outcomes`. This is to guarantee a predictable iteration order.
@@ -562,7 +563,7 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * Add `standard_pool()` function for easy creation of standard pools.
 * Removed `reroll_lt()`, etc. as they weren't enough faster than `reroll(func)` to justify spending extra space.
 
-## 0.6.0
+## 0.6.0 - 9 February 2022
 
 * Removed `initial_state()` in favor of using `None` as the initial state.
 * Added simple `pool.eval()` method.
@@ -575,16 +576,16 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * Improved `VectorDie` string formatting.
 * Disabled `reverse()`.
 
-## 0.5.2
+## 0.5.2 - 6 February 2022
 
 * Faster algorithm for keeping the single highest/lowest.
 * Fix `from_sweights()`.
 
-## 0.5.1
+## 0.5.1 - 6 February 2022
 
 * Fix `max()` and `min()` casting to dice.
 
-## 0.5.0
+## 0.5.0 - 6 February 2022
 
 * Capitalize `Die()` and `Pool()` factory methods.
 * `PoolEval` renamed to `EvalPool`.
@@ -595,12 +596,12 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * Rewored `Pool()` arguments.
 * Added several methods.
 
-## 0.4.4
+## 0.4.4 - 2 February 2022
 
 * Fix `weights_le()` etc.
 * `set_outcomes()` is now public.
 
-## 0.4.3
+## 0.4.3 - 2 February 2022
 
 * `min_outcome()`, `max_outcome()` now accept multiple dice.
 * Fix slice range going below zero.
@@ -610,18 +611,18 @@ Retired the `EmptyDie` / `ScalarDie` / `VectorDie` distinction.
 * Add `has_zero_weights()` method to dice.
 * `align()`, `align_range()` are now public.
 
-## 0.4.2
+## 0.4.2 - 31 January 2022
 
 * Remove numpy install dependency.
 
-## 0.4.1
+## 0.4.1 - 31 January 2022
 
 * Use the `@` operator and `d()` instead of `*` for "roll the die on the left, then roll that many dice on the right and sum".
 * `*` operator now multiplies.
 * Add `/` operator.
 * Add `median_left(), median_right(), ppf(), ppf_left(), ppf_right(), sample(), cmp(), sign()`.
 
-## 0.4.0
+## 0.4.0 - 30 January 2022
 
 No longer numpy-based. Major changes:
 
@@ -630,14 +631,14 @@ No longer numpy-based. Major changes:
 * New `MultiDie` class representing multivariate distributions.
 * `PoolScorer` classes merged to a single `PoolEval` class.
 
-## 0.3.3
+## 0.3.3 - 27 January 2022
 
 This will most likely be the last numpy-based version.
 
 * Pool scorers skip zero-weight outcomes.
 * Removed `__bool__` since zero-weight dice are no longer allowed.
 
-## 0.3.2
+## 0.3.2 - 25 January 2022
 
 * Pool scorers can now return `None` states, which drops the state from evaluation, effectively performing a full reroll.
 * Operations that result in no remaining weight (e.g. rerolling all outcomes) now return None.
@@ -647,12 +648,12 @@ This will most likely be the last numpy-based version.
 * Fixed `Die.explode()` weighting.
 * Cleaned up unused functions.
 
-## 0.3.1
+## 0.3.1 - 24 January 2022
 
 * Optimize `Pool.pops()` by immediately removing all the dice if there are no left in the mask.
 * `Die.reroll` now tracks weights properly.
 
-## 0.3.0
+## 0.3.0 - 23 January 2022
 
 * Implemented new keep/pool algorithms, which make heavy use of caching. The `keep*()` function signatures changed.
 * `Die` is now hashable.
@@ -661,16 +662,22 @@ This will most likely be the last numpy-based version.
 * Added `%` and `//` operators to `Die`.
 * Renamed `ccdf` to `sf` following `scipy`'s naming.
 
-## 0.2.2
+## 0.2.2 - 30 October 2021
 
 * `best_set` now queries the `score_func` to determine possible outcomes, which allows more flexibility.
 
-## 0.2.1
+## 0.2.1 - 30 October 2021
 
 * `Die.align()` and `Die.trim()` are now public.
 * Optimize `keep()` algorithm by skipping to results after passing the last kept die.
 * Add `best_set()` method for computing sets of matching dice.
 
-## 0.2.0
+## 0.2.0 - 22 October 2021
 
 The major change in this version is a new roll-and-keep algorithm. This can keep arbitrary indexes, as well as supporting dissimilar dice as long as they share a common "prefix" of weights.
+
+## 0.1.1 - 21 September 2021
+
+## 0.1.0 - 21 September 2021
+
+Initial version.
