@@ -301,6 +301,9 @@
                             display: true,
                             text: 'Chance (%)',
                         },
+                        ticks: {
+                            callback: (val) => (val.toPrecision(3) * 1.0 + '%'),
+                        },
                     },
                 },
                 plugins: {
@@ -309,6 +312,11 @@
                         display: true,
                         font: {
                             size: 36,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toPrecision(3) + '%',
                         },
                     },
                 },
@@ -376,6 +384,9 @@
                             display: true,
                             text: 'Chance (%)',
                         },
+                        ticks: {
+                            callback: (val) => (val.toPrecision(3) * 1.0 + '%'),
+                        },
                     },
                 },
                 plugins: {
@@ -388,6 +399,11 @@
                     },
                     legend: {
                         display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toPrecision(3) + '%',
+                        },
                     },
                 },
             },
@@ -639,9 +655,9 @@ ranks.append(mean_ability)
                 
                 js.pricesChart.data.labels = pyodide.ffi.to_js([float(x) for x in total_price.outcomes()])
                 if selected_dist == 'pmf':
-                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities()])
+                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([x for x in total_price.probabilities(percent=True)])
                 else:
-                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([float(x * 100.0) for x in total_price.probabilities('>=')])
+                    js.pricesChart.data.datasets[0].data = pyodide.ffi.to_js([x for x in total_price.probabilities('>=', percent=True)])
             `);
             pricesChart.update();
         }

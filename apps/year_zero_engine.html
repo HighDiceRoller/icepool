@@ -138,6 +138,9 @@
                         stacked: true,
                         min: 0.0,
                         max: 100.0,
+                        ticks: {
+                            callback: (val) => (val.toPrecision(3) * 1.0 + '%'),
+                        },
                     },
                     y: {
                         stacked: true,
@@ -166,9 +169,7 @@
                     tooltip: {
                         displayColors: false,
                         callbacks: {
-                            label: function(tooltipItem) {
-                                return Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem) + '%';
-                            },
+                            label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toPrecision(3) + '%',
                         },
                         position: 'barCenter',
                     },

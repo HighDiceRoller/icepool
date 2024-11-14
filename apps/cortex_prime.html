@@ -229,6 +229,9 @@
                             display: true,
                             text: 'Chance of beating difficulty',
                         },
+                        ticks: {
+                            callback: (val) => (val.toPrecision(3) * 1.0 + '%'),
+                        },
                     },
                     y1: {
                         display: true,
@@ -239,6 +242,9 @@
                         },
                         grid: {
                           drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+                        ticks: {
+                            callback: (val) => (val.toPrecision(3) * 1.0 + '%'),
                         },
                     },
                 },
@@ -252,9 +258,7 @@
                     },
                     tooltip: {
                         callbacks: {
-                            label: function(tooltipItem) {
-                                return Chart.defaults.plugins.tooltip.callbacks.label(tooltipItem) + '%';
-                            },
+                            label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toPrecision(3) + '%',
                         },
                     },
                 },
@@ -298,6 +302,9 @@
                             display: true,
                             text: 'Chance (%)',
                         },
+                        ticks: {
+                            callback: (val) => (val.toPrecision(3) * 1.0 + '%'),
+                        },
                     },
                 },
                 plugins: {
@@ -306,6 +313,11 @@
                         display: true,
                         font: {
                             size: 36,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toPrecision(3) + '%',
                         },
                     },
                 },
