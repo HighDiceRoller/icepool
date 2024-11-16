@@ -559,7 +559,8 @@ def map(
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
         time_limit: Similar to `repeat`, but will return early if a fixed point
-             is reached.
+             is reached. If both `repeat` and `time_limit` are provided,
+             `time_limit` takes priority.
         again_count, again_depth, again_end: Forwarded to the final die constructor.
     """
     transition_function = _canonicalize_transition_function(
@@ -578,7 +579,10 @@ def map(
     first_arg = args[0]
     extra_args = args[1:]
 
-    if repeat == 'inf' or time_limit == 'inf':
+    if time_limit is not None:
+        repeat = time_limit
+
+    if repeat == 'inf':
         # Infinite repeat.
         # T_co and U should be the same in this case.
         def unary_transition_function(state):
@@ -595,9 +599,6 @@ def map(
     else:
         if repeat < 0:
             raise ValueError('repeat cannot be negative.')
-
-        if time_limit is not None:
-            repeat = time_limit
 
         if repeat == 0:
             return icepool.Die([first_arg])
