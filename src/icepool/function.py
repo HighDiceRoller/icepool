@@ -503,6 +503,7 @@ def map(
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
     repeat: int | Literal['inf'] = 1,
+    time_limit: int | Literal['inf'] | None = None,
     again_count: int | None = None,
     again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -557,6 +558,8 @@ def map(
             EXPERIMENTAL: If set to `None`, the result will be as if this
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
+        time_limit: Similar to `repeat`, but will return early if a fixed point
+             is reached.
         again_count, again_depth, again_end: Forwarded to the final die constructor.
     """
     transition_function = _canonicalize_transition_function(
@@ -575,7 +578,7 @@ def map(
     first_arg = args[0]
     extra_args = args[1:]
 
-    if repeat == 'inf':
+    if repeat == 'inf' or time_limit == 'inf':
         # Infinite repeat.
         # T_co and U should be the same in this case.
         def unary_transition_function(state):
@@ -592,9 +595,13 @@ def map(
     else:
         if repeat < 0:
             raise ValueError('repeat cannot be negative.')
-        elif repeat == 0:
+
+        if time_limit is not None:
+            repeat = time_limit
+
+        if repeat == 0:
             return icepool.Die([first_arg])
-        elif repeat == 1:
+        elif repeat == 1 and time_limit is None:
             final_outcomes: 'list[T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]' = []
             final_quantities: list[int] = []
             for outcomes, final_quantity in iter_cartesian_product(*args):
@@ -610,13 +617,17 @@ def map(
         else:
             result: 'icepool.Die[T]' = icepool.Die([first_arg])
             for _ in range(repeat):
-                result = icepool.map(transition_function,
-                                     result,
-                                     *extra_args,
-                                     star=False,
-                                     again_count=again_count,
-                                     again_depth=again_depth,
-                                     again_end=again_end)
+                next_result = icepool.map(transition_function,
+                                          result,
+                                          *extra_args,
+                                          star=False,
+                                          again_count=again_count,
+                                          again_depth=again_depth,
+                                          again_end=again_end)
+                if time_limit is not None and result.simplify(
+                ) == next_result.simplify():
+                    return result
+                result = next_result
             return result
 
 
@@ -785,13 +796,10 @@ def map_and_time(
         else:
             return icepool.tupleize(next_outcome, steps + 1)
 
-    for _ in range(time_limit):
-        next_result: 'icepool.Die[tuple[T, int]]' = map(
-            transition_with_steps, result, extra_args)
-        if result == next_result:
-            return next_result
-        result = next_result
-    return result
+    return map(transition_with_steps,
+               result,
+               extra_args,
+               time_limit=time_limit)
 
 
 def map_to_pool(

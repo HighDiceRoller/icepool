@@ -520,6 +520,7 @@ class Die(Population[T_co]):
         *extra_args,
         star: bool | None = None,
         repeat: int | Literal['inf'] = 1,
+        time_limit: int | Literal['inf'] | None = None,
         again_count: int | None = None,
         again_depth: int | None = None,
         again_end: 'U | Die[U] | icepool.RerollType | None' = None
@@ -535,6 +536,7 @@ class Die(Population[T_co]):
                            *extra_args,
                            star=star,
                            repeat=repeat,
+                           time_limit=time_limit,
                            again_count=again_count,
                            again_depth=again_depth,
                            again_end=again_end)
