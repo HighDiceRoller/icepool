@@ -559,8 +559,8 @@ def map(
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
         time_limit: Similar to `repeat`, but will return early if a fixed point
-             is reached. If both `repeat` and `time_limit` are provided,
-             `time_limit` takes priority.
+             is reached. If both `repeat` and `time_limit` are provided
+             (not recommended), `time_limit` takes priority.
         again_count, again_depth, again_end: Forwarded to the final die constructor.
     """
     transition_function = _canonicalize_transition_function(
