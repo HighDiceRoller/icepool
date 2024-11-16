@@ -943,7 +943,7 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     def all_counts(
         self,
-        filter: int | None = 1
+        filter: int | Literal['all'] = 1
     ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T_contra, tuple[int, ...]]':
         """Evaluation: Sorted tuple of all counts, i.e. the sizes of all matching sets.
 

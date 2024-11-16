@@ -519,7 +519,7 @@ class Die(Population[T_co]):
         /,
         *extra_args,
         star: bool | None = None,
-        repeat: int | None = 1,
+        repeat: int | Literal['inf'] = 1,
         again_count: int | None = None,
         again_depth: int | None = None,
         again_end: 'U | Die[U] | icepool.RerollType | None' = None
@@ -546,7 +546,7 @@ class Die(Population[T_co]):
             /,
             *extra_args,
             star: bool | None = None,
-            repeat: int) -> 'Die[tuple[T_co, int]]':
+            time_limit: int) -> 'Die[tuple[T_co, int]]':
         """Repeatedly map outcomes of the state to other outcomes, while also
         counting timesteps.
 
@@ -558,7 +558,7 @@ class Die(Population[T_co]):
                                     self,
                                     *extra_args,
                                     star=star,
-                                    repeat=repeat)
+                                    time_limit=time_limit)
 
     def time_to_sum(self: 'Die[int]',
                     target: int,
@@ -585,9 +585,8 @@ class Die(Population[T_co]):
         def step(total, roll):
             return min(total + roll, target)
 
-        result: 'Die[tuple[int, int]]' = Die([0]).map_and_time(step,
-                                                               self,
-                                                               repeat=max_time)
+        result: 'Die[tuple[int, int]]' = Die([0]).map_and_time(
+            step, self, time_limit=max_time)
 
         def get_time(total, time):
             if total < target:

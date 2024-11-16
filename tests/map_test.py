@@ -32,7 +32,7 @@ def test_map_depth():
 def test_map_star():
     a = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=1)
     b = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=2)
-    c = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat=None)
+    c = icepool.Die([(0, 0)]).map(lambda x, y: (x, y), repeat='inf')
     assert a == b
     assert b == c
 
@@ -48,7 +48,7 @@ def collatz(x: int) -> int:
 
 def test_map_fixed_point():
     # Collatz conjecture.
-    result = icepool.d100.map(collatz, repeat=None).simplify()
+    result = icepool.d100.map(collatz, repeat='inf').simplify()
     expected = icepool.Die([1])
     assert result.equals(expected)
 
@@ -60,7 +60,7 @@ def test_map_fixed_point_1_cycle():
             return outcome
         return outcome + icepool.Die([0, 1])
 
-    result = icepool.Die([0]).map(repl, repeat=None).simplify()
+    result = icepool.Die([0]).map(repl, repeat='inf').simplify()
     assert result.equals(icepool.Die([10]))
 
 
@@ -68,7 +68,7 @@ def test_map_and_time() -> None:
     # How many coin flips until two heads?
     initial: icepool.Die[int] = icepool.Die([0])
     result = initial.map_and_time(lambda x: x if x >= 2 else x + coin(1, 2),
-                                  repeat=100)
+                                  time_limit=100)
     assert result.marginals[1].mean() == pytest.approx(4.0)
 
 
@@ -79,7 +79,7 @@ def test_random_walk():
             return x
         return icepool.Die([x - 1, x + 1])
 
-    result = icepool.Die([0]).map(repl, repeat=None).simplify()
+    result = icepool.Die([0]).map(repl, repeat='inf').simplify()
     assert result.equals(icepool.Die([-2, 2]))
 
 
@@ -91,8 +91,8 @@ def test_random_walk_extra_arg():
         else:
             return x + step
 
-    result = icepool.map(repl, 0, Die([-1, 1]), repeat=None).simplify()
-    result2 = Die([0]).map(repl, Die([-1, 1]), repeat=None).simplify()
+    result = icepool.map(repl, 0, Die([-1, 1]), repeat='inf').simplify()
+    result2 = Die([0]).map(repl, Die([-1, 1]), repeat='inf').simplify()
     expected = Die([-2, 2])
     assert result == expected
     assert result2 == expected
@@ -105,7 +105,7 @@ def test_random_walk_biased():
             return x
         return icepool.Die([x - 1, x + 1], times=[1, 2])
 
-    result = icepool.Die([0]).map(repl, repeat=None).simplify()
+    result = icepool.Die([0]).map(repl, repeat='inf').simplify()
     assert result.equals(icepool.Die([-2, 2], times=[1, 4]))
 
 
@@ -117,8 +117,8 @@ def test_random_walk_biased_extra_arg():
         else:
             return x + step
 
-    result = icepool.map(repl, 0, Die([-1, 1, 1]), repeat=None).simplify()
-    result2 = Die([0]).map(repl, Die([-1, 1, 1]), repeat=None).simplify()
+    result = icepool.map(repl, 0, Die([-1, 1, 1]), repeat='inf').simplify()
+    result2 = Die([0]).map(repl, Die([-1, 1, 1]), repeat='inf').simplify()
     expected = icepool.Die([-2, 2], times=[1, 4])
     assert result == expected
     assert result2 == expected
@@ -187,7 +187,7 @@ def test_map_and_time_extra_args():
     def test_function(current, roll):
         return min(current + roll, 10)
 
-    result = Die([0]).map_and_time(test_function, d6, repeat=10)
+    result = Die([0]).map_and_time(test_function, d6, time_limit=10)
     assert result.marginals[1].mean() == d6.mean_time_to_sum(10)
 
 
@@ -196,6 +196,6 @@ def test_map_and_time_extra_args_with_self_loops():
     def test_function(current, roll):
         return min(current + roll, 10)
 
-    result = Die([0]).map_and_time(test_function, (d6 - 1), repeat=100)
+    result = Die([0]).map_and_time(test_function, (d6 - 1), time_limit=100)
     assert result.marginals[1].mean() == pytest.approx(
         (d6 - 1).mean_time_to_sum(10))

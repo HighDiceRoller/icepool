@@ -502,7 +502,7 @@ def map(
     /,
     *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
     star: bool | None = None,
-    repeat: int | None = 1,
+    repeat: int | Literal['inf'] = 1,
     again_count: int | None = None,
     again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -575,7 +575,21 @@ def map(
     first_arg = args[0]
     extra_args = args[1:]
 
-    if repeat is not None:
+    if repeat == 'inf':
+        # Infinite repeat.
+        # T_co and U should be the same in this case.
+        def unary_transition_function(state):
+            return map(transition_function,
+                       state,
+                       *extra_args,
+                       star=False,
+                       again_count=again_count,
+                       again_depth=again_depth,
+                       again_end=again_end)
+
+        return icepool.population.markov_chain.absorbing_markov_chain(
+            icepool.Die([args[0]]), unary_transition_function)
+    else:
         if repeat < 0:
             raise ValueError('repeat cannot be negative.')
         elif repeat == 0:
@@ -604,20 +618,6 @@ def map(
                                      again_depth=again_depth,
                                      again_end=again_end)
             return result
-    else:
-        # Infinite repeat.
-        # T_co and U should be the same in this case.
-        def unary_transition_function(state):
-            return map(transition_function,
-                       state,
-                       *extra_args,
-                       star=False,
-                       again_count=again_count,
-                       again_depth=again_depth,
-                       again_end=again_end)
-
-        return icepool.population.markov_chain.absorbing_markov_chain(
-            icepool.Die([args[0]]), unary_transition_function)
 
 
 @overload
@@ -634,7 +634,7 @@ def map_function(
     /,
     *,
     star: bool | None = None,
-    repeat: int | None = 1,
+    repeat: int | Literal['inf'] = 1,
     again_count: int | None = None,
     again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -649,7 +649,7 @@ def map_function(
     /,
     *,
     star: bool | None = None,
-    repeat: int | None = 1,
+    repeat: int | Literal['inf'] = 1,
     again_count: int | None = None,
     again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -663,7 +663,7 @@ def map_function(
     /,
     *,
     star: bool | None = None,
-    repeat: int | None = 1,
+    repeat: int | Literal['inf'] = 1,
     again_count: int | None = None,
     again_depth: int | None = None,
     again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
@@ -734,7 +734,7 @@ def map_and_time(
         /,
         *extra_args,
         star: bool | None = None,
-        repeat: int) -> 'icepool.Die[tuple[T, int]]':
+        time_limit: int) -> 'icepool.Die[tuple[T, int]]':
     """Repeatedly map outcomes of the state to other outcomes, while also
     counting timesteps.
 
@@ -764,8 +764,8 @@ def map_and_time(
             them to `func`.
             If not provided, it will be guessed based on the signature of `func`
             and the number of arguments.
-        repeat: This will be repeated with the same arguments on the result
-            this many times.
+        time_limit: This will be repeated with the same arguments on the result
+            up to this many times.
 
     Returns:
         The `Die` after the modification.
@@ -785,7 +785,7 @@ def map_and_time(
         else:
             return icepool.tupleize(next_outcome, steps + 1)
 
-    for _ in range(repeat):
+    for _ in range(time_limit):
         next_result: 'icepool.Die[tuple[T, int]]' = map(
             transition_with_steps, result, extra_args)
         if result == next_result:

@@ -51,7 +51,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
     In other words, this produces tuples of the sizes of all matching sets.
     """
 
-    def __init__(self, *, filter: int | None = 1) -> None:
+    def __init__(self, *, filter: int | Literal['all'] = 1) -> None:
         """
         Args:
             filter: Any counts below this value will not be in the output.
@@ -63,7 +63,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
     def next_state(self, state, outcome, count):
         """Implementation."""
         state = state or ()
-        if self._filter is None or count >= self._filter:
+        if self._filter == 'all' or count >= self._filter:
             state = state + (count, )
             return tuple(sorted(state, reverse=True))
         else:
