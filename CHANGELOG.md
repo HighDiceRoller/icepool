@@ -1,8 +1,10 @@
-## v1.6.1
+## v1.6.1 - 17 November 2024
 
 * Add `pointwise_max`, `pointwise_min` arguments to take pointwise maximum or minimum of CDFs.
 * Add `Die.time_to_sum()` method.
 * Fix identification of absorbing states in the presence of `extra_args` in `map_and_time()`.
+* Add `time_limit` parameter to `map()`.
+* `repeat` parameter now uses `'inf'` to request the absorbing distribution rather than `None`.
 
 ## v1.6.0 - 20 September 2024
 
