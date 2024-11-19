@@ -49,7 +49,7 @@ In particular, here is a series of [tutorial notebooks.](https://highdiceroller.
 These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps you will find inspiration for your own application.
 
 * [Icecup](https://highdiceroller.github.io/icepool/apps/icecup.html), a simple frontend for scripting and graphing.
-* Alex Recarey's [Face 2 Face Calculator](https://infinitythecalculator.com/) for *Infinity the Game N4* -- including the ability to be installed on Android and iOS and run without an internet connection.
+* Alex Recarey's [Face 2 Face Calculator](https://infinitythecalculator.com/) for *Infinity the Game* -- including the ability to be installed on Android and iOS and run without an internet connection.
 * [Ability score rolling method calculator.](https://highdiceroller.github.io/icepool/apps/ability_scores.html)
 * [Cortex Prime calculator.](https://highdiceroller.github.io/icepool/apps/cortex_prime.html)
 * [*Legends of the Wulin* calculator.](https://highdiceroller.github.io/icepool/apps/legends_of_the_wulin.html)
