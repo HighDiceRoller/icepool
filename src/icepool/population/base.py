@@ -726,8 +726,9 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         * `o`: Outcomes.
         * `*o`: Outcomes, unpacked if applicable.
         * `q==`, `q<=`, `q>=`: Quantities ==, <=, or >= each outcome.
-        * `p==`, `p<=`, `p>=`: Probabilities (0-1) ==, <=, or >= each outcome.
-        * `%==`, `%<=`, `%>=`: Probabilities (0%-100%) ==, <=, or >= each outcome.
+        * `p==`, `p<=`, `p>=`: Probabilities (0-1).
+        * `%==`, `%<=`, `%>=`: Probabilities (0%-100%).
+        * `i==`, `i<=`, `i>=`: EXPERIMENTAL: "1 in N".
 
         Columns may optionally be separated using `|` characters.
 

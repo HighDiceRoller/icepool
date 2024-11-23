@@ -13,25 +13,24 @@ from typing import Sequence
 OUTCOME_PATTERN = r'(?:\*o|o)'
 
 COMPARATOR_OPTIONS = '|'.join(['==', '<=', '>='])
-COMPARATOR_PATTERN = f'(?:[%pq](?:{COMPARATOR_OPTIONS}))'
-"""A comparator followed by q for quantity or % for probability percent."""
+COMPARATOR_PATTERN = f'(?:[%ipq](?:{COMPARATOR_OPTIONS}))'
 
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
 
 
-def format_inverse(x, /, precision: int = 2):
-    """EXPERIMENTAL: Formats the inverse of a value as "1 in y".
+def format_inverse(probability, /, precision: int = 2):
+    """EXPERIMENTAL: Formats the inverse of a value as "1 in n".
     
     Args:
         x: The value to be formatted.
         precision: The maximum number of digits after the decimal point.
-            If 1 / x is >= 10 ** precision, the inverse will be formatted as an
+            If 1 / p is >= 10 ** precision, the inverse will be formatted as an
             integer.
     """
-    for p in range(precision):
-        if x * 10**(p + 1) > 1:
-            return f'1 in {1.0 / x:<.{precision - p}f}'
-    return f'1 in {round(1 / x)}'
+    for i in range(precision):
+        if probability * 10**(i + 1) > 1:
+            return f'1 in {1.0 / probability:<.{precision - i}f}'
+    return f'1 in {round(1 / probability)}'
 
 
 def split_format_spec(col_spec: str) -> Sequence[str]:
@@ -61,7 +60,7 @@ def make_headers(mapping: Population,
 
             if token[0] == 'q':
                 heading += 'Quantity'
-            elif token[0] in ['p', '%']:
+            elif token[0] in ['p', '%', 'i']:
                 heading += 'Probability'
 
             comparator = token[1:]
@@ -97,7 +96,7 @@ def gather_cols(mapping: Population,
                 elif comparator == '>=':
                     col = mapping.quantities('>=')
                 result.append([str(x) for x in col])
-            elif denom_type in ['p', '%']:
+            elif denom_type in ['p', '%', 'i']:
                 if mapping.denominator() == 0:
                     result.append(['n/a' for x in mapping.outcomes()])
                 else:
@@ -110,8 +109,10 @@ def gather_cols(mapping: Population,
 
                     if denom_type == 'p':
                         result.append([f'{float(x):0.6f}' for x in col])
-                    else:
+                    elif denom_type == '%':
                         result.append([f'{float(x):0.6%}' for x in col])
+                    elif denom_type == 'i':
+                        result.append([format_inverse(x) for x in col])
     return result
 
 
@@ -137,7 +138,7 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
     result: list[str] = ['>'] * len(rows[0])
     for row in rows:
         for i, cell in enumerate(row):
-            if not re.match(r'-?\d+(\.\d*)?', cell):
+            if not re.match(r'-?\d+(\.\d*)?%?$', cell):
                 result[i] = '<'
     return result
 
