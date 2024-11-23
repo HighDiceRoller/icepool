@@ -19,6 +19,21 @@ COMPARATOR_PATTERN = f'(?:[%pq](?:{COMPARATOR_OPTIONS}))'
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
 
 
+def format_inverse(x, /, precision: int = 2):
+    """EXPERIMENTAL: Formats the inverse of a value as "1 in y".
+    
+    Args:
+        x: The value to be formatted.
+        precision: The maximum number of digits after the decimal point.
+            If 1 / x is >= 10 ** precision, the inverse will be formatted as an
+            integer.
+    """
+    for p in range(precision):
+        if x * 10**(p + 1) > 1:
+            return f'1 in {1.0 / x:<.{precision - p}f}'
+    return f'1 in {round(1 / x)}'
+
+
 def split_format_spec(col_spec: str) -> Sequence[str]:
     """Splits the col_spec into its components."""
     result = re.findall(TOTAL_PATTERN, col_spec)
