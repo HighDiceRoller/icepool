@@ -6,6 +6,7 @@ from icepool.population.base import Population
 import csv as csv_lib
 import html as html_lib
 import io
+import math
 import re
 
 from typing import Sequence
@@ -18,19 +19,31 @@ COMPARATOR_PATTERN = f'(?:[%ipq](?:{COMPARATOR_OPTIONS}))'
 TOTAL_PATTERN = re.compile(f'(?:{OUTCOME_PATTERN}|{COMPARATOR_PATTERN})')
 
 
-def format_inverse(probability, /, precision: int = 2):
-    """EXPERIMENTAL: Formats the inverse of a value as "1 in n".
+def format_probability_inverse(probability, /, int_start: int = 20):
+    """EXPERIMENTAL: Formats the inverse of a value as "1 in N".
     
     Args:
-        x: The value to be formatted.
-        precision: The maximum number of digits after the decimal point.
-            If 1 / p is >= 10 ** precision, the inverse will be formatted as an
-            integer.
+        probability: The value to be formatted.
+        int_start: If N = 1 / probability is between this value and 1 million
+            times this value it will be formatted as an integer. Otherwise it 
+            be formatted asa float with precision at least 1 part in int_start.
     """
-    for i in range(precision):
-        if probability * 10**(i + 1) > 1:
-            return f'1 in {1.0 / probability:<.{precision - i}f}'
-    return f'1 in {round(1 / probability)}'
+    max_precision = math.ceil(math.log10(int_start))
+    if probability <= 0 or probability >= 1:
+        return 'n/a'
+    product = probability * int_start
+    if product <= 1:
+        if probability * int_start * 10**6 <= 1:
+            return f'1 in {1.0 / probability:<.{max_precision}e}'
+        else:
+            return f'1 in {round(1 / probability)}'
+
+    precision = 0
+    precision_factor = 1
+    while product > precision_factor and precision < max_precision:
+        precision += 1
+        precision_factor *= 10
+    return f'1 in {1.0 / probability:<.{precision}f}'
 
 
 def split_format_spec(col_spec: str) -> Sequence[str]:
@@ -112,7 +125,8 @@ def gather_cols(mapping: Population,
                     elif denom_type == '%':
                         result.append([f'{float(x):0.6%}' for x in col])
                     elif denom_type == 'i':
-                        result.append([format_inverse(x) for x in col])
+                        result.append(
+                            [format_probability_inverse(x) for x in col])
     return result
 
 
