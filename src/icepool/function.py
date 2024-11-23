@@ -555,7 +555,7 @@ def map(
             of the process up to this point. If you only want to reroll the
             current stage, you can nest another `map` inside `repl`.
 
-            EXPERIMENTAL: If set to `None`, the result will be as if this
+            EXPERIMENTAL: If set to `'inf'`, the result will be as if this
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
         time_limit: Similar to `repeat`, but will return early if a fixed point

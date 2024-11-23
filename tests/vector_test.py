@@ -58,17 +58,17 @@ def test_map_star():
 
 def test_reroll_star():
     result = icepool.vectorize(d6, d6)
-    result = result.reroll(lambda a, b: a == 6 and b == 6, depth=None)
+    result = result.reroll(lambda a, b: a == 6 and b == 6, depth='inf')
     result = result.map(lambda a, b: a + b)
-    expected = (2 @ icepool.d6).reroll({12}, depth=None)
+    expected = (2 @ icepool.d6).reroll({12}, depth='inf')
     assert result.equals(expected)
 
 
 def test_filter_star():
     result = icepool.vectorize(d6, d6)
-    result = result.filter(lambda a, b: a == 6 and b == 6, depth=None)
+    result = result.filter(lambda a, b: a == 6 and b == 6, depth='inf')
     result = result.map(lambda a, b: a + b)
-    expected = (2 @ icepool.d6).filter({12}, depth=None)
+    expected = (2 @ icepool.d6).filter({12}, depth='inf')
     assert result.equals(expected)
 
 

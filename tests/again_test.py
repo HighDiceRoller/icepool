@@ -102,7 +102,7 @@ def test_is_additive():
 def test_again_count(n):
     count = Die([1, 2, 3, 4, 5, 6 + Again], again_count=n)
     depth = d6.explode(depth=n)
-    depth = depth.reroll([depth.max_outcome()], depth=None)
+    depth = depth.reroll([depth.max_outcome()], depth='inf')
     assert count == depth
 
 
@@ -115,5 +115,5 @@ def test_again_count_double_blocked():
 def test_again_count_double():
     result = Die([1, 2, 3, 4, 5, 6 + Again + Again], again_count=2)
     bonus = 2 @ d6.map({6: 100})
-    expected = d6.map({6: 6 + bonus}).reroll(lambda x: x > 100, depth=None)
+    expected = d6.map({6: 6 + bonus}).reroll(lambda x: x > 100, depth='inf')
     assert result == expected

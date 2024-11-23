@@ -18,6 +18,7 @@ from functools import cached_property
 import itertools
 import math
 import operator
+import warnings
 
 from typing import Any, Callable, Collection, Container, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Set, cast, overload
 
@@ -304,7 +305,7 @@ class Die(Population[T_co]):
                /,
                *,
                star: bool | None = None,
-               depth: int | None) -> 'Die[T_co]':
+               depth: int | Literal['inf']) -> 'Die[T_co]':
         """Rerolls the given outcomes.
 
         Args:
@@ -330,7 +331,12 @@ class Die(Population[T_co]):
         else:
             outcome_set = self._select_outcomes(which, star)
 
-        if depth is None:
+        if depth == 'inf' or depth is None:
+            if depth is None:
+                warnings.warn(
+                    "depth=None is deprecated; use depth='inf' instead.",
+                    category=DeprecationWarning,
+                    stacklevel=1)
             data = {
                 outcome: quantity
                 for outcome, quantity in self.items()
@@ -359,7 +365,7 @@ class Die(Population[T_co]):
                /,
                *,
                star: bool | None = None,
-               depth: int | None) -> 'Die[T_co]':
+               depth: int | Literal['inf']) -> 'Die[T_co]':
         """Rerolls until getting one of the given outcomes.
 
         Essentially the complement of `reroll()`.
@@ -624,9 +630,9 @@ class Die(Population[T_co]):
                                    self.denominator() - self.quantity(0))
 
         for i in range(len(self._mean_time_to_sum_cache), target + 1):
-            result = time_per_effect + self.reroll(
-                [0],
-                depth=None).map(lambda x: self.mean_time_to_sum(i - x)).mean()
+            result = time_per_effect + self.reroll([
+                0
+            ], depth='inf').map(lambda x: self.mean_time_to_sum(i - x)).mean()
             self._mean_time_to_sum_cache.append(result)
 
         return result
