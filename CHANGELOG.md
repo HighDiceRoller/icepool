@@ -1,3 +1,8 @@
+## v1.6.2 - 23 December 2024
+
+* Deprecate `depth=None` in favor of `depth='inf'`.
+* Add experimental `format_inverse()` option that formats probabilities as "1 in N".
+
 ## v1.6.1 - 17 November 2024
 
 * Add `pointwise_max`, `pointwise_min` arguments to take pointwise maximum or minimum of CDFs.
