@@ -5,11 +5,11 @@ import icepool
 
 from icepool.expression.multiset_expression import MultisetExpression
 
-from icepool.typing import Order, Outcome, T_contra
+from icepool.typing import Order, Outcome, T
 from typing import Callable, Collection, Hashable
 
 
-class FilterOutcomesExpression(MultisetExpression[T_contra]):
+class FilterOutcomesExpression(MultisetExpression[T]):
     """Keeps all elements in the target set of outcomes, dropping the rest, or vice versa.
 
     This is similar to `intersection` or `difference`, except the target set is
@@ -19,10 +19,10 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
     """
 
     def __init__(self,
-                 child: MultisetExpression[T_contra],
+                 child: MultisetExpression[T],
                  /,
                  *,
-                 target: Callable[[T_contra], bool] | Collection[T_contra],
+                 target: Callable[[T], bool] | Collection[T],
                  invert: bool = False) -> None:
         """Constructor.
 
@@ -40,7 +40,7 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
         else:
             target_set = frozenset(target)
 
-            def function(outcome: T_contra) -> bool:
+            def function(outcome: T) -> bool:
                 return outcome in target_set
 
             self._func = function
@@ -50,7 +50,7 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
                                         invert=self._invert,
                                         target=self._func)
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
         state, count = self._children[0]._next_state(state, outcome, *counts)
         if bool(self._func(outcome)) != self._invert:
@@ -71,7 +71,7 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
             return f'{self._children[0]}.keep_outcomes(...)'
 
 
-class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
+class FilterOutcomesBinaryExpression(MultisetExpression[T]):
     """Keeps all elements in the target set of outcomes, dropping the rest, or vice versa.
 
     This is similar to `intersection` or `difference`, except the target set is
@@ -81,8 +81,8 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
     """
 
     def __init__(self,
-                 source: MultisetExpression[T_contra],
-                 target: MultisetExpression[T_contra],
+                 source: MultisetExpression[T],
+                 target: MultisetExpression[T],
                  *,
                  invert: bool = False) -> None:
         """Constructor.
@@ -103,7 +103,7 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
         return FilterOutcomesBinaryExpression(*unbound_children,
                                               invert=self._invert)
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
 
         source_state, target_state = state or (None, None)

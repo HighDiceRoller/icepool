@@ -6,18 +6,17 @@ import icepool
 import icepool.expression
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Order, Outcome, T_contra, U_co
+from icepool.typing import Order, Outcome, T, U_co
 
 from typing import Collection, Iterable
 
 
-class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
+class ExpressionEvaluator(MultisetEvaluator[T, U_co]):
     """Assigns an expression to be evaluated first to each input of an evaluator."""
 
     def __init__(self,
-                 *expressions:
-                 'icepool.expression.MultisetExpression[T_contra]',
-                 evaluator: MultisetEvaluator[T_contra, U_co],
+                 *expressions: 'icepool.expression.MultisetExpression[T]',
+                 evaluator: MultisetEvaluator[T, U_co],
                  truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
         self._bound_generators = tuple(
@@ -28,7 +27,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
             (expression._free_arity() for expression in expressions),
             default=0)
 
-        unbound_expressions: 'list[icepool.expression.MultisetExpression[T_contra]]' = []
+        unbound_expressions: 'list[icepool.expression.MultisetExpression[T]]' = []
         prefix_start = 0
         for expression in expressions:
             unbound_expression, prefix_start = expression._unbind(
@@ -70,7 +69,7 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
                                          for expression in self._expressions))
         return Order.merge(expression_order, self._evaluator.order())
 
-    def extra_outcomes(self, *generators) -> Collection[T_contra]:
+    def extra_outcomes(self, *generators) -> Collection[T]:
         return self._evaluator.extra_outcomes(*generators)
 
     @cached_property

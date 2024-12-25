@@ -17,7 +17,7 @@ T = TypeVar('T', bound='Outcome')
 T_co = TypeVar('T_co', bound='Outcome', covariant=True)
 """An outcome type."""
 
-T_contra = TypeVar('T_contra', bound='Outcome', contravariant=True)
+T = TypeVar('T_contra', bound='Outcome', contravariant=True)
 """An outcome type."""
 
 U = TypeVar('U', bound='Outcome')
@@ -66,13 +66,13 @@ class RerollType(enum.Enum):
     """Indicates an outcome should be rerolled (with unlimited depth)."""
 
 
-class Outcome(Hashable, Protocol[T_contra]):
+class Outcome(Hashable, Protocol[T]):
     """Protocol to attempt to verify that outcome types are hashable and sortable.
 
     Far from foolproof, e.g. it cannot enforce total ordering.
     """
 
-    def __lt__(self, other: T_contra) -> bool:
+    def __lt__(self, other: T) -> bool:
         ...
 
 

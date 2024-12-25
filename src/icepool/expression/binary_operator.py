@@ -9,12 +9,12 @@ from abc import abstractmethod
 from functools import cached_property, reduce
 
 from typing import Hashable
-from icepool.typing import Order, T_contra
+from icepool.typing import Order, T
 
 
-class BinaryOperatorExpression(MultisetExpression[T_contra]):
+class BinaryOperatorExpression(MultisetExpression[T]):
 
-    def __init__(self, *children: MultisetExpression[T_contra]) -> None:
+    def __init__(self, *children: MultisetExpression[T]) -> None:
         """Constructor.
 
         Args:
@@ -41,7 +41,7 @@ class BinaryOperatorExpression(MultisetExpression[T_contra]):
     def symbol() -> str:
         """A symbol representing this operation."""
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
         if len(self._children) == 0:
             return (), 0

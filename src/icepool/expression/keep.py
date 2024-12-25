@@ -6,12 +6,12 @@ from icepool.expression.multiset_expression import MultisetExpression
 
 from functools import cached_property
 
-from icepool.typing import Order, T_contra
+from icepool.typing import Order, T
 from types import EllipsisType
 from typing import Hashable, Sequence
 
 
-class KeepExpression(MultisetExpression[T_contra]):
+class KeepExpression(MultisetExpression[T]):
     """An expression to keep some of the lowest or highest elements of a multiset."""
 
     _keep_order: Order
@@ -22,9 +22,8 @@ class KeepExpression(MultisetExpression[T_contra]):
 
     # May return child unmodified.
     def __new__(  # type: ignore
-        cls, child: MultisetExpression[T_contra], /, *,
-        index: slice | Sequence[int | EllipsisType]
-    ) -> MultisetExpression[T_contra]:
+            cls, child: MultisetExpression[T], /, *, index: slice
+        | Sequence[int | EllipsisType]) -> MultisetExpression[T]:
         cls._validate_output_arity(child)
         self = super(KeepExpression, cls).__new__(cls)
         self._children = (child, )
@@ -102,9 +101,8 @@ class KeepExpression(MultisetExpression[T_contra]):
         return self
 
     @classmethod
-    def _new_raw(cls, child: MultisetExpression[T_contra], /, *,
-                 keep_order: Order, keep_tuple: tuple[int,
-                                                      ...], drop: int | None):
+    def _new_raw(cls, child: MultisetExpression[T], /, *, keep_order: Order,
+                 keep_tuple: tuple[int, ...], drop: int | None):
         self = super(KeepExpression, cls).__new__(cls)
         self._children = (child, )
         self._keep_order = keep_order
@@ -118,7 +116,7 @@ class KeepExpression(MultisetExpression[T_contra]):
                                        keep_tuple=self._keep_tuple,
                                        drop=self._drop)
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
         child = self._children[0]
         if self._drop is None:

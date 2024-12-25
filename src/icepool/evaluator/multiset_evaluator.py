@@ -10,7 +10,7 @@ from functools import cached_property
 import itertools
 import math
 
-from icepool.typing import Order, T_contra, U_co
+from icepool.typing import Order, T, U_co
 
 from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING, overload
 
@@ -22,7 +22,7 @@ PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
 
 
-class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
+class MultisetEvaluator(ABC, Generic[T, U_co]):
     """An abstract, immutable, callable class for evaulating one or more `MultisetGenerator`s.
 
     There is one abstract method to implement: `next_state()`.
@@ -55,7 +55,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     """
 
     @abstractmethod
-    def next_state(self, state: Hashable, outcome: T_contra, /, *counts:
+    def next_state(self, state: Hashable, outcome: T, /, *counts:
                    int) -> Hashable:
         """State transition function.
 
@@ -134,8 +134,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
         """
         return Order.Ascending
 
-    def extra_outcomes(self,
-                       outcomes: Sequence[T_contra]) -> Collection[T_contra]:
+    def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
         """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
 
         These will be seen by `next_state` even if they do not appear in the
@@ -211,27 +210,25 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     @overload
     def evaluate(
-        self, *args: 'Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'icepool.Die[U_co]':
+            self,
+            *args: 'Mapping[T, int] | Sequence[T]') -> 'icepool.Die[U_co]':
         ...
 
     @overload
     def evaluate(
-        self, *args: 'MultisetExpression[T_contra]'
-    ) -> 'MultisetEvaluator[T_contra, U_co]':
+            self,
+            *args: 'MultisetExpression[T]') -> 'MultisetEvaluator[T, U_co]':
         ...
 
     @overload
     def evaluate(
-        self, *args:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'icepool.Die[U_co] | MultisetEvaluator[T_contra, U_co]':
+        self, *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'icepool.Die[U_co] | MultisetEvaluator[T, U_co]':
         ...
 
     def evaluate(
-        self, *args:
-        'MultisetExpression[T_contra] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ) -> 'icepool.Die[U_co] | MultisetEvaluator[T_contra, U_co]':
+        self, *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'icepool.Die[U_co] | MultisetEvaluator[T, U_co]':
         """Evaluates generator(s).
 
         You can call the `MultisetEvaluator` object directly for the same effect,
@@ -309,9 +306,9 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     __call__ = evaluate
 
     def _select_algorithm(
-        self, *generators: 'icepool.MultisetGenerator[T_contra, Any]'
+        self, *generators: 'icepool.MultisetGenerator[T, Any]'
     ) -> tuple[
-            'Callable[[Order, Alignment[T_contra], tuple[icepool.MultisetGenerator[T_contra, Any], ...]], Mapping[Any, int]]',
+            'Callable[[Order, Alignment[T], tuple[icepool.MultisetGenerator[T, Any], ...]], Mapping[Any, int]]',
             Order]:
         """Selects an algorithm and iteration order.
 
@@ -348,8 +345,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             return self._eval_internal_forward, eval_order
 
     def _eval_internal(
-        self, order: Order, extra_outcomes: 'Alignment[T_contra]',
-        generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
+        self, order: Order, extra_outcomes: 'Alignment[T]',
+        generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]'
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order.
 
@@ -395,8 +392,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
     def _eval_internal_forward(
             self,
             order: Order,
-            extra_outcomes: 'Alignment[T_contra]',
-            generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]',
+            extra_outcomes: 'Alignment[T]',
+            generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]',
             state: Hashable = None) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order.
 
@@ -442,15 +439,15 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     @staticmethod
     def _initialize_generators(
-        generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
+        generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]'
     ) -> 'tuple[icepool.InitialMultisetGenerator, ...]':
         return tuple(generator._generate_initial() for generator in generators)
 
     @staticmethod
     def _pop_generators(
-        order: Order, extra_outcomes: 'Alignment[T_contra]',
-        generators: 'tuple[icepool.MultisetGenerator[T_contra, Any], ...]'
-    ) -> 'tuple[T_contra, Alignment[T_contra], tuple[icepool.NextMultisetGenerator, ...]]':
+        order: Order, extra_outcomes: 'Alignment[T]',
+        generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]'
+    ) -> 'tuple[T, Alignment[T], tuple[icepool.NextMultisetGenerator, ...]]':
         """Pops a single outcome from the generators.
 
         Args:
@@ -488,8 +485,7 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
 
     def sample(
         self, *generators:
-        'icepool.MultisetGenerator[T_contra, Any] | Mapping[T_contra, int] | Sequence[T_contra]'
-    ):
+        'icepool.MultisetGenerator[T, Any] | Mapping[T, int] | Sequence[T]'):
         """EXPERIMENTAL: Samples one result from the generator(s) and evaluates the result."""
         # Convert non-`Pool` arguments to `Pool`.
         converted_generators = tuple(

@@ -7,14 +7,14 @@ from icepool.expression.multiset_expression import MultisetExpression
 from functools import cached_property
 
 from typing import Hashable
-from icepool.typing import Order, T_contra
+from icepool.typing import Order, T
 
 
-class SortMatchExpression(MultisetExpression[T_contra]):
+class SortMatchExpression(MultisetExpression[T]):
 
-    def __init__(self, left: MultisetExpression[T_contra],
-                 right: MultisetExpression[T_contra], *, order: Order,
-                 tie: int, left_first: int, right_first: int):
+    def __init__(self, left: MultisetExpression[T],
+                 right: MultisetExpression[T], *, order: Order, tie: int,
+                 left_first: int, right_first: int):
         if order == Order.Any:
             order = Order.Descending
         self._left = left
@@ -32,7 +32,7 @@ class SortMatchExpression(MultisetExpression[T_contra]):
                                    left_first=self._left_first,
                                    right_first=self._right_first)
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
         left_state, right_state, left_lead = state or (None, None, 0)
         left_state, left_count = self._left._next_state(
@@ -69,10 +69,10 @@ class SortMatchExpression(MultisetExpression[T_contra]):
         return max(self._left._free_arity(), self._right._free_arity())
 
 
-class MaximumMatchExpression(MultisetExpression[T_contra]):
+class MaximumMatchExpression(MultisetExpression[T]):
 
-    def __init__(self, left: MultisetExpression[T_contra],
-                 right: MultisetExpression[T_contra], *, order: Order,
+    def __init__(self, left: MultisetExpression[T],
+                 right: MultisetExpression[T], *, order: Order,
                  match_equal: bool, keep: bool):
         self._left = left
         self._right = right
@@ -87,7 +87,7 @@ class MaximumMatchExpression(MultisetExpression[T_contra]):
                                       match_equal=self._match_equal,
                                       keep=self._keep)
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
         left_state, right_state, prev_matchable = state or (None, None, 0)
         left_state, left_count = self._left._next_state(

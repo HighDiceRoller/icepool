@@ -9,16 +9,16 @@ import operator
 from abc import abstractmethod
 from functools import cached_property, reduce
 
-from icepool.typing import Order, Outcome, T_contra
+from icepool.typing import Order, Outcome, T
 from typing import Callable, Hashable, Literal, Sequence, cast, overload
 
 
-class MapCountsExpression(MultisetExpression[T_contra]):
+class MapCountsExpression(MultisetExpression[T]):
     """Expression that maps outcomes and counts to new counts."""
 
     _function: Callable[..., int]
 
-    def __init__(self, *children: MultisetExpression[T_contra],
+    def __init__(self, *children: MultisetExpression[T],
                  function: Callable[..., int]) -> None:
         """Constructor.
 
@@ -35,7 +35,7 @@ class MapCountsExpression(MultisetExpression[T_contra]):
     def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
         return MapCountsExpression(*unbound_children, function=self._function)
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
 
         child_states = state or (None, ) * len(self._children)
@@ -57,9 +57,9 @@ class MapCountsExpression(MultisetExpression[T_contra]):
         return self._cached_arity
 
 
-class AdjustCountsExpression(MultisetExpression[T_contra]):
+class AdjustCountsExpression(MultisetExpression[T]):
 
-    def __init__(self, child: MultisetExpression[T_contra], /, *,
+    def __init__(self, child: MultisetExpression[T], /, *,
                  constant: int) -> None:
         self._validate_output_arity(child)
         self._children = (child, )
@@ -72,7 +72,7 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
     def adjust_count(self, count: int, constant: int) -> int:
         """Adjusts the count."""
 
-    def _next_state(self, state, outcome: T_contra, *counts:
+    def _next_state(self, state, outcome: T, *counts:
                     int) -> tuple[Hashable, int]:
         state, count = self._children[0]._next_state(state, outcome, *counts)
         count = self.adjust_count(count, self._constant)
@@ -117,7 +117,7 @@ class ModuloCountsExpression(AdjustCountsExpression):
 
 class KeepCountsExpression(AdjustCountsExpression):
 
-    def __init__(self, child: MultisetExpression[T_contra], /, *,
+    def __init__(self, child: MultisetExpression[T], /, *,
                  comparison: Literal['==', '!=', '<=', '<', '>=',
                                      '>'], constant: int):
         super().__init__(child, constant=constant)

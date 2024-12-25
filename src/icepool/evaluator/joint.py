@@ -6,12 +6,12 @@ from functools import cached_property
 import itertools
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Outcome, Order, T_contra, U_co
+from icepool.typing import Outcome, Order, T, U_co
 
 from typing import Collection, Iterable, Iterator
 
 
-class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
+class JointEvaluator(MultisetEvaluator[T, tuple]):
     """A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators."""
 
     def __init__(self, *children: MultisetEvaluator) -> None:
@@ -79,7 +79,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         """
         return Order.merge(*(child.order() for child in self._children))
 
-    def extra_outcomes(self, outcomes) -> Collection[T_contra]:
+    def extra_outcomes(self, outcomes) -> Collection[T]:
         return icepool.sorted_union(*(evaluator.extra_outcomes(outcomes)
                                       for evaluator in self._children))
 
