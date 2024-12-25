@@ -490,6 +490,143 @@ class MultisetExpression(ABC, Generic[T]):
         other = implicit_convert_to_expression(other)
         return icepool.transform.MultisetSymmetricDifference(self, other)
 
+    # Adjust counts.
+
+    def map_counts(*args:
+                   'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                   function: Callable[..., int]) -> 'MultisetExpression[T]':
+        """Maps the counts to new counts.
+
+        Args:
+            function: A function that takes `outcome, *counts` and produces a
+                combined count.
+        """
+        expressions = tuple(
+            implicit_convert_to_expression(arg) for arg in args)
+        return icepool.transform.MultisetMapCounts(*expressions,
+                                                   function=function)
+
+    def __mul__(self, n: int) -> 'MultisetExpression[T]':
+        if not isinstance(n, int):
+            return NotImplemented
+        return self.multiply_counts(n)
+
+    # Commutable in this case.
+    def __rmul__(self, n: int) -> 'MultisetExpression[T]':
+        if not isinstance(n, int):
+            return NotImplemented
+        return self.multiply_counts(n)
+
+    def multiply_counts(self, n: int, /) -> 'MultisetExpression[T]':
+        """Multiplies all counts by n.
+
+        Same as `self * n`.
+
+        Example:
+        ```python
+        Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
+        ```
+        """
+        return icepool.transform.MultisetMultiplyCounts(self, constant=n)
+
+    @overload
+    def __floordiv__(self, other: int) -> 'MultisetExpression[T]':
+        ...
+
+    @overload
+    def __floordiv__(
+        self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        """Same as divide_counts()."""
+
+    @overload
+    def __floordiv__(
+        self,
+        other: 'int | MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T] | icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        """Same as count_subset()."""
+
+    def __floordiv__(
+        self,
+        other: 'int | MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T] | icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        if isinstance(other, int):
+            return self.divide_counts(other)
+        else:
+            return self.count_subset(other)
+
+    def divide_counts(self, n: int, /) -> 'MultisetExpression[T]':
+        """Divides all counts by n (rounding down).
+
+        Same as `self // n`.
+
+        Example:
+        ```python
+        Pool([1, 2, 2, 3]) // 2 -> [2]
+        ```
+        """
+        return icepool.transform.MultisetFloordivCounts(self, constant=n)
+
+    def __mod__(self, n: int, /) -> 'MultisetExpression[T]':
+        if not isinstance(n, int):
+            return NotImplemented
+        return icepool.transform.MultisetModuloCounts(self, constant=n)
+
+    def modulo_counts(self, n: int, /) -> 'MultisetExpression[T]':
+        """Moduos all counts by n.
+
+        Same as `self % n`.
+
+        Example:
+        ```python
+        Pool([1, 2, 2, 3]) % 2 -> [1, 3]
+        ```
+        """
+        return self % n
+
+    def __pos__(self) -> 'MultisetExpression[T]':
+        """Sets all negative counts to zero."""
+        return icepool.transform.MultisetKeepCounts(self,
+                                                    comparison='>=',
+                                                    constant=0)
+
+    def __neg__(self) -> 'MultisetExpression[T]':
+        """As -1 * self."""
+        return -1 * self
+
+    def keep_counts(self, comparison: Literal['==', '!=', '<=', '<', '>=',
+                                              '>'], n: int,
+                    /) -> 'MultisetExpression[T]':
+        """Keeps counts fitting the comparison, treating the rest as zero.
+
+        For example, `expression.keep_counts('>=', 2)` would keep pairs,
+        triplets, etc. and drop singles.
+
+        ```python
+        Pool([1, 2, 2, 3, 3, 3]).keep_counts('>=', 2) -> [2, 2, 3, 3, 3]
+        ```
+        
+        Args:
+            comparison: The comparison to use.
+            n: The number to compare counts against.
+        """
+        return icepool.transform.MultisetKeepCounts(self,
+                                                    comparison=comparison,
+                                                    constant=n)
+
+    def unique(self, n: int = 1, /) -> 'MultisetExpression[T]':
+        """Counts each outcome at most `n` times.
+
+        For example, `generator.unique(2)` would count each outcome at most
+        twice.
+
+        Example:
+        ```python
+        Pool([1, 2, 2, 3]).unique() -> [1, 2, 3]
+        ```
+        """
+        return icepool.transform.MultisetUnique(self, constant=n)
+
     def _compare(
         self,
         right: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',

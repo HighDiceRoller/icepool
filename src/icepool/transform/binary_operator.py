@@ -44,7 +44,7 @@ class MultisetBinaryOperator(MultisetTransform[T]):
 
     def _transform_next(
             self, next_children: 'Iterable[MultisetExpression[T]]', outcome: T,
-            counts: 'Iterable[int]') -> 'tuple[MultisetExpression[T], int]':
+            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         count = reduce(self.merge_counts, counts)
         return type(self)(*next_children), count
 

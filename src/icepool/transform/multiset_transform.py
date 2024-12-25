@@ -29,7 +29,7 @@ class MultisetTransform(MultisetExpression[T]):
     @abstractmethod
     def _transform_next(
             self, next_children: 'Iterable[MultisetExpression[T]]', outcome: T,
-            counts: 'Iterable[int]') -> 'tuple[MultisetExpression[T], int]':
+            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         """Produce the next state of this expression.
 
         Args:
