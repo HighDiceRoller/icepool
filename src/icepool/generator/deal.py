@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
+from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 import icepool.generator.pop_order
 from icepool.generator.pop_order import PopOrderReason
 
@@ -85,10 +85,10 @@ class Deal(KeepGenerator[T]):
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self._hand_size)
 
-    def _generate_initial(self) -> InitialMultisetGenerator:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
+    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0, ), 1
             return
@@ -115,7 +115,7 @@ class Deal(KeepGenerator[T]):
             popped_deal = Deal._new_raw(popped_deck, 0, ())
             yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
-    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
+    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0, ), 1
             return
@@ -142,7 +142,8 @@ class Deal(KeepGenerator[T]):
             popped_deal = Deal._new_raw(popped_deck, 0, ())
             yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
         lo_skip, hi_skip = icepool.generator.pop_order.lo_hi_skip(
             self.keep_tuple())
         if lo_skip > hi_skip:
@@ -153,7 +154,7 @@ class Deal(KeepGenerator[T]):
         return Order.Any, PopOrderReason.NoPreference
 
     @cached_property
-    def _hash_key(self) -> Hashable:
+    def _local_hash_key(self) -> Hashable:
         return Deal, self.deck(), self._hand_size, self._keep_tuple
 
     def __repr__(self) -> str:

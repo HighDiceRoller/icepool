@@ -50,12 +50,13 @@ class Alignment(MultisetGenerator[T, tuple[()]]):
         else:
             yield Alignment(self.outcomes()[:-1]), (), 1
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
         return Order.Any, PopOrderReason.NoPreference
 
     def denominator(self) -> int:
         return 1
 
     @cached_property
-    def _hash_key(self) -> Hashable:
+    def _local_hash_key(self) -> Hashable:
         return Alignment, self._outcomes

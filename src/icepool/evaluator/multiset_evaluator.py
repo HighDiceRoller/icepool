@@ -198,7 +198,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     @cached_property
     def _cache(
         self
-    ) -> 'MutableMapping[tuple[Order, Alignment, tuple[MultisetGenerator, ...], Hashable], Mapping[Any, int]]':
+    ) -> 'MutableMapping[tuple[Order, Alignment, tuple[MultisetExpression, ...], Hashable], Mapping[Any, int]]':
         """Cached results.
         
         The key is `(order, extra_outcomes, generators, state)`.
@@ -257,34 +257,26 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             from icepool.evaluator.expression import ExpressionEvaluator
             return ExpressionEvaluator(*expressions, evaluator=self)
 
-        if not all(
-                isinstance(expression, icepool.MultisetGenerator)
-                for expression in expressions):
-            from icepool.evaluator.expression import ExpressionEvaluator
-            return ExpressionEvaluator(*expressions, evaluator=self).evaluate()
-
-        generators = cast(tuple[icepool.MultisetGenerator, ...], expressions)
-
         self.validate_arity(
-            sum(generator.output_arity() for generator in generators))
+            sum(expression.output_arity() for expression in expressions))
 
-        generators = self.prefix_generators() + generators
+        expressions = self.prefix_generators() + expressions
 
-        if not all(generator._is_resolvable() for generator in generators):
+        if not all(expression._is_resolvable() for expression in expressions):
             return icepool.Die([])
 
-        algorithm, order = self._select_algorithm(*generators)
+        algorithm, order = self._select_algorithm(*expressions)
 
-        outcomes = icepool.sorted_union(*(generator.outcomes()
-                                          for generator in generators))
+        outcomes = icepool.sorted_union(*(expression.outcomes()
+                                          for expression in expressions))
         extra_outcomes = Alignment(self.extra_outcomes(outcomes))
 
         dist: MutableMapping[Any, int] = defaultdict(int)
-        iterators = MultisetEvaluator._initialize_generators(generators)
+        iterators = MultisetEvaluator._initialize_expressions(expressions)
         for p in itertools.product(*iterators):
-            sub_generators, sub_weights = zip(*p)
+            sub_expressions, sub_weights = zip(*p)
             prod_weight = math.prod(sub_weights)
-            sub_result = algorithm(order, extra_outcomes, sub_generators)
+            sub_result = algorithm(order, extra_outcomes, sub_expressions)
             for sub_state, sub_weight in sub_result.items():
                 dist[sub_state] += sub_weight * prod_weight
 
@@ -306,9 +298,9 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
     def _select_algorithm(
-        self, *generators: 'icepool.MultisetGenerator[T, Any]'
+        self, *generators: 'icepool.MultisetExpression[T]'
     ) -> tuple[
-            'Callable[[Order, Alignment[T], tuple[icepool.MultisetGenerator[T, Any], ...]], Mapping[Any, int]]',
+            'Callable[[Order, Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
             Order]:
         """Selects an algorithm and iteration order.
 
@@ -324,7 +316,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             return self._eval_internal, eval_order
 
         preferred_pop_order, pop_order_reason = merge_pop_orders(
-            *(generator._preferred_pop_order() for generator in generators))
+            *(generator._local_preferred_pop_order()
+              for generator in generators))
 
         if preferred_pop_order is None:
             preferred_pop_order = Order.Any
@@ -346,7 +339,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
     def _eval_internal(
         self, order: Order, extra_outcomes: 'Alignment[T]',
-        generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]'
+        generators: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order.
 
@@ -438,16 +431,17 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         return result
 
     @staticmethod
-    def _initialize_generators(
-        generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]'
-    ) -> 'tuple[icepool.InitialMultisetGenerator, ...]':
-        return tuple(generator._generate_initial() for generator in generators)
+    def _initialize_expressions(
+        expressions: 'tuple[icepool.MultisetExpression[T], ...]'
+    ) -> 'tuple[icepool.InitialMultisetGeneration, ...]':
+        return tuple(expression._generate_initial()
+                     for expression in expressions)
 
     @staticmethod
     def _pop_generators(
         order: Order, extra_outcomes: 'Alignment[T]',
-        generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]'
-    ) -> 'tuple[T, Alignment[T], tuple[icepool.NextMultisetGenerator, ...]]':
+        generators: 'tuple[icepool.MultisetExpression[T], ...]'
+    ) -> 'tuple[T, Alignment[T], tuple[icepool.PopMultisetGeneration, ...]]':
         """Pops a single outcome from the generators.
 
         Args:

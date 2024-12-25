@@ -2,7 +2,7 @@ import icepool
 import pytest
 
 from icepool import d6, Die
-from icepool.expression import multiset_function
+from icepool.multiset_function import multiset_function
 
 # See https://rpg.stackexchange.com/q/171498/72732
 # for approaches by myself and others.

@@ -127,7 +127,7 @@ from icepool.generator.mixture import MixtureGenerator
 
 from icepool.multiset_expression import MultisetExpression, implicit_convert_to_expression
 
-from icepool.generator.multiset_generator import MultisetGenerator, InitialMultisetGenerator, NextMultisetGenerator
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.alignment import Alignment
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
@@ -135,14 +135,14 @@ from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 from icepool.generator.multi_deal import MultiDeal
 
-from icepool.expression.multiset_function import multiset_function
+from icepool.multiset_function import multiset_function
 from icepool.multiset_variable import MultisetVariable
 
 from icepool.population.format import format_probability_inverse
 
-import icepool.expression as expression
 import icepool.generator as generator
 import icepool.evaluator as evaluator
+import icepool.transform as transform
 
 import icepool.typing as typing
 

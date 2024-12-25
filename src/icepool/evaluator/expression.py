@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from functools import cached_property
 import itertools
 import icepool
-import icepool.expression
+import icepool.multiset_expression
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import Order, Outcome, T, U_co
@@ -15,7 +15,8 @@ class ExpressionEvaluator(MultisetEvaluator[T, U_co]):
     """Assigns an expression to be evaluated first to each input of an evaluator."""
 
     def __init__(self,
-                 *expressions: 'icepool.expression.MultisetExpression[T]',
+                 *expressions:
+                 'icepool.multiset_expression.MultisetExpression[T]',
                  evaluator: MultisetEvaluator[T, U_co],
                  truth_value: bool | None = None) -> None:
         self._evaluator = evaluator

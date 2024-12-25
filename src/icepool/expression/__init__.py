@@ -13,7 +13,7 @@ from icepool.expression.filter_outcomes import FilterOutcomesExpression, FilterO
 from icepool.expression.keep import KeepExpression
 from icepool.expression.match import SortMatchExpression, MaximumMatchExpression
 
-from icepool.expression.multiset_function import multiset_function
+from icepool.multiset_function import multiset_function
 
 __all__ = [
     'multiset_function', 'MultisetExpression', 'MultisetVariable',

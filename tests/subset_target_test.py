@@ -3,7 +3,7 @@ import icepool
 import pytest
 
 from icepool import d, Die, Order, Pool
-from icepool.expression.multiset_expression import MultisetExpression
+from icepool.multiset_expression import MultisetExpression
 
 targets_to_test = [
     (),

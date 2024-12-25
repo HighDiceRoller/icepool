@@ -2,7 +2,8 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
+from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 
 import math
@@ -15,7 +16,7 @@ from types import EllipsisType
 from typing import TYPE_CHECKING, Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
 
 if TYPE_CHECKING:
-    from icepool.expression import MultisetExpression
+    from icepool.multiset_expression import MultisetExpression
 
 
 class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
@@ -63,7 +64,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
 
     def outcomes(self) -> Sequence[T]:
         return icepool.sorted_union(*(inner.outcomes()
-                              for inner in self._inner_generators))
+                                      for inner in self._inner_generators))
 
     def output_arity(self) -> int:
         result = None
@@ -79,21 +80,22 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_generators)
 
-    def _generate_initial(self) -> InitialMultisetGenerator:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         yield from self._inner_generators.items()
 
-    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
+    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
         raise RuntimeError(
             'MixtureMultisetGenerator should have decayed to another generator type by this point.'
         )
 
-    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
+    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         raise RuntimeError(
             'MixtureMultisetGenerator should have decayed to another generator type by this point.'
         )
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
-        return merge_pop_orders(*(inner._preferred_pop_order()
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
+        return merge_pop_orders(*(inner._local_preferred_pop_order()
                                   for inner in self._inner_generators))
 
     @cached_property
@@ -107,7 +109,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
         return self._denominator
 
     @property
-    def _hash_key(self) -> Hashable:
+    def _local_hash_key(self) -> Hashable:
         # This is not intended to be cached directly, so we are a little loose here.
         return MixtureGenerator, tuple(self._inner_generators.items())
 

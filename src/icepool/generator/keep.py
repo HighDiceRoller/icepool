@@ -1,7 +1,8 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
+from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.generator.multiset_generator import MultisetGenerator
 
 import operator
 from collections import defaultdict
@@ -10,10 +11,11 @@ from functools import cached_property, reduce
 from abc import ABC, abstractmethod
 from types import EllipsisType
 from typing import Hashable, Literal, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
+import icepool.multiset_expression
 from icepool.typing import ImplicitConversionError, Outcome, T
 
 if TYPE_CHECKING:
-    from icepool.expression import MultisetExpression
+    from icepool.multiset_expression import MultisetExpression
 
 
 class KeepGenerator(MultisetGenerator[T, tuple[int]]):
@@ -235,7 +237,7 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
         args = tuple(
-            icepool.expression.implicit_convert_to_expression(arg)
+            icepool.multiset_expression.implicit_convert_to_expression(arg)
             for arg in args)
         if all(isinstance(arg, KeepGenerator) for arg in args):
             generators = cast(tuple[KeepGenerator, ...], args)

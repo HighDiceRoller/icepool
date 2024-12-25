@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
-from icepool.multiset_expression import MultisetExpression
+from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 import itertools
 import math
@@ -12,21 +12,24 @@ from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Itera
 
 from abc import abstractmethod
 
-C = TypeVar('C', bound='MultisetTransform')
-"""Type variable representing a subclass of `MultisetTransform`."""
-
 
 class MultisetTransform(MultisetExpression[T]):
     """Internal node of an expression taking one or more counts and producing a single count."""
 
     @abstractmethod
-    def _copy(self: C, children: 'Iterable[MultisetExpression[T]]') -> C:
-        """Creates a copy of self with the given children."""
+    def _copy(
+        self, copy_children: 'Iterable[MultisetExpression[T]]'
+    ) -> 'MultisetExpression[T]':
+        """Creates a copy of self with the given children.
+        
+        I considered using `copy.copy` but this doesn't play well with
+        incidental members such as in `@cached_property`.
+        """
 
     @abstractmethod
-    def _transform_next(self: C,
-                        next_children: 'Iterable[MultisetExpression[T]]',
-                        outcome: T, counts: 'Iterable[int]') -> tuple[C, int]:
+    def _transform_next(
+            self, next_children: 'Iterable[MultisetExpression[T]]', outcome: T,
+            counts: 'Iterable[int]') -> 'tuple[MultisetExpression[T], int]':
         """Produce the next state of this expression.
 
         Args:
@@ -52,16 +55,14 @@ class MultisetTransform(MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return all(child._is_resolvable() for child in self._children)
 
-    def _generate_initial(self) -> Iterator[tuple['MultisetExpression', int]]:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         for t in itertools.product(*(child._generate_initial()
                                      for child in self._children)):
             next_children, weights = zip(*t)
             next_self = self._copy(next_children)
             yield next_self, math.prod(weights)
 
-    def _generate_min(
-        self, min_outcome: T
-    ) -> Iterator[tuple['MultisetExpression', Sequence, int]]:
+    def _generate_min(self, min_outcome: T) -> PopMultisetGeneration:
         for t in itertools.product(*(child._generate_min(min_outcome)
                                      for child in self._children)):
             next_children, counts, weights = zip(*t)
@@ -69,9 +70,7 @@ class MultisetTransform(MultisetExpression[T]):
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 
-    def _generate_max(
-        self, max_outcome: T
-    ) -> Iterator[tuple['MultisetExpression', Sequence, int]]:
+    def _generate_max(self, max_outcome: T) -> PopMultisetGeneration:
         for t in itertools.product(*(child._generate_min(max_outcome)
                                      for child in self._children)):
             next_children, counts, weights = zip(*t)
@@ -79,8 +78,9 @@ class MultisetTransform(MultisetExpression[T]):
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
-        return merge_pop_orders(*(child._preferred_pop_order()
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
+        return merge_pop_orders(*(child._local_preferred_pop_order()
                                   for child in self._children))
 
     def _free_arity(self) -> int:

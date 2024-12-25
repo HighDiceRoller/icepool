@@ -51,59 +51,59 @@ def test_pop_order_conflict_override():
 
 def test_pool_single_type():
     pool = icepool.Pool([d6, d6, d6])
-    assert pool._preferred_pop_order() == (Order.Any,
-                                           PopOrderReason.NoPreference)
+    assert pool._local_preferred_pop_order() == (Order.Any,
+                                                 PopOrderReason.NoPreference)
 
 
 def test_pool_standard():
     pool = icepool.Pool([d8, d12, d6])
-    assert pool._preferred_pop_order() == (Order.Descending,
-                                           PopOrderReason.PoolComposition)
+    assert pool._local_preferred_pop_order() == (
+        Order.Descending, PopOrderReason.PoolComposition)
 
 
 def test_pool_standard_negative():
     pool = icepool.Pool([-d8, -d12, -d6])
-    assert pool._preferred_pop_order() == (Order.Ascending,
-                                           PopOrderReason.PoolComposition)
+    assert pool._local_preferred_pop_order() == (
+        Order.Ascending, PopOrderReason.PoolComposition)
 
 
 def test_pool_non_truncate():
     pool = icepool.Pool([-d8, d12, -d6])
-    assert pool._preferred_pop_order() == (Order.Any,
-                                           PopOrderReason.NoPreference)
+    assert pool._local_preferred_pop_order() == (Order.Any,
+                                                 PopOrderReason.NoPreference)
 
 
 def test_pool_skip_min():
     pool = icepool.Pool([d6, d6, d6])[0, 1, 1]
-    assert pool._preferred_pop_order() == (Order.Descending,
-                                           PopOrderReason.KeepSkip)
+    assert pool._local_preferred_pop_order() == (Order.Descending,
+                                                 PopOrderReason.KeepSkip)
 
 
 def test_pool_skip_max():
     pool = icepool.Pool([d6, d6, d6])[1, 1, 0]
-    assert pool._preferred_pop_order() == (Order.Ascending,
-                                           PopOrderReason.KeepSkip)
+    assert pool._local_preferred_pop_order() == (Order.Ascending,
+                                                 PopOrderReason.KeepSkip)
 
 
 def test_pool_skip_min_but_truncate():
     pool = icepool.Pool([-d6, -d6, -d8])[0, 1, 1]
-    assert pool._preferred_pop_order() == (Order.Ascending,
-                                           PopOrderReason.PoolComposition)
+    assert pool._local_preferred_pop_order() == (
+        Order.Ascending, PopOrderReason.PoolComposition)
 
 
 def test_pool_skip_max_but_truncate():
     pool = icepool.Pool([d6, d6, d8])[1, 1, 0]
-    assert pool._preferred_pop_order() == (Order.Descending,
-                                           PopOrderReason.PoolComposition)
+    assert pool._local_preferred_pop_order() == (
+        Order.Descending, PopOrderReason.PoolComposition)
 
 
 def test_deck_skip_min():
     deck = icepool.Deck(range(10)).deal(4)[..., 1, 1]
-    assert deck._preferred_pop_order() == (Order.Descending,
-                                           PopOrderReason.KeepSkip)
+    assert deck._local_preferred_pop_order() == (Order.Descending,
+                                                 PopOrderReason.KeepSkip)
 
 
 def test_deck_skip_max():
     deck = icepool.Deck(range(10)).deal(4)[1, 1, ...]
-    assert deck._preferred_pop_order() == (Order.Ascending,
-                                           PopOrderReason.KeepSkip)
+    assert deck._local_preferred_pop_order() == (Order.Ascending,
+                                                 PopOrderReason.KeepSkip)

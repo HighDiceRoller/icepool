@@ -1,8 +1,9 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 
 import itertools
@@ -22,7 +23,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
 
     def outcomes(self) -> Sequence[T]:
         return icepool.sorted_union(*(inner.outcomes()
-                              for inner in self._inner_generators))
+                                      for inner in self._inner_generators))
 
     def output_arity(self) -> int:
         return 1
@@ -30,10 +31,10 @@ class CompoundKeepGenerator(KeepGenerator[T]):
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_generators)
 
-    def _generate_initial(self) -> InitialMultisetGenerator:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
+    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
         for t in itertools.product(*(inner._generate_min(min_outcome)
                                      for inner in self._inner_generators)):
             generators, counts, weights = zip(*t)
@@ -44,7 +45,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
             yield CompoundKeepGenerator(
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
-    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
+    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         for t in itertools.product(*(inner._generate_max(max_outcome)
                                      for inner in self._inner_generators)):
             generators, counts, weights = zip(*t)
@@ -55,8 +56,9 @@ class CompoundKeepGenerator(KeepGenerator[T]):
             yield CompoundKeepGenerator(
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
-        return merge_pop_orders(*(inner._preferred_pop_order()
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
+        return merge_pop_orders(*(inner._local_preferred_pop_order()
                                   for inner in self._inner_generators))
 
     def denominator(self) -> int:
@@ -68,7 +70,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
         return CompoundKeepGenerator(self._inner_generators, keep_tuple)
 
     @property
-    def _hash_key(self) -> Hashable:
+    def _local_hash_key(self) -> Hashable:
         return CompoundKeepGenerator, tuple(
             inner._hash_key
             for inner in self._inner_generators), self._keep_tuple

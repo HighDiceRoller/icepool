@@ -52,7 +52,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
     def _free_arity(self) -> int:
         return 0
 
-    def order(self) -> Order:
+    def local_order(self) -> Order:
         return Order.Any
 
     # Overridden to switch bound generators with variables.

@@ -1,6 +1,6 @@
 from icepool import *
 from icepool.evaluator import *
-from icepool.expression import *
+from icepool.generator import *
 
 import pytest
 

@@ -1,11 +1,11 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.expression
+import icepool.multiset_expression
 import icepool.math
 import icepool.creation_args
+from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator
 import icepool.generator.pop_order
 from icepool.generator.pop_order import PopOrderReason
 
@@ -19,7 +19,7 @@ from icepool.typing import T, Order
 from typing import TYPE_CHECKING, Any, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
 
 if TYPE_CHECKING:
-    from icepool.expression import MultisetExpression
+    from icepool.multiset_expression import MultisetExpression
 
 
 class Pool(KeepGenerator[T]):
@@ -170,7 +170,8 @@ class Pool(KeepGenerator[T]):
     def output_arity(self) -> int:
         return 1
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
         can_truncate_min, can_truncate_max = icepool.generator.pop_order.can_truncate(
             self.unique_dice())
         if can_truncate_min and not can_truncate_max:
@@ -195,10 +196,10 @@ class Pool(KeepGenerator[T]):
         """The max outcome among all dice in this pool."""
         return self._outcomes[-1]
 
-    def _generate_initial(self) -> InitialMultisetGenerator:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
+    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -244,7 +245,7 @@ class Pool(KeepGenerator[T]):
             popped_pool = Pool._new_raw((), self._outcomes[1:], ())
             yield popped_pool, (sum(self.keep_tuple()), ), skip_weight
 
-    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
+    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
@@ -298,7 +299,7 @@ class Pool(KeepGenerator[T]):
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
         args = tuple(
-            icepool.expression.implicit_convert_to_expression(arg)
+            icepool.multiset_expression.implicit_convert_to_expression(arg)
             for arg in args)
         if all(isinstance(arg, Pool) for arg in args):
             pools = cast(tuple[Pool[T], ...], args)
@@ -325,7 +326,7 @@ class Pool(KeepGenerator[T]):
                       for die, count in self._dice))
 
     @cached_property
-    def _hash_key(self) -> tuple:
+    def _local_hash_key(self) -> tuple:
         return Pool, self._dice, self._outcomes, self._keep_tuple
 
 

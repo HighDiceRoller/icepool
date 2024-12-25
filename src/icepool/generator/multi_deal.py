@@ -5,7 +5,8 @@ from icepool.typing import Order, Qs, T
 from typing import Any, Hashable, cast
 import icepool
 from icepool.collection.counts import CountsKeysView
-from icepool.generator.multiset_generator import InitialMultisetGenerator, NextMultisetGenerator, MultisetGenerator
+from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.math import iter_hypergeom
 from icepool.generator.pop_order import PopOrderReason
 
@@ -92,11 +93,11 @@ class MultiDeal(MultisetGenerator[T, Qs]):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _generate_initial(self) -> InitialMultisetGenerator:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
     def _generate_common(self, popped_deck: 'icepool.Deck[T]',
-                         deck_count: int) -> NextMultisetGenerator:
+                         deck_count: int) -> PopMultisetGeneration:
         """Common implementation for _generate_min and _generate_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck().size())
@@ -112,7 +113,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 
-    def _generate_min(self, min_outcome) -> NextMultisetGenerator:
+    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0, ), 1
             return
@@ -121,7 +122,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _generate_max(self, max_outcome) -> NextMultisetGenerator:
+    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0, ), 1
             return
@@ -130,11 +131,12 @@ class MultiDeal(MultisetGenerator[T, Qs]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
         return Order.Any, PopOrderReason.NoPreference
 
     @cached_property
-    def _hash_key(self) -> Hashable:
+    def _local_hash_key(self) -> Hashable:
         return MultiDeal, self.deck(), self.hand_sizes()
 
     def __repr__(self) -> str:

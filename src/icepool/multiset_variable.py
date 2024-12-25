@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from icepool.generator.pop_order import PopOrderReason
-from icepool.multiset_expression import MultisetExpression
+from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 from typing import Any, Hashable, Iterator, Self, Sequence
 
@@ -28,23 +28,20 @@ class MultisetVariable(MultisetExpression[Any]):
     def _is_resolvable(self) -> bool:
         raise UnboundMultisetExpressionError()
 
-    def _generate_initial(self) -> Iterator[tuple['MultisetExpression', int]]:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         raise UnboundMultisetExpressionError()
 
-    def _generate_min(
-            self, min_outcome
-    ) -> Iterator[tuple['MultisetExpression', Sequence, int]]:
+    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
         raise UnboundMultisetExpressionError()
 
-    def _generate_max(
-            self, max_outcome
-    ) -> Iterator[tuple['MultisetExpression', Sequence, int]]:
+    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         raise UnboundMultisetExpressionError()
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
         raise UnboundMultisetExpressionError()
 
-    def order(self) -> Order:
+    def local_order(self) -> Order:
         return Order.Any
 
     def _free_arity(self) -> int:
@@ -57,7 +54,7 @@ class MultisetVariable(MultisetExpression[Any]):
         return self, next_index
 
     def _local_hash_key(self) -> Hashable:
-        raise UnboundMultisetExpressionError()
+        return (MultisetVariable, self._index)
 
     def __str__(self) -> str:
         return f'mv[{self._index}]'

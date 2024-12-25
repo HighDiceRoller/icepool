@@ -7,11 +7,16 @@ import random
 import icepool
 from icepool.collection.counts import Counts
 
-from icepool.generator.pop_order import PopOrderReason
+from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
 from icepool.typing import T, U, ImplicitConversionError, Order, Outcome, T
 from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Iterator, Literal, Mapping, Self, Sequence, Type, TypeAlias, TypeVar, cast, overload
 
 from abc import ABC, abstractmethod
+
+InitialMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpression',
+                                                      int]]
+PopMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpression',
+                                                  Sequence, int]]
 
 
 def implicit_convert_to_expression(
@@ -108,7 +113,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _generate_initial(self) -> Iterator[tuple['MultisetExpression', int]]:
+    def _generate_initial(self) -> InitialMultisetGeneration:
         """Initialize the expression before any outcomes are emitted.
 
         Yields:
@@ -119,9 +124,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _generate_min(
-        self, min_outcome: T
-    ) -> Iterator[tuple['MultisetExpression', Sequence, int]]:
+    def _generate_min(self, min_outcome: T) -> PopMultisetGeneration:
         """Pops the min outcome from this expression if it matches the argument.
 
         Yields:
@@ -141,9 +144,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _generate_max(
-        self, max_outcome: T
-    ) -> Iterator[tuple['MultisetExpression', Sequence, int]]:
+    def _generate_max(self, max_outcome: T) -> PopMultisetGeneration:
         """Pops the max outcome from this expression if it matches the argument.
 
         Yields:
@@ -163,8 +164,9 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
-        """Returns the preferred pop order of the expression, along with the priority of that pop order.
+    def _local_preferred_pop_order(
+            self) -> tuple[Order | None, PopOrderReason]:
+        """Returns the preferred pop order of this expression node, along with the priority of that pop order.
 
         Greater priorities strictly outrank lower priorities.
         An order of `None` represents conflicting orders and can occur in the 
@@ -172,15 +174,8 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def order(self) -> Order:
-        """Any ordering that is required by this expression.
-
-        This should check any previous expressions for their order, and
-        raise a ValueError for any incompatibilities.
-
-        Returns:
-            The required order.
-        """
+    def local_order(self) -> Order:
+        """Any ordering that is required by this expression node."""
 
     @abstractmethod
     def _free_arity(self) -> int:
@@ -254,6 +249,16 @@ class MultisetExpression(ABC, Generic[T]):
     def __hash__(self) -> int:
         return self._hash
 
+    def _iter_nodes(self) -> 'Iterator[MultisetExpression]':
+        """Iterates over the nodes in this expression in post-order (leaves first)."""
+        for child in self._children:
+            yield from child._iter_nodes()
+        yield self
+
+    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+        return merge_pop_orders(*(node._local_preferred_pop_order()
+                                  for node in self._iter_nodes()))
+
     # Sampling.
 
     def sample(self) -> tuple[tuple, ...]:
@@ -268,7 +273,8 @@ class MultisetExpression(ABC, Generic[T]):
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
 
-        preferred_pop_order, pop_order_reason = self._preferred_pop_order()
+        preferred_pop_order, pop_order_reason = self._local_preferred_pop_order(
+        )
 
         if preferred_pop_order is not None and preferred_pop_order > 0:
             outcome = self.min_outcome()
@@ -291,6 +297,199 @@ class MultisetExpression(ABC, Generic[T]):
         else:
             return head
 
+    # Binary operators.
+
+    def __add__(self,
+                other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.additive_union(self, other)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def __radd__(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.additive_union(other, self)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def additive_union(
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        """The combined elements from all of the multisets.
+
+        Same as `a + b + c + ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
+        Example:
+        ```python
+        [1, 2, 2, 3] + [1, 2, 4] -> [1, 1, 2, 2, 2, 3, 4]
+        ```
+        """
+        expressions = tuple(
+            implicit_convert_to_expression(arg) for arg in args)
+        return icepool.transform.MultisetAdditiveUnion(*expressions)
+
+    def __sub__(self,
+                other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.difference(self, other)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def __rsub__(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.difference(other, self)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def difference(
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        """The elements from the left multiset that are not in any of the others.
+
+        Same as `a - b - c - ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
+        Example:
+        ```python
+        [1, 2, 2, 3] - [1, 2, 4] -> [2, 3]
+        ```
+
+        If no arguments are given, the result will be an empty multiset, i.e.
+        all zero counts.
+
+        Note that, as a multiset operation, this will only cancel elements 1:1.
+        If you want to drop all elements in a set of outcomes regardless of
+        count, either use `drop_outcomes()` instead, or use a large number of
+        counts on the right side.
+        """
+        expressions = tuple(
+            implicit_convert_to_expression(arg) for arg in args)
+        return icepool.transform.MultisetDifference(*expressions)
+
+    def __and__(self,
+                other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.intersection(self, other)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def __rand__(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.intersection(other, self)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def intersection(
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        """The elements that all the multisets have in common.
+
+        Same as `a & b & c & ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
+        Example:
+        ```python
+        [1, 2, 2, 3] & [1, 2, 4] -> [1, 2]
+        ```
+
+        Note that, as a multiset operation, this will only intersect elements
+        1:1.
+        If you want to keep all elements in a set of outcomes regardless of
+        count, either use `keep_outcomes()` instead, or use a large number of
+        counts on the right side.
+        """
+        expressions = tuple(
+            implicit_convert_to_expression(arg) for arg in args)
+        return icepool.transform.MultisetIntersection(*expressions)
+
+    def __or__(self,
+               other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+               /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.union(self, other)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def __ror__(self,
+                other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.union(other, self)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def union(
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'MultisetExpression[T]':
+        """The most of each outcome that appear in any of the multisets.
+
+        Same as `a | b | c | ...`.
+
+        Any resulting counts that would be negative are set to zero.
+
+        Example:
+        ```python
+        [1, 2, 2, 3] | [1, 2, 4] -> [1, 2, 2, 3, 4]
+        ```
+        """
+        expressions = tuple(
+            implicit_convert_to_expression(arg) for arg in args)
+        return icepool.transform.MultisetUnion(*expressions)
+
+    def __xor__(self,
+                other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                /) -> 'MultisetExpression[T]':
+        try:
+            return MultisetExpression.symmetric_difference(self, other)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def __rxor__(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'MultisetExpression[T]':
+        try:
+            # Symmetric.
+            return MultisetExpression.symmetric_difference(self, other)
+        except ImplicitConversionError:
+            return NotImplemented
+
+    def symmetric_difference(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'MultisetExpression[T]':
+        """The elements that appear in the left or right multiset but not both.
+
+        Same as `a ^ b`.
+
+        Specifically, this produces the absolute difference between counts.
+        If you don't want negative counts to be used from the inputs, you can
+        do `left.keep_counts('>=', 0) ^ right.keep_counts('>=', 0)`.
+
+        Example:
+        ```python
+        [1, 2, 2, 3] ^ [1, 2, 4] -> [2, 3, 4]
+        ```
+        """
+        other = implicit_convert_to_expression(other)
+        return icepool.transform.MultisetSymmetricDifference(self, other)
+
     def _compare(
         self,
         right: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -298,21 +497,14 @@ class MultisetExpression(ABC, Generic[T]):
         *,
         truth_value_callback: 'Callable[[], bool] | None' = None
     ) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
-        if isinstance(right, MultisetExpression):
-            evaluator = icepool.evaluator.ExpressionEvaluator(
-                self, right, evaluator=operation_class())
-        elif isinstance(right, (Mapping, Sequence)):
-            right_expression = icepool.implicit_convert_to_expression(right)
-            evaluator = icepool.evaluator.ExpressionEvaluator(
-                self, right_expression, evaluator=operation_class())
-        else:
-            raise TypeError('Operand not comparable with expression.')
+        right = icepool.implicit_convert_to_expression(right)
 
-        if evaluator._free_arity == 0:
+        if self._free_arity() == 0 and right._free_arity() == 0:
             if truth_value_callback is not None:
 
                 def data_callback() -> Counts[bool]:
-                    die = cast('icepool.Die[bool]', evaluator.evaluate())
+                    die = cast('icepool.Die[bool]',
+                               operation_class().evaluate(self, right))
                     if not isinstance(die, icepool.Die):
                         raise TypeError('Did not resolve to a die.')
                     return die._data
@@ -320,9 +512,10 @@ class MultisetExpression(ABC, Generic[T]):
                 return icepool.DieWithTruth(data_callback,
                                             truth_value_callback)
             else:
-                return evaluator.evaluate()
+                return operation_class().evaluate(self, right)
         else:
-            return evaluator
+            return icepool.evaluator.ExpressionEvaluator(
+                self, right, evaluator=operation_class())
 
     def __eq__(  # type: ignore
             self,
