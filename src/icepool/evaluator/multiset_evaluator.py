@@ -97,9 +97,8 @@ class MultisetEvaluator(ABC, Generic[T_contra, U_co]):
             the state from consideration, effectively performing a full reroll.
         """
 
-    def final_outcome(
-        self, final_state: Hashable
-    ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+    def final_outcome(self, final_state: Hashable,
+                      /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Optional function to generate a final output outcome from a final state.
 
         By default, the final outcome is equal to the final state.
