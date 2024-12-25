@@ -54,7 +54,7 @@ class Alignment(MultisetGenerator[T, tuple[()]]):
         return Order.Any, PopOrderReason.NoPreference
 
     def denominator(self) -> int:
-        return 0
+        return 1
 
     @cached_property
     def _hash_key(self) -> Hashable:
