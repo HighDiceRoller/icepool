@@ -14,8 +14,8 @@ from typing import Collection, Iterable, Iterator
 class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
     """A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators."""
 
-    def __init__(self, *inners: MultisetEvaluator) -> None:
-        self._inners = inners
+    def __init__(self, *children: MultisetEvaluator) -> None:
+        self._children = children
 
     def next_state(self, state, outcome, *counts):
         """Runs `next_state` for all sub-evaluator.
@@ -35,7 +35,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
                     *evaluator_prefix_counts,
                     *counts,
                 ) for evaluator, evaluator_prefix_counts in zip(
-                    self._inners, self._split_prefix_counts(*prefix_counts)))
+                    self._children, self._split_prefix_counts(*prefix_counts)))
         else:
             result = tuple(
                 evaluator.next_state(
@@ -44,7 +44,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
                     *evaluator_prefix_counts,
                     *counts,
                 ) for evaluator, substate, evaluator_prefix_counts in zip(
-                    self._inners, state,
+                    self._children, state,
                     self._split_prefix_counts(*prefix_counts)))
         if icepool.Reroll in result:
             return icepool.Reroll
@@ -59,11 +59,12 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         If any sub-evaluator returns `Reroll`, the result as a whole is `Reroll`.
         """
         if final_state is None:
-            result = tuple(inner.final_outcome(None) for inner in self._inners)
+            result = tuple(
+                child.final_outcome(None) for child in self._children)
         else:
             result = tuple(
-                inner.final_outcome(final_substate)
-                for inner, final_substate in zip(self._inners, final_state))
+                child.final_outcome(final_substate)
+                for child, final_substate in zip(self._children, final_state))
         if icepool.Reroll in result:
             return icepool.Reroll
         else:
@@ -76,23 +77,23 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
             ValueError: If sub-evaluators have conflicting orders, i.e. some are
                 ascending and others are descending.
         """
-        return Order.merge(*(inner.order() for inner in self._inners))
+        return Order.merge(*(child.order() for child in self._children))
 
     def extra_outcomes(self, outcomes) -> Collection[T_contra]:
         return icepool.sorted_union(*(evaluator.extra_outcomes(outcomes)
-                                      for evaluator in self._inners))
+                                      for evaluator in self._children))
 
     @cached_property
     def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return tuple(
             itertools.chain.from_iterable(expression.prefix_generators()
-                                          for expression in self._inners))
+                                          for expression in self._children))
 
     def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._prefix_generators
 
     def validate_arity(self, arity: int) -> None:
-        for evaluator in self._inners:
+        for evaluator in self._children:
             evaluator.validate_arity(arity)
 
     @cached_property
@@ -105,7 +106,7 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
         """Precomputed slices for determining which prefix counts go with which sub-evaluator."""
         result = []
         index = 0
-        for expression in self._inners:
+        for expression in self._children:
             counts_length = sum(
                 generator.output_arity()
                 for generator in expression.prefix_generators())
@@ -120,4 +121,4 @@ class JointEvaluator(MultisetEvaluator[T_contra, tuple]):
 
     def __str__(self) -> str:
         return 'JointEvaluator(\n' + ''.join(
-            f'    {evaluator},\n' for evaluator in self._inners) + ')'
+            f'    {evaluator},\n' for evaluator in self._children) + ')'

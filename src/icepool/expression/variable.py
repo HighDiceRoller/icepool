@@ -14,7 +14,7 @@ class MultisetVariable(MultisetExpression[Any]):
     All expressions start from these.
     """
 
-    _inners = ()
+    _children = ()
 
     def __init__(self, /, *, index: int = 0) -> None:
         """
@@ -24,7 +24,7 @@ class MultisetVariable(MultisetExpression[Any]):
         """
         self._index = index
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
         return self
 
     def _next_state(self, state, outcome: Outcome, *counts:

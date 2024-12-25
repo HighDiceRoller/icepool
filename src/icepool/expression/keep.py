@@ -14,30 +14,28 @@ from typing import Hashable, Sequence
 class KeepExpression(MultisetExpression[T_contra]):
     """An expression to keep some of the lowest or highest elements of a multiset."""
 
-    _inner: MultisetExpression[T_contra]
     _keep_order: Order
     _keep_tuple: tuple[int, ...]
     """The left side is always the end regardless of order."""
     _drop: int | None
     """If set, this is a slice [a:] or [:-b], and _keep_tuple is unused."""
 
-    # May return inner unmodified.
+    # May return child unmodified.
     def __new__(  # type: ignore
-        cls, inner: MultisetExpression[T_contra], /, *,
+        cls, child: MultisetExpression[T_contra], /, *,
         index: slice | Sequence[int | EllipsisType]
     ) -> MultisetExpression[T_contra]:
-        cls._validate_output_arity(inner)
+        cls._validate_output_arity(child)
         self = super(KeepExpression, cls).__new__(cls)
-        self._inner = inner
-        self._inners = (inner, )
+        self._children = (child, )
         if isinstance(index, slice):
             if index.step is not None:
                 raise ValueError('step is not supported.')
             start, stop = index.start, index.stop
             if start is None:
                 if stop is None:
-                    # [:] returns inner as-is.
-                    return inner
+                    # [:] returns child as-is.
+                    return child
                 else:
                     if stop >= 0:
                         # [:+b] keeps from the bottom.
@@ -104,42 +102,42 @@ class KeepExpression(MultisetExpression[T_contra]):
         return self
 
     @classmethod
-    def _new_raw(cls, inner: MultisetExpression[T_contra], /, *,
+    def _new_raw(cls, child: MultisetExpression[T_contra], /, *,
                  keep_order: Order, keep_tuple: tuple[int,
                                                       ...], drop: int | None):
         self = super(KeepExpression, cls).__new__(cls)
-        self._inner = inner
-        self._inners = (inner, )
+        self._children = (child, )
         self._keep_order = keep_order
         self._keep_tuple = keep_tuple
         self._drop = drop
         return self
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return KeepExpression._new_raw(*unbound_inners,
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return KeepExpression._new_raw(*unbound_children,
                                        keep_order=self._keep_order,
                                        keep_tuple=self._keep_tuple,
                                        drop=self._drop)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
+        child = self._children[0]
         if self._drop is None:
             # Use _keep_tuple.
-            remaining, inner_state = state or (self._keep_tuple, None)
-            inner_state, count = self._inner._next_state(
-                inner_state, outcome, *counts)
+            remaining, child_state = state or (self._keep_tuple, None)
+            child_state, count = child._next_state(child_state, outcome,
+                                                   *counts)
             if count < 0:
                 raise RuntimeError(
                     'KeepExpression is not compatible with incoming negative counts.'
                 )
             keep = sum(remaining[:count])
             remaining = remaining[count:]
-            return (remaining, inner_state), keep
+            return (remaining, child_state), keep
         else:
             # Use drop.
-            remaining, inner_state = state or (self._drop, None)
-            inner_state, count = self._inner._next_state(
-                inner_state, outcome, *counts)
+            remaining, child_state = state or (self._drop, None)
+            child_state, count = child._next_state(child_state, outcome,
+                                                   *counts)
             if count < 0:
                 raise RuntimeError(
                     'KeepExpression is not compatible with incoming negative counts.'
@@ -147,24 +145,25 @@ class KeepExpression(MultisetExpression[T_contra]):
             dropped = min(remaining, count)
             count -= dropped
             remaining -= dropped
-            return (remaining, inner_state), count
+            return (remaining, child_state), count
 
     def order(self) -> Order:
-        return Order.merge(self._keep_order, self._inner.order())
+        return Order.merge(self._keep_order, self._children[0].order())
 
     def _free_arity(self) -> int:
-        return self._inner._free_arity()
+        return self._children[0]._free_arity()
 
     def __str__(self) -> str:
+        child = self._children[0]
         if self._drop:
             if self.order == Order.Ascending:
-                return f'{self._inner}[{self._drop}:]'
+                return f'{child}[{self._drop}:]'
             else:
-                return f'{self._inner}[:-{self._drop}]'
+                return f'{child}[:-{self._drop}]'
         else:
             index_string = ', '.join(str(x) for x in self._keep_tuple)
             if self.order == Order.Ascending:
                 index_string = index_string + ', ...'
             else:
                 index_string = '..., ' + index_string
-            return f'{self._inner}[{index_string}]'
+            return f'{child}[{index_string}]'

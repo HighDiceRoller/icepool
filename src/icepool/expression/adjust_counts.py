@@ -18,40 +18,40 @@ class MapCountsExpression(MultisetExpression[T_contra]):
 
     _function: Callable[..., int]
 
-    def __init__(self, *inners: MultisetExpression[T_contra],
+    def __init__(self, *children: MultisetExpression[T_contra],
                  function: Callable[..., int]) -> None:
         """Constructor.
 
         Args:
-            inner: The inner expression.
+            children: The children expression(s).
             function: A function that takes `outcome, *counts` and produces a
                 combined count.
         """
-        for inner in inners:
-            self._validate_output_arity(inner)
-        self._inners = inners
+        for child in children:
+            self._validate_output_arity(child)
+        self._children = children
         self._function = function
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return MapCountsExpression(*unbound_inners, function=self._function)
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return MapCountsExpression(*unbound_children, function=self._function)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
 
-        inner_states = state or (None, ) * len(self._inners)
-        inner_states, inner_counts = zip(
-            *(inner._next_state(inner_state, outcome, *counts)
-              for inner, inner_state in zip(self._inners, inner_states)))
+        child_states = state or (None, ) * len(self._children)
+        child_states, child_counts = zip(
+            *(child._next_state(child_state, outcome, *counts)
+              for child, child_state in zip(self._children, child_states)))
 
-        count = self._function(outcome, *inner_counts)
+        count = self._function(outcome, *child_counts)
         return state, count
 
     def order(self) -> Order:
-        return Order.merge(*(inner.order() for inner in self._inners))
+        return Order.merge(*(child.order() for child in self._children))
 
     @cached_property
     def _cached_arity(self) -> int:
-        return max(inner._free_arity() for inner in self._inners)
+        return max(child._free_arity() for child in self._children)
 
     def _free_arity(self) -> int:
         return self._cached_arity
@@ -59,15 +59,14 @@ class MapCountsExpression(MultisetExpression[T_contra]):
 
 class AdjustCountsExpression(MultisetExpression[T_contra]):
 
-    def __init__(self, inner: MultisetExpression[T_contra], /, *,
+    def __init__(self, child: MultisetExpression[T_contra], /, *,
                  constant: int) -> None:
-        self._validate_output_arity(inner)
-        self._inner = inner
-        self._inners = (inner, )
+        self._validate_output_arity(child)
+        self._children = (child, )
         self._constant = constant
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return type(self)(*unbound_inners, constant=self._constant)
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return type(self)(*unbound_children, constant=self._constant)
 
     @abstractmethod
     def adjust_count(self, count: int, constant: int) -> int:
@@ -75,15 +74,15 @@ class AdjustCountsExpression(MultisetExpression[T_contra]):
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
-        state, count = self._inner._next_state(state, outcome, *counts)
+        state, count = self._children[0]._next_state(state, outcome, *counts)
         count = self.adjust_count(count, self._constant)
         return state, count
 
     def order(self) -> Order:
-        return self._inner.order()
+        return self._children[0].order()
 
     def _free_arity(self) -> int:
-        return self._inner._free_arity()
+        return self._children[0]._free_arity()
 
 
 class MultiplyCountsExpression(AdjustCountsExpression):
@@ -93,7 +92,7 @@ class MultiplyCountsExpression(AdjustCountsExpression):
         return count * constant
 
     def __str__(self) -> str:
-        return f'({self._inner} * {self._constant})'
+        return f'({self._children[0]} * {self._constant})'
 
 
 class FloorDivCountsExpression(AdjustCountsExpression):
@@ -103,7 +102,7 @@ class FloorDivCountsExpression(AdjustCountsExpression):
         return count // constant
 
     def __str__(self) -> str:
-        return f'({self._inner} // {self._constant})'
+        return f'({self._children[0]} // {self._constant})'
 
 
 class ModuloCountsExpression(AdjustCountsExpression):
@@ -113,15 +112,15 @@ class ModuloCountsExpression(AdjustCountsExpression):
         return count % constant
 
     def __str__(self) -> str:
-        return f'({self._inner} % {self._constant})'
+        return f'({self._children[0]} % {self._constant})'
 
 
 class KeepCountsExpression(AdjustCountsExpression):
 
-    def __init__(self, inner: MultisetExpression[T_contra], /, *,
+    def __init__(self, child: MultisetExpression[T_contra], /, *,
                  comparison: Literal['==', '!=', '<=', '<', '>=',
                                      '>'], constant: int):
-        super().__init__(inner, constant=constant)
+        super().__init__(child, constant=constant)
         operators = {
             '==': operator.eq,
             '!=': operator.ne,
@@ -135,8 +134,8 @@ class KeepCountsExpression(AdjustCountsExpression):
         self._comparison = comparison
         self._op = operators[comparison]
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return KeepCountsExpression(*unbound_inners,
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return KeepCountsExpression(*unbound_children,
                                     comparison=self._comparison,
                                     constant=self._constant)
 
@@ -147,7 +146,7 @@ class KeepCountsExpression(AdjustCountsExpression):
             return 0
 
     def __str__(self) -> str:
-        return f"{self._inner}.keep_counts('{self._comparison}', {self._constant})"
+        return f"{self._children[0]}.keep_counts('{self._comparison}', {self._constant})"
 
 
 class UniqueExpression(AdjustCountsExpression):
@@ -158,6 +157,6 @@ class UniqueExpression(AdjustCountsExpression):
 
     def __str__(self) -> str:
         if self._constant == 1:
-            return f'{self._inner}.unique()'
+            return f'{self._children[0]}.unique()'
         else:
-            return f'{self._inner}.unique({self._constant})'
+            return f'{self._children[0]}.unique({self._constant})'

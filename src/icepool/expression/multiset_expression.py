@@ -89,12 +89,12 @@ class MultisetExpression(ABC, Generic[T_contra]):
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    _inners: 'tuple[MultisetExpression, ...]'
-    """A tuple of inner generators. These are assumed to the positional arguments of the constructor."""
+    _children: 'tuple[MultisetExpression, ...]'
+    """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 
     @abstractmethod
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        """Given a sequence of unbound inners, returns an unbound version of this expression."""
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        """Given a sequence of unbound children, returns an unbound version of this expression."""
 
     @abstractmethod
     def _next_state(self, state, outcome: T_contra, *counts:
@@ -137,8 +137,8 @@ class MultisetExpression(ABC, Generic[T_contra]):
 
     @cached_property
     def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return reduce(operator.add,
-                      (inner._bound_generators for inner in self._inners), ())
+        return reduce(operator.add, (child._bound_generators
+                                     for child in self._children), ())
 
     def _unbind(self, prefix_start: int,
                 free_start: int) -> 'tuple[MultisetExpression, int]':
@@ -157,19 +157,19 @@ class MultisetExpression(ABC, Generic[T_contra]):
         Returns:
             The transformed expression and the new prefix_start.
         """
-        unbound_inners = []
-        for inner in self._inners:
-            unbound_inner, prefix_start = inner._unbind(
+        unbound_children = []
+        for child in self._children:
+            unbound_child, prefix_start = child._unbind(
                 prefix_start, free_start)
-            unbound_inners.append(unbound_inner)
-        unbound_expression = self._make_unbound(*unbound_inners)
+            unbound_children.append(unbound_child)
+        unbound_expression = self._make_unbound(*unbound_children)
         return unbound_expression, prefix_start
 
     @staticmethod
-    def _validate_output_arity(inner: 'MultisetExpression') -> None:
+    def _validate_output_arity(child: 'MultisetExpression') -> None:
         """Validates that if the given expression is a generator, its output arity is 1."""
-        if isinstance(inner,
-                      icepool.MultisetGenerator) and inner.output_arity() != 1:
+        if isinstance(child,
+                      icepool.MultisetGenerator) and child.output_arity() != 1:
             raise ValueError(
                 'Only generators with output arity of 1 may be bound to expressions.\nUse a multiset_function to select individual outputs.'
             )

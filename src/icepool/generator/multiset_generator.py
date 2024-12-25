@@ -187,9 +187,9 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     # Expression API.
 
-    _inners = ()
+    _children = ()
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
         raise RuntimeError(
             'Should not be reached; _unbind should have been overridden directly.'
         )

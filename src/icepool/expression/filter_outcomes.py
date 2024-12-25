@@ -19,7 +19,7 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
     """
 
     def __init__(self,
-                 inner: MultisetExpression[T_contra],
+                 child: MultisetExpression[T_contra],
                  /,
                  *,
                  target: Callable[[T_contra], bool] | Collection[T_contra],
@@ -27,14 +27,13 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
         """Constructor.
 
         Args:
-            inner: The inner expression.
+            child: The child expression.
             target: A callable returning `True` iff the outcome should be kept,
                 or a collection of outcomes to keep.
             invert: If set, the filter is inverted.
         """
 
-        self._inner = inner
-        self._inners = (inner, )
+        self._children = (child, )
         self._invert = invert
         if callable(target):
             self._func = target
@@ -46,30 +45,30 @@ class FilterOutcomesExpression(MultisetExpression[T_contra]):
 
             self._func = function
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return FilterOutcomesExpression(*unbound_inners,
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return FilterOutcomesExpression(*unbound_children,
                                         invert=self._invert,
                                         target=self._func)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
-        state, count = self._inner._next_state(state, outcome, *counts)
+        state, count = self._children[0]._next_state(state, outcome, *counts)
         if bool(self._func(outcome)) != self._invert:
             return state, count
         else:
             return state, 0
 
     def order(self) -> Order:
-        return self._inner.order()
+        return self._children[0].order()
 
     def _free_arity(self) -> int:
-        return self._inner._free_arity()
+        return self._children[0]._free_arity()
 
     def __str__(self) -> str:
         if self._invert:
-            return f'{self._inner}.drop_outcomes(...)'
+            return f'{self._children[0]}.drop_outcomes(...)'
         else:
-            return f'{self._inner}.keep_outcomes(...)'
+            return f'{self._children[0]}.keep_outcomes(...)'
 
 
 class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
@@ -82,54 +81,54 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T_contra]):
     """
 
     def __init__(self,
-                 inner: MultisetExpression[T_contra],
+                 source: MultisetExpression[T_contra],
                  target: MultisetExpression[T_contra],
                  *,
                  invert: bool = False) -> None:
         """Constructor.
 
         Args:
-            inner: The inner expression.
+            child: The child expression.
             target: An expression of outcomes to keep if they have positive count.
             invert: If set, the filter is inverted.
         """
-        self._validate_output_arity(inner)
+        self._validate_output_arity(source)
         self._validate_output_arity(target)
-        self._inner = inner
+        self._source = source
         self._target = target
-        self._inners = (inner, target)
+        self._children = (source, target)
         self._invert = invert
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return FilterOutcomesBinaryExpression(*unbound_inners,
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return FilterOutcomesBinaryExpression(*unbound_children,
                                               invert=self._invert)
 
     def _next_state(self, state, outcome: T_contra, *counts:
                     int) -> tuple[Hashable, int]:
 
-        inner_state, target_state = state or (None, None)
-        inner_state, inner_count = self._inner._next_state(
-            inner_state, outcome, *counts)
+        source_state, target_state = state or (None, None)
+        source_state, source_count = self._source._next_state(
+            source_state, outcome, *counts)
         target_state, target_count = self._target._next_state(
             target_state, outcome, *counts)
 
         if (target_count > 0) != self._invert:
-            return (inner_state, target_state), inner_count
+            return (source_state, target_state), source_count
         else:
-            return (inner_state, target_state), 0
+            return (source_state, target_state), 0
 
     def order(self) -> Order:
-        return Order.merge(self._inner.order(), self._target.order())
+        return Order.merge(self._source.order(), self._target.order())
 
     @cached_property
     def _cached_arity(self) -> int:
-        return max(self._inner._free_arity(), self._target._free_arity())
+        return max(self._source._free_arity(), self._target._free_arity())
 
     def _free_arity(self) -> int:
         return self._cached_arity
 
     def __str__(self) -> str:
         if self._invert:
-            return f'{self._inner}.drop_outcomes({self._target})'
+            return f'{self._source}.drop_outcomes({self._target})'
         else:
-            return f'{self._inner}.keep_outcomes({self._target})'
+            return f'{self._source}.keep_outcomes({self._target})'

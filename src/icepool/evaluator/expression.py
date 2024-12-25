@@ -38,7 +38,6 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         self._truth_value = truth_value
 
     def next_state(self, state, outcome, *counts):
-        """Adjusts the counts, then forwards to inner."""
         if state is None:
             expression_states = (None, ) * len(self._expressions)
             evaluator_state = None
@@ -67,13 +66,11 @@ class ExpressionEvaluator(MultisetEvaluator[T_contra, U_co]):
         return self._evaluator.final_outcome(evaluator_state)
 
     def order(self) -> Order:
-        """Forwards to inner."""
         expression_order = Order.merge(*(expression.order()
                                          for expression in self._expressions))
         return Order.merge(expression_order, self._evaluator.order())
 
     def extra_outcomes(self, *generators) -> Collection[T_contra]:
-        """Forwards to inner."""
         return self._evaluator.extra_outcomes(*generators)
 
     @cached_property

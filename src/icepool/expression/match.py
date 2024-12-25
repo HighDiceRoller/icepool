@@ -19,14 +19,14 @@ class SortMatchExpression(MultisetExpression[T_contra]):
             order = Order.Descending
         self._left = left
         self._right = right
-        self._inners = (left, right)
+        self._children = (left, right)
         self._order = order
         self._tie = tie
         self._left_first = left_first
         self._right_first = right_first
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return SortMatchExpression(*unbound_inners,
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return SortMatchExpression(*unbound_children,
                                    order=self._order,
                                    tie=self._tie,
                                    left_first=self._left_first,
@@ -76,13 +76,13 @@ class MaximumMatchExpression(MultisetExpression[T_contra]):
                  match_equal: bool, keep: bool):
         self._left = left
         self._right = right
-        self._inners = (left, right)
+        self._children = (left, right)
         self._order = order
         self._match_equal = match_equal
         self._keep = keep
 
-    def _make_unbound(self, *unbound_inners) -> 'icepool.MultisetExpression':
-        return MaximumMatchExpression(*unbound_inners,
+    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
+        return MaximumMatchExpression(*unbound_children,
                                       order=self._order,
                                       match_equal=self._match_equal,
                                       keep=self._keep)
