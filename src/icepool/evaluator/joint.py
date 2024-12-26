@@ -25,7 +25,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
 
         If any sub-evaluator returns `Reroll`, the result as a whole is `Reroll`.
         """
-        prefix_counts = counts[:self._extra_arity]
+        extra_counts = counts[:self._extra_arity]
         counts = counts[self._extra_arity:]
 
         if state is None:
@@ -33,10 +33,10 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                 evaluator.next_state(
                     None,
                     outcome,
-                    *evaluator_prefix_counts,
+                    *evaluator_extra_counts,
                     *counts,
-                ) for evaluator, evaluator_prefix_counts in zip(
-                    self._children, self._split_prefix_counts(*prefix_counts)))
+                ) for evaluator, evaluator_extra_counts in zip(
+                    self._children, self._split_extra_counts(*extra_counts)))
         else:
             result = tuple(
                 evaluator.next_state(
@@ -46,7 +46,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                     *counts,
                 ) for evaluator, substate, evaluator_prefix_counts in zip(
                     self._children, state,
-                    self._split_prefix_counts(*prefix_counts)))
+                    self._split_extra_counts(*extra_counts)))
         if icepool.Reroll in result:
             return icepool.Reroll
         else:
@@ -85,13 +85,13 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                                       for evaluator in self._children))
 
     @cached_property
-    def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return tuple(
-            itertools.chain.from_iterable(expression.prefix_generators()
+            itertools.chain.from_iterable(expression.extra_generators()
                                           for expression in self._children))
 
-    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._prefix_generators
+    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._extra_generators
 
     def validate_arity(self, arity: int) -> None:
         for evaluator in self._children:
@@ -100,24 +100,23 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
     @cached_property
     def _extra_arity(self) -> int:
         return sum(generator.output_arity()
-                   for generator in self.prefix_generators())
+                   for generator in self.extra_generators())
 
     @cached_property
-    def _prefix_slices(self) -> tuple[slice, ...]:
-        """Precomputed slices for determining which prefix counts go with which sub-evaluator."""
+    def _extra_slices(self) -> tuple[slice, ...]:
+        """Precomputed slices for determining which extra counts go with which sub-evaluator."""
         result = []
         index = 0
         for expression in self._children:
-            counts_length = sum(
-                generator.output_arity()
-                for generator in expression.prefix_generators())
+            counts_length = sum(generator.output_arity()
+                                for generator in expression.extra_generators())
             result.append(slice(index, index + counts_length))
             index += counts_length
         return tuple(result)
 
-    def _split_prefix_counts(self, *extra_counts:
-                             int) -> Iterator[tuple[int, ...]]:
-        for index in self._prefix_slices:
+    def _split_extra_counts(self, *extra_counts:
+                            int) -> Iterator[tuple[int, ...]]:
+        for index in self._extra_slices:
             yield extra_counts[index]
 
     def __str__(self) -> str:

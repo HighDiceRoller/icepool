@@ -120,7 +120,6 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
             output an evaluator or a nested tuple of evaluators. Tuples will
             result in a `JointEvaluator`.
     """
-    raise NotImplementedError()
     parameters = inspect.signature(function, follow_wrapped=False).parameters
     for parameter in parameters.values():
         if parameter.kind not in [
@@ -154,9 +153,9 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
             default=0)
 
         unbound_expressions: 'list[icepool.expression.MultisetExpression[T]]' = []
-        prefix_start = 0
+        extra_start = 0
         for expression in expressions:
-            unbound_expression, prefix_start = expression._unbind(prefix_start)
+            unbound_expression, extra_start = expression._unbind(extra_start)
             unbound_expressions.append(unbound_expression)
         self._expressions = tuple(unbound_expressions)
         self._truth_value = truth_value
@@ -169,15 +168,15 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         else:
             expression_states, evaluator_state = state
 
-        prefix_counts = counts[:len(self._evaluator.prefix_generators())]
-        counts = counts[len(self._evaluator.prefix_generators()):]
+        extra_counts = counts[:len(self._evaluator.extra_generators())]
+        counts = counts[len(self._evaluator.extra_generators()):]
 
         expression_states, expression_counts = zip(
             *(expression._next_state(expression_state, outcome, *counts)
               for expression, expression_state in zip(self._expressions,
                                                       expression_states)))
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
-                                                     *prefix_counts,
+                                                     *extra_counts,
                                                      *expression_counts)
         return expression_states, evaluator_state
 
@@ -199,11 +198,11 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         return self._evaluator.extra_outcomes(*generators)
 
     @cached_property
-    def _prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._bound_generators + self._evaluator.prefix_generators()
+    def _extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._bound_generators + self._evaluator.extra_generators()
 
-    def prefix_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._prefix_generators
+    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+        return self._extra_generators
 
     def validate_arity(self, arity: int) -> None:
         if arity < self._free_arity:
