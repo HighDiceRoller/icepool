@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_pop_orders
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -10,7 +10,7 @@ from functools import cached_property
 import itertools
 import math
 
-from icepool.typing import Order, T, U_co
+from icepool.typing import T, U_co
 
 from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING, overload
 
@@ -298,7 +298,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
     def _select_algorithm(
-        self, *generators: 'icepool.MultisetExpression[T]'
+        self, *expressions: 'icepool.MultisetExpression[T]'
     ) -> tuple[
             'Callable[[Order, Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
             Order]:
@@ -311,17 +311,16 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         """
         eval_order = self.order()
 
-        if not generators:
+        if not expressions:
             # No generators.
             return self._eval_internal, eval_order
 
         preferred_pop_order, pop_order_reason = merge_pop_orders(
-            *(generator._local_preferred_pop_order()
-              for generator in generators))
+            *(expression._preferred_pop_order() for expression in expressions))
 
         if preferred_pop_order is None:
             preferred_pop_order = Order.Any
-            pop_order_reason = PopOrderReason.NoPreference
+            pop_order_reason = OrderReason.NoPreference
 
         # No mandatory evaluation order, go with preferred algorithm.
         # Note that this has order *opposite* the pop order.

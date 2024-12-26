@@ -4,6 +4,7 @@ import icepool
 
 from icepool.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
+from icepool.order import Order
 
 import operator
 from abc import abstractmethod
@@ -11,7 +12,7 @@ from functools import cached_property, reduce
 
 from types import EllipsisType
 from typing import Callable, Collection, Hashable, Iterable, Sequence
-from icepool.typing import Order, T
+from icepool.typing import T
 
 
 class MultisetSortMatch(MultisetOperator[T]):
@@ -106,7 +107,8 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         return MultisetMaximumMatch(*new_children,
                                     order=self._order,
                                     match_equal=self._match_equal,
-                                    keep=self._keep)
+                                    keep=self._keep,
+                                    prev_matchable=self._prev_matchable)
 
     def _transform_next(
             self, new_children: 'tuple[MultisetExpression[T], ...]',

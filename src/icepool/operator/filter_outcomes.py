@@ -4,13 +4,14 @@ import icepool
 
 from icepool.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
+from icepool.order import Order
 
 import operator
 from abc import abstractmethod
 from functools import cached_property, reduce
 
 from typing import Callable, Collection, Hashable, Iterable
-from icepool.typing import Order, T
+from icepool.typing import T
 
 
 class MultisetFilterOutcomes(MultisetOperator[T]):

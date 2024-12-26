@@ -4,12 +4,11 @@ import icepool
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
-import icepool.generator.pop_order
-from icepool.generator.pop_order import PopOrderReason
+from icepool.order import Order, OrderReason
 
 from functools import cached_property
 
-from icepool.typing import Order, T
+from icepool.typing import T
 from typing import Hashable
 
 
@@ -142,16 +141,14 @@ class Deal(KeepGenerator[T]):
             popped_deal = Deal._new_raw(popped_deck, 0, ())
             yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
-        lo_skip, hi_skip = icepool.generator.pop_order.lo_hi_skip(
-            self.keep_tuple())
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
+        lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())
         if lo_skip > hi_skip:
-            return Order.Descending, PopOrderReason.KeepSkip
+            return Order.Descending, OrderReason.KeepSkip
         if hi_skip > lo_skip:
-            return Order.Ascending, PopOrderReason.KeepSkip
+            return Order.Ascending, OrderReason.KeepSkip
 
-        return Order.Any, PopOrderReason.NoPreference
+        return Order.Any, OrderReason.NoPreference
 
     @cached_property
     def _local_hash_key(self) -> Hashable:

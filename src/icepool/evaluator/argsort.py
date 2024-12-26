@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
-from icepool.typing import Order
+from icepool.order import Order
 from typing import Any
 
 

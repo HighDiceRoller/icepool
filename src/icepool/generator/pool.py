@@ -6,8 +6,7 @@ import icepool.math
 import icepool.creation_args
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
-import icepool.generator.pop_order
-from icepool.generator.pop_order import PopOrderReason
+from icepool.order import Order, OrderReason
 
 import itertools
 import math
@@ -15,7 +14,7 @@ import operator
 from collections import defaultdict
 from functools import cache, cached_property, reduce
 
-from icepool.typing import T, Order
+from icepool.typing import T
 from typing import TYPE_CHECKING, Any, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
 
 if TYPE_CHECKING:
@@ -170,23 +169,21 @@ class Pool(KeepGenerator[T]):
     def output_arity(self) -> int:
         return 1
 
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
-        can_truncate_min, can_truncate_max = icepool.generator.pop_order.can_truncate(
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
+        can_truncate_min, can_truncate_max = icepool.order.can_truncate(
             self.unique_dice())
         if can_truncate_min and not can_truncate_max:
-            return Order.Ascending, PopOrderReason.PoolComposition
+            return Order.Ascending, OrderReason.PoolComposition
         if can_truncate_max and not can_truncate_min:
-            return Order.Descending, PopOrderReason.PoolComposition
+            return Order.Descending, OrderReason.PoolComposition
 
-        lo_skip, hi_skip = icepool.generator.pop_order.lo_hi_skip(
-            self.keep_tuple())
+        lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())
         if lo_skip > hi_skip:
-            return Order.Descending, PopOrderReason.KeepSkip
+            return Order.Descending, OrderReason.KeepSkip
         if hi_skip > lo_skip:
-            return Order.Ascending, PopOrderReason.KeepSkip
+            return Order.Ascending, OrderReason.KeepSkip
 
-        return Order.Any, PopOrderReason.NoPreference
+        return Order.Any, OrderReason.NoPreference
 
     def min_outcome(self) -> T:
         """The min outcome among all dice in this pool."""

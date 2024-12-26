@@ -30,36 +30,6 @@ Qs = TypeVar('Qs', bound=tuple[int, ...])
 """A tuple of count types. In this future this may be replaced with a TypeVarTuple."""
 
 
-class Order(enum.IntEnum):
-    """Can be used to define what order outcomes are seen in by MultisetEvaluators."""
-    Ascending = 1
-    Descending = -1
-    Any = 0
-
-    def merge(*orders: 'Order') -> 'Order':
-        """Merges the given Orders.
-
-        Returns:
-            `Any` if all arguments are `Any`.
-            `Ascending` if there is at least one `Ascending` in the arguments.
-            `Descending` if there is at least one `Descending` in the arguments.
-
-        Raises:
-            `ValueError` if both `Ascending` and `Descending` are in the
-            arguments.
-        """
-        result = Order.Any
-        for order in orders:
-            if (result > 0 and order < 0) or (result < 0 and order > 0):
-                raise ValueError(
-                    f'Conflicting orders {orders}.\n' +
-                    'Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.'
-                )
-            if result == Order.Any:
-                result = order
-        return result
-
-
 class RerollType(enum.Enum):
     """The type of the Reroll singleton."""
     Reroll = 'Reroll'

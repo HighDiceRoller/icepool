@@ -4,9 +4,10 @@ from functools import cached_property
 import itertools
 import icepool
 import icepool.multiset_expression
+from icepool.order import Order
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Order, Outcome, T, U_co
+from icepool.typing import Outcome, T, U_co
 
 from typing import Collection, Iterable
 

@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from typing import Any
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Outcome, Order
+from icepool.order import Order
 
 
 class KeepEvaluator(MultisetEvaluator[Any, Any]):

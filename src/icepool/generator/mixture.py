@@ -4,14 +4,14 @@ import icepool
 
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_pop_orders
 
 import math
 
 from collections import defaultdict
 from functools import cached_property
 
-from icepool.typing import Order, Qs, T, U
+from icepool.typing import Qs, T, U
 from types import EllipsisType
 from typing import TYPE_CHECKING, Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
 
@@ -93,8 +93,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
             'MixtureMultisetGenerator should have decayed to another generator type by this point.'
         )
 
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
         return merge_pop_orders(*(inner._local_preferred_pop_order()
                                   for inner in self._inner_generators))
 

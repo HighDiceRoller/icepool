@@ -3,11 +3,11 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.order import Order
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from abc import abstractmethod
 
-from icepool.typing import Order
 from typing import Any, Literal
 
 

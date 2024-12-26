@@ -3,15 +3,44 @@ __docformat__ = 'google'
 import icepool
 
 import enum
-import math
 
-from typing import Collection, Iterable
-
-from icepool.typing import Order
+from typing import Collection
 
 
-class PopOrderReason(enum.IntEnum):
+class Order(enum.IntEnum):
+    """Can be used to define what order outcomes are seen in by MultisetEvaluators."""
+    Ascending = 1
+    Descending = -1
+    Any = 0
+
+    def merge(*orders: 'Order') -> 'Order':
+        """Merges the given Orders.
+
+        Returns:
+            `Any` if all arguments are `Any`.
+            `Ascending` if there is at least one `Ascending` in the arguments.
+            `Descending` if there is at least one `Descending` in the arguments.
+
+        Raises:
+            `ValueError` if both `Ascending` and `Descending` are in the
+            arguments.
+        """
+        result = Order.Any
+        for order in orders:
+            if (result > 0 and order < 0) or (result < 0 and order > 0):
+                raise ValueError(
+                    f'Conflicting orders {orders}.\n' +
+                    'Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.'
+                )
+            if result == Order.Any:
+                result = order
+        return result
+
+
+class OrderReason(enum.IntEnum):
     """Greater values represent higher priorities, which strictly override lower priorities."""
+    Mandatory = 127
+    """The object requires this pop order."""
     PoolComposition = 2
     """The composition of dice in the pool favor this pop order."""
     KeepSkip = 1
@@ -21,8 +50,8 @@ class PopOrderReason(enum.IntEnum):
 
 
 def merge_pop_orders(
-    *preferences: tuple[Order | None, PopOrderReason],
-) -> tuple[Order | None, PopOrderReason]:
+    *preferences: tuple[Order | None, OrderReason],
+) -> tuple[Order | None, OrderReason]:
     """Returns a pop order that fits the highest priority preferences.
     
     Greater priorities strictly outrank lower priorities.
@@ -30,9 +59,9 @@ def merge_pop_orders(
     argument and/or return value.
     """
     result_order: Order | None = Order.Any
-    result_reason = PopOrderReason.NoPreference
+    result_reason = OrderReason.NoPreference
     for order, reason in preferences:
-        if order == Order.Any or reason == PopOrderReason.NoPreference:
+        if order == Order.Any or reason == OrderReason.NoPreference:
             continue
         elif reason > result_reason:
             result_order = order
@@ -47,20 +76,20 @@ def merge_pop_orders(
     return result_order, result_reason
 
 
-def pool_pop_order(pool: 'icepool.Pool') -> tuple[Order, PopOrderReason]:
+def pool_pop_order(pool: 'icepool.Pool') -> tuple[Order, OrderReason]:
     can_truncate_min, can_truncate_max = can_truncate(pool.unique_dice())
     if can_truncate_min and not can_truncate_max:
-        return Order.Ascending, PopOrderReason.PoolComposition
+        return Order.Ascending, OrderReason.PoolComposition
     if can_truncate_max and not can_truncate_min:
-        return Order.Descending, PopOrderReason.PoolComposition
+        return Order.Descending, OrderReason.PoolComposition
 
     lo_skip, hi_skip = lo_hi_skip(pool.keep_tuple())
     if lo_skip > hi_skip:
-        return Order.Ascending, PopOrderReason.KeepSkip
+        return Order.Ascending, OrderReason.KeepSkip
     if hi_skip > lo_skip:
-        return Order.Descending, PopOrderReason.KeepSkip
+        return Order.Descending, OrderReason.KeepSkip
 
-    return Order.Any, PopOrderReason.NoPreference
+    return Order.Any, OrderReason.NoPreference
 
 
 def can_truncate(dice: Collection['icepool.Die']) -> tuple[bool, bool]:

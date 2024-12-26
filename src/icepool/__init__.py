@@ -21,7 +21,8 @@ __version__ = '1.6.2'
 
 from typing import Final
 
-from icepool.typing import Outcome, Order, RerollType
+from icepool.typing import Outcome, RerollType
+from icepool.order import Order
 
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).

@@ -4,13 +4,13 @@ import icepool
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_pop_orders
 
 import itertools
 import math
 
 from typing import Hashable, Sequence
-from icepool.typing import Order, T
+from icepool.typing import T
 
 
 class CompoundKeepGenerator(KeepGenerator[T]):
@@ -56,8 +56,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
             yield CompoundKeepGenerator(
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
         return merge_pop_orders(*(inner._local_preferred_pop_order()
                                   for inner in self._inner_generators))
 

@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Outcome, Order
+from icepool.order import Order
 
 import operator
 

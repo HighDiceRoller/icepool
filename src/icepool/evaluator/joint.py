@@ -5,8 +5,9 @@ __docformat__ = 'google'
 from functools import cached_property
 import itertools
 import icepool
+from icepool.order import Order
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.typing import Outcome, Order, T, U_co
+from icepool.typing import T
 
 from typing import Collection, Iterable, Iterator
 

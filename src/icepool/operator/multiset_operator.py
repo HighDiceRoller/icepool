@@ -1,13 +1,13 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_pop_orders
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 import itertools
 import math
 
-from icepool.typing import T, U, ImplicitConversionError, Order, Outcome, T
+from icepool.typing import T, U, ImplicitConversionError, Outcome, T
 from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Iterator, Literal, Mapping, Self, Sequence, Type, TypeAlias, TypeVar, cast, overload
 
 from abc import abstractmethod
@@ -81,8 +81,7 @@ class MultisetOperator(MultisetExpression[T]):
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
         return merge_pop_orders(*(child._local_preferred_pop_order()
                                   for child in self._children))
 

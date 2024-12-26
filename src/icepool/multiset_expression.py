@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collection.counts import Counts
-from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_pop_orders
 from icepool.population.keep import highest_slice, lowest_slice
 
 import bisect
@@ -12,7 +12,7 @@ import operator
 import random
 
 from types import EllipsisType
-from icepool.typing import T, U, ImplicitConversionError, Order, Outcome, T
+from icepool.typing import T, U, ImplicitConversionError, Outcome, T
 from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Iterator, Literal, Mapping, Self, Sequence, Type, TypeAlias, TypeVar, cast, overload
 
 from abc import ABC, abstractmethod
@@ -168,8 +168,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
         """Returns the preferred pop order of this expression node, along with the priority of that pop order.
 
         Greater priorities strictly outrank lower priorities.
@@ -251,7 +250,6 @@ class MultisetExpression(ABC, Generic[T]):
         return hash(self._hash_key)
 
     def __hash__(self) -> int:
-        print(self._hash_key)
         return self._hash
 
     def _iter_nodes(self) -> 'Iterator[MultisetExpression]':
@@ -260,9 +258,15 @@ class MultisetExpression(ABC, Generic[T]):
             yield from child._iter_nodes()
         yield self
 
-    def _preferred_pop_order(self) -> tuple[Order | None, PopOrderReason]:
+    def _preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
         return merge_pop_orders(*(node._local_preferred_pop_order()
                                   for node in self._iter_nodes()))
+
+    @property
+    def _items_for_cartesian_product(
+            self) -> Sequence[tuple[tuple[T, ...], int]]:
+        expansion = cast('icepool.Die[tuple[T, ...]]', self.expand())
+        return expansion.items()
 
     # Sampling.
 

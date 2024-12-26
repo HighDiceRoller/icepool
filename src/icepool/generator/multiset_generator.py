@@ -6,8 +6,8 @@ import icepool
 import icepool.generator
 from icepool.collection.counts import Counts
 from icepool.multiset_expression import MultisetExpression
-from icepool.generator.pop_order import PopOrderReason
-from icepool.typing import Order, Outcome, Qs, T
+from icepool.order import Order, OrderReason
+from icepool.typing import Outcome, Qs, T
 
 import bisect
 import functools

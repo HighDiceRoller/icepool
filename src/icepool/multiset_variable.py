@@ -1,11 +1,9 @@
 __docformat__ = 'google'
 
-from icepool.generator.pop_order import PopOrderReason
+from icepool.order import Order, OrderReason
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 from typing import Any, Hashable, Iterator, Self, Sequence
-
-from icepool.typing import Order
 
 
 class UnboundMultisetExpressionError(TypeError):
@@ -37,8 +35,7 @@ class MultisetVariable(MultisetExpression[Any]):
     def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         raise UnboundMultisetExpressionError()
 
-    def _local_preferred_pop_order(
-            self) -> tuple[Order | None, PopOrderReason]:
+    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
         raise UnboundMultisetExpressionError()
 
     def local_order(self) -> Order:
