@@ -42,9 +42,9 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                 evaluator.next_state(
                     substate,
                     outcome,
-                    *evaluator_prefix_counts,
+                    *evaluator_extra_counts,
                     *counts,
-                ) for evaluator, substate, evaluator_prefix_counts in zip(
+                ) for evaluator, substate, evaluator_extra_counts in zip(
                     self._children, state,
                     self._split_extra_counts(*extra_counts)))
         if icepool.Reroll in result:
