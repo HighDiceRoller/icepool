@@ -198,11 +198,11 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         return self._evaluator.extra_outcomes(*generators)
 
     @cached_property
-    def _extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
         return self._bound_generators + self._evaluator.extra_inputs()
 
-    def extra_inputs(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._extra_generators
+    def extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+        return self._extra_inputs
 
     def validate_arity(self, arity: int) -> None:
         if arity < self._free_arity:
