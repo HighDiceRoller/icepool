@@ -254,8 +254,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
         if any(expression._free_arity() > 0 for expression in expressions):
-            from icepool.evaluator.expression import ExpressionEvaluator
-            return ExpressionEvaluator(*expressions, evaluator=self)
+            from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
+            return MultisetFunctionEvaluator(*expressions, evaluator=self)
 
         self.validate_arity(
             sum(expression.output_arity() for expression in expressions))

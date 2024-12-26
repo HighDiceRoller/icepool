@@ -2,7 +2,7 @@ import icepool
 import pytest
 
 from icepool import d4, d6, d8, d10, d12, Pool, Vector
-from icepool.multiset_function import multiset_function
+from icepool.evaluator.multiset_function import multiset_function
 
 
 class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
