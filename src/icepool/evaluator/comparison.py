@@ -3,7 +3,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from abc import abstractmethod
@@ -42,8 +42,7 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
         has_any, has_all = final_state
         return has_any and has_all
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
 

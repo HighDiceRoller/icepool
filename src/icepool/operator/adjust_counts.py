@@ -4,7 +4,7 @@ import icepool
 
 from icepool.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 
 import operator
 from abc import abstractmethod
@@ -43,8 +43,8 @@ class MultisetMapCounts(MultisetOperator[T]):
         count = self._function(outcome, *counts)
         return MultisetMapCounts(*new_children, function=self._function), count
 
-    def local_order(self) -> Order:
-        return Order.Any
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
 
     @property
     def _local_hash_key(self) -> Hashable:
@@ -74,8 +74,8 @@ class MultisetCountOperator(MultisetOperator[T]):
         count = self.operator(counts[0])
         return type(self)(*new_children, constant=self._constant), count
 
-    def local_order(self) -> Order:
-        return Order.Any
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
 
     @property
     def _local_hash_key(self) -> Hashable:
@@ -164,8 +164,8 @@ class MultisetKeepCounts(MultisetOperator[T]):
                                   comparison=self._comparison,
                                   constant=self._constant), count
 
-    def local_order(self) -> Order:
-        return Order.Any
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
 
     @property
     def _local_hash_key(self) -> Hashable:

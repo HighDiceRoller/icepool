@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.order import Order, OrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 import itertools
@@ -80,10 +80,6 @@ class MultisetOperator(MultisetExpression[T]):
             next_self, count = self._transform_next(new_children, max_outcome,
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
-
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
-        return merge_pop_orders(*(child._local_preferred_pop_order()
-                                  for child in self._children))
 
     def _free_arity(self) -> int:
         return max(child._free_arity() for child in self._children)

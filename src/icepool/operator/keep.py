@@ -4,7 +4,7 @@ import icepool
 
 from icepool.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 
 import operator
 from abc import abstractmethod
@@ -149,8 +149,8 @@ class MultisetKeep(MultisetOperator[T]):
                                          keep_tuple=(),
                                          drop=next_drop), count
 
-    def local_order(self) -> Order:
-        return self._keep_order
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return self._keep_order, OrderReason.Mandatory
 
     @property
     def _local_hash_key(self) -> Hashable:

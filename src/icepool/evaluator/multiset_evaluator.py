@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.order import Order, OrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_order_preferences
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -315,23 +315,23 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             # No generators.
             return self._eval_internal, eval_order
 
-        preferred_pop_order, pop_order_reason = merge_pop_orders(
-            *(expression._preferred_pop_order() for expression in expressions))
+        expression_order, expression_order_reason = merge_order_preferences(
+            *(expression.order_preference() for expression in expressions))
 
-        if preferred_pop_order is None:
-            preferred_pop_order = Order.Any
-            pop_order_reason = OrderReason.NoPreference
+        if expression_order is None:
+            expression_order = Order.Any
+            expression_order_reason = OrderReason.NoPreference
 
         # No mandatory evaluation order, go with preferred algorithm.
         # Note that this has order *opposite* the pop order.
         if eval_order == Order.Any:
-            return self._eval_internal, Order(-preferred_pop_order
+            return self._eval_internal, Order(-expression_order
                                               or Order.Ascending)
 
         # Mandatory evaluation order.
-        if preferred_pop_order == Order.Any:
+        if expression_order == Order.Any:
             return self._eval_internal, eval_order
-        elif eval_order != preferred_pop_order:
+        elif eval_order != expression_order:
             return self._eval_internal, eval_order
         else:
             return self._eval_internal_forward, eval_order
@@ -385,7 +385,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             self,
             order: Order,
             extra_outcomes: 'Alignment[T]',
-            generators: 'tuple[icepool.MultisetGenerator[T, Any], ...]',
+            generators: 'tuple[icepool.MultisetExpression[T], ...]',
             state: Hashable = None) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order.
 
@@ -395,7 +395,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             order: The order in which to send outcomes to `next_state()`.
             extra_outcomes: As `extra_outcomes()`. Elements will be popped off this
                 during recursion.
-            generators: One or more `MultisetGenerators`s to evaluate. Elements
+            generators: One or more `MultisetExpression`s to evaluate. Elements
                 will be popped off this during recursion.
 
         Returns:

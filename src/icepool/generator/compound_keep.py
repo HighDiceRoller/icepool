@@ -4,7 +4,7 @@ import icepool
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.order import Order, OrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_order_preferences
 
 import itertools
 import math
@@ -56,9 +56,9 @@ class CompoundKeepGenerator(KeepGenerator[T]):
             yield CompoundKeepGenerator(
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
-        return merge_pop_orders(*(inner._local_preferred_pop_order()
-                                  for inner in self._inner_generators))
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return merge_order_preferences(*(inner.local_order_preference()
+                                         for inner in self._inner_generators))
 
     def denominator(self) -> int:
         return math.prod(inner.denominator()

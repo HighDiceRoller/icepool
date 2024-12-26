@@ -131,7 +131,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @cached_property

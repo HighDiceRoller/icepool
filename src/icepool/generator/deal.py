@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.order
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
@@ -141,7 +142,7 @@ class Deal(KeepGenerator[T]):
             popped_deal = Deal._new_raw(popped_deck, 0, ())
             yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
         lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())
         if lo_skip > hi_skip:
             return Order.Descending, OrderReason.KeepSkip

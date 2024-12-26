@@ -4,6 +4,7 @@ import icepool
 import icepool.multiset_expression
 import icepool.math
 import icepool.creation_args
+import icepool.order
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.order import Order, OrderReason
@@ -169,7 +170,7 @@ class Pool(KeepGenerator[T]):
     def output_arity(self) -> int:
         return 1
 
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
         can_truncate_min, can_truncate_max = icepool.order.can_truncate(
             self.unique_dice())
         if can_truncate_min and not can_truncate_max:

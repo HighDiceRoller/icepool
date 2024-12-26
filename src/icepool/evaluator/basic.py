@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 
 import operator
 
@@ -26,8 +26,7 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
         """Implementation."""
         return (state or ()) + (outcome, ) * count
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
     def final_outcome(self, final_state) -> tuple:
@@ -75,8 +74,7 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
         else:
             return state + outcome * count
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
 
@@ -99,8 +97,7 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return final_state or 0
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
 
@@ -119,8 +116,7 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
         """Implementation."""
         return final_state or False
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
 

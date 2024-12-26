@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 from typing import Any
 
 
@@ -30,5 +30,5 @@ class ArgsortEvaluator(MultisetEvaluator[Any, tuple[tuple[int, ...], ...]]):
     def final_outcome(self, final_state):
         return final_state or ()
 
-    def order(self) -> Order:
+    def order(self):
         return self._order

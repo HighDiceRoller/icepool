@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collection.counts import Counts
-from icepool.order import Order, OrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
 
 import bisect
@@ -168,17 +168,8 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
-        """Returns the preferred pop order of this expression node, along with the priority of that pop order.
-
-        Greater priorities strictly outrank lower priorities.
-        An order of `None` represents conflicting orders and can occur in the 
-        argument and/or return value.
-        """
-
-    @abstractmethod
-    def local_order(self) -> Order:
-        """Any ordering that is required by this expression node."""
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        """Any ordering that is preferred or required by this expression node."""
 
     @abstractmethod
     def _free_arity(self) -> int:
@@ -258,9 +249,9 @@ class MultisetExpression(ABC, Generic[T]):
             yield from child._iter_nodes()
         yield self
 
-    def _preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
-        return merge_pop_orders(*(node._local_preferred_pop_order()
-                                  for node in self._iter_nodes()))
+    def order_preference(self) -> tuple[Order | None, OrderReason]:
+        return merge_order_preferences(*(node.local_order_preference()
+                                         for node in self._iter_nodes()))
 
     @property
     def _items_for_cartesian_product(
@@ -282,10 +273,9 @@ class MultisetExpression(ABC, Generic[T]):
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
 
-        preferred_pop_order, pop_order_reason = self._local_preferred_pop_order(
-        )
+        order, order_reason = self.order_preference()
 
-        if preferred_pop_order is not None and preferred_pop_order > 0:
+        if order is not None and order > 0:
             outcome = self.min_outcome()
             generated = tuple(self._generate_min(outcome))
         else:

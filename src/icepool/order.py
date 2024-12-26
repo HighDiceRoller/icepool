@@ -13,29 +13,6 @@ class Order(enum.IntEnum):
     Descending = -1
     Any = 0
 
-    def merge(*orders: 'Order') -> 'Order':
-        """Merges the given Orders.
-
-        Returns:
-            `Any` if all arguments are `Any`.
-            `Ascending` if there is at least one `Ascending` in the arguments.
-            `Descending` if there is at least one `Descending` in the arguments.
-
-        Raises:
-            `ValueError` if both `Ascending` and `Descending` are in the
-            arguments.
-        """
-        result = Order.Any
-        for order in orders:
-            if (result > 0 and order < 0) or (result < 0 and order > 0):
-                raise ValueError(
-                    f'Conflicting orders {orders}.\n' +
-                    'Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.'
-                )
-            if result == Order.Any:
-                result = order
-        return result
-
 
 class OrderReason(enum.IntEnum):
     """Greater values represent higher priorities, which strictly override lower priorities."""
@@ -49,7 +26,7 @@ class OrderReason(enum.IntEnum):
     """There is no preference for either pop order."""
 
 
-def merge_pop_orders(
+def merge_order_preferences(
     *preferences: tuple[Order | None, OrderReason],
 ) -> tuple[Order | None, OrderReason]:
     """Returns a pop order that fits the highest priority preferences.

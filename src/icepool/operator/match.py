@@ -4,7 +4,7 @@ import icepool
 
 from icepool.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 
 import operator
 from abc import abstractmethod
@@ -76,8 +76,8 @@ class MultisetSortMatch(MultisetOperator[T]):
                                  right_first=self._right_first,
                                  left_lead=next_left_lead), count
 
-    def local_order(self) -> Order:
-        return self._order
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return self._order, OrderReason.Mandatory
 
     @property
     def _local_hash_key(self) -> Hashable:
@@ -134,8 +134,8 @@ class MultisetMaximumMatch(MultisetOperator[T]):
                                     keep=self._keep,
                                     prev_matchable=next_prev_matchable), count
 
-    def local_order(self) -> Order:
-        return self._order
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return self._order, OrderReason.Mandatory
 
     @property
     def _local_hash_key(self) -> Hashable:

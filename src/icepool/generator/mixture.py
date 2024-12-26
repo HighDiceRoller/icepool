@@ -4,7 +4,7 @@ import icepool
 
 from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.order import Order, OrderReason, merge_pop_orders
+from icepool.order import Order, OrderReason, merge_order_preferences
 
 import math
 
@@ -93,9 +93,9 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
             'MixtureMultisetGenerator should have decayed to another generator type by this point.'
         )
 
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
-        return merge_pop_orders(*(inner._local_preferred_pop_order()
-                                  for inner in self._inner_generators))
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return merge_order_preferences(*(inner.local_order_preference()
+                                         for inner in self._inner_generators))
 
     @cached_property
     def _denominator(self) -> int:

@@ -35,11 +35,8 @@ class MultisetVariable(MultisetExpression[Any]):
     def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         raise UnboundMultisetExpressionError()
 
-    def _local_preferred_pop_order(self) -> tuple[Order | None, OrderReason]:
-        raise UnboundMultisetExpressionError()
-
-    def local_order(self) -> Order:
-        return Order.Any
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
 
     def _free_arity(self) -> int:
         return self._index + 1

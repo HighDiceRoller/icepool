@@ -4,7 +4,7 @@ import icepool
 
 from icepool.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order
+from icepool.order import Order, OrderReason
 
 import operator
 from abc import abstractmethod
@@ -69,8 +69,8 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
                                       target=self._func,
                                       invert=self._invert), count
 
-    def local_order(self) -> Order:
-        return Order.Any
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
 
     @property
     def _local_hash_key(self) -> Hashable:
@@ -126,8 +126,8 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
         return MultisetFilterOutcomesBinary(*new_children,
                                             invert=self._invert), count
 
-    def local_order(self) -> Order:
-        return Order.Any
+    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
 
     @property
     def _local_hash_key(self) -> Hashable:

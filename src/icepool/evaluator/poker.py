@@ -32,8 +32,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
 
         return state
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
     def extra_outcomes(self, outcomes: Sequence) -> Collection:
@@ -76,8 +75,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         else:
             return final_state
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
     def extra_outcomes(self, outcomes: Sequence) -> Collection:
@@ -92,8 +90,7 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return max(state or count, count)
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
 
@@ -108,8 +105,7 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
         """Implementation."""
         return max(state or (count, outcome), (count, outcome))
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
 
@@ -138,8 +134,7 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
         else:
             return min(state, current)
 
-    def order(self) -> Literal[Order.Any]:
-        """Allows any order."""
+    def order(self):
         return Order.Any
 
     def final_outcome(self, final_state):
@@ -195,8 +190,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         """Implementation."""
         return final_state[0]
 
-    def order(self) -> Literal[Order.Ascending]:
-        """Ascending order."""
+    def order(self):
         return Order.Ascending
 
     extra_outcomes = MultisetEvaluator.consecutive
@@ -234,8 +228,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         current_runs, ended_runs = final_state or ((), ())
         return tuple(sorted(current_runs + ended_runs, reverse=True))
 
-    def order(self) -> Literal[Order.Ascending]:
-        """Ascending order."""
+    def order(self):
         return Order.Ascending
 
     extra_outcomes = MultisetEvaluator.consecutive
