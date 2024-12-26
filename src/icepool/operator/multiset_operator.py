@@ -18,7 +18,7 @@ class MultisetOperator(MultisetExpression[T]):
 
     @abstractmethod
     def _copy(
-        self, copy_children: 'Iterable[MultisetExpression[T]]'
+        self, new_children: 'tuple[MultisetExpression[T], ...]'
     ) -> 'MultisetExpression[T]':
         """Creates a copy of self with the given children.
         
@@ -28,12 +28,13 @@ class MultisetOperator(MultisetExpression[T]):
 
     @abstractmethod
     def _transform_next(
-            self, next_children: 'Iterable[MultisetExpression[T]]', outcome: T,
+            self, new_children: 'tuple[MultisetExpression[T], ...]',
+            outcome: T,
             counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         """Produce the next state of this expression.
 
         Args:
-            next_children: The children of the result are to be set to this.
+            new_children: The children of the result are to be set to this.
             outcome: The outcome being processed.
             counts: One count per child.
 
@@ -58,23 +59,23 @@ class MultisetOperator(MultisetExpression[T]):
     def _generate_initial(self) -> InitialMultisetGeneration:
         for t in itertools.product(*(child._generate_initial()
                                      for child in self._children)):
-            next_children, weights = zip(*t)
-            next_self = self._copy(next_children)
+            new_children, weights = zip(*t)
+            next_self = self._copy(new_children)
             yield next_self, math.prod(weights)
 
     def _generate_min(self, min_outcome: T) -> PopMultisetGeneration:
         for t in itertools.product(*(child._generate_min(min_outcome)
                                      for child in self._children)):
-            next_children, counts, weights = zip(*t)
-            next_self, count = self._transform_next(next_children, min_outcome,
+            new_children, counts, weights = zip(*t)
+            next_self, count = self._transform_next(new_children, min_outcome,
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 
     def _generate_max(self, max_outcome: T) -> PopMultisetGeneration:
         for t in itertools.product(*(child._generate_min(max_outcome)
                                      for child in self._children)):
-            next_children, counts, weights = zip(*t)
-            next_self, count = self._transform_next(next_children, max_outcome,
+            new_children, counts, weights = zip(*t)
+            next_self, count = self._transform_next(new_children, max_outcome,
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 

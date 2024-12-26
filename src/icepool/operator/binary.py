@@ -38,15 +38,16 @@ class MultisetBinaryOperator(MultisetOperator[T]):
         """A symbol representing this operation."""
 
     def _copy(
-        self, copy_children: 'Iterable[MultisetExpression[T]]'
+        self, new_children: 'tuple[MultisetExpression[T], ...]'
     ) -> 'MultisetExpression[T]':
-        return type(self)(*copy_children)
+        return type(self)(*new_children)
 
     def _transform_next(
-            self, next_children: 'Iterable[MultisetExpression[T]]', outcome: T,
+            self, new_children: 'tuple[MultisetExpression[T], ...]',
+            outcome: T,
             counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         count = reduce(self.merge_counts, counts)
-        return type(self)(*next_children), count
+        return type(self)(*new_children), count
 
     def local_order(self) -> Order:
         return Order.Any

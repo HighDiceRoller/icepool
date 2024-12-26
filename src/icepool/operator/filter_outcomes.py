@@ -1,15 +1,19 @@
 __docformat__ = 'google'
 
-from functools import cached_property
 import icepool
 
-from icepool.expression.multiset_expression import MultisetExpression
+from icepool.multiset_expression import MultisetExpression
+from icepool.operator.multiset_operator import MultisetOperator
 
-from icepool.typing import Order, Outcome, T
-from typing import Callable, Collection, Hashable
+import operator
+from abc import abstractmethod
+from functools import cached_property, reduce
+
+from typing import Callable, Collection, Hashable, Iterable
+from icepool.typing import Order, T
 
 
-class FilterOutcomesExpression(MultisetExpression[T]):
+class MultisetFilterOutcomes(MultisetOperator[T]):
     """Keeps all elements in the target set of outcomes, dropping the rest, or vice versa.
 
     This is similar to `intersection` or `difference`, except the target set is
@@ -45,24 +49,30 @@ class FilterOutcomesExpression(MultisetExpression[T]):
 
             self._func = function
 
-    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
-        return FilterOutcomesExpression(*unbound_children,
-                                        invert=self._invert,
-                                        target=self._func)
+    def _copy(
+        self, new_children: 'tuple[MultisetExpression[T], ...]'
+    ) -> 'MultisetExpression[T]':
+        return MultisetFilterOutcomes(*new_children,
+                                      target=self._func,
+                                      invert=self._invert)
 
-    def _next_state(self, state, outcome: T, *counts:
-                    int) -> tuple[Hashable, int]:
-        state, count = self._children[0]._next_state(state, outcome, *counts)
+    def _transform_next(
+            self, new_children: 'tuple[MultisetExpression[T], ...]',
+            outcome: T,
+            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         if bool(self._func(outcome)) != self._invert:
-            return state, count
+            count = counts[0]
         else:
-            return state, 0
+            count = 0
+        return MultisetFilterOutcomes(*new_children,
+                                      target=self._func,
+                                      invert=self._invert), count
 
-    def order(self) -> Order:
-        return self._children[0].order()
+    def local_order(self) -> Order:
+        return Order.Any
 
-    def _free_arity(self) -> int:
-        return self._children[0]._free_arity()
+    def _local_hash_key(self) -> Hashable:
+        return MultisetFilterOutcomes, self._func, self._invert
 
     def __str__(self) -> str:
         if self._invert:
@@ -71,7 +81,7 @@ class FilterOutcomesExpression(MultisetExpression[T]):
             return f'{self._children[0]}.keep_outcomes(...)'
 
 
-class FilterOutcomesBinaryExpression(MultisetExpression[T]):
+class MultisetFilterOutcomesBinary(MultisetOperator[T]):
     """Keeps all elements in the target set of outcomes, dropping the rest, or vice versa.
 
     This is similar to `intersection` or `difference`, except the target set is
@@ -92,40 +102,33 @@ class FilterOutcomesBinaryExpression(MultisetExpression[T]):
             target: An expression of outcomes to keep if they have positive count.
             invert: If set, the filter is inverted.
         """
-        self._validate_output_arity(source)
-        self._validate_output_arity(target)
         self._source = source
         self._target = target
         self._children = (source, target)
         self._invert = invert
 
-    def _make_unbound(self, *unbound_children) -> 'icepool.MultisetExpression':
-        return FilterOutcomesBinaryExpression(*unbound_children,
-                                              invert=self._invert)
+    def _copy(
+        self, new_children: 'tuple[MultisetExpression[T], ...]'
+    ) -> 'MultisetExpression[T]':
+        return MultisetFilterOutcomesBinary(*new_children, invert=self._invert)
 
-    def _next_state(self, state, outcome: T, *counts:
-                    int) -> tuple[Hashable, int]:
-
-        source_state, target_state = state or (None, None)
-        source_state, source_count = self._source._next_state(
-            source_state, outcome, *counts)
-        target_state, target_count = self._target._next_state(
-            target_state, outcome, *counts)
-
+    def _transform_next(
+            self, new_children: 'tuple[MultisetExpression[T], ...]',
+            outcome: T,
+            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+        source_count, target_count = counts
         if (target_count > 0) != self._invert:
-            return (source_state, target_state), source_count
+            count = source_count
         else:
-            return (source_state, target_state), 0
+            count = 0
+        return MultisetFilterOutcomesBinary(*new_children,
+                                            invert=self._invert), count
 
-    def order(self) -> Order:
-        return Order.merge(self._source.order(), self._target.order())
+    def local_order(self) -> Order:
+        return Order.Any
 
-    @cached_property
-    def _cached_arity(self) -> int:
-        return max(self._source._free_arity(), self._target._free_arity())
-
-    def _free_arity(self) -> int:
-        return self._cached_arity
+    def _local_hash_key(self) -> Hashable:
+        return MultisetFilterOutcomesBinary, self._invert
 
     def __str__(self) -> str:
         if self._invert:
