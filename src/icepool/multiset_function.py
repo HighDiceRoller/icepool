@@ -118,6 +118,7 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
             output an evaluator or a nested tuple of evaluators. Tuples will
             result in a `JointEvaluator`.
     """
+    raise NotImplementedError()
     parameters = inspect.signature(function, follow_wrapped=False).parameters
     for parameter in parameters.values():
         if parameter.kind not in [

@@ -237,8 +237,8 @@ class MultisetExpression(ABC, Generic[T]):
 
         Used to implement `equals()` and `__hash__()`
         """
-        return (self._local_hash_key, ) + tuple(child._hash_key
-                                                for child in self._children)
+        return (self._local_hash_key,
+                tuple(child._hash_key for child in self._children))
 
     def equals(self, other) -> bool:
         """Whether this expression is logically equal to another object."""
@@ -251,6 +251,7 @@ class MultisetExpression(ABC, Generic[T]):
         return hash(self._hash_key)
 
     def __hash__(self) -> int:
+        print(self._hash_key)
         return self._hash
 
     def _iter_nodes(self) -> 'Iterator[MultisetExpression]':
@@ -978,9 +979,7 @@ class MultisetExpression(ABC, Generic[T]):
             A `Die` if the expression is are fully bound.
             A `MultisetEvaluator` otherwise.
         """
-        if all(
-                isinstance(expression, icepool.MultisetGenerator)
-                for expression in expressions):
+        if all(expression._free_arity() == 0 for expression in expressions):
             return evaluator.evaluate(*expressions)
         evaluator = icepool.evaluator.ExpressionEvaluator(*expressions,
                                                           evaluator=evaluator)

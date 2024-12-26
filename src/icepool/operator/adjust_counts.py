@@ -45,6 +45,7 @@ class MultisetMapCounts(MultisetOperator[T]):
     def local_order(self) -> Order:
         return Order.Any
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return MultisetMapCounts, self._function
 
@@ -75,6 +76,7 @@ class MultisetCountOperator(MultisetOperator[T]):
     def local_order(self) -> Order:
         return Order.Any
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return type(self), self._constant
 
@@ -164,6 +166,7 @@ class MultisetKeepCounts(MultisetOperator[T]):
     def local_order(self) -> Order:
         return Order.Any
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return MultisetKeepCounts, self._constant
 

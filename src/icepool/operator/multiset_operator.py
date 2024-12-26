@@ -67,14 +67,16 @@ class MultisetOperator(MultisetExpression[T]):
         for t in itertools.product(*(child._generate_min(min_outcome)
                                      for child in self._children)):
             new_children, counts, weights = zip(*t)
+            counts = tuple(c[0] for c in counts)
             next_self, count = self._transform_next(new_children, min_outcome,
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 
     def _generate_max(self, max_outcome: T) -> PopMultisetGeneration:
-        for t in itertools.product(*(child._generate_min(max_outcome)
+        for t in itertools.product(*(child._generate_max(max_outcome)
                                      for child in self._children)):
             new_children, counts, weights = zip(*t)
+            counts = tuple(c[0] for c in counts)
             next_self, count = self._transform_next(new_children, max_outcome,
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
@@ -95,5 +97,5 @@ class MultisetOperator(MultisetExpression[T]):
         for child in self._children:
             unbound_child, next_index = child._unbind(next_index)
             unbound_children.append(unbound_child)
-        unbound_expression = self._copy(unbound_children)
+        unbound_expression = self._copy(tuple(unbound_children))
         return unbound_expression, next_index

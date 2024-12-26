@@ -53,6 +53,7 @@ class MultisetVariable(MultisetExpression[Any]):
     def _unbind(self, next_index: int) -> 'tuple[MultisetExpression, int]':
         return self, next_index
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return (MultisetVariable, self._index)
 

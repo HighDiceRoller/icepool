@@ -78,6 +78,7 @@ class MultisetSortMatch(MultisetOperator[T]):
     def local_order(self) -> Order:
         return self._order
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return (MultisetSortMatch, self._order, self._tie, self._left_first,
                 self._right_first, self._left_lead)
@@ -134,6 +135,7 @@ class MultisetMaximumMatch(MultisetOperator[T]):
     def local_order(self) -> Order:
         return self._order
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return (MultisetMaximumMatch, self._order, self._match_equal,
                 self._keep, self._prev_matchable)

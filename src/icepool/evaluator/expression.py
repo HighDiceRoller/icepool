@@ -36,6 +36,7 @@ class ExpressionEvaluator(MultisetEvaluator[T, U_co]):
             unbound_expressions.append(unbound_expression)
         self._expressions = tuple(unbound_expressions)
         self._truth_value = truth_value
+        raise NotImplementedError()
 
     def next_state(self, state, outcome, *counts):
         if state is None:

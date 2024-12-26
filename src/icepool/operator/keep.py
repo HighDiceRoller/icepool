@@ -151,6 +151,7 @@ class MultisetKeep(MultisetOperator[T]):
     def local_order(self) -> Order:
         return self._keep_order
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return self._keep_order, self._keep_tuple, self._drop
 

@@ -71,6 +71,7 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
     def local_order(self) -> Order:
         return Order.Any
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return MultisetFilterOutcomes, self._func, self._invert
 
@@ -127,6 +128,7 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
     def local_order(self) -> Order:
         return Order.Any
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return MultisetFilterOutcomesBinary, self._invert
 

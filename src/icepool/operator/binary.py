@@ -52,6 +52,7 @@ class MultisetBinaryOperator(MultisetOperator[T]):
     def local_order(self) -> Order:
         return Order.Any
 
+    @property
     def _local_hash_key(self) -> Hashable:
         return type(self)
 
