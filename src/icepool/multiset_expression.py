@@ -1,13 +1,17 @@
 __docformat__ = 'google'
 
+import icepool
+from icepool.collection.counts import Counts
+from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from icepool.population.keep import highest_slice, lowest_slice
+
 import bisect
 from functools import cached_property
 import itertools
+import operator
 import random
-import icepool
-from icepool.collection.counts import Counts
 
-from icepool.generator.pop_order import PopOrderReason, merge_pop_orders
+from types import EllipsisType
 from icepool.typing import T, U, ImplicitConversionError, Order, Outcome, T
 from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Iterator, Literal, Mapping, Self, Sequence, Type, TypeAlias, TypeVar, cast, overload
 
@@ -490,6 +494,46 @@ class MultisetExpression(ABC, Generic[T]):
         other = implicit_convert_to_expression(other)
         return icepool.operator.MultisetSymmetricDifference(self, other)
 
+    def keep_outcomes(
+            self, target:
+        'Callable[[T], bool] | Collection[T] | MultisetExpression[T]',
+            /) -> 'MultisetExpression[T]':
+        """Keeps the elements in the target set of outcomes, and drops the rest by setting their counts to zero.
+
+        This is similar to `intersection()`, except the right side is considered
+        to have unlimited multiplicity.
+
+        Args:
+            target: A callable returning `True` iff the outcome should be kept,
+                or an expression or collection of outcomes to keep.
+        """
+        if isinstance(target, MultisetExpression):
+            return icepool.operator.MultisetFilterOutcomesBinary(self, target)
+        else:
+            return icepool.operator.MultisetFilterOutcomes(self, target=target)
+
+    def drop_outcomes(
+            self, target:
+        'Callable[[T], bool] | Collection[T] | MultisetExpression[T]',
+            /) -> 'MultisetExpression[T]':
+        """Drops the elements in the target set of outcomes by setting their counts to zero, and keeps the rest.
+
+        This is similar to `difference()`, except the right side is considered
+        to have unlimited multiplicity.
+
+        Args:
+            target: A callable returning `True` iff the outcome should be
+                dropped, or an expression or collection of outcomes to drop.
+        """
+        if isinstance(target, MultisetExpression):
+            return icepool.operator.MultisetFilterOutcomesBinary(self,
+                                                                 target,
+                                                                 invert=True)
+        else:
+            return icepool.operator.MultisetFilterOutcomes(self,
+                                                           target=target,
+                                                           invert=True)
+
     # Adjust counts.
 
     def map_counts(*args:
@@ -627,6 +671,519 @@ class MultisetExpression(ABC, Generic[T]):
         """
         return icepool.operator.MultisetUnique(self, constant=n)
 
+    # Keep highest / lowest.
+
+    @overload
+    def keep(
+        self, index: slice | Sequence[int | EllipsisType]
+    ) -> 'MultisetExpression[T]':
+        ...
+
+    @overload
+    def keep(self,
+             index: int) -> 'icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
+        ...
+
+    def keep(
+        self, index: slice | Sequence[int | EllipsisType] | int
+    ) -> 'MultisetExpression[T] | icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
+        """Selects elements after drawing and sorting.
+
+        This is less capable than the `KeepGenerator` version.
+        In particular, it does not know how many elements it is selecting from,
+        so it must be anchored at the starting end. The advantage is that it
+        can be applied to any expression.
+
+        The valid types of argument are:
+
+        * A `slice`. If both start and stop are provided, they must both be
+            non-negative or both be negative. step is not supported.
+        * A sequence of `int` with `...` (`Ellipsis`) at exactly one end.
+            Each sorted element will be counted that many times, with the
+            `Ellipsis` treated as enough zeros (possibly "negative") to
+            fill the rest of the elements.
+        * An `int`, which evaluates by taking the element at the specified
+            index. In this case the result is a `Die` (if fully bound) or a
+            `MultisetEvaluator` (if there are free variables).
+
+        Use the `[]` operator for the same effect as this method.
+        """
+        if isinstance(index, int):
+            return self.evaluate(
+                evaluator=icepool.evaluator.KeepEvaluator(index))
+        else:
+            return icepool.operator.MultisetKeep(self, index=index)
+
+    @overload
+    def __getitem__(
+        self, index: slice | Sequence[int | EllipsisType]
+    ) -> 'MultisetExpression[T]':
+        ...
+
+    @overload
+    def __getitem__(
+            self,
+            index: int) -> 'icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
+        ...
+
+    def __getitem__(
+        self, index: slice | Sequence[int | EllipsisType] | int
+    ) -> 'MultisetExpression[T] | icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
+        return self.keep(index)
+
+    def lowest(self,
+               keep: int | None = None,
+               drop: int | None = None) -> 'MultisetExpression[T]':
+        """Keep some of the lowest elements from this multiset and drop the rest.
+
+        In contrast to the die and free function versions, this does not
+        automatically sum the dice. Use `.sum()` afterwards if you want to sum.
+        Alternatively, you can perform some other evaluation.
+
+        This requires the outcomes to be evaluated in ascending order.
+
+        Args:
+            keep, drop: These arguments work together:
+                * If neither are provided, the single lowest element
+                    will be kept.
+                * If only `keep` is provided, the `keep` lowest elements
+                    will be kept.
+                * If only `drop` is provided, the `drop` lowest elements
+                    will be dropped and the rest will be kept.
+                * If both are provided, `drop` lowest elements will be dropped,
+                    then the next `keep` lowest elements will be kept.
+        """
+        index = lowest_slice(keep, drop)
+        return self.keep(index)
+
+    def highest(self,
+                keep: int | None = None,
+                drop: int | None = None) -> 'MultisetExpression[T]':
+        """Keep some of the highest elements from this multiset and drop the rest.
+
+        In contrast to the die and free function versions, this does not
+        automatically sum the dice. Use `.sum()` afterwards if you want to sum.
+        Alternatively, you can perform some other evaluation.
+
+        This requires the outcomes to be evaluated in descending order.
+
+        Args:
+            keep, drop: These arguments work together:
+                * If neither are provided, the single highest element
+                    will be kept.
+                * If only `keep` is provided, the `keep` highest elements
+                    will be kept.
+                * If only `drop` is provided, the `drop` highest elements
+                    will be dropped and the rest will be kept.
+                * If both are provided, `drop` highest elements will be dropped, 
+                    then the next `keep` highest elements will be kept.
+        """
+        index = highest_slice(keep, drop)
+        return self.keep(index)
+
+    # Matching.
+
+    def sort_match(self,
+                   comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+                   other: 'MultisetExpression[T]',
+                   /,
+                   order: Order = Order.Descending) -> 'MultisetExpression[T]':
+        """EXPERIMENTAL: Matches elements of `self` with elements of `other` in sorted order, then keeps elements from `self` that fit `comparison` with their partner.
+
+        Extra elements: If `self` has more elements than `other`, whether the
+        extra elements are kept depends on the `order` and `comparison`:
+        * Descending: kept for `'>='`, `'>'`
+        * Ascending: kept for `'<='`, `'<'`
+
+        Example: An attacker rolls 3d6 versus a defender's 2d6 in the game of
+        *RISK*. Which pairs did the attacker win?
+        ```python
+        d6.pool(3).highest(2).sort_match('>', d6.pool(2))
+        ```
+        
+        Suppose the attacker rolled 6, 4, 3 and the defender 5, 5.
+        In this case the 4 would be blocked since the attacker lost that pair,
+        leaving the attacker's 6 and 3. If you don't want to keep the extra
+        element, you can use `highest`.
+        ```python
+        Pool([6, 4, 3]).sort_match('>', [5, 5]) -> [6, 3]
+        Pool([6, 4, 3]).highest(2).sort_match('>', [5, 5]) -> [6]
+        ```
+
+        Contrast `maximum_match()`, which first creates the maximum number of
+        pairs that fit the comparison, not necessarily in sorted order.
+        In the above example, `maximum_match()` would allow the defender to
+        assign their 5s to block both the 4 and the 3.
+        
+        Args:
+            comparison: The comparison to filter by. If you want to drop rather
+                than keep, use the complementary comparison:
+                * `'=='` vs. `'!='`
+                * `'<='` vs. `'>'`
+                * `'>='` vs. `'<'`
+            other: The other multiset to match elements with.
+            order: The order in which to sort before forming matches.
+                Default is descending.
+        """
+        other = implicit_convert_to_expression(other)
+
+        match comparison:
+            case '==':
+                lesser, tie, greater = 0, 1, 0
+            case '!=':
+                lesser, tie, greater = 1, 0, 1
+            case '<=':
+                lesser, tie, greater = 1, 1, 0
+            case '<':
+                lesser, tie, greater = 1, 0, 0
+            case '>=':
+                lesser, tie, greater = 0, 1, 1
+            case '>':
+                lesser, tie, greater = 0, 0, 1
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
+
+        if order > 0:
+            left_first = lesser
+            right_first = greater
+        else:
+            left_first = greater
+            right_first = lesser
+
+        return icepool.operator.MultisetSortMatch(self,
+                                                  other,
+                                                  order=order,
+                                                  tie=tie,
+                                                  left_first=left_first,
+                                                  right_first=right_first)
+
+    def maximum_match_highest(
+            self, comparison: Literal['<=',
+                                      '<'], other: 'MultisetExpression[T]', /,
+            *, keep: Literal['matched',
+                             'unmatched']) -> 'MultisetExpression[T]':
+        """EXPERIMENTAL: Match the highest elements from `self` with even higher (or equal) elements from `other`.
+
+        This matches elements of `self` with elements of `other`, such that in
+        each pair the element from `self` fits the `comparision` with the
+        element from `other`. As many such pairs of elements will be matched as 
+        possible, preferring the highest matchable elements of `self`.
+        Finally, either the matched or unmatched elements from `self` are kept.
+
+        This requires that outcomes be evaluated in descending order.
+
+        Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
+        3d6. Defender dice can be used to block attacker dice of equal or lesser
+        value, and the defender prefers to block the highest attacker dice
+        possible. Which attacker dice were not blocked?
+        ```python
+        d6.pool(4).maximum_match('<=', d6.pool(3), keep='unmatched').sum()
+        ```
+
+        Suppose the attacker rolls 6, 4, 3, 1 and the defender rolls 5, 5.
+        Then the result would be [6, 1].
+        ```python
+        d6.pool([6, 4, 3, 1]).maximum_match('<=', [5, 5], keep='unmatched')
+        -> [6, 1]
+        ```
+
+        Contrast `sort_match()`, which first creates pairs in
+        sorted order and then filters them by `comparison`.
+        In the above example, `sort_matched` would force the defender to match
+        against the 5 and the 4, which would only allow them to block the 4.
+
+        Args:
+            comparison: Either `'<='` or `'<'`.
+            other: The other multiset to match elements with.
+            keep: Whether 'matched' or 'unmatched' elements are to be kept.
+        """
+        if keep == 'matched':
+            keep_boolean = True
+        elif keep == 'unmatched':
+            keep_boolean = False
+        else:
+            raise ValueError(f"keep must be either 'matched' or 'unmatched'")
+
+        other = implicit_convert_to_expression(other)
+        match comparison:
+            case '<=':
+                match_equal = True
+            case '<':
+                match_equal = False
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
+        return icepool.operator.MultisetMaximumMatch(self,
+                                                     other,
+                                                     order=Order.Descending,
+                                                     match_equal=match_equal,
+                                                     keep=keep_boolean)
+
+    def maximum_match_lowest(
+            self, comparison: Literal['>=',
+                                      '>'], other: 'MultisetExpression[T]', /,
+            *, keep: Literal['matched',
+                             'unmatched']) -> 'MultisetExpression[T]':
+        """EXPERIMENTAL: Match the lowest elements from `self` with even lower (or equal) elements from `other`.
+
+        This matches elements of `self` with elements of `other`, such that in
+        each pair the element from `self` fits the `comparision` with the
+        element from `other`. As many such pairs of elements will be matched as 
+        possible, preferring the lowest matchable elements of `self`.
+        Finally, either the matched or unmatched elements from `self` are kept.
+
+        This requires that outcomes be evaluated in ascending order.
+
+        Contrast `sort_match()`, which first creates pairs in
+        sorted order and then filters them by `comparison`.
+
+        Args:
+            comparison: Either `'>='` or `'>'`.
+            other: The other multiset to match elements with.
+            keep: Whether 'matched' or 'unmatched' elements are to be kept.
+        """
+        if keep == 'matched':
+            keep_boolean = True
+        elif keep == 'unmatched':
+            keep_boolean = False
+        else:
+            raise ValueError(f"keep must be either 'matched' or 'unmatched'")
+
+        other = implicit_convert_to_expression(other)
+        match comparison:
+            case '>=':
+                match_equal = True
+            case '>':
+                match_equal = False
+            case _:
+                raise ValueError(f'Invalid comparison {comparison}')
+        return icepool.operator.MultisetMaximumMatch(self,
+                                                     other,
+                                                     order=Order.Ascending,
+                                                     match_equal=match_equal,
+                                                     keep=keep_boolean)
+
+    # Evaluations.
+
+    def evaluate(
+        *expressions: 'MultisetExpression[T]',
+        evaluator: 'icepool.MultisetEvaluator[T, U]'
+    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T, U]':
+        """Attaches a final `MultisetEvaluator` to expressions.
+
+        All of the `MultisetExpression` methods below are evaluations,
+        as are the operators `<, <=, >, >=, !=, ==`. This means if the
+        expression is fully bound, it will be evaluated to a `Die`.
+
+        Returns:
+            A `Die` if the expression is are fully bound.
+            A `MultisetEvaluator` otherwise.
+        """
+        if all(
+                isinstance(expression, icepool.MultisetGenerator)
+                for expression in expressions):
+            return evaluator.evaluate(*expressions)
+        evaluator = icepool.evaluator.ExpressionEvaluator(*expressions,
+                                                          evaluator=evaluator)
+        if evaluator._free_arity == 0:
+            return evaluator.evaluate()
+        else:
+            return evaluator
+
+    def expand(
+        self,
+        order: Order = Order.Ascending
+    ) -> 'icepool.Die[tuple[T, ...]] | icepool.MultisetEvaluator[T, tuple[T, ...]]':
+        """Evaluation: All elements of the multiset in ascending order.
+
+        This is expensive and not recommended unless there are few possibilities.
+
+        Args:
+            order: Whether the elements are in ascending (default) or descending
+                order.
+        """
+        return self.evaluate(evaluator=icepool.evaluator.ExpandEvaluator(
+            order=order))
+
+    def sum(
+        self,
+        map: Callable[[T], U] | Mapping[T, U] | None = None
+    ) -> 'icepool.Die[U] | icepool.MultisetEvaluator[T, U]':
+        """Evaluation: The sum of all elements."""
+        if map is None:
+            return self.evaluate(evaluator=icepool.evaluator.sum_evaluator)
+        else:
+            return self.evaluate(evaluator=icepool.evaluator.SumEvaluator(map))
+
+    def count(self) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        """Evaluation: The total number of elements in the multiset.
+
+        This is usually not very interesting unless some other operation is
+        performed first. Examples:
+
+        `generator.unique().count()` will count the number of unique outcomes.
+
+        `(generator & [4, 5, 6]).count()` will count up to one each of
+        4, 5, and 6.
+        """
+        return self.evaluate(evaluator=icepool.evaluator.count_evaluator)
+
+    def any(self) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        """Evaluation: Whether the multiset has at least one positive count. """
+        return self.evaluate(evaluator=icepool.evaluator.any_evaluator)
+
+    def highest_outcome_and_count(
+        self
+    ) -> 'icepool.Die[tuple[T, int]] | icepool.MultisetEvaluator[T, tuple[T, int]]':
+        """Evaluation: The highest outcome with positive count, along with that count.
+
+        If no outcomes have positive count, the min outcome will be returned with 0 count.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.highest_outcome_and_count_evaluator)
+
+    def all_counts(
+        self,
+        filter: int | Literal['all'] = 1
+    ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[T, tuple[int, ...]]':
+        """Evaluation: Sorted tuple of all counts, i.e. the sizes of all matching sets.
+
+        The sizes are in **descending** order.
+
+        Args:
+            filter: Any counts below this value will not be in the output.
+                For example, `filter=2` will only produce pairs and better.
+                If `None`, no filtering will be done.
+
+                Why not just place `keep_counts_ge()` before this?
+                `keep_counts_ge()` operates by setting counts to zero, so you
+                would still need an argument to specify whether you want to
+                output zero counts. So we might as well use the argument to do
+                both.
+        """
+        return self.evaluate(evaluator=icepool.evaluator.AllCountsEvaluator(
+            filter=filter))
+
+    def largest_count(
+            self) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        """Evaluation: The size of the largest matching set among the elements."""
+        return self.evaluate(
+            evaluator=icepool.evaluator.largest_count_evaluator)
+
+    def largest_count_and_outcome(
+        self
+    ) -> 'icepool.Die[tuple[int, T]] | icepool.MultisetEvaluator[T, tuple[int, T]]':
+        """Evaluation: The largest matching set among the elements and the corresponding outcome."""
+        return self.evaluate(
+            evaluator=icepool.evaluator.largest_count_and_outcome_evaluator)
+
+    def __rfloordiv__(
+        self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        other = implicit_convert_to_expression(other)
+        return other.count_subset(self)
+
+    def count_subset(
+        self,
+        divisor: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        /,
+        *,
+        empty_divisor: int | None = None
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
+        """Evaluation: The number of times the divisor is contained in this multiset.
+        
+        Args:
+            divisor: The multiset to divide by.
+            empty_divisor: If the divisor is empty, the outcome will be this.
+                If not set, `ZeroDivisionError` will be raised for an empty
+                right side.
+
+        Raises:
+            ZeroDivisionError: If the divisor may be empty and 
+                empty_divisor_outcome is not set.
+        """
+        divisor = implicit_convert_to_expression(divisor)
+        return self.evaluate(divisor,
+                             evaluator=icepool.evaluator.CountSubsetEvaluator(
+                                 empty_divisor=empty_divisor))
+
+    def largest_straight(
+        self: 'MultisetExpression[int]'
+    ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[int, int]':
+        """Evaluation: The size of the largest straight among the elements.
+
+        Outcomes must be `int`s.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.largest_straight_evaluator)
+
+    def largest_straight_and_outcome(
+        self: 'MultisetExpression[int]'
+    ) -> 'icepool.Die[tuple[int, int]] | icepool.MultisetEvaluator[int, tuple[int, int]]':
+        """Evaluation: The size of the largest straight among the elements and the highest outcome in that straight.
+
+        Outcomes must be `int`s.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.largest_straight_and_outcome_evaluator)
+
+    def all_straights(
+        self: 'MultisetExpression[int]'
+    ) -> 'icepool.Die[tuple[int, ...]] | icepool.MultisetEvaluator[int, tuple[int, ...]]':
+        """Evaluation: The sizes of all straights.
+
+        The sizes are in **descending** order.
+
+        Each element can only contribute to one straight, though duplicate
+        elements can produces straights that overlap in outcomes. In this case,
+        elements are preferentially assigned to the longer straight.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.all_straights_evaluator)
+
+    def all_straights_reduce_counts(
+        self: 'MultisetExpression[int]',
+        reducer: Callable[[int, int], int] = operator.mul
+    ) -> 'icepool.Die[tuple[tuple[int, int], ...]] | icepool.MultisetEvaluator[int, tuple[tuple[int, int], ...]]':
+        """Experimental: All straights with a reduce operation on the counts.
+
+        This can be used to evaluate e.g. cribbage-style straight counting.
+
+        The result is a tuple of `(run_length, run_score)`s.
+        """
+        return self.evaluate(
+            evaluator=icepool.evaluator.AllStraightsReduceCountsEvaluator(
+                reducer=reducer))
+
+    def argsort(self: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+                order: Order = Order.Descending,
+                limit: int | None = None):
+        """Experimental: Returns the indexes of the originating multisets for each rank in their additive union.
+
+        Example:
+        ```python
+        MultisetExpression.argsort([10, 9, 5], [9, 9])
+        ```
+        produces
+        ```python
+        ((0,), (0, 1, 1), (0,))
+        ```
+        
+        Args:
+            self, *args: The multiset expressions to be evaluated.
+            order: Which order the ranks are to be emitted. Default is descending.
+            limit: How many ranks to emit. Default will emit all ranks, which
+                makes the length of each outcome equal to
+                `additive_union(+self, +arg1, +arg2, ...).unique().count()`
+        """
+        self = implicit_convert_to_expression(self)
+        converted_args = [implicit_convert_to_expression(arg) for arg in args]
+        return self.evaluate(*converted_args,
+                             evaluator=icepool.evaluator.ArgsortEvaluator(
+                                 order=order, limit=limit))
+
+    # Comparators.
+
     def _compare(
         self,
         right: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -653,6 +1210,86 @@ class MultisetExpression(ABC, Generic[T]):
         else:
             return icepool.evaluator.ExpressionEvaluator(
                 self, right, evaluator=operation_class())
+
+    def __lt__(self,
+               other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        try:
+            return self._compare(other,
+                                 icepool.evaluator.IsProperSubsetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def __le__(self,
+               other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        try:
+            return self._compare(other, icepool.evaluator.IsSubsetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def issubset(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        """Evaluation: Whether this multiset is a subset of the other multiset.
+
+        Specifically, if this multiset has a lesser or equal count for each
+        outcome than the other multiset, this evaluates to `True`; 
+        if there is some outcome for which this multiset has a greater count 
+        than the other multiset, this evaluates to `False`.
+
+        `issubset` is the same as `self <= other`.
+        
+        `self < other` evaluates a proper subset relation, which is the same
+        except the result is `False` if the two multisets are exactly equal.
+        """
+        return self._compare(other, icepool.evaluator.IsSubsetEvaluator)
+
+    def __gt__(self,
+               other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        try:
+            return self._compare(other,
+                                 icepool.evaluator.IsProperSupersetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def __ge__(self,
+               other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+               /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        try:
+            return self._compare(other, icepool.evaluator.IsSupersetEvaluator)
+        except TypeError:
+            return NotImplemented
+
+    def issuperset(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        """Evaluation: Whether this multiset is a superset of the other multiset.
+
+        Specifically, if this multiset has a greater or equal count for each
+        outcome than the other multiset, this evaluates to `True`; 
+        if there is some  outcome for which this multiset has a lesser count 
+        than the other multiset, this evaluates to `False`.
+        
+        A typical use of this evaluation is testing for the presence of a
+        combo of cards in a hand, e.g.
+
+        ```python
+        deck.deal(5) >= ['a', 'a', 'b']
+        ```
+
+        represents the chance that a deal of 5 cards contains at least two 'a's
+        and one 'b'.
+
+        `issuperset` is the same as `self >= other`.
+
+        `self > other` evaluates a proper superset relation, which is the same
+        except the result is `False` if the two multisets are exactly equal.
+        """
+        return self._compare(other, icepool.evaluator.IsSupersetEvaluator)
 
     def __eq__(  # type: ignore
             self,
@@ -687,3 +1324,14 @@ class MultisetExpression(ABC, Generic[T]):
                                  truth_value_callback=truth_value_callback)
         except TypeError:
             return NotImplemented
+
+    def isdisjoint(
+            self,
+            other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            /) -> 'icepool.Die[bool] | icepool.MultisetEvaluator[T, bool]':
+        """Evaluation: Whether this multiset is disjoint from the other multiset.
+        
+        Specifically, this evaluates to `False` if there is any outcome for
+        which both multisets have positive count, and `True` if there is not.
+        """
+        return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)

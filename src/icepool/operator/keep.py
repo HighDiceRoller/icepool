@@ -14,7 +14,7 @@ from typing import Callable, Collection, Hashable, Iterable, Sequence
 from icepool.typing import Order, T
 
 
-class MultisetKeep(MultisetExpression[T]):
+class MultisetKeep(MultisetOperator[T]):
     """An expression to keep some of the lowest or highest elements of a multiset."""
 
     _keep_order: Order
