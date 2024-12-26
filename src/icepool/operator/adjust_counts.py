@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 
 from icepool.multiset_expression import MultisetExpression
-from icepool.transform.multiset_transform import MultisetTransform
+from icepool.operator.multiset_operator import MultisetOperator
 
 import operator
 from abc import abstractmethod
@@ -13,7 +13,7 @@ from typing import Callable, Hashable, Iterable, Literal
 from icepool.typing import Order, T
 
 
-class MultisetMapCounts(MultisetTransform[T]):
+class MultisetMapCounts(MultisetOperator[T]):
     """Maps outcomes and counts to new counts."""
 
     _function: Callable[..., int]
@@ -49,7 +49,7 @@ class MultisetMapCounts(MultisetTransform[T]):
         return MultisetMapCounts, self._function
 
 
-class MultisetCountOperator(MultisetTransform[T]):
+class MultisetCountOperator(MultisetOperator[T]):
 
     def __init__(self, child: MultisetExpression[T], /, *,
                  constant: int) -> None:
@@ -121,7 +121,7 @@ class MultisetUnique(MultisetCountOperator):
             return f'{self._children[0]}.unique({self._constant})'
 
 
-class MultisetKeepCounts(MultisetTransform[T]):
+class MultisetKeepCounts(MultisetOperator[T]):
 
     def __init__(self, child: MultisetExpression[T], /, *,
                  comparison: Literal['==', '!=', '<=', '<', '>=',

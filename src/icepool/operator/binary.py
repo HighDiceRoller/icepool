@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 
 from icepool.multiset_expression import MultisetExpression
-from icepool.transform.multiset_transform import MultisetTransform
+from icepool.operator.multiset_operator import MultisetOperator
 
 import operator
 from abc import abstractmethod
@@ -13,7 +13,7 @@ from typing import Hashable, Iterable
 from icepool.typing import Order, T
 
 
-class MultisetBinaryOperator(MultisetTransform[T]):
+class MultisetBinaryOperator(MultisetOperator[T]):
 
     def __init__(self, *children: MultisetExpression[T]) -> None:
         """Constructor.

@@ -13,7 +13,7 @@ from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Itera
 from abc import abstractmethod
 
 
-class MultisetTransform(MultisetExpression[T]):
+class MultisetOperator(MultisetExpression[T]):
     """Internal node of an expression taking one or more counts and producing a single count."""
 
     @abstractmethod

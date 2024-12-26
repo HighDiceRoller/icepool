@@ -332,7 +332,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.transform.MultisetAdditiveUnion(*expressions)
+        return icepool.operator.MultisetAdditiveUnion(*expressions)
 
     def __sub__(self,
                 other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -375,7 +375,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.transform.MultisetDifference(*expressions)
+        return icepool.operator.MultisetDifference(*expressions)
 
     def __and__(self,
                 other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -416,7 +416,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.transform.MultisetIntersection(*expressions)
+        return icepool.operator.MultisetIntersection(*expressions)
 
     def __or__(self,
                other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -450,7 +450,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.transform.MultisetUnion(*expressions)
+        return icepool.operator.MultisetUnion(*expressions)
 
     def __xor__(self,
                 other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -488,7 +488,7 @@ class MultisetExpression(ABC, Generic[T]):
         ```
         """
         other = implicit_convert_to_expression(other)
-        return icepool.transform.MultisetSymmetricDifference(self, other)
+        return icepool.operator.MultisetSymmetricDifference(self, other)
 
     # Adjust counts.
 
@@ -503,8 +503,8 @@ class MultisetExpression(ABC, Generic[T]):
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.transform.MultisetMapCounts(*expressions,
-                                                   function=function)
+        return icepool.operator.MultisetMapCounts(*expressions,
+                                                  function=function)
 
     def __mul__(self, n: int) -> 'MultisetExpression[T]':
         if not isinstance(n, int):
@@ -527,7 +527,7 @@ class MultisetExpression(ABC, Generic[T]):
         Pool([1, 2, 2, 3]) * 2 -> [1, 1, 2, 2, 2, 2, 3, 3]
         ```
         """
-        return icepool.transform.MultisetMultiplyCounts(self, constant=n)
+        return icepool.operator.MultisetMultiplyCounts(self, constant=n)
 
     @overload
     def __floordiv__(self, other: int) -> 'MultisetExpression[T]':
@@ -565,12 +565,12 @@ class MultisetExpression(ABC, Generic[T]):
         Pool([1, 2, 2, 3]) // 2 -> [2]
         ```
         """
-        return icepool.transform.MultisetFloordivCounts(self, constant=n)
+        return icepool.operator.MultisetFloordivCounts(self, constant=n)
 
     def __mod__(self, n: int, /) -> 'MultisetExpression[T]':
         if not isinstance(n, int):
             return NotImplemented
-        return icepool.transform.MultisetModuloCounts(self, constant=n)
+        return icepool.operator.MultisetModuloCounts(self, constant=n)
 
     def modulo_counts(self, n: int, /) -> 'MultisetExpression[T]':
         """Moduos all counts by n.
@@ -586,9 +586,9 @@ class MultisetExpression(ABC, Generic[T]):
 
     def __pos__(self) -> 'MultisetExpression[T]':
         """Sets all negative counts to zero."""
-        return icepool.transform.MultisetKeepCounts(self,
-                                                    comparison='>=',
-                                                    constant=0)
+        return icepool.operator.MultisetKeepCounts(self,
+                                                   comparison='>=',
+                                                   constant=0)
 
     def __neg__(self) -> 'MultisetExpression[T]':
         """As -1 * self."""
@@ -610,9 +610,9 @@ class MultisetExpression(ABC, Generic[T]):
             comparison: The comparison to use.
             n: The number to compare counts against.
         """
-        return icepool.transform.MultisetKeepCounts(self,
-                                                    comparison=comparison,
-                                                    constant=n)
+        return icepool.operator.MultisetKeepCounts(self,
+                                                   comparison=comparison,
+                                                   constant=n)
 
     def unique(self, n: int = 1, /) -> 'MultisetExpression[T]':
         """Counts each outcome at most `n` times.
@@ -625,7 +625,7 @@ class MultisetExpression(ABC, Generic[T]):
         Pool([1, 2, 2, 3]).unique() -> [1, 2, 3]
         ```
         """
-        return icepool.transform.MultisetUnique(self, constant=n)
+        return icepool.operator.MultisetUnique(self, constant=n)
 
     def _compare(
         self,

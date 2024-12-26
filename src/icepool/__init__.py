@@ -142,7 +142,7 @@ from icepool.population.format import format_probability_inverse
 
 import icepool.generator as generator
 import icepool.evaluator as evaluator
-import icepool.transform as transform
+import icepool.operator as operator
 
 import icepool.typing as typing
 
