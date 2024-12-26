@@ -168,8 +168,8 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         else:
             expression_states, evaluator_state = state
 
-        extra_counts = counts[:len(self._evaluator.extra_generators())]
-        counts = counts[len(self._evaluator.extra_generators()):]
+        extra_counts = counts[:len(self._evaluator.extra_inputs())]
+        counts = counts[len(self._evaluator.extra_inputs()):]
 
         expression_states, expression_counts = zip(
             *(expression._next_state(expression_state, outcome, *counts)
@@ -199,9 +199,9 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
 
     @cached_property
     def _extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
-        return self._bound_generators + self._evaluator.extra_generators()
+        return self._bound_generators + self._evaluator.extra_inputs()
 
-    def extra_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def extra_inputs(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return self._extra_generators
 
     def validate_arity(self, arity: int) -> None:

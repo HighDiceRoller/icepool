@@ -975,8 +975,8 @@ class MultisetExpression(ABC, Generic[T]):
         """
         if all(expression._free_arity() == 0 for expression in expressions):
             return evaluator.evaluate(*expressions)
-        evaluator = icepool.evaluator.ExpressionEvaluator(*expressions,
-                                                          evaluator=evaluator)
+        evaluator = icepool.evaluator.MultisetFunctionEvaluator(
+            *expressions, evaluator=evaluator)
         if evaluator._free_arity == 0:
             return evaluator.evaluate()
         else:
@@ -1201,7 +1201,7 @@ class MultisetExpression(ABC, Generic[T]):
             else:
                 return operation_class().evaluate(self, right)
         else:
-            return icepool.evaluator.ExpressionEvaluator(
+            return icepool.evaluator.MultisetFunctionEvaluator(
                 self, right, evaluator=operation_class())
 
     def __lt__(self,
