@@ -15,8 +15,8 @@ from typing import Collection, Iterable, Iterator
 class JointEvaluator(MultisetEvaluator[T, tuple]):
     """A `MultisetEvaluator` that jointly evaluates sub-evaluators on the same set of input generators."""
 
-    def __init__(self, *children: MultisetEvaluator) -> None:
-        self._children = children
+    def __init__(self, *sub_evaluators: MultisetEvaluator) -> None:
+        self._sub_evaluators = sub_evaluators
 
     def next_state(self, state, outcome, *counts):
         """Runs `next_state` for all sub-evaluator.
@@ -33,19 +33,20 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                 evaluator.next_state(
                     None,
                     outcome,
-                    *evaluator_extra_counts,
+                    *subeval_extra_counts,
                     *counts,
-                ) for evaluator, evaluator_extra_counts in zip(
-                    self._children, self._split_extra_counts(*extra_counts)))
+                ) for evaluator, subeval_extra_counts in zip(
+                    self._sub_evaluators,
+                    self._split_extra_counts(*extra_counts)))
         else:
             result = tuple(
                 evaluator.next_state(
                     substate,
                     outcome,
-                    *evaluator_extra_counts,
+                    *subeval_extra_counts,
                     *counts,
-                ) for evaluator, substate, evaluator_extra_counts in zip(
-                    self._children, state,
+                ) for evaluator, substate, subeval_extra_counts in zip(
+                    self._sub_evaluators, state,
                     self._split_extra_counts(*extra_counts)))
         if icepool.Reroll in result:
             return icepool.Reroll
@@ -61,11 +62,12 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
         """
         if final_state is None:
             result = tuple(
-                child.final_outcome(None) for child in self._children)
+                subeval.final_outcome(None)
+                for subeval in self._sub_evaluators)
         else:
             result = tuple(
-                child.final_outcome(final_substate)
-                for child, final_substate in zip(self._children, final_state))
+                subeval.final_outcome(final_substate) for subeval,
+                final_substate in zip(self._sub_evaluators, final_state))
         if icepool.Reroll in result:
             return icepool.Reroll
         else:
@@ -78,38 +80,39 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
             ValueError: If sub-evaluators have conflicting orders, i.e. some are
                 ascending and others are descending.
         """
-        return Order.merge(*(child.order() for child in self._children))
+        return Order.merge(*(subeval.order()
+                             for subeval in self._sub_evaluators))
 
     def extra_outcomes(self, outcomes) -> Collection[T]:
-        return icepool.sorted_union(*(evaluator.extra_outcomes(outcomes)
-                                      for evaluator in self._children))
+        return icepool.sorted_union(*(subeval.extra_outcomes(outcomes)
+                                      for subeval in self._sub_evaluators))
 
     @cached_property
     def _bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
         return tuple(
-            itertools.chain.from_iterable(expression.bound_inputs()
-                                          for expression in self._children))
+            itertools.chain.from_iterable(subeval.bound_inputs()
+                                          for subeval in self._sub_evaluators))
 
     def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
         return self._bound_inputs
 
     def validate_arity(self, arity: int) -> None:
-        for evaluator in self._children:
-            evaluator.validate_arity(arity)
+        for subeval in self._sub_evaluators:
+            subeval.validate_arity(arity)
 
     @cached_property
     def _extra_arity(self) -> int:
-        return sum(generator.output_arity()
-                   for generator in self.bound_inputs())
+        return sum(expression.output_arity()
+                   for expression in self.bound_inputs())
 
     @cached_property
     def _extra_slices(self) -> tuple[slice, ...]:
         """Precomputed slices for determining which extra counts go with which sub-evaluator."""
         result = []
         index = 0
-        for expression in self._children:
-            counts_length = sum(generator.output_arity()
-                                for generator in expression.bound_inputs())
+        for subeval in self._sub_evaluators:
+            counts_length = sum(expression.output_arity()
+                                for expression in subeval.bound_inputs())
             result.append(slice(index, index + counts_length))
             index += counts_length
         return tuple(result)
@@ -121,4 +124,4 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
 
     def __str__(self) -> str:
         return 'JointEvaluator(\n' + ''.join(
-            f'    {evaluator},\n' for evaluator in self._children) + ')'
+            f'    {subeval},\n' for subeval in self._sub_evaluators) + ')'
