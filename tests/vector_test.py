@@ -102,7 +102,7 @@ def test_one_hot():
             return [1, 2, 3, 4, 5, 6]
 
     result = 3 @ icepool.one_hot(6)
-    expected = icepool.d6.pool(3).evaluate(evaluator=OneHotEvaluator())
+    expected = OneHotEvaluator().evaluate(icepool.d6.pool(3))
     assert result == expected
 
 

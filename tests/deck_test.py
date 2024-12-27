@@ -26,7 +26,7 @@ class SumEachEvaluator(MultisetEvaluator):
 
 def test_empty_deal():
     deal = icepool.Deck(range(13), times=4).deal()
-    result = deal.evaluate(evaluator=TrivialEvaluator())
+    result = TrivialEvaluator().evaluate(deal)
     assert result.equals(icepool.Die([0]))
 
 
@@ -42,7 +42,7 @@ def test_two_hand_sum_same_size():
     result1 = deal1.sum()
 
     deal2 = deck.deal(5, 5)
-    result2 = deal2.evaluate(evaluator=SumEachEvaluator())
+    result2 = SumEachEvaluator().evaluate(deal2)
 
     assert deal2.denominator() == result2.denominator()
     assert result1.equals(result2.marginals[0], simplify=True)
@@ -53,7 +53,7 @@ def test_two_hand_sum_diff_size():
     deck = icepool.Deck(range(4), times=4)
 
     deal = deck.deal(2, 4)
-    result = deal.evaluate(evaluator=SumEachEvaluator())
+    result = SumEachEvaluator().evaluate(deal)
 
     assert deal.denominator() == result.denominator()
     assert (result.marginals[0] * 2).mean() == result.marginals[1].mean()
