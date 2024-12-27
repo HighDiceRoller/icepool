@@ -11,9 +11,10 @@ import itertools
 import operator
 import random
 
+from icepool.typing import T, U, ImplicitConversionError, T
 from types import EllipsisType
-from icepool.typing import T, U, ImplicitConversionError, Outcome, T
-from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Iterator, Literal, Mapping, Self, Sequence, Type, TypeAlias, TypeVar, cast, overload
+from typing import (Callable, Collection, Generic, Hashable, Iterator, Literal,
+                    Mapping, Sequence, Type, TypeAlias, cast, overload)
 
 from abc import ABC, abstractmethod
 

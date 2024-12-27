@@ -5,14 +5,13 @@ from icepool.order import Order, OrderReason, merge_order_preferences
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
-import enum
 from functools import cached_property
 import itertools
 import math
 
 from icepool.typing import T, U_co
-
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, MutableMapping, Sequence, cast, TYPE_CHECKING, overload
+from typing import (Any, Callable, Collection, Generic, Hashable, Mapping,
+                    MutableMapping, Sequence, cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment

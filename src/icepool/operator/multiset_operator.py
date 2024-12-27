@@ -1,14 +1,13 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 import itertools
 import math
 
-from icepool.typing import T, U, ImplicitConversionError, Outcome, T
-from typing import Any, Callable, Collection, Generic, Hashable, Iterable, Iterator, Literal, Mapping, Self, Sequence, Type, TypeAlias, TypeVar, cast, overload
+from icepool.typing import T
+from typing import Sequence
 
 from abc import abstractmethod
 
