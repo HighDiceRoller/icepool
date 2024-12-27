@@ -169,7 +169,7 @@ class MultisetKeepCounts(MultisetOperator[T]):
 
     @property
     def _local_hash_key(self) -> Hashable:
-        return MultisetKeepCounts, self._constant
+        return MultisetKeepCounts, self._comparison, self._constant
 
     def __str__(self) -> str:
         return f"{self._children[0]}.keep_counts('{self._comparison}', {self._constant})"
