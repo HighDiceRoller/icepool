@@ -92,7 +92,7 @@ class MultisetOperator(MultisetExpression[T]):
     ) -> 'MultisetExpression':
         if self.has_free_variables():
             unbound_children = tuple(
-                self._unbind(bound_inputs) for child in self._children)
+                child._unbind(bound_inputs) for child in self._children)
             return self._copy(unbound_children)
         else:
             result = icepool.MultisetVariable(False, len(bound_inputs))
