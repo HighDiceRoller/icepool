@@ -55,7 +55,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
     # Overridden to switch bound generators with variables.
 
     @property
-    def _bound_generators(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _bound_inputs(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self, )
 
     def _unbind(self, next_index: int) -> 'tuple[MultisetExpression, int]':

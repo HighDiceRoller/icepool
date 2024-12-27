@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from icepool.order import Order, OrderReason
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
-from typing import Any, Hashable, Iterator, Self, Sequence
+from typing import Any, Hashable, Sequence
 
 
 class UnboundMultisetExpressionError(TypeError):

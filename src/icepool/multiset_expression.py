@@ -194,7 +194,7 @@ class MultisetExpression(ABC, Generic[T]):
         """Replaces bound generators within this expression with free variables.
 
         Bound generators are replaced with free variables with index equal to
-        their position in _bound_generators().
+        their position in _bound_inputs().
 
         Variables that are already free have their indexes shifted by the
         number of bound genrators.

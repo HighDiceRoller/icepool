@@ -172,15 +172,18 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    def extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        """An optional sequence of extra inputs whose counts will be prepended to *counts."""
+    def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+        """An optional sequence of extra inputs whose counts will be prepended to *counts.
+        
+        (Prepending rather than appending is analogous to `functools.partial`.)
+        """
         return ()
 
     def validate_arity(self, arity: int) -> None:
         """An optional method to verify the total input arity.
 
         This is called after any implicit conversion to expressions, but does
-        not include any `extra_inputs()`.
+        not include any `bound_inputs()`.
 
         Overriding `next_state` with a fixed number of counts will make this
         check redundant.
@@ -254,7 +257,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         self.validate_arity(
             sum(expression.output_arity() for expression in inputs))
 
-        inputs = self.extra_inputs() + inputs
+        inputs = self.bound_inputs() + inputs
 
         if not all(expression._is_resolvable() for expression in inputs):
             return icepool.Die([])

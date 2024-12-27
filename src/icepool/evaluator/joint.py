@@ -85,13 +85,13 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                                       for evaluator in self._children))
 
     @cached_property
-    def _extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+    def _bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
         return tuple(
-            itertools.chain.from_iterable(expression.extra_inputs()
+            itertools.chain.from_iterable(expression.bound_inputs()
                                           for expression in self._children))
 
-    def extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        return self._extra_inputs
+    def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+        return self._bound_inputs
 
     def validate_arity(self, arity: int) -> None:
         for evaluator in self._children:
@@ -100,7 +100,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
     @cached_property
     def _extra_arity(self) -> int:
         return sum(generator.output_arity()
-                   for generator in self.extra_inputs())
+                   for generator in self.bound_inputs())
 
     @cached_property
     def _extra_slices(self) -> tuple[slice, ...]:
@@ -109,7 +109,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
         index = 0
         for expression in self._children:
             counts_length = sum(generator.output_arity()
-                                for generator in expression.extra_inputs())
+                                for generator in expression.bound_inputs())
             result.append(slice(index, index + counts_length))
             index += counts_length
         return tuple(result)

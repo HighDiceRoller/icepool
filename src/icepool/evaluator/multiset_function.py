@@ -144,10 +144,10 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
                  evaluator: MultisetEvaluator[T, U_co],
                  truth_value: bool | None = None) -> None:
         self._evaluator = evaluator
-        self._bound_generators = tuple(
-            itertools.chain.from_iterable(expression._bound_generators
+        self._bound_inputs = tuple(
+            itertools.chain.from_iterable(expression._bound_inputs
                                           for expression in expressions))
-        self._bound_arity = len(self._bound_generators)
+        self._bound_arity = len(self._bound_inputs)
         self._free_arity = max(
             (expression._free_arity() for expression in expressions),
             default=0)
@@ -168,8 +168,8 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         else:
             expression_states, evaluator_state = state
 
-        extra_counts = counts[:len(self._evaluator.extra_inputs())]
-        counts = counts[len(self._evaluator.extra_inputs()):]
+        extra_counts = counts[:len(self._evaluator.bound_inputs())]
+        counts = counts[len(self._evaluator.bound_inputs()):]
 
         expression_states, expression_counts = zip(
             *(expression._next_state(expression_state, outcome, *counts)
@@ -198,11 +198,11 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         return self._evaluator.extra_outcomes(*generators)
 
     @cached_property
-    def _extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        return self._bound_generators + self._evaluator.extra_inputs()
+    def _bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+        return self._bound_inputs + self._evaluator.bound_inputs()
 
-    def extra_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        return self._extra_inputs
+    def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+        return self._bound_inputs
 
     def validate_arity(self, arity: int) -> None:
         if arity < self._free_arity:
