@@ -3,6 +3,7 @@ import pytest
 
 from icepool import MultisetEvaluator, Deck
 from icepool.evaluator import LargestStraightEvaluator
+from icepool.multiset_expression import MultisetArityError
 
 # no wraparound
 best_run_evaluator = LargestStraightEvaluator()
@@ -62,8 +63,8 @@ def test_two_hand_sum_diff_size():
 def test_multiple_bind_error():
     deck = icepool.Deck(range(4), times=4)
     deal = deck.deal(2, 2)
-    with pytest.raises(ValueError):
-        deal.unique()
+    with pytest.raises(MultisetArityError):
+        deal.unique().count()
 
 
 def test_add():

@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
+from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration, MultisetArityError
 
 import itertools
 import math
@@ -51,7 +51,15 @@ class MultisetOperator(MultisetExpression[T]):
                                       for child in self._children))
 
     def output_arity(self) -> int:
-        """Transforms only output 1 count. For multiple outputs, use @multiset_function."""
+        """Operators only output 1 count.
+
+        Each input to `MultisetOperator` must only output 1 count as well.
+
+        For multiple outputs, use @multiset_function.
+        """
+        if any(child.output_arity() != 1 for child in self._children):
+            raise MultisetArityError(
+                'Each input to MultisetOperator must output exactly 1 count.')
         return 1
 
     def _is_resolvable(self) -> bool:

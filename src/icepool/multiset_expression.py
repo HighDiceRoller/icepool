@@ -24,6 +24,10 @@ PopMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpression',
                                                   Sequence, int]]
 
 
+class MultisetArityError(ValueError):
+    """Indicates that an arity was not the same as required."""
+
+
 class MultisetBindingError(TypeError):
     """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
 

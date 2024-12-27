@@ -96,10 +96,6 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
     def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
         return self._bound_inputs
 
-    def validate_arity(self, arity: int) -> None:
-        for subeval in self._sub_evaluators:
-            subeval.validate_arity(arity)
-
     @cached_property
     def _extra_arity(self) -> int:
         return sum(expression.output_arity()

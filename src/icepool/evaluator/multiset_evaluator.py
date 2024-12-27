@@ -179,19 +179,6 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         """
         return ()
 
-    def validate_arity(self, arity: int) -> None:
-        """An optional method to verify the total input arity.
-
-        This is called after any implicit conversion to expressions, but does
-        not include any `bound_inputs()`.
-
-        Overriding `next_state` with a fixed number of counts will make this
-        check redundant.
-
-        Raises:
-            `ValueError` if the total input arity is not valid.
-        """
-
     @cached_property
     def _cache(
         self
@@ -254,10 +241,10 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
             return MultisetFunctionEvaluator(*inputs, evaluator=self)
 
-        self.validate_arity(
-            sum(expression.output_arity() for expression in inputs))
-
         inputs = self.bound_inputs() + inputs
+
+        # This is kept to verify inputs to operators each have arity exactly 1.
+        total_arity = sum(input.output_arity() for input in inputs)
 
         if not all(expression._is_resolvable() for expression in inputs):
             return icepool.Die([])

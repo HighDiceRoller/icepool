@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.multiset_expression import MultisetArityError, InitialMultisetGeneration, PopMultisetGeneration
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason, merge_order_preferences
 
@@ -72,7 +72,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
             if result is None:
                 result = inner.output_arity()
             elif result != inner.output_arity():
-                raise ValueError('Inconsistent output_arity.')
+                raise MultisetArityError('Inconsistent output_arity.')
         if result is None:
             raise ValueError('Empty MixtureMultisetGenerator.')
         return result
