@@ -5,7 +5,7 @@ from fractions import Fraction
 
 
 def test_invert():
-    assert (~icepool.coin(1, 4)).mean() < 0
+    assert (~icepool.d6).mean() < 0
 
 
 def test_and():
