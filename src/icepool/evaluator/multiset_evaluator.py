@@ -250,7 +250,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         inputs = tuple(
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
-        if any(input._free_arity() > 0 for input in inputs):
+        if any(input.has_free_variables() for input in inputs):
             from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
             return MultisetFunctionEvaluator(*inputs, evaluator=self)
 

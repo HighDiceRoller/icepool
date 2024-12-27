@@ -173,13 +173,8 @@ class MultisetExpression(ABC, Generic[T]):
         """Any ordering that is preferred or required by this expression node."""
 
     @abstractmethod
-    def _free_arity(self) -> int:
-        """The minimum number of multisets/counts that must be provided to this expression.
-
-        Any excess multisets/counts that are provided will be ignored.
-
-        This does not include bound generators.
-        """
+    def has_free_variables(self) -> bool:
+        """Whether this expression contains any free variables, i.e. parameters to a @multiset_function."""
 
     @abstractmethod
     def denominator(self) -> int:

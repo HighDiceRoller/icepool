@@ -80,8 +80,8 @@ class MultisetOperator(MultisetExpression[T]):
                                                     counts)
             yield next_self, (count, ), math.prod(weights)
 
-    def _free_arity(self) -> int:
-        return max(child._free_arity() for child in self._children)
+    def has_free_variables(self) -> bool:
+        return any(child.has_free_variables() for child in self._children)
 
     def denominator(self) -> int:
         return math.prod(child.denominator() for child in self._children)

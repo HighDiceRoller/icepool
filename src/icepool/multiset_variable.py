@@ -3,6 +3,8 @@ __docformat__ = 'google'
 from icepool.order import Order, OrderReason
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
+import enum
+
 from typing import Any, Hashable, Sequence
 
 
@@ -11,10 +13,12 @@ class UnboundMultisetExpressionError(TypeError):
 
 
 class MultisetVariable(MultisetExpression[Any]):
-    """A free variable within the body of a @multiset_function."""
+    """A variable to be filled in with a concrete sub-expression."""
+
     _children = ()
 
-    def __init__(self, index):
+    def __init__(self, is_free: bool, index: int):
+        self._is_free = is_free
         self._index = index
 
     def outcomes(self) -> Sequence:
@@ -38,8 +42,8 @@ class MultisetVariable(MultisetExpression[Any]):
     def local_order_preference(self) -> tuple[Order | None, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
-    def _free_arity(self) -> int:
-        return self._index + 1
+    def has_free_variables(self) -> bool:
+        return self._is_free
 
     def denominator(self) -> int:
         raise UnboundMultisetExpressionError()

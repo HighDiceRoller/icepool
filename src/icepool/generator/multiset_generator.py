@@ -49,8 +49,8 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         """Whether the generator supports enhanced keep operations."""
         return False
 
-    def _free_arity(self) -> int:
-        return 0
+    def has_free_variables(self) -> bool:
+        return False
 
     # Overridden to switch bound generators with variables.
 
