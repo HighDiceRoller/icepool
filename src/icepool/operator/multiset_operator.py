@@ -38,10 +38,12 @@ class MultisetOperator(MultisetExpression[T]):
             counts: One count per child.
 
         Returns:
-            An expression representing the next state and the count produced by this expression.
+            An expression representing the next state and the count produced by
+            this expression.
 
         Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
+            UnboundMultisetExpressionError if this is called on an expression
+            with free variables.
         """
 
     def outcomes(self) -> Sequence[T]:
@@ -98,3 +100,12 @@ class MultisetOperator(MultisetExpression[T]):
             result = icepool.MultisetVariable(False, len(bound_inputs))
             bound_inputs.append(self)
             return result
+
+    def _apply_variables(
+            self, outcome: T, bound_counts: tuple[int, ...],
+            free_counts: tuple[int,
+                               ...]) -> 'tuple[MultisetExpression[T], int]':
+        new_children, counts = zip(
+            *(child._apply_variables(outcome, bound_counts, free_counts)
+              for child in self._children))
+        return self._transform_next(new_children, outcome, counts)

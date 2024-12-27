@@ -1,15 +1,12 @@
 __docformat__ = 'google'
 
+import icepool
 from icepool.order import Order, OrderReason
 from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
 
 import enum
 
 from typing import Any, Hashable, Sequence
-
-
-class MultisetBindingError(TypeError):
-    """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
 
 
 class MultisetVariable(MultisetExpression[Any]):
@@ -22,22 +19,22 @@ class MultisetVariable(MultisetExpression[Any]):
         self._index = index
 
     def outcomes(self) -> Sequence:
-        raise MultisetBindingError()
+        raise icepool.MultisetBindingError()
 
     def output_arity(self) -> int:
         return 1
 
     def _is_resolvable(self) -> bool:
-        raise MultisetBindingError()
+        raise icepool.MultisetBindingError()
 
     def _generate_initial(self) -> InitialMultisetGeneration:
-        raise MultisetBindingError()
+        raise icepool.MultisetBindingError()
 
     def _generate_min(self, min_outcome) -> PopMultisetGeneration:
-        raise MultisetBindingError()
+        raise icepool.MultisetBindingError()
 
     def _generate_max(self, max_outcome) -> PopMultisetGeneration:
-        raise MultisetBindingError()
+        raise icepool.MultisetBindingError()
 
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
@@ -46,7 +43,7 @@ class MultisetVariable(MultisetExpression[Any]):
         return self._is_free
 
     def denominator(self) -> int:
-        raise MultisetBindingError()
+        raise icepool.MultisetBindingError()
 
     def _unbind(
             self,
@@ -55,8 +52,16 @@ class MultisetVariable(MultisetExpression[Any]):
         if self._is_free:
             return self
         else:
-            raise MultisetBindingError(
+            raise icepool.MultisetBindingError(
                 'Attempted to unbind an expression that was already unbound.')
+
+    def _apply_variables(
+            self, outcome, bound_counts: tuple[int, ...],
+            free_counts: tuple[int, ...]) -> 'tuple[MultisetExpression, int]':
+        if self._is_free:
+            return self, free_counts[self._index]
+        else:
+            return self, bound_counts[self._index]
 
     @property
     def _local_hash_key(self) -> Hashable:

@@ -65,3 +65,9 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
         result = icepool.MultisetVariable(False, len(bound_inputs))
         bound_inputs.append(self)
         return result
+
+    def _apply_variables(
+            self, outcome: T, bound_counts: tuple[int, ...],
+            free_counts: tuple[int, ...]) -> 'MultisetExpression[T]':
+        raise icepool.MultisetBindingError(
+            '_unbind should have been called before _apply_variables.')

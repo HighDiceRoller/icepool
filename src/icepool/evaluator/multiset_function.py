@@ -153,13 +153,14 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         else:
             expressions, evaluator_state = state
 
-        evaluator_slice, bound_slice, free_slice = self._count_slices()
+        evaluator_slice, bound_slice, free_slice = self._count_slices
         evaluator_counts = counts[evaluator_slice]
         bound_counts = counts[bound_slice]
         free_counts = counts[free_slice]
 
-        # ????
-        expression_counts = None
+        expressions, expression_counts = zip(
+            *(expression._apply_variables(outcome, bound_counts, free_counts)
+              for expression in expressions))
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
                                                      *evaluator_counts,
                                                      *expression_counts)

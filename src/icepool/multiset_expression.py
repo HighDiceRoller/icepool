@@ -24,6 +24,10 @@ PopMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpression',
                                                   Sequence, int]]
 
 
+class MultisetBindingError(TypeError):
+    """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
+
+
 def implicit_convert_to_expression(
     arg: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
 ) -> 'MultisetExpression[T]':
@@ -45,6 +49,14 @@ def implicit_convert_to_expression(
 
 class MultisetExpression(ABC, Generic[T]):
     """Abstract base class representing an expression that operates on multisets.
+
+    There are three types of multiset expressions:
+
+    * `MultisetGenerator`, which produce raw outcomes and counts.
+    * `MultisetOperator`, which takes outcomes with one or more counts and
+        produces a count.
+    * `MultisetVariable`, which is a temporary placeholder for some other 
+        expression.
 
     Expression methods can be applied to `MultisetGenerator`s to do simple
     evaluations. For joint evaluations, try `multiset_function`.
@@ -199,6 +211,24 @@ class MultisetExpression(ABC, Generic[T]):
             A copy of this expression with any fully-bound subexpressions
             replaced with variables. The `index` of each variable is equal to
             the position of the expression they replaced in `bound_inputs`.
+        """
+
+    @abstractmethod
+    def _apply_variables(
+            self, outcome: T, bound_counts: tuple[int, ...],
+            free_counts: tuple[int,
+                               ...]) -> 'tuple[MultisetExpression[T], int]':
+        """Advances the state of this expression given counts emitted from variables and returns a count.
+        
+        Args:
+            outcome: The current outcome being processed.
+            bound_counts: The counts emitted by bound expressions.
+            free_counts: The counts emitted by arguments to the
+                `@mulitset_function`.
+
+        Returns:
+            An expression representing the next state and the count produced by
+            this expression.
         """
 
     @property

@@ -126,7 +126,7 @@ from icepool.generator.keep import KeepGenerator
 from icepool.generator.compound_keep import CompoundKeepGenerator
 from icepool.generator.mixture import MixtureGenerator
 
-from icepool.multiset_expression import MultisetExpression, implicit_convert_to_expression, InitialMultisetGeneration, PopMultisetGeneration
+from icepool.multiset_expression import MultisetExpression, implicit_convert_to_expression, InitialMultisetGeneration, PopMultisetGeneration, MultisetBindingError
 
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.alignment import Alignment
