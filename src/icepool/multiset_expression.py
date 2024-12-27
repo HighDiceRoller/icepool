@@ -185,20 +185,20 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def _unbind(self, next_index: int) -> 'tuple[MultisetExpression, int]':
-        """Replaces bound generators within this expression with free variables.
-
-        Bound generators are replaced with free variables with index equal to
-        their position in _bound_inputs().
-
-        Variables that are already free have their indexes shifted by the
-        number of bound genrators.
+    def _unbind(
+            self,
+            bound_inputs: 'list[MultisetExpression]' = []
+    ) -> 'MultisetExpression':
+        """Removes bound subexpressions, replacing them with variables.
 
         Args:
-            next_index: The index of the next bound generator.
+            bound_inputs: The list of bound subexpressions. Bound subexpressions
+                will be added to this list.
 
         Returns:
-            The transformed expression and the new next_index.
+            A copy of this expression with any fully-bound subexpressions
+            replaced with variables. The `index` of each variable is equal to
+            the position of the expression they replaced in `bound_inputs`.
         """
 
     @property

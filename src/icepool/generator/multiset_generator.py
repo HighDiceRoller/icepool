@@ -58,6 +58,10 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
     def _bound_inputs(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self, )
 
-    def _unbind(self, next_index: int) -> 'tuple[MultisetExpression, int]':
-        unbound_expression = icepool.MultisetVariable(index=next_index)
-        return unbound_expression, next_index + 1
+    def _unbind(
+            self,
+            bound_inputs: 'list[MultisetExpression]' = []
+    ) -> 'MultisetExpression':
+        result = icepool.MultisetVariable(False, len(bound_inputs))
+        bound_inputs.append(self)
+        return result

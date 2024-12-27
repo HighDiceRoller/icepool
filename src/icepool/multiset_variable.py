@@ -8,8 +8,8 @@ import enum
 from typing import Any, Hashable, Sequence
 
 
-class UnboundMultisetExpressionError(TypeError):
-    """Indicates that an operation requiring a fully-bound multiset expression was requested on an expression with free variables."""
+class MultisetBindingError(TypeError):
+    """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
 
 
 class MultisetVariable(MultisetExpression[Any]):
@@ -22,22 +22,22 @@ class MultisetVariable(MultisetExpression[Any]):
         self._index = index
 
     def outcomes(self) -> Sequence:
-        raise UnboundMultisetExpressionError()
+        raise MultisetBindingError()
 
     def output_arity(self) -> int:
         return 1
 
     def _is_resolvable(self) -> bool:
-        raise UnboundMultisetExpressionError()
+        raise MultisetBindingError()
 
     def _generate_initial(self) -> InitialMultisetGeneration:
-        raise UnboundMultisetExpressionError()
+        raise MultisetBindingError()
 
     def _generate_min(self, min_outcome) -> PopMultisetGeneration:
-        raise UnboundMultisetExpressionError()
+        raise MultisetBindingError()
 
     def _generate_max(self, max_outcome) -> PopMultisetGeneration:
-        raise UnboundMultisetExpressionError()
+        raise MultisetBindingError()
 
     def local_order_preference(self) -> tuple[Order | None, OrderReason]:
         return Order.Any, OrderReason.NoPreference
@@ -46,14 +46,21 @@ class MultisetVariable(MultisetExpression[Any]):
         return self._is_free
 
     def denominator(self) -> int:
-        raise UnboundMultisetExpressionError()
+        raise MultisetBindingError()
 
-    def _unbind(self, next_index: int) -> 'tuple[MultisetExpression, int]':
-        return self, next_index
+    def _unbind(
+            self,
+            bound_inputs: 'list[MultisetExpression]' = []
+    ) -> 'MultisetExpression':
+        if self._is_free:
+            return self
+        else:
+            raise MultisetBindingError(
+                'Attempted to unbind an expression that was already unbound.')
 
     @property
     def _local_hash_key(self) -> Hashable:
-        return (MultisetVariable, self._index)
+        return (MultisetVariable, self._is_free, self._index)
 
     def __str__(self) -> str:
         return f'mv[{self._index}]'

@@ -86,10 +86,15 @@ class MultisetOperator(MultisetExpression[T]):
     def denominator(self) -> int:
         return math.prod(child.denominator() for child in self._children)
 
-    def _unbind(self, next_index: int) -> 'tuple[MultisetExpression, int]':
-        unbound_children = []
-        for child in self._children:
-            unbound_child, next_index = child._unbind(next_index)
-            unbound_children.append(unbound_child)
-        unbound_expression = self._copy(tuple(unbound_children))
-        return unbound_expression, next_index
+    def _unbind(
+            self,
+            bound_inputs: 'list[MultisetExpression]' = []
+    ) -> 'MultisetExpression':
+        if self.has_free_variables():
+            unbound_children = tuple(
+                self._unbind(bound_inputs) for child in self._children)
+            return self._copy(unbound_children)
+        else:
+            result = icepool.MultisetVariable(False, len(bound_inputs))
+            bound_inputs.append(self)
+            return result
