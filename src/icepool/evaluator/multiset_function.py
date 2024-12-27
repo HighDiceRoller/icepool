@@ -10,7 +10,7 @@ from functools import cached_property, update_wrapper
 
 from typing import Callable, Collection, TypeAlias, overload
 
-from icepool.order import Order
+from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.typing import T, U_co
 
 NestedTupleOrEvaluator: TypeAlias = MultisetEvaluator[T, U_co] | tuple[
@@ -129,56 +129,41 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
             raise ValueError(
                 'Callable must take only a fixed number of positional arguments.'
             )
-    tuple_or_evaluator = function(*(MV(index=i)
+    tuple_or_evaluator = function(*(MV(is_free=True, index=i)
                                     for i in range(len(parameters))))
     evaluator = replace_tuples_with_joint_evaluator(tuple_or_evaluator)
-    return update_wrapper(evaluator, function)
+    # This is not actually a function.
+    return update_wrapper(evaluator, function)  # type: ignore
 
 
 class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
-    """Assigns an expression to be evaluated first to each input of an evaluator."""
 
-    def __init__(self,
-                 *expressions:
-                 'icepool.multiset_expression.MultisetExpression[T]',
-                 evaluator: MultisetEvaluator[T, U_co],
-                 truth_value: bool | None = None) -> None:
+    def __init__(self, *inputs: 'icepool.MultisetExpression[T]',
+                 evaluator: MultisetEvaluator[T, U_co]) -> None:
         self._evaluator = evaluator
-        self._bound_inputs = tuple(
-            itertools.chain.from_iterable(expression._bound_inputs
-                                          for expression in expressions))
-        self._bound_arity = len(self._bound_inputs)
-        self._free_arity = max(
-            (expression._free_arity() for expression in expressions),
-            default=0)
-
-        unbound_expressions: 'list[icepool.expression.MultisetExpression[T]]' = []
-        extra_start = 0
-        for expression in expressions:
-            unbound_expression, extra_start = expression._unbind(extra_start)
-            unbound_expressions.append(unbound_expression)
-        self._expressions = tuple(unbound_expressions)
-        self._truth_value = truth_value
-        raise NotImplementedError()
+        bound_inputs: 'list[icepool.MultisetExpression]' = []
+        self._expressions = tuple(
+            input._unbind(bound_inputs) for input in inputs)
+        self._bound_inputs = tuple(bound_inputs)
 
     def next_state(self, state, outcome, *counts):
         if state is None:
-            expression_states = (None, ) * len(self._expressions)
+            expressions = self._expressions
             evaluator_state = None
         else:
-            expression_states, evaluator_state = state
+            expressions, evaluator_state = state
 
-        extra_counts = counts[:len(self._evaluator.bound_inputs())]
-        counts = counts[len(self._evaluator.bound_inputs()):]
+        evaluator_slice, bound_slice, free_slice = self._count_slices()
+        evaluator_counts = counts[evaluator_slice]
+        bound_counts = counts[bound_slice]
+        free_counts = counts[free_slice]
 
-        expression_states, expression_counts = zip(
-            *(expression._next_state(expression_state, outcome, *counts)
-              for expression, expression_state in zip(self._expressions,
-                                                      expression_states)))
+        # ????
+        expression_counts = None
         evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
-                                                     *extra_counts,
+                                                     *evaluator_counts,
                                                      *expression_counts)
-        return expression_states, evaluator_state
+        return expressions, evaluator_state
 
     def final_outcome(
             self,
@@ -190,38 +175,28 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         return self._evaluator.final_outcome(evaluator_state)
 
     def order(self) -> Order:
-        expression_order = Order.merge(*(expression.order()
-                                         for expression in self._expressions))
-        return Order.merge(expression_order, self._evaluator.order())
+        expression_order, expression_order_reason = merge_order_preferences(
+            *(expression.order_preference()
+              for expression in self._expressions),
+            (self._evaluator.order(), OrderReason.Mandatory))
+        return expression_order
 
     def extra_outcomes(self, *generators) -> Collection[T]:
         return self._evaluator.extra_outcomes(*generators)
 
-    @cached_property
-    def _bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        return self._bound_inputs + self._evaluator.bound_inputs()
-
     def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        return self._bound_inputs
+        return self._evaluator.bound_inputs() + self._bound_inputs
 
-    def validate_arity(self, arity: int) -> None:
-        if arity < self._free_arity:
-            raise ValueError(
-                f'Expected arity of {self._free_arity}, got {arity}.')
-
-    def __bool__(self) -> bool:
-        if self._truth_value is None:
-            raise TypeError(
-                'MultisetExpression only has a truth value if it is the result of the == or != operator.'
-            )
-        return self._truth_value
+    @cached_property
+    def _count_slices(self) -> 'tuple[slice, slice, slice]':
+        evaluator_slice = slice(None, len(self._evaluator.bound_inputs()))
+        bound_slice = slice(evaluator_slice.stop,
+                            evaluator_slice.stop + len(self._bound_inputs))
+        free_slice = slice(bound_slice.stop, None)
+        return evaluator_slice, bound_slice, free_slice
 
     def __str__(self) -> str:
-        input_string = f'{self._bound_arity} bound, {self._free_arity} free'
-        if len(self._expressions) == 1:
-            expression_string = f'{self._expressions[0]}'
-        else:
-            expression_string = ', '.join(
-                str(expression) for expression in self._expressions)
+        expression_string = ', '.join(
+            str(expression) for expression in self._expressions)
         output_string = str(self._evaluator)
-        return f'Expression: {input_string} -> {expression_string} -> {output_string}'
+        return f'MultisetFunctionEvaluator: {expression_string} -> {output_string}'

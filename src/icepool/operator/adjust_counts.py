@@ -43,7 +43,7 @@ class MultisetMapCounts(MultisetOperator[T]):
         count = self._function(outcome, *counts)
         return MultisetMapCounts(*new_children, function=self._function), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property
@@ -74,7 +74,7 @@ class MultisetCountOperator(MultisetOperator[T]):
         count = self.operator(counts[0])
         return type(self)(*new_children, constant=self._constant), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property
@@ -164,7 +164,7 @@ class MultisetKeepCounts(MultisetOperator[T]):
                                   comparison=self._comparison,
                                   constant=self._constant), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property

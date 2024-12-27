@@ -69,7 +69,7 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
                                       target=self._func,
                                       invert=self._invert), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property
@@ -126,7 +126,7 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
         return MultisetFilterOutcomesBinary(*new_children,
                                             invert=self._invert), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property

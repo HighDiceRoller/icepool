@@ -142,7 +142,7 @@ class Deal(KeepGenerator[T]):
             popped_deal = Deal._new_raw(popped_deck, 0, ())
             yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())
         if lo_skip > hi_skip:
             return Order.Descending, OrderReason.KeepSkip

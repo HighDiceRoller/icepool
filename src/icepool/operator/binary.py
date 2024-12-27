@@ -50,7 +50,7 @@ class MultisetBinaryOperator(MultisetOperator[T]):
         count = reduce(self.merge_counts, counts)
         return type(self)(*new_children), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property

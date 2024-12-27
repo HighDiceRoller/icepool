@@ -56,7 +56,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
             yield CompoundKeepGenerator(
                 generators, popped_keep_tuple), (result_count, ), total_weight
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return merge_order_preferences(*(inner.local_order_preference()
                                          for inner in self._inner_generators))
 

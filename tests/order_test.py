@@ -2,20 +2,20 @@ import icepool
 import pytest
 
 from icepool import d4, d6, d8, d10, d12, Order
-from icepool.order import OrderReason, merge_order_preferences
+from icepool.order import ConflictingOrderError, OrderReason, merge_order_preferences
 
 
-def test_pop_order_empty():
+def test_order_empty():
     assert merge_order_preferences() == (Order.Any, OrderReason.NoPreference)
 
 
-def test_pop_order_single():
+def test_order_single():
     assert merge_order_preferences(
         (Order.Ascending, OrderReason.KeepSkip)) == (Order.Ascending,
                                                      OrderReason.KeepSkip)
 
 
-def test_pop_order_priority():
+def test_order_priority():
     assert merge_order_preferences(
         (Order.Ascending, OrderReason.KeepSkip),
         (Order.Descending,
@@ -23,7 +23,7 @@ def test_pop_order_priority():
                                            OrderReason.PoolComposition)
 
 
-def test_pop_order_any():
+def test_order_any():
     assert merge_order_preferences(
         (Order.Any, OrderReason.PoolComposition),
         (Order.Descending,
@@ -31,14 +31,22 @@ def test_pop_order_any():
                                            OrderReason.PoolComposition)
 
 
-def test_pop_order_conflict():
-    assert merge_order_preferences(
+def test_order_conflict():
+    order, order_reason = merge_order_preferences(
         (Order.Ascending, OrderReason.PoolComposition),
-        (Order.Descending,
-         OrderReason.PoolComposition)) == (None, OrderReason.PoolComposition)
+        (Order.Descending, OrderReason.PoolComposition))
+    assert order == Order.Any
+    assert order_reason > OrderReason.PoolComposition
 
 
-def test_pop_order_conflict_override():
+def test_order_conflict_mandatory():
+    with pytest.raises(ConflictingOrderError):
+        order, order_reason = merge_order_preferences(
+            (Order.Ascending, OrderReason.Mandatory),
+            (Order.Descending, OrderReason.Mandatory))
+
+
+def test_order_conflict_override():
     assert merge_order_preferences(
         (Order.Ascending, OrderReason.KeepSkip),
         (Order.Descending, OrderReason.KeepSkip),

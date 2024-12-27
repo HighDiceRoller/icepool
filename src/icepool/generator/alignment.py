@@ -50,7 +50,7 @@ class Alignment(MultisetGenerator[T, tuple[()]]):
         else:
             yield Alignment(self.outcomes()[:-1]), (), 1
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     def denominator(self) -> int:

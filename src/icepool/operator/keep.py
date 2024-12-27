@@ -149,7 +149,7 @@ class MultisetKeep(MultisetOperator[T]):
                                          keep_tuple=(),
                                          drop=next_drop), count
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return self._keep_order, OrderReason.Mandatory
 
     @property

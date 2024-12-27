@@ -93,7 +93,7 @@ class MixtureGenerator(MultisetGenerator[T, tuple[int]]):
             'MixtureMultisetGenerator should have decayed to another generator type by this point.'
         )
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return merge_order_preferences(*(inner.local_order_preference()
                                          for inner in self._inner_generators))
 

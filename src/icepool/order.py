@@ -7,6 +7,10 @@ import enum
 from typing import Collection
 
 
+class ConflictingOrderError(Exception):
+    """Indicates that two conflicting mandatory outcome orderings were encountered."""
+
+
 class Order(enum.IntEnum):
     """Can be used to define what order outcomes are seen in by MultisetEvaluators."""
     Ascending = 1
@@ -22,13 +26,13 @@ class Order(enum.IntEnum):
             `Descending` if there is at least one `Descending` in the arguments.
 
         Raises:
-            `ValueError` if both `Ascending` and `Descending` are in the
-            arguments.
+            `ConflictingOrderError` if both `Ascending` and `Descending` are in 
+            the arguments.
         """
         result = Order.Any
         for order in orders:
             if (result > 0 and order < 0) or (result < 0 and order > 0):
-                raise ValueError(
+                raise ConflictingOrderError(
                     f'Conflicting orders {orders}.\n' +
                     'Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.'
                 )
@@ -39,8 +43,8 @@ class Order(enum.IntEnum):
 
 class OrderReason(enum.IntEnum):
     """Greater values represent higher priorities, which strictly override lower priorities."""
-    Mandatory = 127
-    """The object requires this pop order."""
+    Mandatory = 3
+    """Something strictly requires this pop order."""
     PoolComposition = 2
     """The composition of dice in the pool favor this pop order."""
     KeepSkip = 1
@@ -50,15 +54,19 @@ class OrderReason(enum.IntEnum):
 
 
 def merge_order_preferences(
-    *preferences: tuple[Order | None, OrderReason],
-) -> tuple[Order | None, OrderReason]:
+    *preferences: tuple[Order, OrderReason], ) -> tuple[Order, OrderReason]:
     """Returns a pop order that fits the highest priority preferences.
     
     Greater priorities strictly outrank lower priorities.
-    An order of `None` represents conflicting orders and can occur in the 
-    argument and/or return value.
+    Conflicting orders of the same priority are equal to an `Order.Any` of the
+    next-higher priority, except for conflicitng `Mandatory` orders, which
+    produces an exception.
+
+    Raises:
+        `ConflictingOrderError` if both `Ascending` and `Descending` are in 
+        the arguments with `Mandatory` reason.
     """
-    result_order: Order | None = Order.Any
+    result_order = Order.Any
     result_reason = OrderReason.NoPreference
     for order, reason in preferences:
         if order == Order.Any or reason == OrderReason.NoPreference:
@@ -71,8 +79,14 @@ def merge_order_preferences(
                 result_order = order
             elif result_order == order:
                 continue
+            elif result_reason < OrderReason.Mandatory:
+                result_order = Order.Any
+                result_reason = OrderReason(result_reason + 1)
             else:
-                result_order = None
+                raise ConflictingOrderError(
+                    f'Conflicting order preferences {preferences}.\n' +
+                    'Tip: If you are using highest(keep=k), try using lowest(drop=n-k) instead, or vice versa.'
+                )
     return result_order, result_reason
 
 

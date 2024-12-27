@@ -39,7 +39,7 @@ class MultisetVariable(MultisetExpression[Any]):
     def _generate_max(self, max_outcome) -> PopMultisetGeneration:
         raise MultisetBindingError()
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     def has_free_variables(self) -> bool:

@@ -170,7 +170,7 @@ class Pool(KeepGenerator[T]):
     def output_arity(self) -> int:
         return 1
 
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         can_truncate_min, can_truncate_max = icepool.order.can_truncate(
             self.unique_dice())
         if can_truncate_min and not can_truncate_max:

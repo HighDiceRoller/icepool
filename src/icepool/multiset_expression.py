@@ -169,7 +169,7 @@ class MultisetExpression(ABC, Generic[T]):
         """
 
     @abstractmethod
-    def local_order_preference(self) -> tuple[Order | None, OrderReason]:
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
         """Any ordering that is preferred or required by this expression node."""
 
     @abstractmethod
@@ -245,7 +245,7 @@ class MultisetExpression(ABC, Generic[T]):
             yield from child._iter_nodes()
         yield self
 
-    def order_preference(self) -> tuple[Order | None, OrderReason]:
+    def order_preference(self) -> tuple[Order, OrderReason]:
         return merge_order_preferences(*(node.local_order_preference()
                                          for node in self._iter_nodes()))
 
