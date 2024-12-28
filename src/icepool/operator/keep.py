@@ -125,11 +125,7 @@ class MultisetKeep(MultisetOperator[T]):
             self, new_children: 'tuple[MultisetExpression[T], ...]',
             outcome: T,
             counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
-        child_count = counts[0]
-        if child_count < 0:
-            raise RuntimeError(
-                'MultisetKeep is not compatible with incoming negative counts.'
-            )
+        child_count = max(counts[0], 0)
 
         if self._drop is None:
             # Use keep_tuple.

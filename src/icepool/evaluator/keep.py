@@ -10,6 +10,8 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
 
     The attached generator or expression must produce enough values to reach
     the sorted index; otherwise, this raises `IndexError`.
+
+    Negative incoming counts are treated as zero counts.
     """
 
     def __init__(self, index: int | None = None) -> None:
@@ -33,10 +35,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
 
     def next_state(self, state, outcome, count):
         """Implementation."""
-        if count < 0:
-            raise IndexError(
-                'KeepEvaluator is not compatible with incoming negative counts.'
-            )
+        count = max(count, 0)
         result, remaining = state or (None, self._skip)
         if count > 0 and self._order == Order.Any and result is not None:
             raise IndexError('Expected exactly one element.')

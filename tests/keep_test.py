@@ -260,3 +260,19 @@ def test_keep_die_method():
     assert d6.keep((0, 1, 0)) == d6.pool(3).keep(1)
     assert d6.keep(3, 1) == d6.pool(3).keep(1)
     assert d6.keep(5, (1, ...)) == d6.lowest(5, 1)
+
+
+def test_keep_drop_negative_counts():
+    assert (d6.pool(3) - d6.pool(3)).highest(1).sum() == (
+        +(d6.pool(3) - d6.pool(3))).highest(1).sum()
+
+
+def test_keep_negative_fallback():
+    assert d6.pool(2)[-1, 1].highest(1).sum() == Die({
+        0: 6,
+        2: 2,
+        3: 4,
+        4: 6,
+        5: 8,
+        6: 10
+    })

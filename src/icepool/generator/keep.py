@@ -72,7 +72,7 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
 
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
-    ) -> 'KeepGenerator[T] | icepool.Die[T]':
+    ) -> 'MultisetExpression[T] | icepool.Die[T]':
         """Modifies the generator by counting elements in sorted order.
 
         Use `g[index]` for the same effect as this method.
@@ -129,21 +129,21 @@ class KeepGenerator(MultisetGenerator[T, tuple[int]]):
         to the previous `keep_tuple`. For example, applying `[:2][-1]` would
         produce the second-lowest roll.
 
+        If any of the current `keep_tuple` has negative counts, this falls
+        back to the less-capable `MultisetExpression` version and the result is 
+        not a `KeepGenerator`.
+
         Raises:
             IndexError: If:
                 * More than one `...` is used.
-                * The current `keep_tuple` has negative counts.
                 * The `index` specifies a fixed length that is
                     different than the total of the counts in the current
                     `keep_tuple`.
         """
-        convert_to_die = isinstance(index, int)
-
         if any(x < 0 for x in self.keep_tuple()):
-            raise IndexError(
-                'A KeepGenerator with negative counts cannot be further indexed.'
-            )
+            return icepool.MultisetExpression.keep(self, index)  # type: ignore
 
+        convert_to_die = isinstance(index, int)
         relative_keep_tuple = make_keep_tuple(self.keep_size(), index)
 
         keep_tuple = compose_keep_tuples(self.keep_tuple(),

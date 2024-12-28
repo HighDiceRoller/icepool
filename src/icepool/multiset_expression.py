@@ -731,6 +731,8 @@ class MultisetExpression(ABC, Generic[T]):
             index. In this case the result is a `Die` (if fully bound) or a
             `MultisetEvaluator` (if there are free variables).
 
+        Negative incoming counts are treated as zero counts.
+
         Use the `[]` operator for the same effect as this method.
         """
         if isinstance(index, int):
