@@ -14,9 +14,16 @@ class MultisetVariable(MultisetExpression[Any]):
 
     _children = ()
 
-    def __init__(self, is_free: bool, index: int):
+    def __init__(self, is_free: bool, index: int, name: str | None = None):
         self._is_free = is_free
         self._index = index
+        if name is None:
+            if is_free:
+                self._name = f'mvf[{index}]'
+            else:
+                self._name = f'mvb[{index}]'
+        else:
+            self._name = name
 
     def outcomes(self) -> Sequence:
         raise icepool.MultisetBindingError()
@@ -65,7 +72,8 @@ class MultisetVariable(MultisetExpression[Any]):
 
     @property
     def _local_hash_key(self) -> Hashable:
+        # name is ignored.
         return (MultisetVariable, self._is_free, self._index)
 
     def __str__(self) -> str:
-        return f'mv[{self._index}]'
+        return self._name

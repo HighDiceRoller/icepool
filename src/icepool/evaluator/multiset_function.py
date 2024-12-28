@@ -121,7 +121,8 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
             result in a `JointEvaluator`.
     """
     parameters = inspect.signature(function, follow_wrapped=False).parameters
-    for parameter in parameters.values():
+    multiset_variables = []
+    for index, parameter in enumerate(parameters.values()):
         if parameter.kind not in [
                 inspect.Parameter.POSITIONAL_ONLY,
                 inspect.Parameter.POSITIONAL_OR_KEYWORD,
@@ -129,14 +130,16 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
             raise ValueError(
                 'Callable must take only a fixed number of positional arguments.'
             )
-    tuple_or_evaluator = function(*(MV(is_free=True, index=i)
-                                    for i in range(len(parameters))))
+        multiset_variables.append(
+            MV(is_free=True, index=index, name=parameter.name))
+    tuple_or_evaluator = function(*multiset_variables)
     evaluator = replace_tuples_with_joint_evaluator(tuple_or_evaluator)
     # This is not actually a function.
     return update_wrapper(evaluator, function)  # type: ignore
 
 
 class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
+    __name__ = '(unnamed)'
 
     def __init__(self, *inputs: 'icepool.MultisetExpression[T]',
                  evaluator: MultisetEvaluator[T, U_co]) -> None:
@@ -197,7 +200,4 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         return evaluator_slice, bound_slice, free_slice
 
     def __str__(self) -> str:
-        expression_string = ', '.join(
-            str(expression) for expression in self._expressions)
-        output_string = str(self._evaluator)
-        return f'MultisetFunctionEvaluator: {expression_string} -> {output_string}'
+        return f'<multiset_function {self.__name__}>'
