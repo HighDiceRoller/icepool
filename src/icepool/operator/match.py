@@ -50,9 +50,8 @@ class MultisetSortMatch(MultisetOperator[T]):
             outcome: T,
             counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         left_count, right_count = counts
-        if left_count < 0 or right_count < 0:
-            raise RuntimeError(
-                'MultisetSortMatch does not support negative counts.')
+        left_count = max(left_count, 0)
+        right_count = max(right_count, 0)
 
         count = 0
 
@@ -115,9 +114,8 @@ class MultisetMaximumMatch(MultisetOperator[T]):
             outcome: T,
             counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
         left_count, right_count = counts
-        if left_count < 0 or right_count < 0:
-            raise RuntimeError(
-                'MultisetMaximumMatch does not support negative counts.')
+        left_count = max(left_count, 0)
+        right_count = max(right_count, 0)
 
         if self._match_equal:
             new_matches = min(self._prev_matchable + right_count, left_count)

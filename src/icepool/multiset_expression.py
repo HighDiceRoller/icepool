@@ -509,7 +509,7 @@ class MultisetExpression(ABC, Generic[T]):
 
         Specifically, this produces the absolute difference between counts.
         If you don't want negative counts to be used from the inputs, you can
-        do `left.keep_counts('>=', 0) ^ right.keep_counts('>=', 0)`.
+        do `+left ^ +right`.
 
         Example:
         ```python
@@ -840,6 +840,8 @@ class MultisetExpression(ABC, Generic[T]):
         pairs that fit the comparison, not necessarily in sorted order.
         In the above example, `maximum_match()` would allow the defender to
         assign their 5s to block both the 4 and the 3.
+
+        Negative incoming counts are treated as zero counts.
         
         Args:
             comparison: The comparison to filter by. If you want to drop rather
@@ -917,6 +919,8 @@ class MultisetExpression(ABC, Generic[T]):
         sorted order and then filters them by `comparison`.
         In the above example, `sort_matched` would force the defender to match
         against the 5 and the 4, which would only allow them to block the 4.
+
+        Negative incoming counts are treated as zero counts.
 
         Args:
             comparison: Either `'<='` or `'<'`.
@@ -1323,5 +1327,7 @@ class MultisetExpression(ABC, Generic[T]):
         
         Specifically, this evaluates to `False` if there is any outcome for
         which both multisets have positive count, and `True` if there is not.
+
+        Negative incoming counts are treated as zero counts.
         """
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)

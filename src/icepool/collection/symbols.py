@@ -366,9 +366,6 @@ class Symbols(Mapping[str, int]):
             ValueError if either has negative elements.
         """
         other = Symbols(other)
-        if self.has_negative_counts() or other.has_negative_counts():
-            raise ValueError(
-                "isdisjoint() is not defined for negative counts.")
         return any(self[s] > 0 and other[s] > 0  # type: ignore
                    for s in self)
 
