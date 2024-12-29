@@ -15,9 +15,6 @@ class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
         else:
             return state + outcome * count
 
-    def order(self):
-        return 0
-
 
 def test_reroll():
     result = SumRerollIfAnyOnes().evaluate(icepool.d6.pool(5))

@@ -53,10 +53,14 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     Otherwise, values in the cache may be incorrect.
     """
 
-    @abstractmethod
     def next_state(self, state: Hashable, outcome: T, /, *counts:
                    int) -> Hashable:
         """State transition function.
+
+        This method may receive outcomes in any order. If you want to only
+        handle ascending or descending order, or have separate implementations
+        depending on order, overrride `next_state_ascending()` and/or
+        `next_state_descending()` instead.
 
         This should produce a state given the previous state, an outcome,
         and the count of that outcome produced by each input.
@@ -95,10 +99,21 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             The special value `icepool.Reroll` can be used to immediately remove
             the state from consideration, effectively performing a full reroll.
         """
+        raise NotImplementedError()
+
+    def next_state_ascending(self, state: Hashable, outcome: T, /, *counts:
+                             int) -> Hashable:
+        """As next_state() but handles outcomes in ascending order only."""
+        raise NotImplementedError()
+
+    def next_state_descending(self, state: Hashable, outcome: T, /, *counts:
+                              int) -> Hashable:
+        """As next_state() but handles outcomes in descending order only."""
+        raise NotImplementedError()
 
     def final_outcome(self, final_state: Hashable,
                       /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
-        """Optional function to generate a final output outcome from a final state.
+        """Optional method to generate a final output outcome from a final state.
 
         By default, the final outcome is equal to the final state.
         Note that `None` is not a valid outcome for a `Die`,
@@ -118,20 +133,39 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         return cast(U_co, final_state)
 
     def order(self) -> Order:
-        """Optional function to determine the order in which `next_state()` will see outcomes.
+        """Optional method that specifies what outcome orderings this evaluator supports.
 
-        The default is ascending order. This has better caching behavior with 
-        mixed standard dice.
+        By default, this is determined by whether `next_state()`, 
+        `next_state_ascending()`, and/or `next_state_descending()` are
+        overridden.
 
         Returns:
             * Order.Ascending (= 1)
-                if `next_state()` should always see the outcomes in ascending order.
+                if outcomes are to be seen in ascending order.
+                In this case either `next_state()` or `next_state_ascending()`
+                should be implemented.
             * Order.Descending (= -1)
-                if `next_state()` should always see the outcomes in descending order.
+                if outcomes are to be seen in descending order.
+                In this case either `next_state()` or `next_state_descending()`
+                should be implemented.
             * Order.Any (= 0)
-                if the result of the evaluation is order-independent.
+                if outcomes can be seen in any order.
+                In this case either `next_state()` or both
+                `next_state_ascending()` and `next_state_descending()`
+                should be implemented.
         """
-        return Order.Ascending
+        overrides_ascending = self._has_override('next_state_ascending')
+        overrides_descending = self._has_override('next_state_descending')
+        overrides_any = self._has_override('next_state')
+        if overrides_any or (overrides_ascending and overrides_descending):
+            return Order.Any
+        if overrides_ascending:
+            return Order.Ascending
+        if overrides_descending:
+            return Order.Descending
+        raise NotImplementedError(
+            'Subclasses of MultisetEvaluator must implement at least one of next_state, next_state_ascending, next_state_descending.'
+        )
 
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
         """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
@@ -251,6 +285,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
         algorithm, order = self._select_algorithm(*inputs)
 
+        next_state_function = self._select_next_state_function(order)
+
         outcomes = icepool.sorted_union(*(expression.outcomes()
                                           for expression in inputs))
         extra_outcomes = Alignment(self.extra_outcomes(outcomes))
@@ -260,7 +296,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
             prod_weight = math.prod(sub_weights)
-            sub_result = algorithm(order, extra_outcomes, sub_inputs)
+            sub_result = algorithm(order, next_state_function, extra_outcomes,
+                                   sub_inputs)
             for sub_state, sub_weight in sub_result.items():
                 dist[sub_state] += sub_weight * prod_weight
 
@@ -284,7 +321,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     def _select_algorithm(
         self, *inputs: 'icepool.MultisetExpression[T]'
     ) -> tuple[
-            'Callable[[Order, Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
+            'Callable[[Order, Callable[..., Hashable], Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
             Order]:
         """Selects an algorithm and iteration order.
 
@@ -319,8 +356,31 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         else:
             return self._eval_internal_forward, eval_order
 
+    def _has_override(self, method_name: str) -> bool:
+        """Returns True iff the method name is overridden from MultisetEvaluator."""
+        try:
+            method = getattr(self, method_name)
+            method_func = getattr(method, '__func__', method)
+        except AttributeError:
+            return False
+        return method_func is not getattr(MultisetEvaluator, method_name)
+
+    def _select_next_state_function(self,
+                                    order: Order) -> Callable[..., Hashable]:
+        if order == Order.Descending:
+            if self._has_override('next_state_descending'):
+                return self.next_state_descending
+        else:
+            if self._has_override('next_state_ascending'):
+                return self.next_state_ascending
+        if self._has_override('next_state'):
+            return self.next_state
+        raise NotImplementedError(
+            f'Could not find next_state* implementation for order {order}.')
+
     def _eval_internal(
-        self, order: Order, extra_outcomes: 'Alignment[T]',
+        self, order: Order, next_state_function: Callable[..., Hashable],
+        extra_outcomes: 'Alignment[T]',
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the more-preferred order.
@@ -354,10 +414,10 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 prev_inputs, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
-                prev = self._eval_internal(order, prev_extra_outcomes,
-                                           prev_inputs)
+                prev = self._eval_internal(order, next_state_function,
+                                           prev_extra_outcomes, prev_inputs)
                 for prev_state, prev_weight in prev.items():
-                    state = self.next_state(prev_state, outcome, *counts)
+                    state = next_state_function(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
 
@@ -367,6 +427,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     def _eval_internal_forward(
             self,
             order: Order,
+            next_state_function: Callable[..., Hashable],
             extra_outcomes: 'Alignment[T]',
             inputs: 'tuple[icepool.MultisetExpression[T], ...]',
             state: Hashable = None) -> Mapping[Any, int]:
@@ -401,10 +462,11 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 next_inputs, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
-                next_state = self.next_state(state, outcome, *counts)
+                next_state = next_state_function(state, outcome, *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self._eval_internal_forward(
-                        order, next_extra_outcomes, next_inputs, next_state)
+                        order, next_state_function, next_extra_outcomes,
+                        next_inputs, next_state)
                     for final_state, weight in final_dist.items():
                         result[final_state] += weight * prod_weight
 

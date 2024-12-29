@@ -42,9 +42,6 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
         has_any, has_all = final_state
         return has_any and has_all
 
-    def order(self):
-        return Order.Any
-
 
 class IsProperSubsetEvaluator(ComparisonEvaluator):
 

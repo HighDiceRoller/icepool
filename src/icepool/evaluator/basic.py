@@ -27,9 +27,6 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
         """Implementation."""
         return (state or ()) + (outcome, ) * count
 
-    def order(self):
-        return Order.Any
-
     def final_outcome(self, final_state) -> tuple:
         """Implementation."""
         if final_state is None:
@@ -75,9 +72,6 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
         else:
             return state + outcome * count
 
-    def order(self):
-        return Order.Any
-
 
 sum_evaluator: Final = SumEvaluator()
 """Shared instance for caching."""
@@ -98,9 +92,6 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return final_state or 0
 
-    def order(self):
-        return Order.Any
-
 
 count_evaluator: Final = CountEvaluator()
 """Shared instance for caching."""
@@ -116,9 +107,6 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
     def final_outcome(self, final_state) -> bool:
         """Implementation."""
         return final_state or False
-
-    def order(self):
-        return Order.Any
 
 
 any_evaluator: Final = AnyEvaluator()
