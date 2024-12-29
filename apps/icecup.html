@@ -55,7 +55,10 @@
 </div>
 
 <span style="float: left;" id="computation_time">Computation time:</span>
-<span style="float: right;" id="icepool_version">Icepool version:</span>
+<div style="float:right;">
+    <span id="icepool_version">Icepool version:</span>
+    <button type="button" id="switch_to_latest" style="font-size: 100%; border: 2px dark grey;">Switch to latest</button>
+</div>
 <div style="clear: both;"></div>
 
 <div class="text_content">
@@ -384,15 +387,13 @@ if (!icepool_version || !icepool_version.match(/\d+\.\d+\.\d+/)) {
     icepool_version = '';
 }
 
-// Setup Pyodide worker.
-const worker_blob = new Blob([`var icepool_version="${icepool_version}";`,
-                              document.getElementById('icecupWorker').textContent],
-                             {type: "text/javascript"});
-
 var startTime = 0.0;
 var endTime = 0.0;
                              
 function createPyodideWorker() {
+    let worker_blob = new Blob([`var icepool_version="${icepool_version}";`,
+                                document.getElementById('icecupWorker').textContent],
+                                {type: "text/javascript"});
     let worker = new Worker(window.URL.createObjectURL(worker_blob));
     worker.onmessage = (msg) => {
         if (msg.data.cmd === "clearOutput") {
@@ -448,6 +449,12 @@ async function runCode() {
         transpose = 'False';
     }
     pyodideWorker.postMessage({ cmd: "runCode", code, probabilityType, transpose });
+}
+
+function switchToLatest() {
+    icepool_version = "";
+    interruptExecution();
+    runCode();
 }
 
 // Setup editor.
@@ -626,6 +633,7 @@ function updateSearchQuery() {
 
 document.getElementById("run").addEventListener("click", runCode);
 document.getElementById("stop").addEventListener("click", interruptExecution);
+document.getElementById("switch_to_latest").addEventListener("click", switchToLatest);
 document.body.addEventListener('keydown', function (e) {
     if (e.key == 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
