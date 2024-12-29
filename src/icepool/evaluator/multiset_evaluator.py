@@ -57,11 +57,6 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                    int) -> Hashable:
         """State transition function.
 
-        This method may receive outcomes in any order. If you want to only
-        handle ascending or descending order, or have separate implementations
-        depending on order, overrride `next_state_ascending()` and/or
-        `next_state_descending()` instead.
-
         This should produce a state given the previous state, an outcome,
         and the count of that outcome produced by each input.
 
@@ -77,6 +72,18 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         However, this may change in the future, and if they are not totally
         orderable, you must override `final_outcome` to create totally orderable
         final outcomes.
+
+        By default, this method may receive outcomes in any order:
+        
+        * If you want to guarantee ascending or descending order, you can 
+          implement `next_state_ascending()` or `next_state_descending()` 
+          instead.
+        * Alternatively, implement `next_state()` and override `order()` to
+          return the necessary order. This is useful if the necessary order
+          depends on the instance.
+        * If you want to handle either order, but have a different 
+          implementation for each, override both  `next_state_ascending()` and 
+          `next_state_descending()`.
 
         The behavior of returning a `Die` from `next_state` is currently
         undefined.
@@ -103,12 +110,22 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
     def next_state_ascending(self, state: Hashable, outcome: T, /, *counts:
                              int) -> Hashable:
-        """As next_state() but handles outcomes in ascending order only."""
+        """As next_state() but handles outcomes in ascending order only.
+        
+        You can implement both `next_state_ascending()` and 
+        `next_state_descending()` if you want to handle both outcome orders
+        with a separate implementation for each.
+        """
         raise NotImplementedError()
 
     def next_state_descending(self, state: Hashable, outcome: T, /, *counts:
                               int) -> Hashable:
-        """As next_state() but handles outcomes in descending order only."""
+        """As next_state() but handles outcomes in descending order only.
+        
+        You can implement both `next_state_ascending()` and 
+        `next_state_descending()` if you want to handle both outcome orders
+        with a separate implementation for each.
+        """
         raise NotImplementedError()
 
     def final_outcome(self, final_state: Hashable,
@@ -135,24 +152,27 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     def order(self) -> Order:
         """Optional method that specifies what outcome orderings this evaluator supports.
 
-        By default, this is determined by whether `next_state()`, 
-        `next_state_ascending()`, and/or `next_state_descending()` are
+        By default, this is determined by which of `next_state()`, 
+        `next_state_ascending()`, and `next_state_descending()` are
         overridden.
+
+        This is most often overridden by subclasses whose iteration order is
+        determined on a per-instance basis.
 
         Returns:
             * Order.Ascending (= 1)
                 if outcomes are to be seen in ascending order.
                 In this case either `next_state()` or `next_state_ascending()`
-                should be implemented.
+                are implemented.
             * Order.Descending (= -1)
                 if outcomes are to be seen in descending order.
                 In this case either `next_state()` or `next_state_descending()`
-                should be implemented.
+                are implemented.
             * Order.Any (= 0)
                 if outcomes can be seen in any order.
                 In this case either `next_state()` or both
                 `next_state_ascending()` and `next_state_descending()`
-                should be implemented.
+                are implemented.
         """
         overrides_ascending = self._has_override('next_state_ascending')
         overrides_descending = self._has_override('next_state_descending')
