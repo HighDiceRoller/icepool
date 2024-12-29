@@ -102,13 +102,14 @@ async function initPyodide(){
     );
     
     self.postMessage({ cmd: 'setLoadingText', text: 'Loading icepool' });
-    let icepoolVersion = await pyodide.runPythonAsync(`
+    let icepool_version_request = icepool_version != "" ? "==" + icepool_version : "";
+    icepool_version = await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool', pre=True)
+await micropip.install('icepool${icepool_version_request}', pre=True)
 import icepool
 icepool.__version__
 `)
-    self.postMessage({ cmd: 'setIcepoolVersion', text: icepoolVersion });
+    self.postMessage({ cmd: 'setIcepoolVersion', text: icepool_version });
         
     self.postMessage({ cmd: 'setLoadingText', text: '' });;
     return pyodide;
@@ -377,10 +378,17 @@ self.onmessage = async (msg) => {
 </script>
 
 <script type="text/javascript">
+var searchParams = new URLSearchParams(window.location.search);
+var icepool_version = searchParams.get('v');
+if (!icepool_version || !icepool_version.match(/\d+\.\d+\.\d+/)) {
+    icepool_version = '';
+}
+
 // Setup Pyodide worker.
-const worker_blob = new Blob([document.getElementById('icecupWorker').textContent],
+const worker_blob = new Blob([`var icepool_version="${icepool_version}";`,
+                              document.getElementById('icecupWorker').textContent],
                              {type: "text/javascript"});
-                             
+
 var startTime = 0.0;
 var endTime = 0.0;
                              
@@ -455,7 +463,6 @@ var resizer = new ResizeObserver(entries => {editor.resize();});
 resizer.observe(document.getElementById("main"));
 
 var initialCode = 'from icepool import d\n\noutput(3 @ d(6))\n';
-var searchParams = new URLSearchParams(window.location.search);
 var url_code = searchParams.get('c');
 if (url_code) {
     try {
@@ -567,6 +574,8 @@ function setLoadingText(text) {
 }
 
 function setIcepoolVersion(text) {
+    icepool_version = text;
+    updateSearchQuery();
     document.getElementById("icepool_version").textContent = 'Icepool version: ' + text;
 }
 
@@ -612,7 +621,7 @@ function updateLogScale() {
 
 function updateSearchQuery() {
     let searchParams = $("form").serialize();
-    history.replaceState(null, "", "?" + searchParams + "&c=" + LZString.compressToEncodedURIComponent(lastRunCode));
+    history.replaceState(null, "", "?" + searchParams + "&v=" + icepool_version + "&c=" + LZString.compressToEncodedURIComponent(lastRunCode));
 }
 
 document.getElementById("run").addEventListener("click", runCode);
