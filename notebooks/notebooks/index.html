@@ -9,7 +9,7 @@
     <link
       id="jupyter-lite-main"
       rel="preload"
-      href="../build/notebooks/bundle.js?_=1dad461"
+      href="../build/notebooks/bundle.js?_=776ce7d"
       main="index"
       as="script"
     />
@@ -28,10 +28,16 @@
           return;
         }
         await import(
-          '../config-utils.js?_=1dad461'
+          '../config-utils.js?_=776ce7d'
         );
       }.call(this));
     </script>
   </head>
-  <body data-notebook="notebooks"></body>
+  <body class="jp-ThemedContainer" data-notebook="notebooks"></body>
+    <noscript>
+      <div style="text-align: center; padding: 20px;">
+          JupyterLite requires JavaScript to be enabled in your browser.
+      </div>
+  </noscript>
+  </body>
 </html>

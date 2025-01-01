@@ -20,6 +20,7 @@ import '@jupyterlab/json-extension/style/index.js';
 import '@jupyterlab/lsp-extension/style/index.js';
 import '@jupyterlab/mainmenu-extension/style/index.js';
 import '@jupyterlab/mathjax-extension/style/index.js';
+import '@jupyterlab/mermaid-extension/style/index.js';
 import '@jupyterlab/metadataform-extension/style/index.js';
 import '@jupyterlab/notebook-extension/style/index.js';
 import '@jupyterlab/rendermime-extension/style/index.js';

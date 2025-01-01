@@ -157,6 +157,16 @@ export async function main() {
       console.error(e);
     }
   }
+  if (!federatedExtensionNames.has('@jupyterlab/mermaid-extension')) {
+    try {
+      let ext = require('@jupyterlab/mermaid-extension/lib/mime.js');
+      for (let plugin of activePlugins(ext)) {
+        mimeExtensions.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
   if (!federatedExtensionNames.has('@jupyterlab/vega5-extension')) {
     try {
       let ext = require('@jupyterlab/vega5-extension');
@@ -324,6 +334,16 @@ export async function main() {
   if (!federatedExtensionNames.has('@jupyterlab/mathjax-extension')) {
     try {
       let ext = require('@jupyterlab/mathjax-extension');
+      for (let plugin of activePlugins(ext)) {
+        pluginsToRegister.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  if (!federatedExtensionNames.has('@jupyterlab/mermaid-extension')) {
+    try {
+      let ext = require('@jupyterlab/mermaid-extension');
       for (let plugin of activePlugins(ext)) {
         pluginsToRegister.push(plugin);
       }
