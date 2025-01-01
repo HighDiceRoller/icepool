@@ -1122,7 +1122,7 @@ class MultisetExpression(ABC, Generic[T]):
         priority: Literal['low', 'high'] = 'high',
         /
     ) -> 'icepool.Die[tuple[int, int]] | icepool.MultisetEvaluator[int, tuple[int, int]]':
-        """Evaluation: The size of the largest straight among the elements and the lowest or highest outcome in that straight.
+        """Evaluation: The size of the largest straight among the elements and the highest (optionally, lowest) outcome in that straight.
 
         Straight size is prioritized first, then the outcome.
 

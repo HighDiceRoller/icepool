@@ -160,7 +160,7 @@ largest_straight_evaluator: Final = LargestStraightEvaluator()
 
 class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
                                                                       int]]):
-    """The size of the largest straight among the elements and the lowest or highest outcome in that straight.
+    """The size of the largest straight among the elements and the highest (optionally, lowest) outcome in that straight.
 
     Straight size is prioritized first, then the outcome.
 
