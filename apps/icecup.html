@@ -383,7 +383,7 @@ self.onmessage = async (msg) => {
 <script type="text/javascript">
 var searchParams = new URLSearchParams(window.location.search);
 var icepool_version = searchParams.get('v');
-if (!icepool_version || !icepool_version.match(/\d+\.\d+\.\d+/)) {
+if (!icepool_version || !icepool_version.match(/^\d+\.\d+\.\d+((a|b|pre)\d+)?$/)) {
     icepool_version = '';
 }
 
