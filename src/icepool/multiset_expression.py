@@ -1118,14 +1118,29 @@ class MultisetExpression(ABC, Generic[T]):
         return icepool.evaluator.largest_straight_evaluator.evaluate(self)
 
     def largest_straight_and_outcome(
-        self: 'MultisetExpression[int]'
+        self: 'MultisetExpression[int]',
+        priority: Literal['low', 'high'] = 'high',
+        /
     ) -> 'icepool.Die[tuple[int, int]] | icepool.MultisetEvaluator[int, tuple[int, int]]':
-        """Evaluation: The size of the largest straight among the elements and the highest outcome in that straight.
+        """Evaluation: The size of the largest straight among the elements and the lowest or highest outcome in that straight.
+
+        Straight size is prioritized first, then the outcome.
 
         Outcomes must be `int`s.
+
+        Args:
+            priority: Controls which outcome within the straight is returned,
+                and which straight is picked if there is a tie for largest
+                straight.
         """
-        return icepool.evaluator.largest_straight_and_outcome_evaluator.evaluate(
-            self)
+        if priority == 'high':
+            return icepool.evaluator.largest_straight_and_outcome_evaluator_high.evaluate(
+                self)
+        elif priority == 'low':
+            return icepool.evaluator.largest_straight_and_outcome_evaluator_low.evaluate(
+                self)
+        else:
+            raise ValueError("priority must be 'low' or 'high'.")
 
     def all_straights(
         self: 'MultisetExpression[int]'

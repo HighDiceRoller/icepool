@@ -160,26 +160,73 @@ largest_straight_evaluator: Final = LargestStraightEvaluator()
 
 class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
                                                                       int]]):
-    """The size of the largest straight, along with the greatest outcome in that straight."""
+    """The size of the largest straight among the elements and the lowest or highest outcome in that straight.
+
+    Straight size is prioritized first, then the outcome.
+
+    Outcomes must be `int`s.
+    """
+
+    def __init__(self, priority: Literal['low', 'high']):
+        """Constructor.
+        Args:
+            priority: Controls which outcome within the straight is returned,
+                and which straight is picked if there is a tie for largest
+                straight.
+        """
+        if priority == 'low':
+            self._prioritize_highest = False
+        elif priority == 'high':
+            self._prioritize_highest = True
+        else:
+            raise ValueError("priority must be 'low' or 'high'.")
 
     def next_state_ascending(self, state, outcome, count):
-        """Implementation."""
-        best_run_and_outcome, run = state or ((0, outcome), 0)
+        best_run, best_outcome, run = state or (0, outcome, 0)
         if count >= 1:
             run += 1
         else:
             run = 0
-        return max(best_run_and_outcome, (run, outcome)), run
+        if self._prioritize_highest:
+            if run >= best_run:
+                return run, outcome, run
+            else:
+                return best_run, best_outcome, run
+        else:
+            if run > best_run:
+                return run, outcome - run + 1, run
+            else:
+                return best_run, best_outcome, run
+
+    def next_state_descending(self, state, outcome, count):
+        best_run, best_outcome, run = state or (0, outcome, 0)
+        if count >= 1:
+            run += 1
+        else:
+            run = 0
+        if self._prioritize_highest:
+            if run > best_run:
+                return run, outcome + run - 1, run
+            else:
+                return best_run, best_outcome, run
+        else:
+            if run >= best_run:
+                return run, outcome, run
+            else:
+                return best_run, best_outcome, run
 
     def final_outcome(self, final_state) -> tuple[int, int]:
-        """Implementation."""
-        return final_state[0]
+        best_run, best_outcome, run = final_state
+        return best_run, best_outcome
 
     extra_outcomes = MultisetEvaluator.consecutive
 
 
-largest_straight_and_outcome_evaluator: Final = LargestStraightAndOutcomeEvaluator(
-)
+largest_straight_and_outcome_evaluator_low: Final = LargestStraightAndOutcomeEvaluator(
+    'low')
+"""Shared instance for caching."""
+largest_straight_and_outcome_evaluator_high: Final = LargestStraightAndOutcomeEvaluator(
+    'high')
 """Shared instance for caching."""
 
 
@@ -191,7 +238,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
     elements are preferentially assigned to the longer straight.
     """
 
-    def next_state_ascending(self, state, _, count):
+    def next_state(self, state, _, count):
         """Implementation."""
         current_runs, ended_runs = state or ((), ())
         if count < len(current_runs):
@@ -237,7 +284,7 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
         """
         self._reducer = reducer
 
-    def next_state_ascending(self, state, _, count):
+    def next_state(self, state, _, count):
         """Implementation."""
         current_run_length, current_run_score, ended_runs = state or (None,
                                                                       None, ())

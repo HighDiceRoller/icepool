@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool, Vector
+from icepool import d4, d6, d8, d10, d12, Pool, Vector, Order
 from icepool.evaluator.multiset_function import multiset_function
 
 
@@ -70,9 +70,16 @@ def test_standard_pool_zero_dice():
     assert result.equals(expected)
 
 
+class LargestStraightAndOutcomeEvaluatorDescending(
+        icepool.evaluator.LargestStraightAndOutcomeEvaluator):
+
+    def order(self):
+        return Order.Descending
+
+
 def test_runs():
-    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator()(
-        icepool.standard_pool([12, 10, 8]))
+    pool = icepool.standard_pool([12, 10, 8])
+    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator('high')(pool)
 
     def function(*outcomes):
         outcomes = sorted(outcomes)
@@ -87,17 +94,43 @@ def test_runs():
         else:
             return 1, outcomes[2]
 
-    expected = icepool.map(function,
-                           icepool.d12,
-                           icepool.d10,
-                           icepool.d8,
-                           star=False)
+    expected = icepool.map(function, pool, star=True)
     assert result.equals(expected)
+
+    result_descending = LargestStraightAndOutcomeEvaluatorDescending('high')(
+        pool)
+    assert result_descending.equals(expected)
+
+
+def test_runs_low():
+    pool = icepool.standard_pool([12, 10, 8])
+    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator('low')(
+        icepool.standard_pool([12, 10, 8]))
+
+    def function(*outcomes):
+        outcomes = sorted(outcomes)
+        a = outcomes[1] == outcomes[0] + 1
+        b = outcomes[2] == outcomes[1] + 1
+        if a and b:
+            return 3, outcomes[0]
+        elif a:
+            return 2, outcomes[0]
+        elif b:
+            return 2, outcomes[1]
+        else:
+            return 1, outcomes[0]
+
+    expected = icepool.map(function, pool, star=True)
+    assert result.equals(expected)
+
+    result_descending = LargestStraightAndOutcomeEvaluatorDescending('low')(
+        pool)
+    assert result_descending.equals(expected)
 
 
 def test_runs_skip():
     die = icepool.Die([0, 10])
-    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator()(
+    result = icepool.evaluator.LargestStraightAndOutcomeEvaluator('high')(
         die.pool(10))
     assert tuple(result.outcomes()) == ((1, 0), (1, 10))
 
