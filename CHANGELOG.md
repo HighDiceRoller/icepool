@@ -1,3 +1,11 @@
+## v1.7.0
+
+* Overhauled multiset expressions. This allows expressions that are given to an evaluator to have the evaluation persistently cached. This makes the caching behavior more consistent: a single expression will be cached in the final evaluator (e.g. `(a - b).unique().sum()` would be cached in the `sum` evaluator), and `@multiset_function` creates an evaluator like any other.  Unfortunately, this did come at some performance cost for `@multiset_function`. I have some ideas on how to claw back some of the performance but I haven't decided whether it's worth the complexity.
+* Instead of specifying `order()` for an evaluator, you can now implement `next_state_ascending()` and/or `next_state_descending()`.
+* `Alignment` now has a denominator of 1.
+* `keep()`, `isdisjoint()`, `sort_match()`, and `maximum_match()` operations now treat negative incoming counts as zero rather than raising an error.
+* Store original names of `@multiset_function` parameters.
+
 ## v1.6.2 - 23 December 2024
 
 * Deprecate `depth=None` in favor of `depth='inf'`.
