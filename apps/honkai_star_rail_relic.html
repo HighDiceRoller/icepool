@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Honkai: Star Rail relic calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+
+    <meta property="og:title" content="Honkai: Star Rail relic calculator" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://highdiceroller.github.io/icepool/apps/honkai_star_rail_relic.html" />
+    <!-- <meta property="og:image" content="https://highdiceroller.github.io/icepool/apps/honkai_star_rail_relic.png" /> -->
+
+    <!-- 
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Honkai: Star Rail relic calculator" />
+    <meta name="twitter:site" content="@highdiceroller" />
+    <meta name="twitter:creator" content="@highdiceroller" />
+    <meta name="twitter:image" content="https://highdiceroller.github.io/icepool/apps/honkai_star_rail_relic.png" /> -->
+    
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="common.js"></script>
+</head>
+
+<body>
+    <h1><i>Honkai: Star Rail</i> relic calculator <span style="font-size:75%;">powered by <a href="https://github.com/HighDiceRoller/icepool"><img src="favicon.png" height="24" width="24" /></a> Icepool</span></h1>
+    
+    <div style="display:flex;">
+        <form id="inputs">
+            <table id="input_table">
+                <tr>
+                    <th style="width:200px;">Stat</th>
+                    <th style="width:80px;">Weight</th>
+                    <th style="width:80px;">Main</th>
+                    <th style="width:80px;">Want</th>
+                </tr>
+            </table>
+        </form>
+        
+        <div>
+            <table id="result_table">
+                <tr>
+                    <th>Wanted substats</th>
+                    <th style="width:80px;">0 fixed</th>
+                    <th style="width:80px;">1 fixed</th>
+                    <th style="width:80px;">2 fixed</th>
+                </tr>
+                <tr>
+                    <td>At least 1</td>
+                    <td id="result10"></td>
+                    <td id="result11"></td>
+                    <td id="result12"></td>
+                </tr>
+                <tr>
+                    <td>At least 2</td>
+                    <td id="result20"></td>
+                    <td id="result21"></td>
+                    <td id="result22"></td>
+                </tr>
+                <tr>
+                    <td>At least 3</td>
+                    <td id="result30"></td>
+                    <td id="result31"></td>
+                    <td id="result32"></td>
+                </tr>
+                <tr>
+                    <td>All 4</td>
+                    <td id="result40"></td>
+                    <td id="result41"></td>
+                    <td id="result42"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+    
+function setLoadingText(text) {
+    console.log(text);
+    let loadingText = text.match(/Loading \w+/);
+    if (!loadingText) {
+        return;
+    }
+}
+async function initialize() {
+setLoadingText('Loading pyodide')
+let pyodide = await loadPyodide({
+    indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.0/full/",
+});
+
+await pyodide.loadPackage(["micropip"], 
+    {messageCallback : setLoadingText}
+);
+
+setLoadingText('Loading icepool')
+await pyodide.runPythonAsync(`
+import micropip
+await micropip.install('icepool==1.6.0')
+
+import js
+import pyodide
+from functools import cache
+from icepool import Die
+
+stats = {
+    'spd' : ('SPD', 4),
+    'cr' : ('CRIT Rate', 6),
+    'cd' : ('CRIT DMG', 6),
+    'be' : ('Break Effect', 8),
+    'ehr' : ('Effect Hit Rate', 8),
+    'eres' : ('Effect Resist', 8),
+    'hp_pct' : ('HP%', 10),
+    'atk_pct' : ('ATK%', 10),
+    'def_pct' : ('DEF%', 10),
+    'hp' : ('HP', 10),
+    'atk' : ('ATK', 10),
+    'def' : ('DEF', 10),
+}
+
+base = Die({stat: weight for stat, (_, weight) in stats.items()})
+
+@cache
+def roll_substats(current, more):
+    if more == 0:
+        return current
+    else:
+        return base.reroll(current, depth=None).map(lambda x: roll_substats(current + (x,), more-1))
+
+def choose_fixed(wants, count):
+    if count == 0:
+        return ()
+    result = ()
+    for _, stat in sorted(((weight, stat) for stat, (_, weight) in stats.items()), reverse=True):
+        if stat in wants:
+            result = result + (stat,)
+            if len(result) == count:
+                break
+    return result
+
+input_table = js.document.getElementById('input_table')
+
+for stat, (display_string, weight) in stats.items():
+    row = input_table.insertRow()
+    row.innerHTML = f'<td>{display_string}</td><td>{weight}</td><td style="text-align:center;"><input type="radio" id="{stat}_have" name="have" value="{stat}" /></td><td style="text-align:center;"><input type="checkbox" id="{stat}_want" name="{stat}_want"></td>'
+
+row = input_table.insertRow()
+row.innerHTML = f'<td>Other</td><td></td><td style="text-align:center;"><input type="radio" id="other_have" name="have" value="other" checked /></td><td></td>'
+`)
+
+let inputs = document.querySelector('#inputs');
+inputs.addEventListener('input', update);
+return pyodide;
+}
+
+async function update() {
+    let pyodide = await pyodideReadyPromise;
+pyodide.runPython(`
+
+haves = tuple(stat for stat in stats if js.document.getElementById(f'{stat}_have').checked)
+wants = set(stat for stat in stats if js.document.getElementById(f'{stat}_want').checked and stat not in haves)
+
+results = {}
+
+for fixed_count in [0, 1, 2]:
+    fixed = choose_fixed(wants, fixed_count)
+    substats = roll_substats(haves + fixed, 4 - fixed_count)
+    wanted_count = substats.map(lambda s: len(set(s) & wants))
+    for hits in [1, 2, 3, 4]:
+        value = (wanted_count >= hits).mean()
+        results[(hits, fixed_count)] = value
+        
+for hits in [1, 2, 3, 4]:
+    if hits <= len(wants):
+        best = 0
+        best_fixed_count = 0
+        for fixed_count, cost in zip([0, 1, 2], [1, 2, 5]):
+            score = results[(hits, fixed_count)] / cost
+            if score > best:
+                best = score
+                best_fixed_count = fixed_count
+        for fixed_count in [0, 1, 2]:
+            cell = js.document.getElementById(f'result{hits}{fixed_count}')
+            cell.innerHTML = f'{results[(hits, fixed_count)]:0.2%}'
+            if fixed_count == best_fixed_count:
+                cell.style.background = '#cfc'
+            else:
+                cell.style.background = '#ccc'
+    else:
+        for fixed_count in [0, 1, 2]:
+            cell = js.document.getElementById(f'result{hits}{fixed_count}')
+            cell.innerHTML = f''
+            cell.style.background = '#ccc'
+
+`)
+}
+
+let pyodideReadyPromise = initialize();
+update();
+    </script>
+</body>
