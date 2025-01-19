@@ -74,8 +74,12 @@ def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
     return required, total
 
 
-def guess_star(function, arg_count=1) -> bool:
-    """Guesses whether the first argument should be unpacked before giving it to the function.
+class InferStarError(ValueError):
+    """Indicates that `star` could not be inferred."""
+
+
+def infer_star(function, arg_count=1) -> bool:
+    """Infers whether the first argument should be unpacked before giving it to the function.
 
     Args:
         arg_count: The number of arguments that will be provided to the function.
@@ -83,7 +87,7 @@ def guess_star(function, arg_count=1) -> bool:
     try:
         required_count, _ = count_positional_parameters(function)
     except ValueError:
-        raise ValueError(
-            f'Could not guess whether to unpack the first argument to the function.\n'
-            'You may need to specify `star` explicitly.')
+        raise InferStarError(
+            f'Could not determine the number of arguments taken by the function. You will need to specify star explicitly.'
+        )
     return required_count > arg_count

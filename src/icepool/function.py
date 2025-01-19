@@ -5,7 +5,7 @@ __docformat__ = 'google'
 import icepool
 import icepool.population.markov_chain
 from icepool.collection.vector import iter_cartesian_product
-from icepool.typing import Outcome, T, U, guess_star
+from icepool.typing import Outcome, T, U, infer_star
 
 from fractions import Fraction
 from collections import defaultdict
@@ -480,7 +480,7 @@ def _canonicalize_transition_function(repl: 'Callable | Mapping',
     """Expresses repl as a function that takes arg_count variables."""
     if callable(repl):
         if star is None:
-            star = guess_star(repl, arg_count)
+            star = infer_star(repl, arg_count)
         if star:
             func = cast(Callable, repl)
             return lambda o, *extra_args: func(*o, *extra_args)

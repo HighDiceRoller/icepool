@@ -9,7 +9,7 @@ import icepool.population.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
 from icepool.population.keep import lowest_slice, highest_slice, canonical_slice
-from icepool.typing import U, ImplicitConversionError, Outcome, T_co, guess_star
+from icepool.typing import U, ImplicitConversionError, Outcome, T_co, infer_star
 
 import bisect
 from collections import defaultdict
@@ -282,7 +282,7 @@ class Die(Population[T_co]):
         """Returns a set of outcomes of self that fit the given condition."""
         if callable(which):
             if star is None:
-                star = guess_star(which)
+                star = infer_star(which)
             if star:
                 # Need TypeVarTuple to check this.
                 return {
@@ -389,7 +389,7 @@ class Die(Population[T_co]):
 
         if callable(which):
             if star is None:
-                star = guess_star(which)
+                star = infer_star(which)
             if star:
 
                 not_outcomes = {

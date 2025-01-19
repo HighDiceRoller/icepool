@@ -6,7 +6,7 @@ import icepool.math
 import icepool.creation_args
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
-from icepool.typing import U, Outcome, T_co, guess_star
+from icepool.typing import U, Outcome, T_co, infer_star
 
 import functools
 import operator
@@ -259,7 +259,7 @@ class Deck(Population[T_co]):
         # Convert to a single-argument function.
         if callable(repl):
             if star is None:
-                star = guess_star(repl)
+                star = infer_star(repl)
             if star:
 
                 def transition_function(outcome):
