@@ -118,22 +118,22 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s1">&#39;google&#39;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span> <span class="nn">icepool</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span> <span class="nn">icepool.population.markov_chain</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span> <span class="nn">icepool.collection.vector</span> <span class="kn">import</span> <span class="n">iter_cartesian_product</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span> <span class="nn">icepool.typing</span> <span class="kn">import</span> <span class="n">Outcome</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">guess_star</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">icepool</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">icepool.population.markov_chain</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.collection.vector</span><span class="w"> </span><span class="kn">import</span> <span class="n">iter_cartesian_product</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Outcome</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">infer_star</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">fractions</span> <span class="kn">import</span> <span class="n">Fraction</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cache</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">update_wrapper</span><span class="p">,</span> <span class="n">wraps</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">import</span> <span class="nn">itertools</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">import</span> <span class="nn">math</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">fractions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fraction</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">update_wrapper</span><span class="p">,</span> <span class="n">wraps</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">overload</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TypeAlias</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">overload</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="nd">@cache</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">def</span> <span class="nf">d</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">def</span><span class="w"> </span><span class="nf">d</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A standard die, uniformly distributed from `1` to `sides` inclusive.</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    Don&#39;t confuse this with `icepool.Die()`:</span>
@@ -152,7 +152,7 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="nd">@cache</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="k">def</span><span class="w"> </span><span class="nf">z</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A die uniformly distributed from `0` to `sides - 1` inclusive.</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="sd">    </span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">    Equal to d(sides) - 1.</span>
@@ -164,7 +164,7 @@
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sides</span><span class="p">))</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Implements the `dX` syntax for standard die with no parentheses.</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    For example, `icepool.d6`.</span>
@@ -187,7 +187,7 @@
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
 </span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="k">def</span> <span class="nf">coin</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Fraction</span><span class="p">,</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="k">def</span><span class="w"> </span><span class="nf">coin</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Fraction</span><span class="p">,</span>
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>         <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>         <span class="o">/</span><span class="p">,</span>
 </span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>         <span class="o">*</span><span class="p">,</span>
@@ -220,7 +220,7 @@
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span> <span class="nf">stochastic_round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span><span class="w"> </span><span class="nf">stochastic_round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>                     <span class="o">/</span><span class="p">,</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>                     <span class="o">*</span><span class="p">,</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>                     <span class="n">max_denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
@@ -241,7 +241,7 @@
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>                               <span class="n">max_denominator</span><span class="o">=</span><span class="n">max_denominator</span><span class="p">)</span>
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>
 </span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="k">def</span> <span class="nf">one_hot</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[tuple[bool, ...]]&#39;</span><span class="p">:</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="k">def</span><span class="w"> </span><span class="nf">one_hot</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[tuple[bool, ...]]&#39;</span><span class="p">:</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `Die` with `Vector` outcomes with one element set to `True` uniformly at random and the rest `False`.</span>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>
 </span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    This is an easy (if somewhat expensive) way of representing how many dice</span>
@@ -256,7 +256,7 @@
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="k">def</span> <span class="nf">from_cumulative</span><span class="p">(</span><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="k">def</span><span class="w"> </span><span class="nf">from_cumulative</span><span class="p">(</span><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>                    <span class="n">cumulative</span><span class="p">:</span> <span class="s1">&#39;Sequence[int] | Sequence[icepool.Die[bool]]&#39;</span><span class="p">,</span>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>                    <span class="o">*</span><span class="p">,</span>
 </span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>                    <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
@@ -300,18 +300,18 @@
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>
 </span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>
 </span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="nd">@overload</span>
-</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a><span class="k">def</span> <span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a><span class="k">def</span><span class="w"> </span><span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
 </span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>    <span class="o">...</span>
 </span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>
 </span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="nd">@overload</span>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="k">def</span> <span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="k">def</span><span class="w"> </span><span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[float]&#39;</span><span class="p">:</span>
 </span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>    <span class="o">...</span>
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="k">def</span> <span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="k">def</span><span class="w"> </span><span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int] | icepool.Die[float]&#39;</span><span class="p">:</span>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructs a `Die` from a rv object (as `scipy.stats`).</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>
@@ -339,7 +339,7 @@
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>    <span class="k">return</span> <span class="n">from_cumulative</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">quantities_le</span><span class="p">)</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>
 </span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>
-</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="k">def</span> <span class="nf">_iter_outcomes</span><span class="p">(</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_iter_outcomes</span><span class="p">(</span>
 </span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 </span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>        <span class="n">iter_args</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s1">&#39;Iterable[T | icepool.Population[T]]&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -353,7 +353,7 @@
 </span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>
 </span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>
 </span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a><span class="nd">@overload</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="k">def</span> <span class="nf">pointwise_max</span><span class="p">(</span>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_max</span><span class="p">(</span>
 </span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>    <span class="n">arg0</span><span class="p">:</span> <span class="s1">&#39;Iterable[icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>    <span class="o">/</span><span class="p">,</span>
 </span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
@@ -361,12 +361,12 @@
 </span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>
 </span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>
 </span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a><span class="nd">@overload</span>
-</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a><span class="k">def</span> <span class="nf">pointwise_max</span><span class="p">(</span><span class="n">arg0</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
+</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_max</span><span class="p">(</span><span class="n">arg0</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
 </span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>                  <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>    <span class="o">...</span>
 </span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>
 </span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>
-</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a><span class="k">def</span> <span class="nf">pointwise_max</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_max</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects the highest chance of rolling &gt;= each outcome among the arguments.</span>
 </span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>
 </span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a><span class="sd">    Naming not finalized.</span>
@@ -400,7 +400,7 @@
 </span><span id="L-284"><a href="#L-284"><span class="linenos">284</span></a>
 </span><span id="L-285"><a href="#L-285"><span class="linenos">285</span></a>
 </span><span id="L-286"><a href="#L-286"><span class="linenos">286</span></a><span class="nd">@overload</span>
-</span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a><span class="k">def</span> <span class="nf">pointwise_min</span><span class="p">(</span>
+</span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_min</span><span class="p">(</span>
 </span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a>    <span class="n">arg0</span><span class="p">:</span> <span class="s1">&#39;Iterable[icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="L-289"><a href="#L-289"><span class="linenos">289</span></a>    <span class="o">/</span><span class="p">,</span>
 </span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
@@ -408,12 +408,12 @@
 </span><span id="L-292"><a href="#L-292"><span class="linenos">292</span></a>
 </span><span id="L-293"><a href="#L-293"><span class="linenos">293</span></a>
 </span><span id="L-294"><a href="#L-294"><span class="linenos">294</span></a><span class="nd">@overload</span>
-</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a><span class="k">def</span> <span class="nf">pointwise_min</span><span class="p">(</span><span class="n">arg0</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
+</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_min</span><span class="p">(</span><span class="n">arg0</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span>
 </span><span id="L-296"><a href="#L-296"><span class="linenos">296</span></a>                  <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="L-297"><a href="#L-297"><span class="linenos">297</span></a>    <span class="o">...</span>
 </span><span id="L-298"><a href="#L-298"><span class="linenos">298</span></a>
 </span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a>
-</span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a><span class="k">def</span> <span class="nf">pointwise_min</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+</span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_min</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects the highest chance of rolling &lt;= each outcome among the arguments.</span>
 </span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a>
 </span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a><span class="sd">    Naming not finalized.</span>
@@ -447,16 +447,16 @@
 </span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a>
 </span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a>
 </span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a><span class="nd">@overload</span>
-</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a><span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a><span class="k">def</span><span class="w"> </span><span class="nf">min_outcome</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a>    <span class="o">...</span>
 </span><span id="L-336"><a href="#L-336"><span class="linenos">336</span></a>
 </span><span id="L-337"><a href="#L-337"><span class="linenos">337</span></a>
 </span><span id="L-338"><a href="#L-338"><span class="linenos">338</span></a><span class="nd">@overload</span>
-</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a><span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a><span class="k">def</span><span class="w"> </span><span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="L-340"><a href="#L-340"><span class="linenos">340</span></a>    <span class="o">...</span>
 </span><span id="L-341"><a href="#L-341"><span class="linenos">341</span></a>
 </span><span id="L-342"><a href="#L-342"><span class="linenos">342</span></a>
-</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a><span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a><span class="k">def</span><span class="w"> </span><span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="L-344"><a href="#L-344"><span class="linenos">344</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The minimum possible outcome among the populations.</span>
 </span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a><span class="sd">    </span>
 </span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a><span class="sd">    Args:</span>
@@ -466,16 +466,16 @@
 </span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a>
 </span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a>
 </span><span id="L-352"><a href="#L-352"><span class="linenos">352</span></a><span class="nd">@overload</span>
-</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a><span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a><span class="k">def</span><span class="w"> </span><span class="nf">max_outcome</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]]&#39;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a>    <span class="o">...</span>
 </span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a>
 </span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a>
 </span><span id="L-357"><a href="#L-357"><span class="linenos">357</span></a><span class="nd">@overload</span>
-</span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a><span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a><span class="k">def</span><span class="w"> </span><span class="nf">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a>    <span class="o">...</span>
 </span><span id="L-360"><a href="#L-360"><span class="linenos">360</span></a>
 </span><span id="L-361"><a href="#L-361"><span class="linenos">361</span></a>
-</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a><span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a><span class="k">def</span><span class="w"> </span><span class="nf">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="L-363"><a href="#L-363"><span class="linenos">363</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The maximum possible outcome among the populations.</span>
 </span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a><span class="sd">    </span>
 </span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a><span class="sd">    Args:</span>
@@ -484,7 +484,7 @@
 </span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a>    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">_iter_outcomes</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
 </span><span id="L-369"><a href="#L-369"><span class="linenos">369</span></a>
 </span><span id="L-370"><a href="#L-370"><span class="linenos">370</span></a>
-</span><span id="L-371"><a href="#L-371"><span class="linenos">371</span></a><span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="L-371"><a href="#L-371"><span class="linenos">371</span></a><span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="L-372"><a href="#L-372"><span class="linenos">372</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
 </span><span id="L-373"><a href="#L-373"><span class="linenos">373</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </span><span id="L-374"><a href="#L-374"><span class="linenos">374</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -493,14 +493,14 @@
 </span><span id="L-377"><a href="#L-377"><span class="linenos">377</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 </span><span id="L-378"><a href="#L-378"><span class="linenos">378</span></a>
 </span><span id="L-379"><a href="#L-379"><span class="linenos">379</span></a>
-</span><span id="L-380"><a href="#L-380"><span class="linenos">380</span></a><span class="k">def</span> <span class="nf">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="L-380"><a href="#L-380"><span class="linenos">380</span></a><span class="k">def</span><span class="w"> </span><span class="nf">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span id="L-381"><a href="#L-381"><span class="linenos">381</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge sets into a sorted sequence.&quot;&quot;&quot;</span>
 </span><span id="L-382"><a href="#L-382"><span class="linenos">382</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
 </span><span id="L-383"><a href="#L-383"><span class="linenos">383</span></a>        <span class="k">return</span> <span class="p">()</span>
 </span><span id="L-384"><a href="#L-384"><span class="linenos">384</span></a>    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">))))</span>
 </span><span id="L-385"><a href="#L-385"><span class="linenos">385</span></a>
 </span><span id="L-386"><a href="#L-386"><span class="linenos">386</span></a>
-</span><span id="L-387"><a href="#L-387"><span class="linenos">387</span></a><span class="k">def</span> <span class="nf">commonize_denominator</span><span class="p">(</span>
+</span><span id="L-387"><a href="#L-387"><span class="linenos">387</span></a><span class="k">def</span><span class="w"> </span><span class="nf">commonize_denominator</span><span class="p">(</span>
 </span><span id="L-388"><a href="#L-388"><span class="linenos">388</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span id="L-389"><a href="#L-389"><span class="linenos">389</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Scale the quantities of the dice so that all of them have the same denominator.</span>
 </span><span id="L-390"><a href="#L-390"><span class="linenos">390</span></a>
@@ -521,7 +521,7 @@
 </span><span id="L-405"><a href="#L-405"><span class="linenos">405</span></a>                                <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">die</span> <span class="ow">in</span> <span class="n">converted_dice</span><span class="p">)</span>
 </span><span id="L-406"><a href="#L-406"><span class="linenos">406</span></a>
 </span><span id="L-407"><a href="#L-407"><span class="linenos">407</span></a>
-</span><span id="L-408"><a href="#L-408"><span class="linenos">408</span></a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span>
+</span><span id="L-408"><a href="#L-408"><span class="linenos">408</span></a><span class="k">def</span><span class="w"> </span><span class="nf">reduce</span><span class="p">(</span>
 </span><span id="L-409"><a href="#L-409"><span class="linenos">409</span></a>        <span class="n">function</span><span class="p">:</span> <span class="s1">&#39;Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]&#39;</span><span class="p">,</span>
 </span><span id="L-410"><a href="#L-410"><span class="linenos">410</span></a>        <span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="L-411"><a href="#L-411"><span class="linenos">411</span></a>        <span class="o">*</span><span class="p">,</span>
@@ -552,7 +552,7 @@
 </span><span id="L-436"><a href="#L-436"><span class="linenos">436</span></a>    <span class="k">return</span> <span class="n">result</span>
 </span><span id="L-437"><a href="#L-437"><span class="linenos">437</span></a>
 </span><span id="L-438"><a href="#L-438"><span class="linenos">438</span></a>
-</span><span id="L-439"><a href="#L-439"><span class="linenos">439</span></a><span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span>
+</span><span id="L-439"><a href="#L-439"><span class="linenos">439</span></a><span class="k">def</span><span class="w"> </span><span class="nf">accumulate</span><span class="p">(</span>
 </span><span id="L-440"><a href="#L-440"><span class="linenos">440</span></a>        <span class="n">function</span><span class="p">:</span> <span class="s1">&#39;Callable[[T, T], T | icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="L-441"><a href="#L-441"><span class="linenos">441</span></a>        <span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="L-442"><a href="#L-442"><span class="linenos">442</span></a>        <span class="o">*</span><span class="p">,</span>
@@ -590,13 +590,13 @@
 </span><span id="L-474"><a href="#L-474"><span class="linenos">474</span></a>        <span class="k">yield</span> <span class="n">result</span>
 </span><span id="L-475"><a href="#L-475"><span class="linenos">475</span></a>
 </span><span id="L-476"><a href="#L-476"><span class="linenos">476</span></a>
-</span><span id="L-477"><a href="#L-477"><span class="linenos">477</span></a><span class="k">def</span> <span class="nf">_canonicalize_transition_function</span><span class="p">(</span><span class="n">repl</span><span class="p">:</span> <span class="s1">&#39;Callable | Mapping&#39;</span><span class="p">,</span>
+</span><span id="L-477"><a href="#L-477"><span class="linenos">477</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_canonicalize_transition_function</span><span class="p">(</span><span class="n">repl</span><span class="p">:</span> <span class="s1">&#39;Callable | Mapping&#39;</span><span class="p">,</span>
 </span><span id="L-478"><a href="#L-478"><span class="linenos">478</span></a>                                      <span class="n">arg_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="L-479"><a href="#L-479"><span class="linenos">479</span></a>                                      <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable&#39;</span><span class="p">:</span>
 </span><span id="L-480"><a href="#L-480"><span class="linenos">480</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Expresses repl as a function that takes arg_count variables.&quot;&quot;&quot;</span>
 </span><span id="L-481"><a href="#L-481"><span class="linenos">481</span></a>    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">repl</span><span class="p">):</span>
 </span><span id="L-482"><a href="#L-482"><span class="linenos">482</span></a>        <span class="k">if</span> <span class="n">star</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-483"><a href="#L-483"><span class="linenos">483</span></a>            <span class="n">star</span> <span class="o">=</span> <span class="n">guess_star</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">)</span>
+</span><span id="L-483"><a href="#L-483"><span class="linenos">483</span></a>            <span class="n">star</span> <span class="o">=</span> <span class="n">infer_star</span><span class="p">(</span><span class="n">repl</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">)</span>
 </span><span id="L-484"><a href="#L-484"><span class="linenos">484</span></a>        <span class="k">if</span> <span class="n">star</span><span class="p">:</span>
 </span><span id="L-485"><a href="#L-485"><span class="linenos">485</span></a>            <span class="n">func</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">,</span> <span class="n">repl</span><span class="p">)</span>
 </span><span id="L-486"><a href="#L-486"><span class="linenos">486</span></a>            <span class="k">return</span> <span class="k">lambda</span> <span class="n">o</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_args</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">o</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_args</span><span class="p">)</span>
@@ -612,7 +612,7 @@
 </span><span id="L-496"><a href="#L-496"><span class="linenos">496</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;repl must be a callable or a mapping.&#39;</span><span class="p">)</span>
 </span><span id="L-497"><a href="#L-497"><span class="linenos">497</span></a>
 </span><span id="L-498"><a href="#L-498"><span class="linenos">498</span></a>
-</span><span id="L-499"><a href="#L-499"><span class="linenos">499</span></a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+</span><span id="L-499"><a href="#L-499"><span class="linenos">499</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span>
 </span><span id="L-500"><a href="#L-500"><span class="linenos">500</span></a>    <span class="n">repl</span><span class="p">:</span>
 </span><span id="L-501"><a href="#L-501"><span class="linenos">501</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span><span class="p">,</span>
 </span><span id="L-502"><a href="#L-502"><span class="linenos">502</span></a>    <span class="o">/</span><span class="p">,</span>
@@ -701,7 +701,7 @@
 </span><span id="L-585"><a href="#L-585"><span class="linenos">585</span></a>    <span class="k">if</span> <span class="n">repeat</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
 </span><span id="L-586"><a href="#L-586"><span class="linenos">586</span></a>        <span class="c1"># Infinite repeat.</span>
 </span><span id="L-587"><a href="#L-587"><span class="linenos">587</span></a>        <span class="c1"># T_co and U should be the same in this case.</span>
-</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>        <span class="k">def</span> <span class="nf">unary_transition_function</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">unary_transition_function</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 </span><span id="L-589"><a href="#L-589"><span class="linenos">589</span></a>            <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">transition_function</span><span class="p">,</span>
 </span><span id="L-590"><a href="#L-590"><span class="linenos">590</span></a>                       <span class="n">state</span><span class="p">,</span>
 </span><span id="L-591"><a href="#L-591"><span class="linenos">591</span></a>                       <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
@@ -749,7 +749,7 @@
 </span><span id="L-633"><a href="#L-633"><span class="linenos">633</span></a>
 </span><span id="L-634"><a href="#L-634"><span class="linenos">634</span></a>
 </span><span id="L-635"><a href="#L-635"><span class="linenos">635</span></a><span class="nd">@overload</span>
-</span><span id="L-636"><a href="#L-636"><span class="linenos">636</span></a><span class="k">def</span> <span class="nf">map_function</span><span class="p">(</span>
+</span><span id="L-636"><a href="#L-636"><span class="linenos">636</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_function</span><span class="p">(</span>
 </span><span id="L-637"><a href="#L-637"><span class="linenos">637</span></a>        <span class="n">function</span><span class="p">:</span>
 </span><span id="L-638"><a href="#L-638"><span class="linenos">638</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span><span class="p">,</span>
 </span><span id="L-639"><a href="#L-639"><span class="linenos">639</span></a>        <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
@@ -757,7 +757,7 @@
 </span><span id="L-641"><a href="#L-641"><span class="linenos">641</span></a>
 </span><span id="L-642"><a href="#L-642"><span class="linenos">642</span></a>
 </span><span id="L-643"><a href="#L-643"><span class="linenos">643</span></a><span class="nd">@overload</span>
-</span><span id="L-644"><a href="#L-644"><span class="linenos">644</span></a><span class="k">def</span> <span class="nf">map_function</span><span class="p">(</span>
+</span><span id="L-644"><a href="#L-644"><span class="linenos">644</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_function</span><span class="p">(</span>
 </span><span id="L-645"><a href="#L-645"><span class="linenos">645</span></a>    <span class="n">function</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-646"><a href="#L-646"><span class="linenos">646</span></a>    <span class="o">/</span><span class="p">,</span>
 </span><span id="L-647"><a href="#L-647"><span class="linenos">647</span></a>    <span class="o">*</span><span class="p">,</span>
@@ -771,7 +771,7 @@
 </span><span id="L-655"><a href="#L-655"><span class="linenos">655</span></a>
 </span><span id="L-656"><a href="#L-656"><span class="linenos">656</span></a>
 </span><span id="L-657"><a href="#L-657"><span class="linenos">657</span></a><span class="nd">@overload</span>
-</span><span id="L-658"><a href="#L-658"><span class="linenos">658</span></a><span class="k">def</span> <span class="nf">map_function</span><span class="p">(</span>
+</span><span id="L-658"><a href="#L-658"><span class="linenos">658</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_function</span><span class="p">(</span>
 </span><span id="L-659"><a href="#L-659"><span class="linenos">659</span></a>    <span class="n">function</span><span class="p">:</span>
 </span><span id="L-660"><a href="#L-660"><span class="linenos">660</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-661"><a href="#L-661"><span class="linenos">661</span></a>    <span class="o">/</span><span class="p">,</span>
@@ -785,7 +785,7 @@
 </span><span id="L-669"><a href="#L-669"><span class="linenos">669</span></a>    <span class="o">...</span>
 </span><span id="L-670"><a href="#L-670"><span class="linenos">670</span></a>
 </span><span id="L-671"><a href="#L-671"><span class="linenos">671</span></a>
-</span><span id="L-672"><a href="#L-672"><span class="linenos">672</span></a><span class="k">def</span> <span class="nf">map_function</span><span class="p">(</span>
+</span><span id="L-672"><a href="#L-672"><span class="linenos">672</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_function</span><span class="p">(</span>
 </span><span id="L-673"><a href="#L-673"><span class="linenos">673</span></a>    <span class="n">function</span><span class="p">:</span>
 </span><span id="L-674"><a href="#L-674"><span class="linenos">674</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="L-675"><a href="#L-675"><span class="linenos">675</span></a>    <span class="o">/</span><span class="p">,</span>
@@ -838,7 +838,7 @@
 </span><span id="L-722"><a href="#L-722"><span class="linenos">722</span></a>        <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">function</span><span class="p">),</span> <span class="n">function</span><span class="p">)</span>
 </span><span id="L-723"><a href="#L-723"><span class="linenos">723</span></a>    <span class="k">else</span><span class="p">:</span>
 </span><span id="L-724"><a href="#L-724"><span class="linenos">724</span></a>
-</span><span id="L-725"><a href="#L-725"><span class="linenos">725</span></a>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span>
+</span><span id="L-725"><a href="#L-725"><span class="linenos">725</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span>
 </span><span id="L-726"><a href="#L-726"><span class="linenos">726</span></a>            <span class="n">function</span><span class="p">:</span>
 </span><span id="L-727"><a href="#L-727"><span class="linenos">727</span></a>            <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span>
 </span><span id="L-728"><a href="#L-728"><span class="linenos">728</span></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
@@ -855,7 +855,7 @@
 </span><span id="L-739"><a href="#L-739"><span class="linenos">739</span></a>        <span class="k">return</span> <span class="n">decorator</span>
 </span><span id="L-740"><a href="#L-740"><span class="linenos">740</span></a>
 </span><span id="L-741"><a href="#L-741"><span class="linenos">741</span></a>
-</span><span id="L-742"><a href="#L-742"><span class="linenos">742</span></a><span class="k">def</span> <span class="nf">map_and_time</span><span class="p">(</span>
+</span><span id="L-742"><a href="#L-742"><span class="linenos">742</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_and_time</span><span class="p">(</span>
 </span><span id="L-743"><a href="#L-743"><span class="linenos">743</span></a>        <span class="n">repl</span><span class="p">:</span>
 </span><span id="L-744"><a href="#L-744"><span class="linenos">744</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span><span class="p">,</span>
 </span><span id="L-745"><a href="#L-745"><span class="linenos">745</span></a>        <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">,</span>
@@ -905,7 +905,7 @@
 </span><span id="L-789"><a href="#L-789"><span class="linenos">789</span></a>
 </span><span id="L-790"><a href="#L-790"><span class="linenos">790</span></a>    <span class="c1"># Note that we don&#39;t expand extra_args during the outer map.</span>
 </span><span id="L-791"><a href="#L-791"><span class="linenos">791</span></a>    <span class="c1"># This is needed to correctly evaluate whether each outcome is absorbing.</span>
-</span><span id="L-792"><a href="#L-792"><span class="linenos">792</span></a>    <span class="k">def</span> <span class="nf">transition_with_steps</span><span class="p">(</span><span class="n">outcome_and_steps</span><span class="p">,</span> <span class="n">extra_args</span><span class="p">):</span>
+</span><span id="L-792"><a href="#L-792"><span class="linenos">792</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">transition_with_steps</span><span class="p">(</span><span class="n">outcome_and_steps</span><span class="p">,</span> <span class="n">extra_args</span><span class="p">):</span>
 </span><span id="L-793"><a href="#L-793"><span class="linenos">793</span></a>        <span class="n">outcome</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="n">outcome_and_steps</span>
 </span><span id="L-794"><a href="#L-794"><span class="linenos">794</span></a>        <span class="n">next_outcome</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">transition_function</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_args</span><span class="p">)</span>
 </span><span id="L-795"><a href="#L-795"><span class="linenos">795</span></a>        <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">markov_chain</span><span class="o">.</span><span class="n">is_absorbing</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">next_outcome</span><span class="p">):</span>
@@ -919,7 +919,7 @@
 </span><span id="L-803"><a href="#L-803"><span class="linenos">803</span></a>               <span class="n">time_limit</span><span class="o">=</span><span class="n">time_limit</span><span class="p">)</span>
 </span><span id="L-804"><a href="#L-804"><span class="linenos">804</span></a>
 </span><span id="L-805"><a href="#L-805"><span class="linenos">805</span></a>
-</span><span id="L-806"><a href="#L-806"><span class="linenos">806</span></a><span class="k">def</span> <span class="nf">map_to_pool</span><span class="p">(</span>
+</span><span id="L-806"><a href="#L-806"><span class="linenos">806</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_to_pool</span><span class="p">(</span>
 </span><span id="L-807"><a href="#L-807"><span class="linenos">807</span></a>    <span class="n">repl</span><span class="p">:</span>
 </span><span id="L-808"><a href="#L-808"><span class="linenos">808</span></a>    <span class="s1">&#39;Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]&#39;</span><span class="p">,</span>
 </span><span id="L-809"><a href="#L-809"><span class="linenos">809</span></a>    <span class="o">/</span><span class="p">,</span>
@@ -988,7 +988,7 @@
     </div>
     <a class="headerlink" href="#d"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="d-20"><a href="#d-20"><span class="linenos">20</span></a><span class="nd">@cache</span>
-</span><span id="d-21"><a href="#d-21"><span class="linenos">21</span></a><span class="k">def</span> <span class="nf">d</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
+</span><span id="d-21"><a href="#d-21"><span class="linenos">21</span></a><span class="k">def</span><span class="w"> </span><span class="nf">d</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
 </span><span id="d-22"><a href="#d-22"><span class="linenos">22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A standard die, uniformly distributed from `1` to `sides` inclusive.</span>
 </span><span id="d-23"><a href="#d-23"><span class="linenos">23</span></a>
 </span><span id="d-24"><a href="#d-24"><span class="linenos">24</span></a><span class="sd">    Don&#39;t confuse this with `icepool.Die()`:</span>
@@ -1035,7 +1035,7 @@
     </div>
     <a class="headerlink" href="#z"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="z-39"><a href="#z-39"><span class="linenos">39</span></a><span class="nd">@cache</span>
-</span><span id="z-40"><a href="#z-40"><span class="linenos">40</span></a><span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
+</span><span id="z-40"><a href="#z-40"><span class="linenos">40</span></a><span class="k">def</span><span class="w"> </span><span class="nf">z</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
 </span><span id="z-41"><a href="#z-41"><span class="linenos">41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A die uniformly distributed from `0` to `sides - 1` inclusive.</span>
 </span><span id="z-42"><a href="#z-42"><span class="linenos">42</span></a><span class="sd">    </span>
 </span><span id="z-43"><a href="#z-43"><span class="linenos">43</span></a><span class="sd">    Equal to d(sides) - 1.</span>
@@ -1066,7 +1066,7 @@
 
     </div>
     <a class="headerlink" href="#coin"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="coin-75"><a href="#coin-75"><span class="linenos"> 75</span></a><span class="k">def</span> <span class="nf">coin</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Fraction</span><span class="p">,</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="coin-75"><a href="#coin-75"><span class="linenos"> 75</span></a><span class="k">def</span><span class="w"> </span><span class="nf">coin</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Fraction</span><span class="p">,</span>
 </span><span id="coin-76"><a href="#coin-76"><span class="linenos"> 76</span></a>         <span class="n">d</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 </span><span id="coin-77"><a href="#coin-77"><span class="linenos"> 77</span></a>         <span class="o">/</span><span class="p">,</span>
 </span><span id="coin-78"><a href="#coin-78"><span class="linenos"> 78</span></a>         <span class="o">*</span><span class="p">,</span>
@@ -1126,7 +1126,7 @@ not an int.</li>
 
     </div>
     <a class="headerlink" href="#stochastic_round"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="stochastic_round-108"><a href="#stochastic_round-108"><span class="linenos">108</span></a><span class="k">def</span> <span class="nf">stochastic_round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="stochastic_round-108"><a href="#stochastic_round-108"><span class="linenos">108</span></a><span class="k">def</span><span class="w"> </span><span class="nf">stochastic_round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
 </span><span id="stochastic_round-109"><a href="#stochastic_round-109"><span class="linenos">109</span></a>                     <span class="o">/</span><span class="p">,</span>
 </span><span id="stochastic_round-110"><a href="#stochastic_round-110"><span class="linenos">110</span></a>                     <span class="o">*</span><span class="p">,</span>
 </span><span id="stochastic_round-111"><a href="#stochastic_round-111"><span class="linenos">111</span></a>                     <span class="n">max_denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int]&#39;</span><span class="p">:</span>
@@ -1176,7 +1176,7 @@ Otherwise, the rounding will be performed without
 
     </div>
     <a class="headerlink" href="#one_hot"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="one_hot-129"><a href="#one_hot-129"><span class="linenos">129</span></a><span class="k">def</span> <span class="nf">one_hot</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[tuple[bool, ...]]&#39;</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="one_hot-129"><a href="#one_hot-129"><span class="linenos">129</span></a><span class="k">def</span><span class="w"> </span><span class="nf">one_hot</span><span class="p">(</span><span class="n">sides</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[tuple[bool, ...]]&#39;</span><span class="p">:</span>
 </span><span id="one_hot-130"><a href="#one_hot-130"><span class="linenos">130</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `Die` with `Vector` outcomes with one element set to `True` uniformly at random and the rest `False`.</span>
 </span><span id="one_hot-131"><a href="#one_hot-131"><span class="linenos">131</span></a>
 </span><span id="one_hot-132"><a href="#one_hot-132"><span class="linenos">132</span></a><span class="sd">    This is an easy (if somewhat expensive) way of representing how many dice</span>
@@ -1212,7 +1212,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 
     </div>
     <a class="headerlink" href="#from_cumulative"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="from_cumulative-144"><a href="#from_cumulative-144"><span class="linenos">144</span></a><span class="k">def</span> <span class="nf">from_cumulative</span><span class="p">(</span><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="from_cumulative-144"><a href="#from_cumulative-144"><span class="linenos">144</span></a><span class="k">def</span><span class="w"> </span><span class="nf">from_cumulative</span><span class="p">(</span><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
 </span><span id="from_cumulative-145"><a href="#from_cumulative-145"><span class="linenos">145</span></a>                    <span class="n">cumulative</span><span class="p">:</span> <span class="s1">&#39;Sequence[int] | Sequence[icepool.Die[bool]]&#39;</span><span class="p">,</span>
 </span><span id="from_cumulative-146"><a href="#from_cumulative-146"><span class="linenos">146</span></a>                    <span class="o">*</span><span class="p">,</span>
 </span><span id="from_cumulative-147"><a href="#from_cumulative-147"><span class="linenos">147</span></a>                    <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
@@ -1287,7 +1287,7 @@ e.g. constructing using a survival distribution.</li>
 
     </div>
     <a class="headerlink" href="#from_rv"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="from_rv-199"><a href="#from_rv-199"><span class="linenos">199</span></a><span class="k">def</span> <span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="from_rv-199"><a href="#from_rv-199"><span class="linenos">199</span></a><span class="k">def</span><span class="w"> </span><span class="nf">from_rv</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="from_rv-200"><a href="#from_rv-200"><span class="linenos">200</span></a>            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[int] | icepool.Die[float]&#39;</span><span class="p">:</span>
 </span><span id="from_rv-201"><a href="#from_rv-201"><span class="linenos">201</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructs a `Die` from a rv object (as `scipy.stats`).</span>
 </span><span id="from_rv-202"><a href="#from_rv-202"><span class="linenos">202</span></a>
@@ -1347,7 +1347,7 @@ compared to the denominator.</li>
 
     </div>
     <a class="headerlink" href="#pointwise_max"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="pointwise_max-254"><a href="#pointwise_max-254"><span class="linenos">254</span></a><span class="k">def</span> <span class="nf">pointwise_max</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="pointwise_max-254"><a href="#pointwise_max-254"><span class="linenos">254</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_max</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="pointwise_max-255"><a href="#pointwise_max-255"><span class="linenos">255</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects the highest chance of rolling &gt;= each outcome among the arguments.</span>
 </span><span id="pointwise_max-256"><a href="#pointwise_max-256"><span class="linenos">256</span></a>
 </span><span id="pointwise_max-257"><a href="#pointwise_max-257"><span class="linenos">257</span></a><span class="sd">    Naming not finalized.</span>
@@ -1417,7 +1417,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#pointwise_min"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="pointwise_min-301"><a href="#pointwise_min-301"><span class="linenos">301</span></a><span class="k">def</span> <span class="nf">pointwise_min</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="pointwise_min-301"><a href="#pointwise_min-301"><span class="linenos">301</span></a><span class="k">def</span><span class="w"> </span><span class="nf">pointwise_min</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">more_args</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
 </span><span id="pointwise_min-302"><a href="#pointwise_min-302"><span class="linenos">302</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects the highest chance of rolling &lt;= each outcome among the arguments.</span>
 </span><span id="pointwise_min-303"><a href="#pointwise_min-303"><span class="linenos">303</span></a>
 </span><span id="pointwise_min-304"><a href="#pointwise_min-304"><span class="linenos">304</span></a><span class="sd">    Naming not finalized.</span>
@@ -1487,7 +1487,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#min_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="min_outcome-344"><a href="#min_outcome-344"><span class="linenos">344</span></a><span class="k">def</span> <span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="min_outcome-344"><a href="#min_outcome-344"><span class="linenos">344</span></a><span class="k">def</span><span class="w"> </span><span class="nf">min_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="min_outcome-345"><a href="#min_outcome-345"><span class="linenos">345</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The minimum possible outcome among the populations.</span>
 </span><span id="min_outcome-346"><a href="#min_outcome-346"><span class="linenos">346</span></a><span class="sd">    </span>
 </span><span id="min_outcome-347"><a href="#min_outcome-347"><span class="linenos">347</span></a><span class="sd">    Args:</span>
@@ -1519,7 +1519,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#max_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="max_outcome-363"><a href="#max_outcome-363"><span class="linenos">363</span></a><span class="k">def</span> <span class="nf">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="max_outcome-363"><a href="#max_outcome-363"><span class="linenos">363</span></a><span class="k">def</span><span class="w"> </span><span class="nf">max_outcome</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Population[T]] | T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span><span id="max_outcome-364"><a href="#max_outcome-364"><span class="linenos">364</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The maximum possible outcome among the populations.</span>
 </span><span id="max_outcome-365"><a href="#max_outcome-365"><span class="linenos">365</span></a><span class="sd">    </span>
 </span><span id="max_outcome-366"><a href="#max_outcome-366"><span class="linenos">366</span></a><span class="sd">    Args:</span>
@@ -1551,7 +1551,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#consecutive"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="consecutive-372"><a href="#consecutive-372"><span class="linenos">372</span></a><span class="k">def</span> <span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="consecutive-372"><a href="#consecutive-372"><span class="linenos">372</span></a><span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 </span><span id="consecutive-373"><a href="#consecutive-373"><span class="linenos">373</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A minimal sequence of consecutive ints covering the argument sets.&quot;&quot;&quot;</span>
 </span><span id="consecutive-374"><a href="#consecutive-374"><span class="linenos">374</span></a>    <span class="n">start</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)),</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </span><span id="consecutive-375"><a href="#consecutive-375"><span class="linenos">375</span></a>    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1577,7 +1577,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#sorted_union"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="sorted_union-381"><a href="#sorted_union-381"><span class="linenos">381</span></a><span class="k">def</span> <span class="nf">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="sorted_union-381"><a href="#sorted_union-381"><span class="linenos">381</span></a><span class="k">def</span><span class="w"> </span><span class="nf">sorted_union</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span id="sorted_union-382"><a href="#sorted_union-382"><span class="linenos">382</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge sets into a sorted sequence.&quot;&quot;&quot;</span>
 </span><span id="sorted_union-383"><a href="#sorted_union-383"><span class="linenos">383</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
 </span><span id="sorted_union-384"><a href="#sorted_union-384"><span class="linenos">384</span></a>        <span class="k">return</span> <span class="p">()</span>
@@ -1601,7 +1601,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#commonize_denominator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="commonize_denominator-388"><a href="#commonize_denominator-388"><span class="linenos">388</span></a><span class="k">def</span> <span class="nf">commonize_denominator</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="commonize_denominator-388"><a href="#commonize_denominator-388"><span class="linenos">388</span></a><span class="k">def</span><span class="w"> </span><span class="nf">commonize_denominator</span><span class="p">(</span>
 </span><span id="commonize_denominator-389"><a href="#commonize_denominator-389"><span class="linenos">389</span></a>        <span class="o">*</span><span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span id="commonize_denominator-390"><a href="#commonize_denominator-390"><span class="linenos">390</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Scale the quantities of the dice so that all of them have the same denominator.</span>
 </span><span id="commonize_denominator-391"><a href="#commonize_denominator-391"><span class="linenos">391</span></a>
@@ -1653,7 +1653,7 @@ arguments.</li>
 
     </div>
     <a class="headerlink" href="#reduce"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="reduce-409"><a href="#reduce-409"><span class="linenos">409</span></a><span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="reduce-409"><a href="#reduce-409"><span class="linenos">409</span></a><span class="k">def</span><span class="w"> </span><span class="nf">reduce</span><span class="p">(</span>
 </span><span id="reduce-410"><a href="#reduce-410"><span class="linenos">410</span></a>        <span class="n">function</span><span class="p">:</span> <span class="s1">&#39;Callable[[T, T], T | icepool.Die[T] | icepool.RerollType]&#39;</span><span class="p">,</span>
 </span><span id="reduce-411"><a href="#reduce-411"><span class="linenos">411</span></a>        <span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="reduce-412"><a href="#reduce-412"><span class="linenos">412</span></a>        <span class="o">*</span><span class="p">,</span>
@@ -1717,7 +1717,7 @@ of dice.</li>
 
     </div>
     <a class="headerlink" href="#accumulate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="accumulate-440"><a href="#accumulate-440"><span class="linenos">440</span></a><span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="accumulate-440"><a href="#accumulate-440"><span class="linenos">440</span></a><span class="k">def</span><span class="w"> </span><span class="nf">accumulate</span><span class="p">(</span>
 </span><span id="accumulate-441"><a href="#accumulate-441"><span class="linenos">441</span></a>        <span class="n">function</span><span class="p">:</span> <span class="s1">&#39;Callable[[T, T], T | icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="accumulate-442"><a href="#accumulate-442"><span class="linenos">442</span></a>        <span class="n">dice</span><span class="p">:</span> <span class="s1">&#39;Iterable[T | icepool.Die[T]]&#39;</span><span class="p">,</span>
 </span><span id="accumulate-443"><a href="#accumulate-443"><span class="linenos">443</span></a>        <span class="o">*</span><span class="p">,</span>
@@ -1790,7 +1790,7 @@ of dice.</li>
 
     </div>
     <a class="headerlink" href="#map"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="map-500"><a href="#map-500"><span class="linenos">500</span></a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="map-500"><a href="#map-500"><span class="linenos">500</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span>
 </span><span id="map-501"><a href="#map-501"><span class="linenos">501</span></a>    <span class="n">repl</span><span class="p">:</span>
 </span><span id="map-502"><a href="#map-502"><span class="linenos">502</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span><span class="p">,</span>
 </span><span id="map-503"><a href="#map-503"><span class="linenos">503</span></a>    <span class="o">/</span><span class="p">,</span>
@@ -1879,7 +1879,7 @@ of dice.</li>
 </span><span id="map-586"><a href="#map-586"><span class="linenos">586</span></a>    <span class="k">if</span> <span class="n">repeat</span> <span class="o">==</span> <span class="s1">&#39;inf&#39;</span><span class="p">:</span>
 </span><span id="map-587"><a href="#map-587"><span class="linenos">587</span></a>        <span class="c1"># Infinite repeat.</span>
 </span><span id="map-588"><a href="#map-588"><span class="linenos">588</span></a>        <span class="c1"># T_co and U should be the same in this case.</span>
-</span><span id="map-589"><a href="#map-589"><span class="linenos">589</span></a>        <span class="k">def</span> <span class="nf">unary_transition_function</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+</span><span id="map-589"><a href="#map-589"><span class="linenos">589</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">unary_transition_function</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 </span><span id="map-590"><a href="#map-590"><span class="linenos">590</span></a>            <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">transition_function</span><span class="p">,</span>
 </span><span id="map-591"><a href="#map-591"><span class="linenos">591</span></a>                       <span class="n">state</span><span class="p">,</span>
 </span><span id="map-592"><a href="#map-592"><span class="linenos">592</span></a>                       <span class="o">*</span><span class="n">extra_args</span><span class="p">,</span>
@@ -2003,7 +2003,7 @@ is reached. If both <code>repeat</code> and <code>time_limit</code> are provided
 
     </div>
     <a class="headerlink" href="#map_function"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="map_function-673"><a href="#map_function-673"><span class="linenos">673</span></a><span class="k">def</span> <span class="nf">map_function</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="map_function-673"><a href="#map_function-673"><span class="linenos">673</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_function</span><span class="p">(</span>
 </span><span id="map_function-674"><a href="#map_function-674"><span class="linenos">674</span></a>    <span class="n">function</span><span class="p">:</span>
 </span><span id="map_function-675"><a href="#map_function-675"><span class="linenos">675</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | None&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="map_function-676"><a href="#map_function-676"><span class="linenos">676</span></a>    <span class="o">/</span><span class="p">,</span>
@@ -2056,7 +2056,7 @@ is reached. If both <code>repeat</code> and <code>time_limit</code> are provided
 </span><span id="map_function-723"><a href="#map_function-723"><span class="linenos">723</span></a>        <span class="k">return</span> <span class="n">update_wrapper</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">function</span><span class="p">),</span> <span class="n">function</span><span class="p">)</span>
 </span><span id="map_function-724"><a href="#map_function-724"><span class="linenos">724</span></a>    <span class="k">else</span><span class="p">:</span>
 </span><span id="map_function-725"><a href="#map_function-725"><span class="linenos">725</span></a>
-</span><span id="map_function-726"><a href="#map_function-726"><span class="linenos">726</span></a>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span>
+</span><span id="map_function-726"><a href="#map_function-726"><span class="linenos">726</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span>
 </span><span id="map_function-727"><a href="#map_function-727"><span class="linenos">727</span></a>            <span class="n">function</span><span class="p">:</span>
 </span><span id="map_function-728"><a href="#map_function-728"><span class="linenos">728</span></a>            <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span>
 </span><span id="map_function-729"><a href="#map_function-729"><span class="linenos">729</span></a>        <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Callable[..., icepool.Die[T]]&#39;</span><span class="p">:</span>
@@ -2086,7 +2086,7 @@ among other differences.</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="nd">@map_function</span>
-<span class="k">def</span> <span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2100,7 +2100,7 @@ among other differences.</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="nd">@map_function</span><span class="p">(</span><span class="n">again_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">explode_six</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">6</span> <span class="o">+</span> <span class="n">Again</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2130,7 +2130,7 @@ among other differences.</p>
 
     </div>
     <a class="headerlink" href="#map_and_time"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="map_and_time-743"><a href="#map_and_time-743"><span class="linenos">743</span></a><span class="k">def</span> <span class="nf">map_and_time</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="map_and_time-743"><a href="#map_and_time-743"><span class="linenos">743</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_and_time</span><span class="p">(</span>
 </span><span id="map_and_time-744"><a href="#map_and_time-744"><span class="linenos">744</span></a>        <span class="n">repl</span><span class="p">:</span>
 </span><span id="map_and_time-745"><a href="#map_and_time-745"><span class="linenos">745</span></a>    <span class="s1">&#39;Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]&#39;</span><span class="p">,</span>
 </span><span id="map_and_time-746"><a href="#map_and_time-746"><span class="linenos">746</span></a>        <span class="n">initial_state</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Die[T]&#39;</span><span class="p">,</span>
@@ -2180,7 +2180,7 @@ among other differences.</p>
 </span><span id="map_and_time-790"><a href="#map_and_time-790"><span class="linenos">790</span></a>
 </span><span id="map_and_time-791"><a href="#map_and_time-791"><span class="linenos">791</span></a>    <span class="c1"># Note that we don&#39;t expand extra_args during the outer map.</span>
 </span><span id="map_and_time-792"><a href="#map_and_time-792"><span class="linenos">792</span></a>    <span class="c1"># This is needed to correctly evaluate whether each outcome is absorbing.</span>
-</span><span id="map_and_time-793"><a href="#map_and_time-793"><span class="linenos">793</span></a>    <span class="k">def</span> <span class="nf">transition_with_steps</span><span class="p">(</span><span class="n">outcome_and_steps</span><span class="p">,</span> <span class="n">extra_args</span><span class="p">):</span>
+</span><span id="map_and_time-793"><a href="#map_and_time-793"><span class="linenos">793</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">transition_with_steps</span><span class="p">(</span><span class="n">outcome_and_steps</span><span class="p">,</span> <span class="n">extra_args</span><span class="p">):</span>
 </span><span id="map_and_time-794"><a href="#map_and_time-794"><span class="linenos">794</span></a>        <span class="n">outcome</span><span class="p">,</span> <span class="n">steps</span> <span class="o">=</span> <span class="n">outcome_and_steps</span>
 </span><span id="map_and_time-795"><a href="#map_and_time-795"><span class="linenos">795</span></a>        <span class="n">next_outcome</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">transition_function</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_args</span><span class="p">)</span>
 </span><span id="map_and_time-796"><a href="#map_and_time-796"><span class="linenos">796</span></a>        <span class="k">if</span> <span class="n">icepool</span><span class="o">.</span><span class="n">population</span><span class="o">.</span><span class="n">markov_chain</span><span class="o">.</span><span class="n">is_absorbing</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">next_outcome</span><span class="p">):</span>
@@ -2252,7 +2252,7 @@ up to this many times.</li>
 
     </div>
     <a class="headerlink" href="#map_to_pool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="map_to_pool-807"><a href="#map_to_pool-807"><span class="linenos">807</span></a><span class="k">def</span> <span class="nf">map_to_pool</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="map_to_pool-807"><a href="#map_to_pool-807"><span class="linenos">807</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_to_pool</span><span class="p">(</span>
 </span><span id="map_to_pool-808"><a href="#map_to_pool-808"><span class="linenos">808</span></a>    <span class="n">repl</span><span class="p">:</span>
 </span><span id="map_to_pool-809"><a href="#map_to_pool-809"><span class="linenos">809</span></a>    <span class="s1">&#39;Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]&#39;</span><span class="p">,</span>
 </span><span id="map_to_pool-810"><a href="#map_to_pool-810"><span class="linenos">810</span></a>    <span class="o">/</span><span class="p">,</span>
