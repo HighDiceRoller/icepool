@@ -726,7 +726,8 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
               star: bool | None = None) -> tuple[C, C]:
         """Splits this population into one containing selected items and another containing the rest.
 
-        The total denominator is preserved.
+        The sum of the denominators of the results is equal to the denominator
+        of this population.
 
         Args:
             which: Selects which outcomes to select. Options:
@@ -752,6 +753,43 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
                 not_selected[outcome] = count
 
         return self._new_type(selected), self._new_type(not_selected)
+
+    def group_by(self,
+                 key_map: Callable[..., U] | Mapping[T_co, U],
+                 /,
+                 *,
+                 star: bool | None = None) -> Mapping[U, C]:
+        """Splits this population into sub-populations based on a key function.
+        
+        The sum of the denominators of the results is equal to the denominator
+        of this population.
+
+        This can be useful when using the law of total probability.
+
+        Args:
+            key_map: A function or mapping that takes outcomes and produces the
+                key of the corresponding outcome in the result. If this is
+                a Mapping, outcomes not in the mapping are their own key.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `key_map`.
+                If not provided, this will be guessed based on the function
+                signature.
+        """
+        if callable(key_map):
+            if star is None:
+                star = infer_star(key_map)
+            key_function = key_map
+        else:
+            key_function = lambda o: key_map.get(o, o)
+        if star is None:
+            star = infer_star(key_map)
+        result_datas: MutableMapping[U, MutableMapping[T_co, int]] = {}
+        for outcome, quantity in self.items():
+            key = key_function(outcome)
+            if key not in result_datas:
+                result_datas[key] = defaultdict(int)
+            result_datas[key][outcome] += quantity
+        return {k: self._new_type(v) for k, v in result_datas.items()}
 
     def sample(self) -> T_co:
         """A single random sample from this population.

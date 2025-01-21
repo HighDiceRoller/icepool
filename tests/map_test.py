@@ -210,3 +210,11 @@ def test_map_time_limit():
                         time_limit=10) == Die([0]).map(test_function,
                                                        d6,
                                                        time_limit=20)
+
+
+def test_group_by():
+    result = d6.group_by(lambda x: x % 3)
+    assert len(result) == 3
+    assert result[0] == Die([3, 6])
+    assert result[1] == Die([1, 4])
+    assert result[2] == Die([2, 5])
