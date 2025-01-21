@@ -4,7 +4,7 @@ import icepool
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.collection.vector import Vector
 from icepool.math import try_fraction
-from icepool.typing import U, Outcome, T_co, count_positional_parameters
+from icepool.typing import U, Outcome, T_co, count_positional_parameters, infer_star
 
 from abc import ABC, abstractmethod
 import bisect
@@ -17,7 +17,7 @@ import numbers
 import operator
 import random
 
-from typing import Any, Callable, Generic, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, Sized, TypeVar, cast, overload
+from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, Set, Sized, TypeVar, cast, overload
 
 C = TypeVar('C', bound='Population')
 """Type variable representing a subclass of `Population`."""
@@ -675,6 +675,29 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
     # Transformations.
 
+    def _select_outcomes(self, which: Callable[..., bool] | Collection[T_co],
+                         star: bool | None) -> Set[T_co]:
+        """Returns a set of outcomes of self that fit the given condition."""
+        if callable(which):
+            if star is None:
+                star = infer_star(which)
+            if star:
+                # Need TypeVarTuple to check this.
+                return {
+                    outcome
+                    for outcome in self.outcomes()
+                    if which(*outcome)  # type: ignore
+                }
+            else:
+                return {
+                    outcome
+                    for outcome in self.outcomes() if which(outcome)
+                }
+        else:
+            # Collection.
+            return set(outcome for outcome in self.outcomes()
+                       if outcome in which)
+
     def to_one_hot(self: C, outcomes: Sequence[T_co] | None = None) -> C:
         """Converts the outcomes of this population to a one-hot representation.
 
@@ -695,6 +718,40 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
                 value[outcomes.index(outcome)] = True
             data[Vector(value)] += quantity
         return self._new_type(data)
+
+    def split(self,
+              which: Callable[..., bool] | Collection[T_co] | None = None,
+              /,
+              *,
+              star: bool | None = None) -> tuple[C, C]:
+        """Splits this population into one containing selected items and another containing the rest.
+
+        The total denominator is preserved.
+
+        Args:
+            which: Selects which outcomes to select. Options:
+                * A callable that takes an outcome and returns `True` if it
+                    should be accepted.
+                * A collection of outcomes to select.
+            star: Whether outcomes should be unpacked into separate arguments
+                before sending them to a callable `which`.
+                If not provided, this will be guessed based on the function
+                signature.
+        """
+        if which is None:
+            outcome_set = {self.min_outcome()}
+        else:
+            outcome_set = self._select_outcomes(which, star)
+
+        selected = {}
+        not_selected = {}
+        for outcome, count in self.items():
+            if outcome in outcome_set:
+                selected[outcome] = count
+            else:
+                not_selected[outcome] = count
+
+        return self._new_type(selected), self._new_type(not_selected)
 
     def sample(self) -> T_co:
         """A single random sample from this population.

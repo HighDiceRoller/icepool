@@ -277,29 +277,6 @@ class Die(Population[T_co]):
 
     # Rerolls and other outcome management.
 
-    def _select_outcomes(self, which: Callable[..., bool] | Collection[T_co],
-                         star: bool | None) -> Set[T_co]:
-        """Returns a set of outcomes of self that fit the given condition."""
-        if callable(which):
-            if star is None:
-                star = infer_star(which)
-            if star:
-                # Need TypeVarTuple to check this.
-                return {
-                    outcome
-                    for outcome in self.outcomes()
-                    if which(*outcome)  # type: ignore
-                }
-            else:
-                return {
-                    outcome
-                    for outcome in self.outcomes() if which(outcome)
-                }
-        else:
-            # Collection.
-            return set(outcome for outcome in self.outcomes()
-                       if outcome in which)
-
     def reroll(self,
                which: Callable[..., bool] | Collection[T_co] | None = None,
                /,
@@ -408,42 +385,6 @@ class Die(Population[T_co]):
                 for not_outcome in self.outcomes() if not_outcome not in which
             }
         return self.reroll(not_outcomes, depth=depth)
-
-    def split(self,
-              which: Callable[..., bool] | Collection[T_co] | None = None,
-              /,
-              *,
-              star: bool | None = None):
-        """Splits this die into one containing selected items and another containing the rest.
-
-        The total denominator is preserved.
-        
-        Equivalent to `self.filter(), self.reroll()`.
-
-        Args:
-            which: Selects which outcomes to reroll until. Options:
-                * A callable that takes an outcome and returns `True` if it
-                    should be accepted.
-                * A collection of outcomes to reroll until.
-            star: Whether outcomes should be unpacked into separate arguments
-                before sending them to a callable `which`.
-                If not provided, this will be guessed based on the function
-                signature.
-        """
-        if which is None:
-            outcome_set = {self.min_outcome()}
-        else:
-            outcome_set = self._select_outcomes(which, star)
-
-        selected = {}
-        not_selected = {}
-        for outcome, count in self.items():
-            if outcome in outcome_set:
-                selected[outcome] = count
-            else:
-                not_selected[outcome] = count
-
-        return Die(selected), Die(not_selected)
 
     def truncate(self, min_outcome=None, max_outcome=None) -> 'Die[T_co]':
         """Truncates the outcomes of this `Die` to the given range.
@@ -1103,6 +1044,8 @@ class Die(Population[T_co]):
             explode_set = self._select_outcomes(which, star)
         if not explode_set:
             return self.pool(rolls)
+        explode: 'Die[T_co]'
+        not_explode: 'Die[T_co]'
         explode, not_explode = self.split(explode_set)
 
         single_data: 'MutableMapping[icepool.Vector[int], int]' = defaultdict(
@@ -1170,6 +1113,8 @@ class Die(Population[T_co]):
         if not rerollable_set:
             return self.pool(rolls)
 
+        rerollable_die: 'Die[T_co]'
+        not_rerollable_die: 'Die[T_co]'
         rerollable_die, not_rerollable_die = self.split(rerollable_set)
         single_is_rerollable = icepool.coin(rerollable_die.denominator(),
                                             self.denominator())
