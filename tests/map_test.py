@@ -218,3 +218,18 @@ def test_group_by():
     assert result[0] == Die([3, 6, 9])
     assert result[1] == Die([1, 4, 7, 10])
     assert result[2] == Die([2, 5, 8])
+
+
+def test_group_by_index():
+    initial = Die([
+        'aardvark',
+        'alligator',
+        'asp',
+        'blowfish',
+        'cat',
+        'crocodile',
+    ])
+    result = initial.group_by[0]
+    assert result['a'] == Die(['aardvark', 'alligator', 'asp'])
+    assert result['b'] == Die(['blowfish'])
+    assert result['c'] == Die(['cat', 'crocodile'])

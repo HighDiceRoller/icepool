@@ -754,12 +754,53 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         return self._new_type(selected), self._new_type(not_selected)
 
-    def group_by(self,
-                 key_map: Callable[..., U] | Mapping[T_co, U],
-                 /,
-                 *,
-                 star: bool | None = None) -> Mapping[U, C]:
-        """Splits this population into sub-populations based on a key function.
+    class _GroupBy(Generic[C]):
+        """Helper class for implementing `group_by()`."""
+
+        _population: C
+
+        def __init__(self, population, /):
+            self._population = population
+
+        def __call__(self,
+                     key_map: Callable[..., U] | Mapping[T_co, U],
+                     /,
+                     *,
+                     star: bool | None = None) -> Mapping[U, C]:
+            if callable(key_map):
+                if star is None:
+                    star = infer_star(key_map)
+                if star:
+                    key_function = lambda o: key_map(*o)
+                else:
+                    key_function = key_map
+            else:
+                key_function = lambda o: key_map.get(o, o)
+
+            result_datas: MutableMapping[U, MutableMapping[Any, int]] = {}
+            outcome: Any
+            for outcome, quantity in self._population.items():
+                key = key_function(outcome)
+                if key not in result_datas:
+                    result_datas[key] = defaultdict(int)
+                result_datas[key][outcome] += quantity
+            return {
+                k: self._population._new_type(v)
+                for k, v in result_datas.items()
+            }
+
+        def __getitem__(self, dims: int | slice, /):
+            """Marginalizes the given dimensions."""
+            return self(lambda x: x[dims])
+
+        def __getattr__(self, key: str):
+            if key[0] == '_':
+                raise AttributeError(key)
+            return self(lambda x: getattr(x, key))
+
+    @property
+    def group_by(self: C) -> _GroupBy[C]:
+        """A method-like property that splits this population into sub-populations based on a key function.
         
         The sum of the denominators of the results is equal to the denominator
         of this population.
@@ -767,11 +808,35 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         This can be useful when using the law of total probability.
 
         Example: `d10.group_by(lambda x: x % 3)` is
-        ```
+        ```python
         {
             0: Die([3, 6, 9]),
             1: Die([1, 4, 7, 10]),
             2: Die([2, 5, 8]),
+        }
+        ```
+
+        You can also use brackets to group by indexes or slices; or attributes
+        to group by those. Example:
+
+        ```python
+        Die([
+            'aardvark',
+            'alligator',
+            'asp',
+            'blowfish',
+            'cat',
+            'crocodile',
+        ]).group_by[0]
+        ```
+
+        produces
+
+        ```python
+        {
+            'a': Die(['aardvark', 'alligator', 'asp']),
+            'b': Die(['blowfish']),
+            'c': Die(['cat', 'crocodile']),
         }
         ```
 
@@ -784,24 +849,7 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
                 If not provided, this will be guessed based on the function
                 signature.
         """
-        if callable(key_map):
-            if star is None:
-                star = infer_star(key_map)
-            if star:
-                key_function = lambda o: key_map(*o)
-            else:
-                key_function = key_map
-        else:
-            key_function = lambda o: key_map.get(o, o)
-
-        result_datas: MutableMapping[U, MutableMapping[Any, int]] = {}
-        outcome: Any
-        for outcome, quantity in self.items():
-            key = key_function(outcome)
-            if key not in result_datas:
-                result_datas[key] = defaultdict(int)
-            result_datas[key][outcome] += quantity
-        return {k: self._new_type(v) for k, v in result_datas.items()}
+        return Population._GroupBy(self)
 
     def sample(self) -> T_co:
         """A single random sample from this population.
