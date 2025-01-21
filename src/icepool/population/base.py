@@ -729,15 +729,21 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         The sum of the denominators of the results is equal to the denominator
         of this population.
 
+        If you want to split more than two ways, use `Population.group_by()`.
+
         Args:
             which: Selects which outcomes to select. Options:
                 * A callable that takes an outcome and returns `True` if it
-                    should be accepted.
+                    should be selected.
                 * A collection of outcomes to select.
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
                 signature.
+
+        Returns:
+            A population consisting of the outcomes that were selected by
+            `which`, and a population consisting of the unselected outcomes.
         """
         if which is None:
             outcome_set = {self.min_outcome()}
