@@ -766,6 +766,15 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
 
         This can be useful when using the law of total probability.
 
+        Example: `d10.group_by(lambda x: x % 3)` is
+        ```
+        {
+            0: Die([3, 6, 9]),
+            1: Die([1, 4, 7, 10]),
+            2: Die([2, 5, 8]),
+        }
+        ```
+
         Args:
             key_map: A function or mapping that takes outcomes and produces the
                 key of the corresponding outcome in the result. If this is
@@ -778,12 +787,15 @@ class Population(ABC, Generic[T_co], Mapping[Any, int]):
         if callable(key_map):
             if star is None:
                 star = infer_star(key_map)
-            key_function = key_map
+            if star:
+                key_function = lambda o: key_map(*o)
+            else:
+                key_function = key_map
         else:
             key_function = lambda o: key_map.get(o, o)
-        if star is None:
-            star = infer_star(key_map)
-        result_datas: MutableMapping[U, MutableMapping[T_co, int]] = {}
+
+        result_datas: MutableMapping[U, MutableMapping[Any, int]] = {}
+        outcome: Any
         for outcome, quantity in self.items():
             key = key_function(outcome)
             if key not in result_datas:

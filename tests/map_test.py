@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d, d6, Die, coin
+from icepool import d, d6, d10, Die, coin
 from fractions import Fraction
 
 expected_d6x1 = icepool.Die([1, 2, 3, 4, 5] * 6 + [7, 8, 9, 10, 11, 12])
@@ -213,8 +213,8 @@ def test_map_time_limit():
 
 
 def test_group_by():
-    result = d6.group_by(lambda x: x % 3)
+    result = d10.group_by(lambda x: x % 3)
     assert len(result) == 3
-    assert result[0] == Die([3, 6])
-    assert result[1] == Die([1, 4])
-    assert result[2] == Die([2, 5])
+    assert result[0] == Die([3, 6, 9])
+    assert result[1] == Die([1, 4, 7, 10])
+    assert result[2] == Die([2, 5, 8])
