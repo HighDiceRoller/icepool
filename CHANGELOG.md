@@ -4,6 +4,10 @@
 * Instead of specifying `order()` for an evaluator, you can now implement `next_state_ascending()` and/or `next_state_descending()`.
 * `Alignment` now has a denominator of 1.
 * `keep()`, `isdisjoint()`, `sort_match()`, and `maximum_match()` operations now treat negative incoming counts as zero rather than raising an error.
+* Add `Population.group_by()` method to split a population into a "covering" set of conditional probabilities.
+  * `Population.group_by[]` can also be used to group by index or slice.
+* Move `split()` from `Die` to the base `Population` class.
+* Straight-related multiset operations can now choose between prioritizing low and high outcomes.
 * Store original names of `@multiset_function` parameters.
 
 ## v1.6.2 - 23 December 2024
