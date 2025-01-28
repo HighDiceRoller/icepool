@@ -507,7 +507,7 @@
                                 <a class="function" href="#NoExpand.__init__">NoExpand</a>
                         </li>
                         <li>
-                                <a class="variable" href="#NoExpand.value">value</a>
+                                <a class="variable" href="#NoExpand.arg">arg</a>
                         </li>
                 </ul>
 
@@ -10898,32 +10898,39 @@ modification.</li>
     <a class="headerlink" href="#NoExpand"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="NoExpand-68"><a href="#NoExpand-68"><span class="linenos">68</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NoExpand</span><span class="p">(</span><span class="n">Expandable</span><span class="p">[</span><span class="n">A_co</span><span class="p">]):</span>
 </span><span id="NoExpand-69"><a href="#NoExpand-69"><span class="linenos">69</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps an argument, instructing `map` and similar functions not to expand it.</span>
-</span><span id="NoExpand-70"><a href="#NoExpand-70"><span class="linenos">70</span></a><span class="sd">    </span>
-</span><span id="NoExpand-71"><a href="#NoExpand-71"><span class="linenos">71</span></a><span class="sd">    Example:</span>
-</span><span id="NoExpand-72"><a href="#NoExpand-72"><span class="linenos">72</span></a><span class="sd">    ```python</span>
-</span><span id="NoExpand-73"><a href="#NoExpand-73"><span class="linenos">73</span></a><span class="sd">    map(lambda x: (x, x), d6)</span>
-</span><span id="NoExpand-74"><a href="#NoExpand-74"><span class="linenos">74</span></a><span class="sd">    # Here the d6 is expanded so that the function is evaluated six times</span>
-</span><span id="NoExpand-75"><a href="#NoExpand-75"><span class="linenos">75</span></a><span class="sd">    # with x = 1, 2, 3, 4, 5, 6.</span>
-</span><span id="NoExpand-76"><a href="#NoExpand-76"><span class="linenos">76</span></a><span class="sd">    # = Die([(1, 1), (2, 2), (3, 3), ...])</span>
-</span><span id="NoExpand-77"><a href="#NoExpand-77"><span class="linenos">77</span></a>
-</span><span id="NoExpand-78"><a href="#NoExpand-78"><span class="linenos">78</span></a><span class="sd">    map(lambda x: (x, x), NoExpand(d6))</span>
-</span><span id="NoExpand-79"><a href="#NoExpand-79"><span class="linenos">79</span></a><span class="sd">    # Here the d6 is passed as a Die to the function, which then rolls it twice</span>
-</span><span id="NoExpand-80"><a href="#NoExpand-80"><span class="linenos">80</span></a><span class="sd">    # independently.</span>
-</span><span id="NoExpand-81"><a href="#NoExpand-81"><span class="linenos">81</span></a><span class="sd">    # = Die([(1, 1), (1, 2), (1, 3), ...])</span>
-</span><span id="NoExpand-82"><a href="#NoExpand-82"><span class="linenos">82</span></a><span class="sd">    # = tupleize(d6, d6)</span>
-</span><span id="NoExpand-83"><a href="#NoExpand-83"><span class="linenos">83</span></a><span class="sd">    ```</span>
-</span><span id="NoExpand-84"><a href="#NoExpand-84"><span class="linenos">84</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="NoExpand-85"><a href="#NoExpand-85"><span class="linenos">85</span></a>
-</span><span id="NoExpand-86"><a href="#NoExpand-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="NoExpand-87"><a href="#NoExpand-87"><span class="linenos">87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="NoExpand-88"><a href="#NoExpand-88"><span class="linenos">88</span></a>
-</span><span id="NoExpand-89"><a href="#NoExpand-89"><span class="linenos">89</span></a>    <span class="nd">@property</span>
-</span><span id="NoExpand-90"><a href="#NoExpand-90"><span class="linenos">90</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">A_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span id="NoExpand-91"><a href="#NoExpand-91"><span class="linenos">91</span></a>        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+</span><span id="NoExpand-70"><a href="#NoExpand-70"><span class="linenos">70</span></a>
+</span><span id="NoExpand-71"><a href="#NoExpand-71"><span class="linenos">71</span></a><span class="sd">    This is not intended for use outside of `map` (or similar) call sites.</span>
+</span><span id="NoExpand-72"><a href="#NoExpand-72"><span class="linenos">72</span></a><span class="sd">    </span>
+</span><span id="NoExpand-73"><a href="#NoExpand-73"><span class="linenos">73</span></a><span class="sd">    Example:</span>
+</span><span id="NoExpand-74"><a href="#NoExpand-74"><span class="linenos">74</span></a><span class="sd">    ```python</span>
+</span><span id="NoExpand-75"><a href="#NoExpand-75"><span class="linenos">75</span></a><span class="sd">    map(lambda x: (x, x), d6)</span>
+</span><span id="NoExpand-76"><a href="#NoExpand-76"><span class="linenos">76</span></a><span class="sd">    # Here the d6 is expanded so that the function is evaluated six times</span>
+</span><span id="NoExpand-77"><a href="#NoExpand-77"><span class="linenos">77</span></a><span class="sd">    # with x = 1, 2, 3, 4, 5, 6.</span>
+</span><span id="NoExpand-78"><a href="#NoExpand-78"><span class="linenos">78</span></a><span class="sd">    # = Die([(1, 1), (2, 2), (3, 3), ...])</span>
+</span><span id="NoExpand-79"><a href="#NoExpand-79"><span class="linenos">79</span></a>
+</span><span id="NoExpand-80"><a href="#NoExpand-80"><span class="linenos">80</span></a><span class="sd">    map(lambda x: (x, x), NoExpand(d6))</span>
+</span><span id="NoExpand-81"><a href="#NoExpand-81"><span class="linenos">81</span></a><span class="sd">    # Here the d6 is passed as a Die to the function, which then rolls it twice</span>
+</span><span id="NoExpand-82"><a href="#NoExpand-82"><span class="linenos">82</span></a><span class="sd">    # independently.</span>
+</span><span id="NoExpand-83"><a href="#NoExpand-83"><span class="linenos">83</span></a><span class="sd">    # = Die([(1, 1), (1, 2), (1, 3), ...])</span>
+</span><span id="NoExpand-84"><a href="#NoExpand-84"><span class="linenos">84</span></a><span class="sd">    # = tupleize(d6, d6)</span>
+</span><span id="NoExpand-85"><a href="#NoExpand-85"><span class="linenos">85</span></a><span class="sd">    ```</span>
+</span><span id="NoExpand-86"><a href="#NoExpand-86"><span class="linenos">86</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="NoExpand-87"><a href="#NoExpand-87"><span class="linenos">87</span></a>
+</span><span id="NoExpand-88"><a href="#NoExpand-88"><span class="linenos">88</span></a>    <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span>
+</span><span id="NoExpand-89"><a href="#NoExpand-89"><span class="linenos">89</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The wrapped argument.&quot;&quot;&quot;</span>
+</span><span id="NoExpand-90"><a href="#NoExpand-90"><span class="linenos">90</span></a>
+</span><span id="NoExpand-91"><a href="#NoExpand-91"><span class="linenos">91</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="NoExpand-92"><a href="#NoExpand-92"><span class="linenos">92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+</span><span id="NoExpand-93"><a href="#NoExpand-93"><span class="linenos">93</span></a>
+</span><span id="NoExpand-94"><a href="#NoExpand-94"><span class="linenos">94</span></a>    <span class="nd">@property</span>
+</span><span id="NoExpand-95"><a href="#NoExpand-95"><span class="linenos">95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">A_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="NoExpand-96"><a href="#NoExpand-96"><span class="linenos">96</span></a>        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Wraps an argument, instructing <code><a href="#map">map</a></code> and similar functions not to expand it.</p>
+
+<p>This is not intended for use outside of <code><a href="#map">map</a></code> (or similar) call sites.</p>
 
 <p>Example:</p>
 
@@ -10947,29 +10954,31 @@ modification.</li>
                                         <input id="NoExpand.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">NoExpand</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">value</span><span class="p">:</span> <span class="o">+</span><span class="n">A_co</span>, </span><span class="param"><span class="o">/</span></span>)</span>
+        <span class="name">NoExpand</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">arg</span><span class="p">:</span> <span class="o">+</span><span class="n">A_co</span>, </span><span class="param"><span class="o">/</span></span>)</span>
 
                 <label class="view-source-button" for="NoExpand.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NoExpand.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NoExpand.__init__-86"><a href="#NoExpand.__init__-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="NoExpand.__init__-87"><a href="#NoExpand.__init__-87"><span class="linenos">87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NoExpand.__init__-91"><a href="#NoExpand.__init__-91"><span class="linenos">91</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="NoExpand.__init__-92"><a href="#NoExpand.__init__-92"><span class="linenos">92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="NoExpand.value" class="classattr">
+                            <div id="NoExpand.arg" class="classattr">
                                 <div class="attr variable">
-            <span class="name">value</span>
+            <span class="name">arg</span><span class="annotation">: +A_co</span>
 
         
     </div>
-    <a class="headerlink" href="#NoExpand.value"></a>
+    <a class="headerlink" href="#NoExpand.arg"></a>
     
-    
+            <div class="docstring"><p>The wrapped argument.</p>
+</div>
+
 
                             </div>
                 </section>

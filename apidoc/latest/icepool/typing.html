@@ -92,7 +92,7 @@
                                 <a class="function" href="#NoExpand.__init__">NoExpand</a>
                         </li>
                         <li>
-                                <a class="variable" href="#NoExpand.value">value</a>
+                                <a class="variable" href="#NoExpand.arg">arg</a>
                         </li>
                 </ul>
 
@@ -198,71 +198,76 @@
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NoExpand</span><span class="p">(</span><span class="n">Expandable</span><span class="p">[</span><span class="n">A_co</span><span class="p">]):</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps an argument, instructing `map` and similar functions not to expand it.</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">    </span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">    Example:</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">    ```python</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    map(lambda x: (x, x), d6)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">    # Here the d6 is expanded so that the function is evaluated six times</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">    # with x = 1, 2, 3, 4, 5, 6.</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">    # = Die([(1, 1), (2, 2), (3, 3), ...])</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">    map(lambda x: (x, x), NoExpand(d6))</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="sd">    # Here the d6 is passed as a Die to the function, which then rolls it twice</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    # independently.</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">    # = Die([(1, 1), (1, 2), (1, 3), ...])</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">    # = tupleize(d6, d6)</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">    ```</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="nd">@property</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">A_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">    This is not intended for use outside of `map` (or similar) call sites.</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="sd">    </span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    Example:</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">    ```python</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">    map(lambda x: (x, x), d6)</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="sd">    # Here the d6 is expanded so that the function is evaluated six times</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">    # with x = 1, 2, 3, 4, 5, 6.</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">    # = Die([(1, 1), (2, 2), (3, 3), ...])</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    map(lambda x: (x, x), NoExpand(d6))</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">    # Here the d6 is passed as a Die to the function, which then rolls it twice</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">    # independently.</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">    # = Die([(1, 1), (1, 2), (1, 3), ...])</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">    # = tupleize(d6, d6)</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    ```</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The wrapped argument.&quot;&quot;&quot;</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    Returns:</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        is a variadic `*args`.</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                <span class="k">break</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="nd">@property</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">A_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">    Returns:</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        is a variadic `*args`.</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>                <span class="k">break</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
 </span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">    Args:</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>        <span class="p">)</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">    Args:</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>        <span class="p">)</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
@@ -501,33 +506,33 @@
 
     </div>
     <a class="headerlink" href="#Expandable.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Expandable.__init__-1767"><a href="#Expandable.__init__-1767"><span class="linenos">1767</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_no_init_or_replace_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="Expandable.__init__-1768"><a href="#Expandable.__init__-1768"><span class="linenos">1768</span></a>    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Expandable.__init__-1769"><a href="#Expandable.__init__-1769"><span class="linenos">1769</span></a>
-</span><span id="Expandable.__init__-1770"><a href="#Expandable.__init__-1770"><span class="linenos">1770</span></a>    <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_protocol</span><span class="p">:</span>
-</span><span id="Expandable.__init__-1771"><a href="#Expandable.__init__-1771"><span class="linenos">1771</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
-</span><span id="Expandable.__init__-1772"><a href="#Expandable.__init__-1772"><span class="linenos">1772</span></a>
-</span><span id="Expandable.__init__-1773"><a href="#Expandable.__init__-1773"><span class="linenos">1773</span></a>    <span class="c1"># Already using a custom `__init__`. No need to calculate correct</span>
-</span><span id="Expandable.__init__-1774"><a href="#Expandable.__init__-1774"><span class="linenos">1774</span></a>    <span class="c1"># `__init__` to call. This can lead to RecursionError. See bpo-45121.</span>
-</span><span id="Expandable.__init__-1775"><a href="#Expandable.__init__-1775"><span class="linenos">1775</span></a>    <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_no_init_or_replace_init</span><span class="p">:</span>
-</span><span id="Expandable.__init__-1776"><a href="#Expandable.__init__-1776"><span class="linenos">1776</span></a>        <span class="k">return</span>
-</span><span id="Expandable.__init__-1777"><a href="#Expandable.__init__-1777"><span class="linenos">1777</span></a>
-</span><span id="Expandable.__init__-1778"><a href="#Expandable.__init__-1778"><span class="linenos">1778</span></a>    <span class="c1"># Initially, `__init__` of a protocol subclass is set to `_no_init_or_replace_init`.</span>
-</span><span id="Expandable.__init__-1779"><a href="#Expandable.__init__-1779"><span class="linenos">1779</span></a>    <span class="c1"># The first instantiation of the subclass will call `_no_init_or_replace_init` which</span>
-</span><span id="Expandable.__init__-1780"><a href="#Expandable.__init__-1780"><span class="linenos">1780</span></a>    <span class="c1"># searches for a proper new `__init__` in the MRO. The new `__init__`</span>
-</span><span id="Expandable.__init__-1781"><a href="#Expandable.__init__-1781"><span class="linenos">1781</span></a>    <span class="c1"># replaces the subclass&#39; old `__init__` (ie `_no_init_or_replace_init`). Subsequent</span>
-</span><span id="Expandable.__init__-1782"><a href="#Expandable.__init__-1782"><span class="linenos">1782</span></a>    <span class="c1"># instantiation of the protocol subclass will thus use the new</span>
-</span><span id="Expandable.__init__-1783"><a href="#Expandable.__init__-1783"><span class="linenos">1783</span></a>    <span class="c1"># `__init__` and no longer call `_no_init_or_replace_init`.</span>
-</span><span id="Expandable.__init__-1784"><a href="#Expandable.__init__-1784"><span class="linenos">1784</span></a>    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
-</span><span id="Expandable.__init__-1785"><a href="#Expandable.__init__-1785"><span class="linenos">1785</span></a>        <span class="n">init</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;__init__&#39;</span><span class="p">,</span> <span class="n">_no_init_or_replace_init</span><span class="p">)</span>
-</span><span id="Expandable.__init__-1786"><a href="#Expandable.__init__-1786"><span class="linenos">1786</span></a>        <span class="k">if</span> <span class="n">init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_no_init_or_replace_init</span><span class="p">:</span>
-</span><span id="Expandable.__init__-1787"><a href="#Expandable.__init__-1787"><span class="linenos">1787</span></a>            <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">init</span>
-</span><span id="Expandable.__init__-1788"><a href="#Expandable.__init__-1788"><span class="linenos">1788</span></a>            <span class="k">break</span>
-</span><span id="Expandable.__init__-1789"><a href="#Expandable.__init__-1789"><span class="linenos">1789</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="Expandable.__init__-1790"><a href="#Expandable.__init__-1790"><span class="linenos">1790</span></a>        <span class="c1"># should not happen</span>
-</span><span id="Expandable.__init__-1791"><a href="#Expandable.__init__-1791"><span class="linenos">1791</span></a>        <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__init__</span>
-</span><span id="Expandable.__init__-1792"><a href="#Expandable.__init__-1792"><span class="linenos">1792</span></a>
-</span><span id="Expandable.__init__-1793"><a href="#Expandable.__init__-1793"><span class="linenos">1793</span></a>    <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Expandable.__init__-1941"><a href="#Expandable.__init__-1941"><span class="linenos">1941</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_no_init_or_replace_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="Expandable.__init__-1942"><a href="#Expandable.__init__-1942"><span class="linenos">1942</span></a>    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="Expandable.__init__-1943"><a href="#Expandable.__init__-1943"><span class="linenos">1943</span></a>
+</span><span id="Expandable.__init__-1944"><a href="#Expandable.__init__-1944"><span class="linenos">1944</span></a>    <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_protocol</span><span class="p">:</span>
+</span><span id="Expandable.__init__-1945"><a href="#Expandable.__init__-1945"><span class="linenos">1945</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
+</span><span id="Expandable.__init__-1946"><a href="#Expandable.__init__-1946"><span class="linenos">1946</span></a>
+</span><span id="Expandable.__init__-1947"><a href="#Expandable.__init__-1947"><span class="linenos">1947</span></a>    <span class="c1"># Already using a custom `__init__`. No need to calculate correct</span>
+</span><span id="Expandable.__init__-1948"><a href="#Expandable.__init__-1948"><span class="linenos">1948</span></a>    <span class="c1"># `__init__` to call. This can lead to RecursionError. See bpo-45121.</span>
+</span><span id="Expandable.__init__-1949"><a href="#Expandable.__init__-1949"><span class="linenos">1949</span></a>    <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_no_init_or_replace_init</span><span class="p">:</span>
+</span><span id="Expandable.__init__-1950"><a href="#Expandable.__init__-1950"><span class="linenos">1950</span></a>        <span class="k">return</span>
+</span><span id="Expandable.__init__-1951"><a href="#Expandable.__init__-1951"><span class="linenos">1951</span></a>
+</span><span id="Expandable.__init__-1952"><a href="#Expandable.__init__-1952"><span class="linenos">1952</span></a>    <span class="c1"># Initially, `__init__` of a protocol subclass is set to `_no_init_or_replace_init`.</span>
+</span><span id="Expandable.__init__-1953"><a href="#Expandable.__init__-1953"><span class="linenos">1953</span></a>    <span class="c1"># The first instantiation of the subclass will call `_no_init_or_replace_init` which</span>
+</span><span id="Expandable.__init__-1954"><a href="#Expandable.__init__-1954"><span class="linenos">1954</span></a>    <span class="c1"># searches for a proper new `__init__` in the MRO. The new `__init__`</span>
+</span><span id="Expandable.__init__-1955"><a href="#Expandable.__init__-1955"><span class="linenos">1955</span></a>    <span class="c1"># replaces the subclass&#39; old `__init__` (ie `_no_init_or_replace_init`). Subsequent</span>
+</span><span id="Expandable.__init__-1956"><a href="#Expandable.__init__-1956"><span class="linenos">1956</span></a>    <span class="c1"># instantiation of the protocol subclass will thus use the new</span>
+</span><span id="Expandable.__init__-1957"><a href="#Expandable.__init__-1957"><span class="linenos">1957</span></a>    <span class="c1"># `__init__` and no longer call `_no_init_or_replace_init`.</span>
+</span><span id="Expandable.__init__-1958"><a href="#Expandable.__init__-1958"><span class="linenos">1958</span></a>    <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+</span><span id="Expandable.__init__-1959"><a href="#Expandable.__init__-1959"><span class="linenos">1959</span></a>        <span class="n">init</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;__init__&#39;</span><span class="p">,</span> <span class="n">_no_init_or_replace_init</span><span class="p">)</span>
+</span><span id="Expandable.__init__-1960"><a href="#Expandable.__init__-1960"><span class="linenos">1960</span></a>        <span class="k">if</span> <span class="n">init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_no_init_or_replace_init</span><span class="p">:</span>
+</span><span id="Expandable.__init__-1961"><a href="#Expandable.__init__-1961"><span class="linenos">1961</span></a>            <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">init</span>
+</span><span id="Expandable.__init__-1962"><a href="#Expandable.__init__-1962"><span class="linenos">1962</span></a>            <span class="k">break</span>
+</span><span id="Expandable.__init__-1963"><a href="#Expandable.__init__-1963"><span class="linenos">1963</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="Expandable.__init__-1964"><a href="#Expandable.__init__-1964"><span class="linenos">1964</span></a>        <span class="c1"># should not happen</span>
+</span><span id="Expandable.__init__-1965"><a href="#Expandable.__init__-1965"><span class="linenos">1965</span></a>        <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__init__</span>
+</span><span id="Expandable.__init__-1966"><a href="#Expandable.__init__-1966"><span class="linenos">1966</span></a>
+</span><span id="Expandable.__init__-1967"><a href="#Expandable.__init__-1967"><span class="linenos">1967</span></a>    <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -548,32 +553,39 @@
     <a class="headerlink" href="#NoExpand"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="NoExpand-68"><a href="#NoExpand-68"><span class="linenos">68</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NoExpand</span><span class="p">(</span><span class="n">Expandable</span><span class="p">[</span><span class="n">A_co</span><span class="p">]):</span>
 </span><span id="NoExpand-69"><a href="#NoExpand-69"><span class="linenos">69</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps an argument, instructing `map` and similar functions not to expand it.</span>
-</span><span id="NoExpand-70"><a href="#NoExpand-70"><span class="linenos">70</span></a><span class="sd">    </span>
-</span><span id="NoExpand-71"><a href="#NoExpand-71"><span class="linenos">71</span></a><span class="sd">    Example:</span>
-</span><span id="NoExpand-72"><a href="#NoExpand-72"><span class="linenos">72</span></a><span class="sd">    ```python</span>
-</span><span id="NoExpand-73"><a href="#NoExpand-73"><span class="linenos">73</span></a><span class="sd">    map(lambda x: (x, x), d6)</span>
-</span><span id="NoExpand-74"><a href="#NoExpand-74"><span class="linenos">74</span></a><span class="sd">    # Here the d6 is expanded so that the function is evaluated six times</span>
-</span><span id="NoExpand-75"><a href="#NoExpand-75"><span class="linenos">75</span></a><span class="sd">    # with x = 1, 2, 3, 4, 5, 6.</span>
-</span><span id="NoExpand-76"><a href="#NoExpand-76"><span class="linenos">76</span></a><span class="sd">    # = Die([(1, 1), (2, 2), (3, 3), ...])</span>
-</span><span id="NoExpand-77"><a href="#NoExpand-77"><span class="linenos">77</span></a>
-</span><span id="NoExpand-78"><a href="#NoExpand-78"><span class="linenos">78</span></a><span class="sd">    map(lambda x: (x, x), NoExpand(d6))</span>
-</span><span id="NoExpand-79"><a href="#NoExpand-79"><span class="linenos">79</span></a><span class="sd">    # Here the d6 is passed as a Die to the function, which then rolls it twice</span>
-</span><span id="NoExpand-80"><a href="#NoExpand-80"><span class="linenos">80</span></a><span class="sd">    # independently.</span>
-</span><span id="NoExpand-81"><a href="#NoExpand-81"><span class="linenos">81</span></a><span class="sd">    # = Die([(1, 1), (1, 2), (1, 3), ...])</span>
-</span><span id="NoExpand-82"><a href="#NoExpand-82"><span class="linenos">82</span></a><span class="sd">    # = tupleize(d6, d6)</span>
-</span><span id="NoExpand-83"><a href="#NoExpand-83"><span class="linenos">83</span></a><span class="sd">    ```</span>
-</span><span id="NoExpand-84"><a href="#NoExpand-84"><span class="linenos">84</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="NoExpand-85"><a href="#NoExpand-85"><span class="linenos">85</span></a>
-</span><span id="NoExpand-86"><a href="#NoExpand-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="NoExpand-87"><a href="#NoExpand-87"><span class="linenos">87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</span><span id="NoExpand-88"><a href="#NoExpand-88"><span class="linenos">88</span></a>
-</span><span id="NoExpand-89"><a href="#NoExpand-89"><span class="linenos">89</span></a>    <span class="nd">@property</span>
-</span><span id="NoExpand-90"><a href="#NoExpand-90"><span class="linenos">90</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">A_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span id="NoExpand-91"><a href="#NoExpand-91"><span class="linenos">91</span></a>        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+</span><span id="NoExpand-70"><a href="#NoExpand-70"><span class="linenos">70</span></a>
+</span><span id="NoExpand-71"><a href="#NoExpand-71"><span class="linenos">71</span></a><span class="sd">    This is not intended for use outside of `map` (or similar) call sites.</span>
+</span><span id="NoExpand-72"><a href="#NoExpand-72"><span class="linenos">72</span></a><span class="sd">    </span>
+</span><span id="NoExpand-73"><a href="#NoExpand-73"><span class="linenos">73</span></a><span class="sd">    Example:</span>
+</span><span id="NoExpand-74"><a href="#NoExpand-74"><span class="linenos">74</span></a><span class="sd">    ```python</span>
+</span><span id="NoExpand-75"><a href="#NoExpand-75"><span class="linenos">75</span></a><span class="sd">    map(lambda x: (x, x), d6)</span>
+</span><span id="NoExpand-76"><a href="#NoExpand-76"><span class="linenos">76</span></a><span class="sd">    # Here the d6 is expanded so that the function is evaluated six times</span>
+</span><span id="NoExpand-77"><a href="#NoExpand-77"><span class="linenos">77</span></a><span class="sd">    # with x = 1, 2, 3, 4, 5, 6.</span>
+</span><span id="NoExpand-78"><a href="#NoExpand-78"><span class="linenos">78</span></a><span class="sd">    # = Die([(1, 1), (2, 2), (3, 3), ...])</span>
+</span><span id="NoExpand-79"><a href="#NoExpand-79"><span class="linenos">79</span></a>
+</span><span id="NoExpand-80"><a href="#NoExpand-80"><span class="linenos">80</span></a><span class="sd">    map(lambda x: (x, x), NoExpand(d6))</span>
+</span><span id="NoExpand-81"><a href="#NoExpand-81"><span class="linenos">81</span></a><span class="sd">    # Here the d6 is passed as a Die to the function, which then rolls it twice</span>
+</span><span id="NoExpand-82"><a href="#NoExpand-82"><span class="linenos">82</span></a><span class="sd">    # independently.</span>
+</span><span id="NoExpand-83"><a href="#NoExpand-83"><span class="linenos">83</span></a><span class="sd">    # = Die([(1, 1), (1, 2), (1, 3), ...])</span>
+</span><span id="NoExpand-84"><a href="#NoExpand-84"><span class="linenos">84</span></a><span class="sd">    # = tupleize(d6, d6)</span>
+</span><span id="NoExpand-85"><a href="#NoExpand-85"><span class="linenos">85</span></a><span class="sd">    ```</span>
+</span><span id="NoExpand-86"><a href="#NoExpand-86"><span class="linenos">86</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="NoExpand-87"><a href="#NoExpand-87"><span class="linenos">87</span></a>
+</span><span id="NoExpand-88"><a href="#NoExpand-88"><span class="linenos">88</span></a>    <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span>
+</span><span id="NoExpand-89"><a href="#NoExpand-89"><span class="linenos">89</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The wrapped argument.&quot;&quot;&quot;</span>
+</span><span id="NoExpand-90"><a href="#NoExpand-90"><span class="linenos">90</span></a>
+</span><span id="NoExpand-91"><a href="#NoExpand-91"><span class="linenos">91</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="NoExpand-92"><a href="#NoExpand-92"><span class="linenos">92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
+</span><span id="NoExpand-93"><a href="#NoExpand-93"><span class="linenos">93</span></a>
+</span><span id="NoExpand-94"><a href="#NoExpand-94"><span class="linenos">94</span></a>    <span class="nd">@property</span>
+</span><span id="NoExpand-95"><a href="#NoExpand-95"><span class="linenos">95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">A_co</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="NoExpand-96"><a href="#NoExpand-96"><span class="linenos">96</span></a>        <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Wraps an argument, instructing <code>map</code> and similar functions not to expand it.</p>
+
+<p>This is not intended for use outside of <code>map</code> (or similar) call sites.</p>
 
 <p>Example:</p>
 
@@ -597,29 +609,31 @@
                                         <input id="NoExpand.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">NoExpand</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">value</span><span class="p">:</span> <span class="o">+</span><span class="n">A_co</span>, </span><span class="param"><span class="o">/</span></span>)</span>
+        <span class="name">NoExpand</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">arg</span><span class="p">:</span> <span class="o">+</span><span class="n">A_co</span>, </span><span class="param"><span class="o">/</span></span>)</span>
 
                 <label class="view-source-button" for="NoExpand.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#NoExpand.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="NoExpand.__init__-86"><a href="#NoExpand.__init__-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
-</span><span id="NoExpand.__init__-87"><a href="#NoExpand.__init__-87"><span class="linenos">87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="NoExpand.__init__-91"><a href="#NoExpand.__init__-91"><span class="linenos">91</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">A_co</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="NoExpand.__init__-92"><a href="#NoExpand.__init__-92"><span class="linenos">92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="NoExpand.value" class="classattr">
+                            <div id="NoExpand.arg" class="classattr">
                                 <div class="attr variable">
-            <span class="name">value</span>
+            <span class="name">arg</span><span class="annotation">: +A_co</span>
 
         
     </div>
-    <a class="headerlink" href="#NoExpand.value"></a>
+    <a class="headerlink" href="#NoExpand.arg"></a>
     
-    
+            <div class="docstring"><p>The wrapped argument.</p>
+</div>
+
 
                             </div>
                 </section>
@@ -634,28 +648,28 @@
 
     </div>
     <a class="headerlink" href="#count_positional_parameters"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="count_positional_parameters-94"><a href="#count_positional_parameters-94"><span class="linenos"> 94</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="count_positional_parameters-95"><a href="#count_positional_parameters-95"><span class="linenos"> 95</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
-</span><span id="count_positional_parameters-96"><a href="#count_positional_parameters-96"><span class="linenos"> 96</span></a>
-</span><span id="count_positional_parameters-97"><a href="#count_positional_parameters-97"><span class="linenos"> 97</span></a><span class="sd">    Returns:</span>
-</span><span id="count_positional_parameters-98"><a href="#count_positional_parameters-98"><span class="linenos"> 98</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
-</span><span id="count_positional_parameters-99"><a href="#count_positional_parameters-99"><span class="linenos"> 99</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
-</span><span id="count_positional_parameters-100"><a href="#count_positional_parameters-100"><span class="linenos">100</span></a><span class="sd">        is a variadic `*args`.</span>
-</span><span id="count_positional_parameters-101"><a href="#count_positional_parameters-101"><span class="linenos">101</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="count_positional_parameters-102"><a href="#count_positional_parameters-102"><span class="linenos">102</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="count_positional_parameters-103"><a href="#count_positional_parameters-103"><span class="linenos">103</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="count_positional_parameters-104"><a href="#count_positional_parameters-104"><span class="linenos">104</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="count_positional_parameters-105"><a href="#count_positional_parameters-105"><span class="linenos">105</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="count_positional_parameters-106"><a href="#count_positional_parameters-106"><span class="linenos">106</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-</span><span id="count_positional_parameters-107"><a href="#count_positional_parameters-107"><span class="linenos">107</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
-</span><span id="count_positional_parameters-108"><a href="#count_positional_parameters-108"><span class="linenos">108</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="count_positional_parameters-109"><a href="#count_positional_parameters-109"><span class="linenos">109</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="count_positional_parameters-110"><a href="#count_positional_parameters-110"><span class="linenos">110</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="count_positional_parameters-111"><a href="#count_positional_parameters-111"><span class="linenos">111</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="count_positional_parameters-112"><a href="#count_positional_parameters-112"><span class="linenos">112</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
-</span><span id="count_positional_parameters-113"><a href="#count_positional_parameters-113"><span class="linenos">113</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span id="count_positional_parameters-114"><a href="#count_positional_parameters-114"><span class="linenos">114</span></a>                <span class="k">break</span>
-</span><span id="count_positional_parameters-115"><a href="#count_positional_parameters-115"><span class="linenos">115</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="count_positional_parameters-99"><a href="#count_positional_parameters-99"><span class="linenos"> 99</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="count_positional_parameters-100"><a href="#count_positional_parameters-100"><span class="linenos">100</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="count_positional_parameters-101"><a href="#count_positional_parameters-101"><span class="linenos">101</span></a>
+</span><span id="count_positional_parameters-102"><a href="#count_positional_parameters-102"><span class="linenos">102</span></a><span class="sd">    Returns:</span>
+</span><span id="count_positional_parameters-103"><a href="#count_positional_parameters-103"><span class="linenos">103</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
+</span><span id="count_positional_parameters-104"><a href="#count_positional_parameters-104"><span class="linenos">104</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
+</span><span id="count_positional_parameters-105"><a href="#count_positional_parameters-105"><span class="linenos">105</span></a><span class="sd">        is a variadic `*args`.</span>
+</span><span id="count_positional_parameters-106"><a href="#count_positional_parameters-106"><span class="linenos">106</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="count_positional_parameters-107"><a href="#count_positional_parameters-107"><span class="linenos">107</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="count_positional_parameters-108"><a href="#count_positional_parameters-108"><span class="linenos">108</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="count_positional_parameters-109"><a href="#count_positional_parameters-109"><span class="linenos">109</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="count_positional_parameters-110"><a href="#count_positional_parameters-110"><span class="linenos">110</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="count_positional_parameters-111"><a href="#count_positional_parameters-111"><span class="linenos">111</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+</span><span id="count_positional_parameters-112"><a href="#count_positional_parameters-112"><span class="linenos">112</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
+</span><span id="count_positional_parameters-113"><a href="#count_positional_parameters-113"><span class="linenos">113</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="count_positional_parameters-114"><a href="#count_positional_parameters-114"><span class="linenos">114</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="count_positional_parameters-115"><a href="#count_positional_parameters-115"><span class="linenos">115</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="count_positional_parameters-116"><a href="#count_positional_parameters-116"><span class="linenos">116</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="count_positional_parameters-117"><a href="#count_positional_parameters-117"><span class="linenos">117</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
+</span><span id="count_positional_parameters-118"><a href="#count_positional_parameters-118"><span class="linenos">118</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span id="count_positional_parameters-119"><a href="#count_positional_parameters-119"><span class="linenos">119</span></a>                <span class="k">break</span>
+</span><span id="count_positional_parameters-120"><a href="#count_positional_parameters-120"><span class="linenos">120</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
 </span></pre></div>
 
 
@@ -683,8 +697,8 @@
 
     </div>
     <a class="headerlink" href="#InferStarError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="InferStarError-118"><a href="#InferStarError-118"><span class="linenos">118</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-</span><span id="InferStarError-119"><a href="#InferStarError-119"><span class="linenos">119</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="InferStarError-123"><a href="#InferStarError-123"><span class="linenos">123</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+</span><span id="InferStarError-124"><a href="#InferStarError-124"><span class="linenos">124</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -704,19 +718,19 @@
 
     </div>
     <a class="headerlink" href="#infer_star"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="infer_star-122"><a href="#infer_star-122"><span class="linenos">122</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="infer_star-123"><a href="#infer_star-123"><span class="linenos">123</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
-</span><span id="infer_star-124"><a href="#infer_star-124"><span class="linenos">124</span></a>
-</span><span id="infer_star-125"><a href="#infer_star-125"><span class="linenos">125</span></a><span class="sd">    Args:</span>
-</span><span id="infer_star-126"><a href="#infer_star-126"><span class="linenos">126</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
-</span><span id="infer_star-127"><a href="#infer_star-127"><span class="linenos">127</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="infer_star-128"><a href="#infer_star-128"><span class="linenos">128</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="infer_star-129"><a href="#infer_star-129"><span class="linenos">129</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="infer_star-130"><a href="#infer_star-130"><span class="linenos">130</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="infer_star-131"><a href="#infer_star-131"><span class="linenos">131</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
-</span><span id="infer_star-132"><a href="#infer_star-132"><span class="linenos">132</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
-</span><span id="infer_star-133"><a href="#infer_star-133"><span class="linenos">133</span></a>        <span class="p">)</span>
-</span><span id="infer_star-134"><a href="#infer_star-134"><span class="linenos">134</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="infer_star-127"><a href="#infer_star-127"><span class="linenos">127</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="infer_star-128"><a href="#infer_star-128"><span class="linenos">128</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="infer_star-129"><a href="#infer_star-129"><span class="linenos">129</span></a>
+</span><span id="infer_star-130"><a href="#infer_star-130"><span class="linenos">130</span></a><span class="sd">    Args:</span>
+</span><span id="infer_star-131"><a href="#infer_star-131"><span class="linenos">131</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="infer_star-132"><a href="#infer_star-132"><span class="linenos">132</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="infer_star-133"><a href="#infer_star-133"><span class="linenos">133</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="infer_star-134"><a href="#infer_star-134"><span class="linenos">134</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="infer_star-135"><a href="#infer_star-135"><span class="linenos">135</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="infer_star-136"><a href="#infer_star-136"><span class="linenos">136</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
+</span><span id="infer_star-137"><a href="#infer_star-137"><span class="linenos">137</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
+</span><span id="infer_star-138"><a href="#infer_star-138"><span class="linenos">138</span></a>        <span class="p">)</span>
+</span><span id="infer_star-139"><a href="#infer_star-139"><span class="linenos">139</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
