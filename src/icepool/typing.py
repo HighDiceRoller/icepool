@@ -66,6 +66,8 @@ class Expandable(Protocol[A_co]):
 
 class NoExpand(Expandable[A_co]):
     """Wraps an argument, instructing `map` and similar functions not to expand it.
+
+    This is not intended for use outside of `map` (or similar) call sites.
     
     Example:
     ```python
@@ -82,12 +84,15 @@ class NoExpand(Expandable[A_co]):
     ```
     """
 
-    def __init__(self, value: A_co, /):
-        self.value = value
+    arg: A_co
+    """The wrapped argument."""
+
+    def __init__(self, arg: A_co, /):
+        self.arg = arg
 
     @property
     def _items_for_cartesian_product(self) -> Sequence[tuple[A_co, int]]:
-        return [(self.value, 1)]
+        return [(self.arg, 1)]
 
 
 def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
