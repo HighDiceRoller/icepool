@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d, d6, d10, Die, coin
+from icepool import d, d6, d10, Die, coin, map, NoExpand, tupleize
 from fractions import Fraction
 
 expected_d6x1 = icepool.Die([1, 2, 3, 4, 5] * 6 + [7, 8, 9, 10, 11, 12])
@@ -233,3 +233,7 @@ def test_group_by_index():
     assert result['a'] == Die(['aardvark', 'alligator', 'asp'])
     assert result['b'] == Die(['blowfish'])
     assert result['c'] == Die(['cat', 'crocodile'])
+
+
+def test_no_expand():
+    assert map(lambda x: (x, x), NoExpand(d6)) == tupleize(d6, d6)

@@ -11,7 +11,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import T, U, ImplicitConversionError, T
+from icepool.typing import T, U, Expandable, ImplicitConversionError, T
 from types import EllipsisType
 from typing import (Callable, Collection, Generic, Hashable, Iterator, Literal,
                     Mapping, Sequence, Type, TypeAlias, cast, overload)
@@ -51,7 +51,7 @@ def implicit_convert_to_expression(
         )
 
 
-class MultisetExpression(ABC, Generic[T]):
+class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
     """Abstract base class representing an expression that operates on multisets.
 
     There are three types of multiset expressions:

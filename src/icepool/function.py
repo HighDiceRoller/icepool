@@ -542,6 +542,8 @@ def map(
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
                 to `func`, as `MultisetExpression.expand()`. The expression must
                 be fully bound.
+            * You can prevent `Die` and `MultisetExpression` expansion by
+                wrapping the argument as `NoExpand(arg)`.
         star: If `True`, the first of the args will be unpacked before giving
             them to `func`.
             If not provided, it will be guessed based on the signature of `func`

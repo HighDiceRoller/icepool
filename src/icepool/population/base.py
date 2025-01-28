@@ -4,7 +4,7 @@ import icepool
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.collection.vector import Vector
 from icepool.math import try_fraction
-from icepool.typing import U, Outcome, T_co, count_positional_parameters, infer_star
+from icepool.typing import U, Expandable, Outcome, T_co, count_positional_parameters, infer_star
 
 from abc import ABC, abstractmethod
 import bisect
@@ -24,7 +24,7 @@ C = TypeVar('C', bound='Population')
 
 
 # This typing is a compromise due to Mapping not support covariant key type.
-class Population(ABC, Generic[T_co], Mapping[Any, int]):
+class Population(ABC, Expandable[T_co], Mapping[Any, int]):
     """A mapping from outcomes to `int` quantities.
 
     Outcomes with each instance must be hashable and totally orderable.

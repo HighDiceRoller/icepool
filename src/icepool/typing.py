@@ -3,10 +3,13 @@ __docformat__ = 'google'
 import enum
 import inspect
 
-from typing import Any, Callable, Hashable, Iterable, Literal, Mapping, Protocol, Sequence, Sized, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
+from typing import Any, Callable, Generic, Hashable, Iterable, Literal, Mapping, Protocol, Sequence, Sized, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from icepool.multiset_expression import MultisetExpression
+
+A_co = TypeVar('A_co', covariant=True)
+"""Any type."""
 
 S = TypeVar('S', bound='Sequence')
 """A sequence type."""
@@ -48,6 +51,43 @@ class Outcome(Hashable, Protocol[T_contra]):
 
 class ImplicitConversionError(TypeError):
     """Indicates that an implicit conversion failed."""
+
+
+# We don't use @runtime_checkable due to poor performance and the validation is
+# limited anyways.
+class Expandable(Protocol[A_co]):
+    """Objects that can be expanded in Cartesian products."""
+
+    @property
+    def _items_for_cartesian_product(self) -> Sequence[tuple[A_co, int]]:
+        """Returns a sequence of (outcome, quantity) pairs."""
+        ...
+
+
+class NoExpand(Expandable[A_co]):
+    """Wraps an argument, instructing `map` and similar functions not to expand it.
+    
+    Example:
+    ```python
+    map(lambda x: (x, x), d6)
+    # Here the d6 is expanded so that the function is evaluated six times
+    # with x = 1, 2, 3, 4, 5, 6.
+    # = Die([(1, 1), (2, 2), (3, 3), ...])
+
+    map(lambda x: (x, x), NoExpand(d6))
+    # Here the d6 is passed as a Die to the function, which then rolls it twice
+    # independently.
+    # = Die([(1, 1), (1, 2), (1, 3), ...])
+    # = tupleize(d6, d6)
+    ```
+    """
+
+    def __init__(self, value: A_co, /):
+        self.value = value
+
+    @property
+    def _items_for_cartesian_product(self) -> Sequence[tuple[A_co, int]]:
+        return [(self.value, 1)]
 
 
 def count_positional_parameters(function: Callable) -> tuple[int, int | None]:

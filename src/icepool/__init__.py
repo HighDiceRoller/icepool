@@ -21,7 +21,7 @@ __version__ = '1.7.0a0'
 
 from typing import Final
 
-from icepool.typing import Outcome, RerollType
+from icepool.typing import Outcome, RerollType, NoExpand
 from icepool.order import Order
 
 Reroll: Final = RerollType.Reroll
@@ -159,7 +159,7 @@ __all__ = [
     'from_rv', 'pointwise_max', 'pointwise_min', 'lowest', 'highest', 'middle',
     'min_outcome', 'max_outcome', 'consecutive', 'sorted_union',
     'commonize_denominator', 'reduce', 'accumulate', 'map', 'map_function',
-    'map_and_time', 'map_to_pool', 'Reroll', 'RerollType', 'Pool',
+    'map_and_time', 'map_to_pool', 'Reroll', 'RerollType', 'NoExpand', 'Pool',
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'MultiDeal',
     'multiset_function', 'function', 'typing', 'evaluator',
