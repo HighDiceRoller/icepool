@@ -589,7 +589,6 @@ class Die(Population[T_co]):
 
         Args:
             which: Which outcomes to explode. Options:
-                * A single outcome to explode.
                 * An collection of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
