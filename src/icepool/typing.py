@@ -64,37 +64,6 @@ class Expandable(Protocol[A_co]):
         ...
 
 
-class NoExpand(Expandable[A_co]):
-    """Wraps an argument, instructing `map` and similar functions not to expand it.
-
-    This is not intended for use outside of `map` (or similar) call sites.
-    
-    Example:
-    ```python
-    map(lambda x: (x, x), d6)
-    # Here the d6 is expanded so that the function is evaluated six times
-    # with x = 1, 2, 3, 4, 5, 6.
-    # = Die([(1, 1), (2, 2), (3, 3), ...])
-
-    map(lambda x: (x, x), NoExpand(d6))
-    # Here the d6 is passed as a Die to the function, which then rolls it twice
-    # independently.
-    # = Die([(1, 1), (1, 2), (1, 3), ...])
-    # = tupleize(d6, d6)
-    ```
-    """
-
-    arg: A_co
-    """The wrapped argument."""
-
-    def __init__(self, arg: A_co, /):
-        self.arg = arg
-
-    @property
-    def _items_for_cartesian_product(self) -> Sequence[tuple[A_co, int]]:
-        return [(self.arg, 1)]
-
-
 def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
     """Counts the number of positional parameters of the callable.
 
