@@ -11,7 +11,8 @@ import math
 
 from icepool.typing import T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Mapping,
-                    MutableMapping, Sequence, cast, TYPE_CHECKING, overload)
+                    MutableMapping, Sequence, TypeAlias, cast, TYPE_CHECKING,
+                    overload)
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
@@ -19,6 +20,9 @@ if TYPE_CHECKING:
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
+
+EvaluationCache: TypeAlias = 'MutableMapping[tuple[Alignment, tuple[MultisetExpression, ...], Hashable], Mapping[Any, int]]'
+"""Type representing the cache used within an evaluation."""
 
 
 class MultisetEvaluator(ABC, Generic[T, U_co]):
@@ -234,13 +238,15 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         return ()
 
     @cached_property
-    def _cache(
-        self
-    ) -> 'MutableMapping[tuple[Order, Alignment, tuple[MultisetExpression, ...], Hashable], Mapping[Any, int]]':
+    def _cache(self) -> 'MutableMapping[tuple[Order], EvaluationCache]':
         """Cached results.
+
+        This has the structure of nested mappings.
+
+        Level 0: The key is `(order,)`. This is constant per evaluation.
+        Level 1: The key is `(extra_outcomes, inputs, state)`.
         
-        The key is `(order, extra_outcomes, inputs, state)`.
-        The value is another mapping `final_state: quantity` representing the
+        The final value is a mapping `final_state: quantity` representing the
         state distribution produced by `order, extra_outcomes, inputs` when
         starting at state `state`.
         """
@@ -291,9 +297,13 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         inputs = tuple(
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
+        # In this case we are inside a @multiset_function, and we create a
+        # corresponding MultisetFunctionEvaluator.
         if any(input.has_free_variables() for input in inputs):
             from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
             return MultisetFunctionEvaluator(*inputs, evaluator=self)
+
+        # Otherwise, we perform the evaluation.
 
         inputs = self.bound_inputs() + inputs
 
@@ -304,6 +314,13 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             return icepool.Die([])
 
         algorithm, order = self._select_algorithm(*inputs)
+
+        cache_key = (order, )
+
+        if cache_key not in self._cache:
+            self._cache[cache_key] = {}
+
+        evaluation_cache = self._cache[cache_key]
 
         next_state_function = self._select_next_state_function(order)
 
@@ -316,7 +333,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
             prod_weight = math.prod(sub_weights)
-            sub_result = algorithm(order, next_state_function, extra_outcomes,
+            sub_result = algorithm(order, evaluation_cache,
+                                   next_state_function, extra_outcomes,
                                    sub_inputs)
             for sub_state, sub_weight in sub_result.items():
                 dist[sub_state] += sub_weight * prod_weight
@@ -341,7 +359,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     def _select_algorithm(
         self, *inputs: 'icepool.MultisetExpression[T]'
     ) -> tuple[
-            'Callable[[Order, Callable[..., Hashable], Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
+            'Callable[[Order, EvaluationCache, Callable[..., Hashable], Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
             Order]:
         """Selects an algorithm and iteration order.
 
@@ -399,7 +417,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             f'Could not find next_state* implementation for order {order}.')
 
     def _eval_internal(
-        self, order: Order, next_state_function: Callable[..., Hashable],
+        self, order: Order, evaluation_cache: EvaluationCache,
+        next_state_function: Callable[..., Hashable],
         extra_outcomes: 'Alignment[T]',
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
@@ -418,9 +437,9 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (order, extra_outcomes, inputs, None)
-        if cache_key in self._cache:
-            return self._cache[cache_key]
+        cache_key = (extra_outcomes, inputs, None)
+        if cache_key in evaluation_cache:
+            return evaluation_cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
@@ -434,19 +453,21 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 prev_inputs, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
-                prev = self._eval_internal(order, next_state_function,
+                prev = self._eval_internal(order, evaluation_cache,
+                                           next_state_function,
                                            prev_extra_outcomes, prev_inputs)
                 for prev_state, prev_weight in prev.items():
                     state = next_state_function(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
 
-        self._cache[cache_key] = result
+        evaluation_cache[cache_key] = result
         return result
 
     def _eval_internal_forward(
             self,
             order: Order,
+            evaluation_cache: EvaluationCache,
             next_state_function: Callable[..., Hashable],
             extra_outcomes: 'Alignment[T]',
             inputs: 'tuple[icepool.MultisetExpression[T], ...]',
@@ -466,9 +487,9 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (order, extra_outcomes, inputs, state)
-        if cache_key in self._cache:
-            return self._cache[cache_key]
+        cache_key = (extra_outcomes, inputs, state)
+        if cache_key in evaluation_cache:
+            return evaluation_cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
@@ -485,12 +506,12 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 next_state = next_state_function(state, outcome, *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self._eval_internal_forward(
-                        order, next_state_function, next_extra_outcomes,
-                        next_inputs, next_state)
+                        order, evaluation_cache, next_state_function,
+                        next_extra_outcomes, next_inputs, next_state)
                     for final_state, weight in final_dist.items():
                         result[final_state] += weight * prod_weight
 
-        self._cache[cache_key] = result
+        evaluation_cache[cache_key] = result
         return result
 
     @staticmethod
