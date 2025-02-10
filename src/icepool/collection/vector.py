@@ -126,9 +126,10 @@ class Vector(Outcome, Sequence[T_co]):
 
     May become a variadic generic type in the future.
     """
-    __slots__ = ['_data']
+    __slots__ = ['_data', '_truth_value']
 
     _data: tuple[T_co, ...]
+    _truth_value: bool | None
 
     def __init__(self,
                  elements: Iterable[T_co],
