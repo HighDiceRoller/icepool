@@ -164,7 +164,7 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         expressions, expression_counts = zip(
             *(expression._apply_variables(outcome, bound_counts, free_counts)
               for expression in expressions))
-        evaluator_state = self._ascending_next_state_function(
+        evaluator_state = self._next_state_method_ascending(
             evaluator_state, outcome, *evaluator_counts, *expression_counts)
         return expressions, evaluator_state
 
@@ -183,7 +183,7 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         expressions, expression_counts = zip(
             *(expression._apply_variables(outcome, bound_counts, free_counts)
               for expression in expressions))
-        evaluator_state = self._descending_next_state_function(
+        evaluator_state = self._next_state_method_descending(
             evaluator_state, outcome, *evaluator_counts, *expression_counts)
         return expressions, evaluator_state
 
@@ -204,12 +204,12 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         return expression_order
 
     @cached_property
-    def _ascending_next_state_function(self) -> Callable[..., Hashable]:
-        return self._evaluator._select_next_state_function(Order.Ascending)
+    def _next_state_method_ascending(self) -> Callable[..., Hashable]:
+        return self._evaluator.next_state_method(Order.Ascending)
 
     @cached_property
-    def _descending_next_state_function(self) -> Callable[..., Hashable]:
-        return self._evaluator._select_next_state_function(Order.Descending)
+    def _next_state_method_descending(self) -> Callable[..., Hashable]:
+        return self._evaluator.next_state_method(Order.Descending)
 
     def extra_outcomes(self, *generators) -> Collection[T]:
         return self._evaluator.extra_outcomes(*generators)

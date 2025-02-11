@@ -36,7 +36,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                     *subeval_extra_counts,
                     *counts,
                 ) for next_state, subeval_extra_counts in zip(
-                    self._ascending_next_state_functions,
+                    self._next_state_ascending_methods,
                     self._split_extra_counts(*extra_counts)))
         else:
             result = tuple(
@@ -46,7 +46,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                     *subeval_extra_counts,
                     *counts,
                 ) for next_state, substate, subeval_extra_counts in zip(
-                    self._ascending_next_state_functions, state,
+                    self._next_state_ascending_methods, state,
                     self._split_extra_counts(*extra_counts)))
         if icepool.Reroll in result:
             return icepool.Reroll
@@ -71,7 +71,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                     *subeval_extra_counts,
                     *counts,
                 ) for next_state, subeval_extra_counts in zip(
-                    self._descending_next_state_functions,
+                    self._next_state_descending_methods,
                     self._split_extra_counts(*extra_counts)))
         else:
             result = tuple(
@@ -81,7 +81,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                     *subeval_extra_counts,
                     *counts,
                 ) for next_state, substate, subeval_extra_counts in zip(
-                    self._descending_next_state_functions, state,
+                    self._next_state_descending_methods, state,
                     self._split_extra_counts(*extra_counts)))
         if icepool.Reroll in result:
             return icepool.Reroll
@@ -119,17 +119,17 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                              for subeval in self._sub_evaluators))
 
     @cached_property
-    def _ascending_next_state_functions(
+    def _next_state_ascending_methods(
             self) -> tuple[Callable[..., Hashable], ...]:
         return tuple(
-            subeval._select_next_state_function(Order.Ascending)
+            subeval.next_state_method(Order.Ascending)
             for subeval in self._sub_evaluators)
 
     @cached_property
-    def _descending_next_state_functions(
+    def _next_state_descending_methods(
             self) -> tuple[Callable[..., Hashable], ...]:
         return tuple(
-            subeval._select_next_state_function(Order.Descending)
+            subeval.next_state_method(Order.Descending)
             for subeval in self._sub_evaluators)
 
     def extra_outcomes(self, outcomes) -> Collection[T]:
