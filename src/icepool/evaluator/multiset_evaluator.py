@@ -88,8 +88,11 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
           return the necessary order. This is useful if the necessary order
           depends on the instance.
         * If you want to handle either order, but have a different 
-          implementation for each, override both  `next_state_ascending()` and 
-          `next_state_descending()`.
+          implementation for each, override both `next_state_ascending()` and 
+          `next_state_descending()`. If your evaluator wraps subevaluator(s),
+          you can do this and use `subevaluator.next_state_method(order)` to
+          retrieve the correct method for the subevaluator(s).
+          See `JointEvaluator` for an example.
 
         The behavior of returning a `Die` from `next_state` is currently
         undefined.
