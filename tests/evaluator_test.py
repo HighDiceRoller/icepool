@@ -135,16 +135,22 @@ def test_runs_skip():
     assert tuple(result.outcomes()) == ((1, 0), (1, 10))
 
 
-class SumFixedOrder(icepool.MultisetEvaluator):
-
-    def __init__(self, order):
-        self._order = order
+class SumFixedOrderAuto(icepool.MultisetEvaluator):
 
     def next_state(self, state, outcome, count):
         return (state or 0) + outcome * count
 
-    def order(self):
-        return self._order
+
+class SumFixedOrderAscending(icepool.MultisetEvaluator):
+
+    def next_state_ascending(self, state, outcome, count):
+        return (state or 0) + outcome * count
+
+
+class SumFixedOrderDescending(icepool.MultisetEvaluator):
+
+    def next_state_descending(self, state, outcome, count):
+        return (state or 0) + outcome * count
 
 
 test_pools = [
@@ -157,9 +163,9 @@ test_pools = [
     (3 @ icepool.d6).pool(12)[-6:],
 ]
 
-eval_ascending = SumFixedOrder(1)
-eval_descending = SumFixedOrder(-1)
-eval_auto = SumFixedOrder(0)
+eval_ascending = SumFixedOrderAscending()
+eval_descending = SumFixedOrderDescending()
+eval_auto = SumFixedOrderAuto()
 
 
 @pytest.mark.parametrize('pool', test_pools)
@@ -172,6 +178,28 @@ def test_joint_evaluate():
     test_evaluator = icepool.evaluator.JointEvaluator(
         icepool.evaluator.sum_evaluator, icepool.evaluator.sum_evaluator)
     result = test_evaluator(icepool.d6.pool(3))
+    expected = (3 @ icepool.d6).map(lambda x: (x, x))
+    assert result.equals(expected)
+
+
+def test_joint_evaluator_order_ascending():
+
+    @multiset_function
+    def joint_evaluation(x):
+        return eval_ascending(x), eval_auto(x)
+
+    result = joint_evaluation(icepool.d6.pool(3))
+    expected = (3 @ icepool.d6).map(lambda x: (x, x))
+    assert result.equals(expected)
+
+
+def test_joint_evaluator_order_desccending():
+
+    @multiset_function
+    def joint_evaluation(x):
+        return eval_descending(x), eval_auto(x)
+
+    result = joint_evaluation(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).map(lambda x: (x, x))
     assert result.equals(expected)
 

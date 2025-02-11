@@ -9,7 +9,7 @@ from icepool.order import Order
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 from icepool.typing import T
 
-from typing import Collection, Iterable, Iterator
+from typing import Callable, Collection, Hashable, Iterable, Iterator
 
 
 class JointEvaluator(MultisetEvaluator[T, tuple]):
@@ -18,8 +18,8 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
     def __init__(self, *sub_evaluators: MultisetEvaluator) -> None:
         self._sub_evaluators = sub_evaluators
 
-    def next_state(self, state, outcome, *counts):
-        """Runs `next_state` for all sub-evaluator.
+    def next_state_ascending(self, state, outcome, *counts):
+        """Runs the ascending next_state for all sub-evaluator.
 
         The state is a tuple of the sub-states.
 
@@ -30,23 +30,58 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
 
         if state is None:
             result = tuple(
-                evaluator.next_state(
+                next_state(
                     None,
                     outcome,
                     *subeval_extra_counts,
                     *counts,
-                ) for evaluator, subeval_extra_counts in zip(
-                    self._sub_evaluators,
+                ) for next_state, subeval_extra_counts in zip(
+                    self._ascending_next_state_functions,
                     self._split_extra_counts(*extra_counts)))
         else:
             result = tuple(
-                evaluator.next_state(
+                next_state(
                     substate,
                     outcome,
                     *subeval_extra_counts,
                     *counts,
-                ) for evaluator, substate, subeval_extra_counts in zip(
-                    self._sub_evaluators, state,
+                ) for next_state, substate, subeval_extra_counts in zip(
+                    self._ascending_next_state_functions, state,
+                    self._split_extra_counts(*extra_counts)))
+        if icepool.Reroll in result:
+            return icepool.Reroll
+        else:
+            return result
+
+    def next_state_descending(self, state, outcome, *counts):
+        """Runs the ascending next_state for all sub-evaluator.
+
+        The state is a tuple of the sub-states.
+
+        If any sub-evaluator returns `Reroll`, the result as a whole is `Reroll`.
+        """
+        extra_counts = counts[:self._extra_arity]
+        counts = counts[self._extra_arity:]
+
+        if state is None:
+            result = tuple(
+                next_state(
+                    None,
+                    outcome,
+                    *subeval_extra_counts,
+                    *counts,
+                ) for next_state, subeval_extra_counts in zip(
+                    self._descending_next_state_functions,
+                    self._split_extra_counts(*extra_counts)))
+        else:
+            result = tuple(
+                next_state(
+                    substate,
+                    outcome,
+                    *subeval_extra_counts,
+                    *counts,
+                ) for next_state, substate, subeval_extra_counts in zip(
+                    self._descending_next_state_functions, state,
                     self._split_extra_counts(*extra_counts)))
         if icepool.Reroll in result:
             return icepool.Reroll
@@ -82,6 +117,20 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
         """
         return Order.merge(*(subeval.order()
                              for subeval in self._sub_evaluators))
+
+    @cached_property
+    def _ascending_next_state_functions(
+            self) -> tuple[Callable[..., Hashable], ...]:
+        return tuple(
+            subeval._select_next_state_function(Order.Ascending)
+            for subeval in self._sub_evaluators)
+
+    @cached_property
+    def _descending_next_state_functions(
+            self) -> tuple[Callable[..., Hashable], ...]:
+        return tuple(
+            subeval._select_next_state_function(Order.Descending)
+            for subeval in self._sub_evaluators)
 
     def extra_outcomes(self, outcomes) -> Collection[T]:
         return icepool.sorted_union(*(subeval.extra_outcomes(outcomes)

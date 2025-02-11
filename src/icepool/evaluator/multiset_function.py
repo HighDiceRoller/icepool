@@ -8,7 +8,7 @@ from icepool.multiset_variable import MultisetVariable as MV
 import inspect
 from functools import cached_property, update_wrapper
 
-from typing import Callable, Collection, TypeAlias, overload
+from typing import Callable, Collection, Hashable, TypeAlias, overload
 
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.typing import T, U_co
@@ -149,7 +149,7 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
             input._unbind(bound_inputs) for input in inputs)
         self._bound_inputs = tuple(bound_inputs)
 
-    def next_state(self, state, outcome, *counts):
+    def next_state_ascending(self, state, outcome, *counts):
         if state is None:
             expressions = self._expressions
             evaluator_state = None
@@ -164,9 +164,27 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         expressions, expression_counts = zip(
             *(expression._apply_variables(outcome, bound_counts, free_counts)
               for expression in expressions))
-        evaluator_state = self._evaluator.next_state(evaluator_state, outcome,
-                                                     *evaluator_counts,
-                                                     *expression_counts)
+        evaluator_state = self._ascending_next_state_function(
+            evaluator_state, outcome, *evaluator_counts, *expression_counts)
+        return expressions, evaluator_state
+
+    def next_state_descending(self, state, outcome, *counts):
+        if state is None:
+            expressions = self._expressions
+            evaluator_state = None
+        else:
+            expressions, evaluator_state = state
+
+        evaluator_slice, bound_slice, free_slice = self._count_slices
+        evaluator_counts = counts[evaluator_slice]
+        bound_counts = counts[bound_slice]
+        free_counts = counts[free_slice]
+
+        expressions, expression_counts = zip(
+            *(expression._apply_variables(outcome, bound_counts, free_counts)
+              for expression in expressions))
+        evaluator_state = self._descending_next_state_function(
+            evaluator_state, outcome, *evaluator_counts, *expression_counts)
         return expressions, evaluator_state
 
     def final_outcome(
@@ -184,6 +202,14 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
               for expression in self._expressions),
             (self._evaluator.order(), OrderReason.Mandatory))
         return expression_order
+
+    @cached_property
+    def _ascending_next_state_function(self) -> Callable[..., Hashable]:
+        return self._evaluator._select_next_state_function(Order.Ascending)
+
+    @cached_property
+    def _descending_next_state_function(self) -> Callable[..., Hashable]:
+        return self._evaluator._select_next_state_function(Order.Descending)
 
     def extra_outcomes(self, *generators) -> Collection[T]:
         return self._evaluator.extra_outcomes(*generators)

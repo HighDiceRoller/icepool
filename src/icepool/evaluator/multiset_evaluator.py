@@ -64,11 +64,13 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         This should produce a state given the previous state, an outcome,
         and the count of that outcome produced by each input.
 
-        `evaluate()` will always call this using only positional arguments.
-        Furthermore, there is no expectation that a subclass be able to handle
-        an arbitrary number of counts. Thus, you are free to rename any of
-        the parameters in a subclass, or to replace `*counts` with a fixed set
-        of parameters.
+        `evaluate()` will always call this with `state, outcome, *counts` as
+        positional arguments. Furthermore, there is no expectation that a 
+        subclass be able to handle an arbitrary number of counts. 
+        
+        Thus, you are free to:
+        * Rename `state` or `outcome` in a subclass.
+        * Replace `*counts` with a fixed set of parameters.
 
         Make sure to handle the base case where `state is None`.
 
