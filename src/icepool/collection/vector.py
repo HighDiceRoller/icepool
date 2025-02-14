@@ -136,8 +136,6 @@ class Vector(Outcome, Sequence[T_co]):
                  *,
                  truth_value: bool | None = None) -> None:
         self._data = tuple(elements)
-        if any(isinstance(x, icepool.AgainExpression) for x in self._data):
-            raise TypeError('Again is not a valid element of Vector.')
         self._truth_value = truth_value
 
     def __hash__(self) -> int:
@@ -235,8 +233,6 @@ class Vector(Outcome, Sequence[T_co]):
         In this case, the result also has a truth value based on lexicographic
         ordering.
         """
-        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
-            return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):
                 if compare_for_truth:
@@ -250,14 +246,14 @@ class Vector(Outcome, Sequence[T_co]):
                 raise IndexError(
                     f'Binary operators on Vectors are only valid if both are the same length ({len(self)} vs. {len(other)}).'
                 )
+        elif isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         else:
             return Vector((op(x, other, *args, **kwargs) for x in self))
 
     def reverse_binary_operator(self, other, op: Callable[..., U], *args,
                                 **kwargs) -> 'Vector[U]':
         """Reverse version of `binary_operator()`."""
-        if isinstance(other, (icepool.Population, icepool.AgainExpression)):
-            return NotImplemented  # delegate to the other
         if isinstance(other, Vector):
             if len(self) == len(other):
                 return Vector(
@@ -266,6 +262,8 @@ class Vector(Outcome, Sequence[T_co]):
                 raise IndexError(
                     f'Binary operators on Vectors are only valid if both are the same length ({len(other)} vs. {len(self)}).'
                 )
+        elif isinstance(other, (icepool.Population, icepool.AgainExpression)):
+            return NotImplemented  # delegate to the other
         else:
             return Vector(op(other, x, *args, **kwargs) for x in self)
 
