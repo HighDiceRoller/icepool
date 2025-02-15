@@ -233,6 +233,13 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         """The total quantities fitting the comparison for each outcome in sorted order.
         
         For example, '<=' gives the CDF.
+
+        Args:
+            comparison: One of `'==', '!=', '<=', '<', '>=', '>'`.
+                May be omitted, in which case equality `'=='` is used.
+            outcome: The outcome to compare to.
+            percent: If set, the result will be a percentage expressed as a
+                `float`.
         """
 
     def quantities(self,
@@ -244,7 +251,8 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         For example, '<=' gives the CDF.
 
         Args:
-            comparison: Optional. If omitted, this defaults to '=='.
+            comparison: One of `'==', '!=', '<=', '<', '>=', '>'`.
+                May be omitted, in which case equality `'=='` is used.
         """
         if comparison is None:
             comparison = '=='
@@ -391,7 +399,15 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
                     /,
                     *,
                     percent: bool = False) -> Fraction | float:
-        """The total probability of outcomes fitting a comparison."""
+        """The total probability of outcomes fitting a comparison.
+        
+        Args:
+            comparison: One of `'==', '!=', '<=', '<', '>=', '>'`.
+                May be omitted, in which case equality `'=='` is used.
+            outcome: The outcome to compare to.
+            percent: If set, the result will be a percentage expressed as a
+                `float`. Otherwise, the result is a `Fraction`.
+        """
         if outcome is None:
             outcome = comparison
             comparison = '=='
@@ -453,7 +469,10 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         For example, '<=' gives the CDF.
 
         Args:
-            comparison: Optional. If omitted, this defaults to '=='.
+            comparison: One of `'==', '!=', '<=', '<', '>=', '>'`.
+                May be omitted, in which case equality `'=='` is used.
+            percent: If set, the result will be a percentage expressed as a
+                `float`. Otherwise, the result is a `Fraction`.
         """
         if comparison is None:
             comparison = '=='
