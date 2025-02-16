@@ -79,7 +79,7 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
         return (a - b).expand(), (b - a).expand()
     ```
 
-    Any globals inside `function` are effectively bound at the time
+    Any globals inside `function` are currently effectively bound at the time
     `multiset_function` is invoked. Note that this is different than how
     ordinary Python closures behave. For example,
 
@@ -96,8 +96,9 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
     print(count_intersection(d6.pool(3)))
     ```
 
-    would produce the same thing both times. Likewise, the function should not
-    have any side effects.
+    would produce the same thing both times. This behavior may change in the 
+    future; I recommend to use only pure functions with `@mulitset_function`
+    (i.e. not producing any side effects, nor being affected by them).
 
     Be careful when using control structures: you cannot branch on the value of
     a multiset expression or evaluation, so e.g.
