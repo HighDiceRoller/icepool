@@ -482,7 +482,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             next_state_method: Callable[..., Hashable],
             extra_outcomes: 'Alignment[T]',
             inputs: 'tuple[icepool.MultisetExpression[T], ...]',
-            state: Hashable = None) -> Mapping[Any, int]:
+            initial_state: Hashable = None) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order.
 
         All intermediate return values are cached in the instance.
@@ -498,7 +498,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        cache_key = (extra_outcomes, inputs, state)
+        cache_key = (extra_outcomes, inputs, initial_state)
         if cache_key in evaluation_cache:
             return evaluation_cache[cache_key]
 
@@ -506,7 +506,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
         if all(not input.outcomes()
                for input in inputs) and not extra_outcomes.outcomes():
-            result = {state: 1}
+            result = {initial_state: 1}
         else:
             outcome, next_extra_outcomes, iterators = MultisetEvaluator._pop_inputs(
                 order, extra_outcomes, inputs)
@@ -514,7 +514,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 next_inputs, counts, weights = zip(*p)
                 counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
-                next_state = next_state_method(state, outcome, *counts)
+                next_state = next_state_method(initial_state, outcome, *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self._eval_internal_forward(
                         order, evaluation_cache, next_state_method,
