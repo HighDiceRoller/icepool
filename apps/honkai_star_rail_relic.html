@@ -40,7 +40,8 @@
         </form>
         
         <div>
-            <table id="result_table">
+            <h2>Chances</h2>
+            <table id="chance_table">
                 <tr>
                     <th>Wanted substats</th>
                     <th style="width:80px;">0 fixed</th>
@@ -49,39 +50,74 @@
                 </tr>
                 <tr>
                     <td>At least 1</td>
-                    <td id="result10"></td>
-                    <td id="result11"></td>
-                    <td id="result12"></td>
+                    <td id="chance10">loading...</td>
+                    <td id="chance11">loading...</td>
+                    <td id="chance12">loading...</td>
                 </tr>
                 <tr>
                     <td>At least 2</td>
-                    <td id="result20"></td>
-                    <td id="result21"></td>
-                    <td id="result22"></td>
+                    <td id="chance20">loading...</td>
+                    <td id="chance21">loading...</td>
+                    <td id="chance22">loading...</td>
                 </tr>
                 <tr>
                     <td>At least 3</td>
-                    <td id="result30"></td>
-                    <td id="result31"></td>
-                    <td id="result32"></td>
+                    <td id="chance30">loading...</td>
+                    <td id="chance31">loading...</td>
+                    <td id="chance32">loading...</td>
                 </tr>
                 <tr>
                     <td>All 4</td>
-                    <td id="result40"></td>
-                    <td id="result41"></td>
-                    <td id="result42"></td>
+                    <td id="chance40">loading...</td>
+                    <td id="chance41">loading...</td>
+                    <td id="chance42">loading...</td>
+                </tr>
+            </table>
+            
+            <h2>Efficiency</h2>
+            <table id="score_table">
+                <tr>
+                    <th>Wanted substats</th>
+                    <th style="width:80px;">0 fixed</th>
+                    <th style="width:80px;">1 fixed</th>
+                    <th style="width:80px;">2 fixed</th>
+                </tr>
+                <tr>
+                    <td>At least 1</td>
+                    <td id="score10">loading...</td>
+                    <td id="score11">loading...</td>
+                    <td id="score12">loading...</td>
+                </tr>
+                <tr>
+                    <td>At least 2</td>
+                    <td id="score20">loading...</td>
+                    <td id="score21">loading...</td>
+                    <td id="score22">loading...</td>
+                </tr>
+                <tr>
+                    <td>At least 3</td>
+                    <td id="score30">loading...</td>
+                    <td id="score31">loading...</td>
+                    <td id="score32">loading...</td>
+                </tr>
+                <tr>
+                    <td>All 4</td>
+                    <td id="score40">loading...</td>
+                    <td id="score41">loading...</td>
+                    <td id="score42">loading...</td>
                 </tr>
             </table>
         </div>
-        <div style="width: 720px; margin: 8px;">
-            <h2>Notes</h2>
+    </div>
+    
+    <div style="width: 720px; margin: 8px;">
+        <h2>Notes</h2>
 
-            <ul>
-                <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool.</li>
-                <li>The lowest-weight wanted stats will be fixed first.</li>
-                <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the percentage divided by the resin cost of fixing that many substats: 1, 2, or 5 respectively.</li>
-            </ul>
-        </div>
+        <ul>
+            <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool.</li>
+            <li>The lowest-weight wanted stats will be fixed first.</li>
+            <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the percentage divided by the resin cost of fixing that many substats: 1, 2, or 5 respectively.</li>
+        </ul>
     </div>
     
     <script type="text/javascript">
@@ -189,18 +225,30 @@ for hits in [1, 2, 3, 4]:
             if score > best:
                 best = score
                 best_fixed_count = fixed_count
-        for fixed_count in [0, 1, 2]:
-            cell = js.document.getElementById(f'result{hits}{fixed_count}')
-            cell.innerHTML = f'{results[(hits, fixed_count)]:0.2%}'
+        for fixed_count, cost in zip([0, 1, 2], [1, 2, 5]):
+            chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
+            chance_cell.innerHTML = f'{results[(hits, fixed_count)]:0.2%}'
             if fixed_count == best_fixed_count:
-                cell.style.background = '#cfc'
+                chance_cell.style.background = '#cfc'
             else:
-                cell.style.background = '#ccc'
+                chance_cell.style.background = '#ccc'
+                
+            score = results[(hits, fixed_count)] / results[(hits, 0)] / cost
+            score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
+            score_cell.innerHTML = f'{score:0.2%}'
+            if fixed_count == best_fixed_count:
+                score_cell.style.background = '#cfc'
+            else:
+                score_cell.style.background = '#ccc'
     else:
         for fixed_count in [0, 1, 2]:
-            cell = js.document.getElementById(f'result{hits}{fixed_count}')
-            cell.innerHTML = f''
-            cell.style.background = '#ccc'
+            chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
+            chance_cell.innerHTML = f''
+            chance_cell.style.background = '#ccc'
+            
+            score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
+            score_cell.innerHTML = f''
+            score_cell.style.background = '#ccc'
 
 `)
 }
