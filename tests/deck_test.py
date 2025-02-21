@@ -109,3 +109,19 @@ def test_lowest():
     result = deck.deal(4).lowest(2).expand().simplify()
     expected = deck.deal(4).expand().map(lambda x: x[:-2]).simplify()
     assert result == expected
+
+
+def test_append():
+    base = Deck([1, 2, 2, 3, 3, 3])
+    assert base.append(1) == Deck([1, 1, 2, 2, 3, 3, 3])
+    assert base.append(0) == Deck([0, 1, 2, 2, 3, 3, 3])
+    assert base.append(1, 3) == Deck([1, 1, 1, 1, 2, 2, 3, 3, 3])
+    assert base.append(0, 3) == Deck([0, 0, 0, 1, 2, 2, 3, 3, 3])
+
+
+def test_remove():
+    base = Deck([1, 2, 2, 3, 3, 3])
+    assert base.remove(0) == base
+    assert base.remove(3) == Deck([1, 2, 2])
+    assert base.remove(3, 1) == Deck([1, 2, 2, 3, 3])
+    assert base.remove(1, 3) == Deck([2, 2, 3, 3, 3])

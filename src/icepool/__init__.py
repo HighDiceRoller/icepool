@@ -146,6 +146,8 @@ from icepool.multiset_variable import MultisetVariable
 
 from icepool.population.format import format_probability_inverse
 
+from icepool.noncentral_hypergeometric import wallenius
+
 import icepool.generator as generator
 import icepool.evaluator as evaluator
 import icepool.operator as operator
@@ -163,5 +165,5 @@ __all__ = [
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'MultiDeal',
     'multiset_function', 'function', 'typing', 'evaluator',
-    'format_probability_inverse'
+    'format_probability_inverse', 'wallenius'
 ]
