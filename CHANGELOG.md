@@ -1,3 +1,9 @@
+## v1.7.2
+
+* Add `Population.append()` and `.remove()` methods.
+* Improve `Vector` performance.
+* Experimental `wallenius()` noncentral hypergeometric.
+
 ## v1.7.1 - 10 February 2025
 
 * Fix joint evaluations and `@multiset_function` interaction with `next_state_ascending` and `next_state_descending`.
