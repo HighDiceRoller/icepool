@@ -44,12 +44,13 @@ def wallenius(data: Iterable[tuple[T, int]]
     if isinstance(data, Mapping):
         for outcome, v in data.items():
             if isinstance(v, int):
-                quantity = 1
                 weight = v
+                quantity = 1
             else:
                 weight, quantity = v
-        weight_decks[weight] = weight_decks.get(weight, icepool.Deck()).append(
-            outcome, quantity)
+            weight_decks[weight] = weight_decks.get(weight,
+                                                    icepool.Deck()).append(
+                                                        outcome, quantity)
     else:
         for outcome, weight in data:
             weight_decks[weight] = weight_decks.get(
