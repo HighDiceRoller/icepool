@@ -11,7 +11,7 @@ from icepool.typing import U, Outcome, T_co, infer_star
 import functools
 import operator
 
-from collections import Counter, defaultdict
+from collections import Counter
 from functools import cached_property
 from typing import Any, Callable, Iterable, Iterator, Mapping, MutableSequence, Sequence, Type, overload
 
@@ -30,7 +30,7 @@ class Deck(Population[T_co]):
         return Deck
 
     def __new__(cls,
-                outcomes: Sequence | Mapping[Any, int],
+                outcomes: Sequence | Mapping[Any, int] = (),
                 times: Sequence[int] | int = 1) -> 'Deck[T_co]':
         """Constructor for a `Deck`.
 

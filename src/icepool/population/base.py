@@ -8,7 +8,7 @@ from icepool.typing import U, Expandable, Outcome, T_co, count_positional_parame
 
 from abc import ABC, abstractmethod
 import bisect
-from collections import defaultdict
+from collections import Counter, defaultdict
 from fractions import Fraction
 from functools import cached_property
 import itertools
@@ -357,6 +357,34 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
                 f'Padding to denominator of {target} would require a negative quantity of {new_quantity} for {outcome}'
             )
         return self._new_type(data)
+
+    def append(self: C, outcome, quantity: int = 1, /) -> C:
+        """This population with an outcome appended.
+        
+        Args:
+            outcome: The outcome to append.
+            quantity: The quantity of the outcome to append. Can be negative,
+                which removes quantity (but not below zero).
+        """
+        data = Counter(self)
+        data[outcome] = max(data[outcome] + quantity, 0)
+        return self._new_type(data)
+
+    def remove(self: C, outcome, quantity: int | None = None, /) -> C:
+        """This population with an outcome removed.
+
+        Args:
+            outcome: The outcome to append.
+            quantity: The quantity of the outcome to remove. If not set, all
+                quantity of that outcome is removed. Can be negative, which adds
+                quantity instead.
+        """
+        if quantity is None:
+            data = Counter(self)
+            data[outcome] = 0
+            return self._new_type(data)
+        else:
+            return self.append(outcome, -quantity)
 
     # Probabilities.
 
