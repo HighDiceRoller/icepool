@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import wallenius, Die
+from icepool import Wallenius, Die
 
 
 def test_wallenius_singleton_dict():
@@ -11,7 +11,7 @@ def test_wallenius_singleton_dict():
     expected = base.map(lambda x: base.remove(x).map(lambda y: (x, y))).map(
         lambda x: tuple(sorted(x)))
 
-    assert wallenius(data, 2) == expected
+    assert Wallenius(data).deal(2).expand() == expected
 
 
 def test_wallenius_singleton_list():
@@ -21,7 +21,7 @@ def test_wallenius_singleton_list():
     expected = base.map(lambda x: base.remove(x).map(lambda y: (x, y))).map(
         lambda x: tuple(sorted(x)))
 
-    assert wallenius(data, 2) == expected
+    assert Wallenius(data).deal(2).expand() == expected
 
 
 def test_wallenius_weighted_dict():
@@ -31,7 +31,7 @@ def test_wallenius_weighted_dict():
     expected = base.map(lambda x: base.remove(x, x).map(lambda y: (x, y))).map(
         lambda x: tuple(sorted(x)))
 
-    assert wallenius(data, 2).simplify() == expected.simplify()
+    assert Wallenius(data).deal(2).expand().simplify() == expected.simplify()
 
 
 def test_wallenius_weighted_list():
@@ -41,4 +41,4 @@ def test_wallenius_weighted_list():
     expected = base.map(lambda x: base.remove(x, x).map(lambda y: (x, y))).map(
         lambda x: tuple(sorted(x)))
 
-    assert wallenius(data, 2).simplify() == expected.simplify()
+    assert Wallenius(data).deal(2).expand().simplify() == expected.simplify()

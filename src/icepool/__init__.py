@@ -146,7 +146,7 @@ from icepool.multiset_mixture import MultisetMixture
 
 from icepool.population.format import format_probability_inverse
 
-from icepool.noncentral_hypergeometric import wallenius
+from icepool.wallenius import Wallenius
 
 import icepool.generator as generator
 import icepool.evaluator as evaluator
@@ -165,5 +165,5 @@ __all__ = [
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'MultiDeal',
     'multiset_function', 'function', 'typing', 'evaluator',
-    'format_probability_inverse', 'wallenius'
+    'format_probability_inverse', 'Wallenius'
 ]
