@@ -804,20 +804,19 @@ def map_and_time(
 
 
 def map_to_pool(
-    repl:
-    'Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]',
-    /,
-    *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-    star: bool | None = None,
-    denominator: int | None = None
-) -> 'icepool.MultisetGenerator[T, tuple[int]]':
-    """EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.
+        repl:
+    'Callable[..., icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]',
+        /,
+        *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+        star: bool | None = None,
+        denominator: int | None = None) -> 'icepool.MultisetExpression[T]':
+    """EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetExpression.
     
     Args:
         repl: One of the following:
             * A callable that takes in one outcome per element of args and
-                produces a `MultisetGenerator` or something convertible to a `Pool`.
-            * A mapping from old outcomes to `MultisetGenerator` 
+                produces a `MultisetExpression` or something convertible to a `Pool`.
+            * A mapping from old outcomes to `MultisetExpression` 
                 or something convertible to a `Pool`.
                 In this case args must have exactly one element.
             The new outcomes may be dice rather than just single outcomes.
@@ -831,7 +830,7 @@ def map_to_pool(
             pools.
 
     Returns:
-        A `MultisetGenerator` representing the mixture of `Pool`s. Note  
+        A `MultisetExpression` representing the mixture of `Pool`s. Note  
         that this is not technically a `Pool`, though it supports most of 
         the same operations.
 
@@ -842,13 +841,13 @@ def map_to_pool(
     transition_function = _canonicalize_transition_function(
         repl, len(args), star)
 
-    data: 'MutableMapping[icepool.MultisetGenerator[T, tuple[int]], int]' = defaultdict(
+    data: 'MutableMapping[icepool.MultisetExpression[T], int]' = defaultdict(
         int)
     for outcomes, quantity in iter_cartesian_product(*args):
         pool = transition_function(*outcomes)
         if pool is icepool.Reroll:
             continue
-        elif isinstance(pool, icepool.MultisetGenerator):
+        elif isinstance(pool, icepool.MultisetExpression):
             data[pool] += quantity
         else:
             data[icepool.Pool(pool)] += quantity
