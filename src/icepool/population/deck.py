@@ -135,9 +135,15 @@ class Deck(Population[T_co]):
     def deal(
         self, *hand_sizes: int
     ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
-        """Creates a `Deal` object from this deck.
+        """Deals the specified number of cards from this deck.
 
-        See `Deal()` for details.
+        Args:
+            hand_sizes: Each element will result in one hand dealt.
+                The API for more than one hand is likely to change.
+
+        Returns:
+            A `Deal` object for a single hand, or a `MultiDeal` object for
+            multiple hands. The latter will likely change in the future.
         """
         if len(hand_sizes) == 1:
             return icepool.Deal(self, *hand_sizes)
