@@ -23,14 +23,14 @@ class MultisetMixture(MultisetExpression[T]):
 
     # Note that the total weight of an inner is the product of the factor here
     # and the denominator of the inner.
-    _inner_expressions: Mapping[MultisetGenerator[T, tuple[int]], int]
+    _inner_expressions: Mapping[MultisetExpression[T], int]
 
     def __init__(self,
-                 inners: Sequence[MultisetGenerator[T, tuple[int]]]
-                 | Mapping[MultisetGenerator[T, tuple[int]], int],
+                 inners: Sequence[MultisetExpression[T]]
+                 | Mapping[MultisetExpression[T], int],
                  *,
                  denominator: int | None = None):
-        data: Mapping[MultisetGenerator[T, tuple[int]], int]
+        data: Mapping[MultisetExpression[T], int]
 
         if isinstance(inners, Mapping):
             data = {inner: weight for inner, weight in inners.items()}
