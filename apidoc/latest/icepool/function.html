@@ -969,8 +969,8 @@
 </span><span id="L-853"><a href="#L-853"><span class="linenos">853</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="L-854"><a href="#L-854"><span class="linenos">854</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">quantity</span>
 </span><span id="L-855"><a href="#L-855"><span class="linenos">855</span></a>    <span class="c1"># I couldn&#39;t get the covariance / contravariance to work.</span>
-</span><span id="L-856"><a href="#L-856"><span class="linenos">856</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MixtureGenerator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-857"><a href="#L-857"><span class="linenos">857</span></a>                                    <span class="n">denominator</span><span class="o">=</span><span class="n">denominator</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="L-856"><a href="#L-856"><span class="linenos">856</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetMixture</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-857"><a href="#L-857"><span class="linenos">857</span></a>                                   <span class="n">denominator</span><span class="o">=</span><span class="n">denominator</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
@@ -2302,8 +2302,8 @@ up to this many times.</li>
 </span><span id="map_to_pool-854"><a href="#map_to_pool-854"><span class="linenos">854</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="map_to_pool-855"><a href="#map_to_pool-855"><span class="linenos">855</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">quantity</span>
 </span><span id="map_to_pool-856"><a href="#map_to_pool-856"><span class="linenos">856</span></a>    <span class="c1"># I couldn&#39;t get the covariance / contravariance to work.</span>
-</span><span id="map_to_pool-857"><a href="#map_to_pool-857"><span class="linenos">857</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MixtureGenerator</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
-</span><span id="map_to_pool-858"><a href="#map_to_pool-858"><span class="linenos">858</span></a>                                    <span class="n">denominator</span><span class="o">=</span><span class="n">denominator</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="map_to_pool-857"><a href="#map_to_pool-857"><span class="linenos">857</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetMixture</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+</span><span id="map_to_pool-858"><a href="#map_to_pool-858"><span class="linenos">858</span></a>                                   <span class="n">denominator</span><span class="o">=</span><span class="n">denominator</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
