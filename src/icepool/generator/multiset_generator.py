@@ -44,11 +44,6 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     _children = ()
 
-    @property
-    def _can_keep(self) -> bool:
-        """Whether the generator supports enhanced keep operations."""
-        return False
-
     def has_free_variables(self) -> bool:
         return False
 
@@ -68,6 +63,7 @@ class MultisetGenerator(Generic[T, Qs], MultisetExpression[T]):
 
     def _apply_variables(
             self, outcome: T, bound_counts: tuple[int, ...],
-            free_counts: tuple[int, ...]) -> 'MultisetExpression[T]':
+            free_counts: tuple[int,
+                               ...]) -> 'tuple[MultisetExpression[T], int]':
         raise icepool.MultisetBindingError(
             '_unbind should have been called before _apply_variables.')

@@ -245,6 +245,11 @@ class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
         Used to implement `equals()` and `__hash__()`
         """
 
+    @property
+    def _can_keep(self) -> bool:
+        """Whether the expression supports enhanced keep operations."""
+        return False
+
     def min_outcome(self) -> T:
         return self.outcomes()[0]
 

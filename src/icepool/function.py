@@ -853,5 +853,5 @@ def map_to_pool(
         else:
             data[icepool.Pool(pool)] += quantity
     # I couldn't get the covariance / contravariance to work.
-    return icepool.MixtureGenerator(data,
-                                    denominator=denominator)  # type: ignore
+    return icepool.MultisetMixture(data,
+                                   denominator=denominator)  # type: ignore

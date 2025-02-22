@@ -124,7 +124,6 @@ from icepool.population.keep import lowest, highest, middle
 from icepool.generator.pool import Pool, standard_pool
 from icepool.generator.keep import KeepGenerator
 from icepool.generator.compound_keep import CompoundKeepGenerator
-from icepool.generator.mixture import MixtureGenerator
 
 from icepool.multiset_expression import (MultisetExpression,
                                          implicit_convert_to_expression,
@@ -143,6 +142,7 @@ from icepool.generator.multi_deal import MultiDeal
 
 from icepool.evaluator.multiset_function import multiset_function
 from icepool.multiset_variable import MultisetVariable
+from icepool.multiset_mixture import MultisetMixture
 
 from icepool.population.format import format_probability_inverse
 
