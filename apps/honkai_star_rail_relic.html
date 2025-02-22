@@ -142,12 +142,12 @@ await pyodide.loadPackage(["micropip"],
 setLoadingText('Loading icepool')
 await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.6.0')
+await micropip.install('icepool==1.7.2a0')
 
 import js
 import pyodide
 from functools import cache
-from icepool import Die
+from icepool import wallenius
 
 stats = {
     'spd' : ('SPD', 4),
@@ -164,7 +164,13 @@ stats = {
     'def' : ('DEF', 10),
 }
 
-base = Die({stat: weight for stat, (_, weight) in stats.items()})
+def wanted_substat_count(haves, wants, more):
+    possible_weights = []
+    for stat, (full_name, weight) in stats.items():
+        if stat not in haves:
+            possible_weights.append((stat in wants, weight))
+    return wallenius(possible_weights, more).map(sum, star=False)
+    
 
 @cache
 def roll_substats(current, more):
@@ -210,8 +216,7 @@ results = {}
 
 for fixed_count in [0, 1, 2]:
     fixed = choose_fixed(wants, fixed_count)
-    substats = roll_substats(haves + fixed, 4 - fixed_count)
-    wanted_count = substats.map(lambda s: len(set(s) & wants))
+    wanted_count = wanted_substat_count(haves + fixed, wants, 4 - fixed_count) + fixed_count
     for hits in [1, 2, 3, 4]:
         value = (wanted_count >= hits).mean()
         results[(hits, fixed_count)] = value
@@ -231,7 +236,7 @@ for hits in [1, 2, 3, 4]:
             if fixed_count == best_fixed_count:
                 chance_cell.style.background = '#cfc'
             else:
-                chance_cell.style.background = '#ccc'
+                chance_cell.style.background = '#ddd'
                 
             score = results[(hits, fixed_count)] / results[(hits, 0)] / cost
             score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
@@ -239,16 +244,16 @@ for hits in [1, 2, 3, 4]:
             if fixed_count == best_fixed_count:
                 score_cell.style.background = '#cfc'
             else:
-                score_cell.style.background = '#ccc'
+                score_cell.style.background = '#ddd'
     else:
         for fixed_count in [0, 1, 2]:
             chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
             chance_cell.innerHTML = f''
-            chance_cell.style.background = '#ccc'
+            chance_cell.style.background = '#ddd'
             
             score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
             score_cell.innerHTML = f''
-            score_cell.style.background = '#ccc'
+            score_cell.style.background = '#ddd'
 
 `)
 }
