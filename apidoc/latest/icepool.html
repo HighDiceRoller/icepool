@@ -864,7 +864,16 @@
                     <a class="function" href="#format_probability_inverse">format_probability_inverse</a>
             </li>
             <li>
-                    <a class="function" href="#wallenius">wallenius</a>
+                    <a class="class" href="#Wallenius">Wallenius</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Wallenius.__init__">Wallenius</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Wallenius.deal">deal</a>
+                        </li>
+                </ul>
+
             </li>
     </ul>
 
@@ -1053,7 +1062,7 @@ change.</li>
 </span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>
 </span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.population.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_probability_inverse</span>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.noncentral_hypergeometric</span><span class="w"> </span><span class="kn">import</span> <span class="n">wallenius</span>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.wallenius</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wallenius</span>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">icepool.generator</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">generator</span>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">icepool.evaluator</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">evaluator</span>
@@ -1072,7 +1081,7 @@ change.</li>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiDeal&#39;</span><span class="p">,</span>
 </span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>    <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>    <span class="s1">&#39;format_probability_inverse&#39;</span><span class="p">,</span> <span class="s1">&#39;wallenius&#39;</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>    <span class="s1">&#39;format_probability_inverse&#39;</span><span class="p">,</span> <span class="s1">&#39;Wallenius&#39;</span>
 </span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a><span class="p">]</span>
 </span></pre></div>
 
@@ -10860,68 +10869,67 @@ up to this many times.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">map_to_pool</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">repl</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#MultisetGenerator">MultisetGenerator</a></span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#MultisetGenerator">MultisetGenerator</a></span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]]]</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n"><a href="#Outcome">Outcome</a></span> <span class="o">|</span> <span class="n"><a href="#Die">Die</a></span> <span class="o">|</span> <span class="n"><a href="#MultisetExpression">MultisetExpression</a></span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetGenerator">MultisetGenerator</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>:</span></span>
+        <span class="name">map_to_pool</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">repl</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#MultisetExpression">MultisetExpression</a></span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#MultisetExpression">MultisetExpression</a></span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]]]</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n"><a href="#Outcome">Outcome</a></span> <span class="o">|</span> <span class="n"><a href="#Die">Die</a></span> <span class="o">|</span> <span class="n"><a href="#MultisetExpression">MultisetExpression</a></span>,</span><span class="param">	<span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetExpression">MultisetExpression</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="map_to_pool-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#map_to_pool"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="map_to_pool-807"><a href="#map_to_pool-807"><span class="linenos">807</span></a><span class="k">def</span><span class="w"> </span><span class="nf">map_to_pool</span><span class="p">(</span>
-</span><span id="map_to_pool-808"><a href="#map_to_pool-808"><span class="linenos">808</span></a>    <span class="n">repl</span><span class="p">:</span>
-</span><span id="map_to_pool-809"><a href="#map_to_pool-809"><span class="linenos">809</span></a>    <span class="s1">&#39;Callable[..., icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetGenerator | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]&#39;</span><span class="p">,</span>
-</span><span id="map_to_pool-810"><a href="#map_to_pool-810"><span class="linenos">810</span></a>    <span class="o">/</span><span class="p">,</span>
-</span><span id="map_to_pool-811"><a href="#map_to_pool-811"><span class="linenos">811</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Outcome | icepool.Die | icepool.MultisetExpression&#39;</span><span class="p">,</span>
-</span><span id="map_to_pool-812"><a href="#map_to_pool-812"><span class="linenos">812</span></a>    <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="map_to_pool-813"><a href="#map_to_pool-813"><span class="linenos">813</span></a>    <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="map_to_pool-814"><a href="#map_to_pool-814"><span class="linenos">814</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.MultisetGenerator[T, tuple[int]]&#39;</span><span class="p">:</span>
-</span><span id="map_to_pool-815"><a href="#map_to_pool-815"><span class="linenos">815</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetGenerator.</span>
-</span><span id="map_to_pool-816"><a href="#map_to_pool-816"><span class="linenos">816</span></a><span class="sd">    </span>
-</span><span id="map_to_pool-817"><a href="#map_to_pool-817"><span class="linenos">817</span></a><span class="sd">    Args:</span>
-</span><span id="map_to_pool-818"><a href="#map_to_pool-818"><span class="linenos">818</span></a><span class="sd">        repl: One of the following:</span>
-</span><span id="map_to_pool-819"><a href="#map_to_pool-819"><span class="linenos">819</span></a><span class="sd">            * A callable that takes in one outcome per element of args and</span>
-</span><span id="map_to_pool-820"><a href="#map_to_pool-820"><span class="linenos">820</span></a><span class="sd">                produces a `MultisetGenerator` or something convertible to a `Pool`.</span>
-</span><span id="map_to_pool-821"><a href="#map_to_pool-821"><span class="linenos">821</span></a><span class="sd">            * A mapping from old outcomes to `MultisetGenerator` </span>
-</span><span id="map_to_pool-822"><a href="#map_to_pool-822"><span class="linenos">822</span></a><span class="sd">                or something convertible to a `Pool`.</span>
-</span><span id="map_to_pool-823"><a href="#map_to_pool-823"><span class="linenos">823</span></a><span class="sd">                In this case args must have exactly one element.</span>
-</span><span id="map_to_pool-824"><a href="#map_to_pool-824"><span class="linenos">824</span></a><span class="sd">            The new outcomes may be dice rather than just single outcomes.</span>
-</span><span id="map_to_pool-825"><a href="#map_to_pool-825"><span class="linenos">825</span></a><span class="sd">            The special value `icepool.Reroll` will reroll that old outcome.</span>
-</span><span id="map_to_pool-826"><a href="#map_to_pool-826"><span class="linenos">826</span></a><span class="sd">        star: If `True`, the first of the args will be unpacked before giving</span>
-</span><span id="map_to_pool-827"><a href="#map_to_pool-827"><span class="linenos">827</span></a><span class="sd">            them to `repl`.</span>
-</span><span id="map_to_pool-828"><a href="#map_to_pool-828"><span class="linenos">828</span></a><span class="sd">            If not provided, it will be guessed based on the signature of `repl`</span>
-</span><span id="map_to_pool-829"><a href="#map_to_pool-829"><span class="linenos">829</span></a><span class="sd">            and the number of arguments.</span>
-</span><span id="map_to_pool-830"><a href="#map_to_pool-830"><span class="linenos">830</span></a><span class="sd">        denominator: If provided, the denominator of the result will be this</span>
-</span><span id="map_to_pool-831"><a href="#map_to_pool-831"><span class="linenos">831</span></a><span class="sd">            value. Otherwise it will be the minimum to correctly weight the</span>
-</span><span id="map_to_pool-832"><a href="#map_to_pool-832"><span class="linenos">832</span></a><span class="sd">            pools.</span>
-</span><span id="map_to_pool-833"><a href="#map_to_pool-833"><span class="linenos">833</span></a>
-</span><span id="map_to_pool-834"><a href="#map_to_pool-834"><span class="linenos">834</span></a><span class="sd">    Returns:</span>
-</span><span id="map_to_pool-835"><a href="#map_to_pool-835"><span class="linenos">835</span></a><span class="sd">        A `MultisetGenerator` representing the mixture of `Pool`s. Note  </span>
-</span><span id="map_to_pool-836"><a href="#map_to_pool-836"><span class="linenos">836</span></a><span class="sd">        that this is not technically a `Pool`, though it supports most of </span>
-</span><span id="map_to_pool-837"><a href="#map_to_pool-837"><span class="linenos">837</span></a><span class="sd">        the same operations.</span>
-</span><span id="map_to_pool-838"><a href="#map_to_pool-838"><span class="linenos">838</span></a>
-</span><span id="map_to_pool-839"><a href="#map_to_pool-839"><span class="linenos">839</span></a><span class="sd">    Raises:</span>
-</span><span id="map_to_pool-840"><a href="#map_to_pool-840"><span class="linenos">840</span></a><span class="sd">        ValueError: If `denominator` cannot be made consistent with the </span>
-</span><span id="map_to_pool-841"><a href="#map_to_pool-841"><span class="linenos">841</span></a><span class="sd">            resulting mixture of pools.</span>
-</span><span id="map_to_pool-842"><a href="#map_to_pool-842"><span class="linenos">842</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="map_to_pool-843"><a href="#map_to_pool-843"><span class="linenos">843</span></a>    <span class="n">transition_function</span> <span class="o">=</span> <span class="n">_canonicalize_transition_function</span><span class="p">(</span>
-</span><span id="map_to_pool-844"><a href="#map_to_pool-844"><span class="linenos">844</span></a>        <span class="n">repl</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">star</span><span class="p">)</span>
-</span><span id="map_to_pool-845"><a href="#map_to_pool-845"><span class="linenos">845</span></a>
-</span><span id="map_to_pool-846"><a href="#map_to_pool-846"><span class="linenos">846</span></a>    <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;MutableMapping[icepool.MultisetGenerator[T, tuple[int]], int]&#39;</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
-</span><span id="map_to_pool-847"><a href="#map_to_pool-847"><span class="linenos">847</span></a>        <span class="nb">int</span><span class="p">)</span>
-</span><span id="map_to_pool-848"><a href="#map_to_pool-848"><span class="linenos">848</span></a>    <span class="k">for</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="n">iter_cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-</span><span id="map_to_pool-849"><a href="#map_to_pool-849"><span class="linenos">849</span></a>        <span class="n">pool</span> <span class="o">=</span> <span class="n">transition_function</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
-</span><span id="map_to_pool-850"><a href="#map_to_pool-850"><span class="linenos">850</span></a>        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
-</span><span id="map_to_pool-851"><a href="#map_to_pool-851"><span class="linenos">851</span></a>            <span class="k">continue</span>
-</span><span id="map_to_pool-852"><a href="#map_to_pool-852"><span class="linenos">852</span></a>        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetGenerator</span><span class="p">):</span>
-</span><span id="map_to_pool-853"><a href="#map_to_pool-853"><span class="linenos">853</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">pool</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quantity</span>
-</span><span id="map_to_pool-854"><a href="#map_to_pool-854"><span class="linenos">854</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="map_to_pool-855"><a href="#map_to_pool-855"><span class="linenos">855</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">quantity</span>
-</span><span id="map_to_pool-856"><a href="#map_to_pool-856"><span class="linenos">856</span></a>    <span class="c1"># I couldn&#39;t get the covariance / contravariance to work.</span>
-</span><span id="map_to_pool-857"><a href="#map_to_pool-857"><span class="linenos">857</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetMixture</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
-</span><span id="map_to_pool-858"><a href="#map_to_pool-858"><span class="linenos">858</span></a>                                   <span class="n">denominator</span><span class="o">=</span><span class="n">denominator</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span id="map_to_pool-808"><a href="#map_to_pool-808"><span class="linenos">808</span></a>        <span class="n">repl</span><span class="p">:</span>
+</span><span id="map_to_pool-809"><a href="#map_to_pool-809"><span class="linenos">809</span></a>    <span class="s1">&#39;Callable[..., icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]&#39;</span><span class="p">,</span>
+</span><span id="map_to_pool-810"><a href="#map_to_pool-810"><span class="linenos">810</span></a>        <span class="o">/</span><span class="p">,</span>
+</span><span id="map_to_pool-811"><a href="#map_to_pool-811"><span class="linenos">811</span></a>        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Outcome | icepool.Die | icepool.MultisetExpression&#39;</span><span class="p">,</span>
+</span><span id="map_to_pool-812"><a href="#map_to_pool-812"><span class="linenos">812</span></a>        <span class="n">star</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="map_to_pool-813"><a href="#map_to_pool-813"><span class="linenos">813</span></a>        <span class="n">denominator</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.MultisetExpression[T]&#39;</span><span class="p">:</span>
+</span><span id="map_to_pool-814"><a href="#map_to_pool-814"><span class="linenos">814</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetExpression.</span>
+</span><span id="map_to_pool-815"><a href="#map_to_pool-815"><span class="linenos">815</span></a><span class="sd">    </span>
+</span><span id="map_to_pool-816"><a href="#map_to_pool-816"><span class="linenos">816</span></a><span class="sd">    Args:</span>
+</span><span id="map_to_pool-817"><a href="#map_to_pool-817"><span class="linenos">817</span></a><span class="sd">        repl: One of the following:</span>
+</span><span id="map_to_pool-818"><a href="#map_to_pool-818"><span class="linenos">818</span></a><span class="sd">            * A callable that takes in one outcome per element of args and</span>
+</span><span id="map_to_pool-819"><a href="#map_to_pool-819"><span class="linenos">819</span></a><span class="sd">                produces a `MultisetExpression` or something convertible to a `Pool`.</span>
+</span><span id="map_to_pool-820"><a href="#map_to_pool-820"><span class="linenos">820</span></a><span class="sd">            * A mapping from old outcomes to `MultisetExpression` </span>
+</span><span id="map_to_pool-821"><a href="#map_to_pool-821"><span class="linenos">821</span></a><span class="sd">                or something convertible to a `Pool`.</span>
+</span><span id="map_to_pool-822"><a href="#map_to_pool-822"><span class="linenos">822</span></a><span class="sd">                In this case args must have exactly one element.</span>
+</span><span id="map_to_pool-823"><a href="#map_to_pool-823"><span class="linenos">823</span></a><span class="sd">            The new outcomes may be dice rather than just single outcomes.</span>
+</span><span id="map_to_pool-824"><a href="#map_to_pool-824"><span class="linenos">824</span></a><span class="sd">            The special value `icepool.Reroll` will reroll that old outcome.</span>
+</span><span id="map_to_pool-825"><a href="#map_to_pool-825"><span class="linenos">825</span></a><span class="sd">        star: If `True`, the first of the args will be unpacked before giving</span>
+</span><span id="map_to_pool-826"><a href="#map_to_pool-826"><span class="linenos">826</span></a><span class="sd">            them to `repl`.</span>
+</span><span id="map_to_pool-827"><a href="#map_to_pool-827"><span class="linenos">827</span></a><span class="sd">            If not provided, it will be guessed based on the signature of `repl`</span>
+</span><span id="map_to_pool-828"><a href="#map_to_pool-828"><span class="linenos">828</span></a><span class="sd">            and the number of arguments.</span>
+</span><span id="map_to_pool-829"><a href="#map_to_pool-829"><span class="linenos">829</span></a><span class="sd">        denominator: If provided, the denominator of the result will be this</span>
+</span><span id="map_to_pool-830"><a href="#map_to_pool-830"><span class="linenos">830</span></a><span class="sd">            value. Otherwise it will be the minimum to correctly weight the</span>
+</span><span id="map_to_pool-831"><a href="#map_to_pool-831"><span class="linenos">831</span></a><span class="sd">            pools.</span>
+</span><span id="map_to_pool-832"><a href="#map_to_pool-832"><span class="linenos">832</span></a>
+</span><span id="map_to_pool-833"><a href="#map_to_pool-833"><span class="linenos">833</span></a><span class="sd">    Returns:</span>
+</span><span id="map_to_pool-834"><a href="#map_to_pool-834"><span class="linenos">834</span></a><span class="sd">        A `MultisetExpression` representing the mixture of `Pool`s. Note  </span>
+</span><span id="map_to_pool-835"><a href="#map_to_pool-835"><span class="linenos">835</span></a><span class="sd">        that this is not technically a `Pool`, though it supports most of </span>
+</span><span id="map_to_pool-836"><a href="#map_to_pool-836"><span class="linenos">836</span></a><span class="sd">        the same operations.</span>
+</span><span id="map_to_pool-837"><a href="#map_to_pool-837"><span class="linenos">837</span></a>
+</span><span id="map_to_pool-838"><a href="#map_to_pool-838"><span class="linenos">838</span></a><span class="sd">    Raises:</span>
+</span><span id="map_to_pool-839"><a href="#map_to_pool-839"><span class="linenos">839</span></a><span class="sd">        ValueError: If `denominator` cannot be made consistent with the </span>
+</span><span id="map_to_pool-840"><a href="#map_to_pool-840"><span class="linenos">840</span></a><span class="sd">            resulting mixture of pools.</span>
+</span><span id="map_to_pool-841"><a href="#map_to_pool-841"><span class="linenos">841</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="map_to_pool-842"><a href="#map_to_pool-842"><span class="linenos">842</span></a>    <span class="n">transition_function</span> <span class="o">=</span> <span class="n">_canonicalize_transition_function</span><span class="p">(</span>
+</span><span id="map_to_pool-843"><a href="#map_to_pool-843"><span class="linenos">843</span></a>        <span class="n">repl</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">star</span><span class="p">)</span>
+</span><span id="map_to_pool-844"><a href="#map_to_pool-844"><span class="linenos">844</span></a>
+</span><span id="map_to_pool-845"><a href="#map_to_pool-845"><span class="linenos">845</span></a>    <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;MutableMapping[icepool.MultisetExpression[T], int]&#39;</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
+</span><span id="map_to_pool-846"><a href="#map_to_pool-846"><span class="linenos">846</span></a>        <span class="nb">int</span><span class="p">)</span>
+</span><span id="map_to_pool-847"><a href="#map_to_pool-847"><span class="linenos">847</span></a>    <span class="k">for</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">quantity</span> <span class="ow">in</span> <span class="n">iter_cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+</span><span id="map_to_pool-848"><a href="#map_to_pool-848"><span class="linenos">848</span></a>        <span class="n">pool</span> <span class="o">=</span> <span class="n">transition_function</span><span class="p">(</span><span class="o">*</span><span class="n">outcomes</span><span class="p">)</span>
+</span><span id="map_to_pool-849"><a href="#map_to_pool-849"><span class="linenos">849</span></a>        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Reroll</span><span class="p">:</span>
+</span><span id="map_to_pool-850"><a href="#map_to_pool-850"><span class="linenos">850</span></a>            <span class="k">continue</span>
+</span><span id="map_to_pool-851"><a href="#map_to_pool-851"><span class="linenos">851</span></a>        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetExpression</span><span class="p">):</span>
+</span><span id="map_to_pool-852"><a href="#map_to_pool-852"><span class="linenos">852</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">pool</span><span class="p">]</span> <span class="o">+=</span> <span class="n">quantity</span>
+</span><span id="map_to_pool-853"><a href="#map_to_pool-853"><span class="linenos">853</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="map_to_pool-854"><a href="#map_to_pool-854"><span class="linenos">854</span></a>            <span class="n">data</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">pool</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">quantity</span>
+</span><span id="map_to_pool-855"><a href="#map_to_pool-855"><span class="linenos">855</span></a>    <span class="c1"># I couldn&#39;t get the covariance / contravariance to work.</span>
+</span><span id="map_to_pool-856"><a href="#map_to_pool-856"><span class="linenos">856</span></a>    <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetMixture</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+</span><span id="map_to_pool-857"><a href="#map_to_pool-857"><span class="linenos">857</span></a>                                   <span class="n">denominator</span><span class="o">=</span><span class="n">denominator</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>EXPERIMENTAL: Applies <code>repl(outcome_of_die_0, outcome_of_die_1, ...)</code> for all joint outcomes, producing a MultisetGenerator.</p>
+            <div class="docstring"><p>EXPERIMENTAL: Applies <code>repl(outcome_of_die_0, outcome_of_die_1, ...)</code> for all joint outcomes, producing a MultisetExpression.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -10929,8 +10937,8 @@ up to this many times.</li>
 <li><strong>repl:</strong>  One of the following:
 <ul>
 <li>A callable that takes in one outcome per element of args and
-produces a <code><a href="#MultisetGenerator">MultisetGenerator</a></code> or something convertible to a <code><a href="#Pool">Pool</a></code>.</li>
-<li>A mapping from old outcomes to <code><a href="#MultisetGenerator">MultisetGenerator</a></code> 
+produces a <code><a href="#MultisetExpression">MultisetExpression</a></code> or something convertible to a <code><a href="#Pool">Pool</a></code>.</li>
+<li>A mapping from old outcomes to <code><a href="#MultisetExpression">MultisetExpression</a></code> 
 or something convertible to a <code><a href="#Pool">Pool</a></code>.
 In this case args must have exactly one element.
 The new outcomes may be dice rather than just single outcomes.
@@ -10948,7 +10956,7 @@ pools.</li>
 <h6 id="returns">Returns:</h6>
 
 <blockquote>
-  <p>A <code><a href="#MultisetGenerator">MultisetGenerator</a></code> representing the mixture of <code><a href="#Pool">Pool</a></code>s. Note<br />
+  <p>A <code><a href="#MultisetExpression">MultisetExpression</a></code> representing the mixture of <code><a href="#Pool">Pool</a></code>s. Note<br />
   that this is not technically a <code><a href="#Pool">Pool</a></code>, though it supports most of 
   the same operations.</p>
 </blockquote>
@@ -18548,67 +18556,78 @@ be formatted asa float with precision at least 1 part in int_start.</li>
 
 
                 </section>
-                <section id="wallenius">
-                            <input id="wallenius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
+                <section id="Wallenius">
+                            <input id="Wallenius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
             
-        <span class="def">def</span>
-        <span class="name">wallenius</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span>,</span><span class="param">	<span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#Die">Die</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+    <span class="def">class</span>
+    <span class="name">Wallenius</span><wbr>(<span class="base">typing.Generic[~T]</span>):
 
-                <label class="view-source-button" for="wallenius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Wallenius-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#wallenius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="wallenius-27"><a href="#wallenius-27"><span class="linenos">27</span></a><span class="k">def</span><span class="w"> </span><span class="nf">wallenius</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
-</span><span id="wallenius-28"><a href="#wallenius-28"><span class="linenos">28</span></a>              <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="wallenius-29"><a href="#wallenius-29"><span class="linenos">29</span></a>              <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Die[T]&#39;</span><span class="p">:</span>
-</span><span id="wallenius-30"><a href="#wallenius-30"><span class="linenos">30</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Wallenius&#39; noncentral hypergeometric distribution.</span>
-</span><span id="wallenius-31"><a href="#wallenius-31"><span class="linenos">31</span></a>
-</span><span id="wallenius-32"><a href="#wallenius-32"><span class="linenos">32</span></a><span class="sd">    This is sampling without replacement with weights, where the entire weight</span>
-</span><span id="wallenius-33"><a href="#wallenius-33"><span class="linenos">33</span></a><span class="sd">    of a card goes away when it is pulled.</span>
-</span><span id="wallenius-34"><a href="#wallenius-34"><span class="linenos">34</span></a><span class="sd">    </span>
-</span><span id="wallenius-35"><a href="#wallenius-35"><span class="linenos">35</span></a><span class="sd">    Args:</span>
-</span><span id="wallenius-36"><a href="#wallenius-36"><span class="linenos">36</span></a><span class="sd">        data: Either an iterable of (outcome, weight), or a mapping from</span>
-</span><span id="wallenius-37"><a href="#wallenius-37"><span class="linenos">37</span></a><span class="sd">            outcomes to either weights or (weight, quantity).</span>
-</span><span id="wallenius-38"><a href="#wallenius-38"><span class="linenos">38</span></a><span class="sd">        hand_size: The number of outcomes to pull.</span>
-</span><span id="wallenius-39"><a href="#wallenius-39"><span class="linenos">39</span></a><span class="sd">    </span>
-</span><span id="wallenius-40"><a href="#wallenius-40"><span class="linenos">40</span></a><span class="sd">    Returns:</span>
-</span><span id="wallenius-41"><a href="#wallenius-41"><span class="linenos">41</span></a><span class="sd">        A Die containing tuples of length `hand_size`.</span>
-</span><span id="wallenius-42"><a href="#wallenius-42"><span class="linenos">42</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="wallenius-43"><a href="#wallenius-43"><span class="linenos">43</span></a>    <span class="c1"># weight -&gt; Deck</span>
-</span><span id="wallenius-44"><a href="#wallenius-44"><span class="linenos">44</span></a>    <span class="n">weight_decks</span><span class="p">:</span> <span class="s1">&#39;MutableMapping[int, icepool.Deck[T]]&#39;</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="wallenius-45"><a href="#wallenius-45"><span class="linenos">45</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
-</span><span id="wallenius-46"><a href="#wallenius-46"><span class="linenos">46</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="wallenius-47"><a href="#wallenius-47"><span class="linenos">47</span></a>            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="wallenius-48"><a href="#wallenius-48"><span class="linenos">48</span></a>                <span class="n">weight</span> <span class="o">=</span> <span class="n">v</span>
-</span><span id="wallenius-49"><a href="#wallenius-49"><span class="linenos">49</span></a>                <span class="n">quantity</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="wallenius-50"><a href="#wallenius-50"><span class="linenos">50</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="wallenius-51"><a href="#wallenius-51"><span class="linenos">51</span></a>                <span class="n">weight</span><span class="p">,</span> <span class="n">quantity</span> <span class="o">=</span> <span class="n">v</span>
-</span><span id="wallenius-52"><a href="#wallenius-52"><span class="linenos">52</span></a>            <span class="n">weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_decks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span>
-</span><span id="wallenius-53"><a href="#wallenius-53"><span class="linenos">53</span></a>                                                    <span class="n">icepool</span><span class="o">.</span><span class="n">Deck</span><span class="p">())</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="wallenius-54"><a href="#wallenius-54"><span class="linenos">54</span></a>                                                        <span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
-</span><span id="wallenius-55"><a href="#wallenius-55"><span class="linenos">55</span></a>    <span class="k">else</span><span class="p">:</span>
-</span><span id="wallenius-56"><a href="#wallenius-56"><span class="linenos">56</span></a>        <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-</span><span id="wallenius-57"><a href="#wallenius-57"><span class="linenos">57</span></a>            <span class="n">weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_decks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-</span><span id="wallenius-58"><a href="#wallenius-58"><span class="linenos">58</span></a>                <span class="n">weight</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deck</span><span class="p">())</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="wallenius-59"><a href="#wallenius-59"><span class="linenos">59</span></a>
-</span><span id="wallenius-60"><a href="#wallenius-60"><span class="linenos">60</span></a>    <span class="n">weight_die</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[int]&#39;</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">({</span>
-</span><span id="wallenius-61"><a href="#wallenius-61"><span class="linenos">61</span></a>        <span class="n">weight</span><span class="p">:</span>
-</span><span id="wallenius-62"><a href="#wallenius-62"><span class="linenos">62</span></a>        <span class="n">weight</span> <span class="o">*</span> <span class="n">deck</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
-</span><span id="wallenius-63"><a href="#wallenius-63"><span class="linenos">63</span></a>        <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">deck</span> <span class="ow">in</span> <span class="n">weight_decks</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-</span><span id="wallenius-64"><a href="#wallenius-64"><span class="linenos">64</span></a>    <span class="p">})</span>
-</span><span id="wallenius-65"><a href="#wallenius-65"><span class="linenos">65</span></a>
-</span><span id="wallenius-66"><a href="#wallenius-66"><span class="linenos">66</span></a>    <span class="n">hand_weights</span> <span class="o">=</span> <span class="n">_wallenius_weights</span><span class="p">(</span><span class="n">weight_die</span><span class="p">,</span> <span class="n">hand_size</span><span class="p">)</span>
-</span><span id="wallenius-67"><a href="#wallenius-67"><span class="linenos">67</span></a>
-</span><span id="wallenius-68"><a href="#wallenius-68"><span class="linenos">68</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
-</span><span id="wallenius-69"><a href="#wallenius-69"><span class="linenos">69</span></a>        <span class="n">weight_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="wallenius-70"><a href="#wallenius-70"><span class="linenos">70</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([()])</span>
-</span><span id="wallenius-71"><a href="#wallenius-71"><span class="linenos">71</span></a>        <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">weight_counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span id="wallenius-72"><a href="#wallenius-72"><span class="linenos">72</span></a>            <span class="n">result</span> <span class="o">+=</span> <span class="n">weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span><span class="o">.</span><span class="n">deal</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
-</span><span id="wallenius-73"><a href="#wallenius-73"><span class="linenos">73</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-</span><span id="wallenius-74"><a href="#wallenius-74"><span class="linenos">74</span></a>        <span class="k">return</span> <span class="n">result</span>
-</span><span id="wallenius-75"><a href="#wallenius-75"><span class="linenos">75</span></a>
-</span><span id="wallenius-76"><a href="#wallenius-76"><span class="linenos">76</span></a>    <span class="k">return</span> <span class="n">hand_weights</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <a class="headerlink" href="#Wallenius"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Wallenius-28"><a href="#Wallenius-28"><span class="linenos">28</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Wallenius</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span id="Wallenius-29"><a href="#Wallenius-29"><span class="linenos">29</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Wallenius&#39; noncentral hypergeometric distribution.</span>
+</span><span id="Wallenius-30"><a href="#Wallenius-30"><span class="linenos">30</span></a>
+</span><span id="Wallenius-31"><a href="#Wallenius-31"><span class="linenos">31</span></a><span class="sd">    This is sampling without replacement with weights, where the entire weight</span>
+</span><span id="Wallenius-32"><a href="#Wallenius-32"><span class="linenos">32</span></a><span class="sd">    of a card goes away when it is pulled.</span>
+</span><span id="Wallenius-33"><a href="#Wallenius-33"><span class="linenos">33</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="Wallenius-34"><a href="#Wallenius-34"><span class="linenos">34</span></a>    <span class="n">_weight_decks</span><span class="p">:</span> <span class="s1">&#39;MutableMapping[int, icepool.Deck[T]]&#39;</span>
+</span><span id="Wallenius-35"><a href="#Wallenius-35"><span class="linenos">35</span></a>    <span class="n">_weight_die</span><span class="p">:</span> <span class="s1">&#39;icepool.Die[int]&#39;</span>
+</span><span id="Wallenius-36"><a href="#Wallenius-36"><span class="linenos">36</span></a>
+</span><span id="Wallenius-37"><a href="#Wallenius-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+</span><span id="Wallenius-38"><a href="#Wallenius-38"><span class="linenos">38</span></a>                 <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
+</span><span id="Wallenius-39"><a href="#Wallenius-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+</span><span id="Wallenius-40"><a href="#Wallenius-40"><span class="linenos">40</span></a><span class="sd">        </span>
+</span><span id="Wallenius-41"><a href="#Wallenius-41"><span class="linenos">41</span></a><span class="sd">        Args:</span>
+</span><span id="Wallenius-42"><a href="#Wallenius-42"><span class="linenos">42</span></a><span class="sd">            data: Either an iterable of (outcome, weight), or a mapping from</span>
+</span><span id="Wallenius-43"><a href="#Wallenius-43"><span class="linenos">43</span></a><span class="sd">                outcomes to either weights or (weight, quantity).</span>
+</span><span id="Wallenius-44"><a href="#Wallenius-44"><span class="linenos">44</span></a><span class="sd">            hand_size: The number of outcomes to pull.</span>
+</span><span id="Wallenius-45"><a href="#Wallenius-45"><span class="linenos">45</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Wallenius-46"><a href="#Wallenius-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="Wallenius-47"><a href="#Wallenius-47"><span class="linenos">47</span></a>
+</span><span id="Wallenius-48"><a href="#Wallenius-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+</span><span id="Wallenius-49"><a href="#Wallenius-49"><span class="linenos">49</span></a>            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Wallenius-50"><a href="#Wallenius-50"><span class="linenos">50</span></a>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="Wallenius-51"><a href="#Wallenius-51"><span class="linenos">51</span></a>                    <span class="n">weight</span> <span class="o">=</span> <span class="n">v</span>
+</span><span id="Wallenius-52"><a href="#Wallenius-52"><span class="linenos">52</span></a>                    <span class="n">quantity</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="Wallenius-53"><a href="#Wallenius-53"><span class="linenos">53</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Wallenius-54"><a href="#Wallenius-54"><span class="linenos">54</span></a>                    <span class="n">weight</span><span class="p">,</span> <span class="n">quantity</span> <span class="o">=</span> <span class="n">v</span>
+</span><span id="Wallenius-55"><a href="#Wallenius-55"><span class="linenos">55</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span id="Wallenius-56"><a href="#Wallenius-56"><span class="linenos">56</span></a>                    <span class="n">weight</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deck</span><span class="p">())</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+</span><span id="Wallenius-57"><a href="#Wallenius-57"><span class="linenos">57</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Wallenius-58"><a href="#Wallenius-58"><span class="linenos">58</span></a>            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span id="Wallenius-59"><a href="#Wallenius-59"><span class="linenos">59</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span id="Wallenius-60"><a href="#Wallenius-60"><span class="linenos">60</span></a>                    <span class="n">weight</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deck</span><span class="p">())</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Wallenius-61"><a href="#Wallenius-61"><span class="linenos">61</span></a>
+</span><span id="Wallenius-62"><a href="#Wallenius-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_die</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">({</span>
+</span><span id="Wallenius-63"><a href="#Wallenius-63"><span class="linenos">63</span></a>            <span class="n">weight</span><span class="p">:</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">deck</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
+</span><span id="Wallenius-64"><a href="#Wallenius-64"><span class="linenos">64</span></a>            <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">deck</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span id="Wallenius-65"><a href="#Wallenius-65"><span class="linenos">65</span></a>        <span class="p">})</span>
+</span><span id="Wallenius-66"><a href="#Wallenius-66"><span class="linenos">66</span></a>
+</span><span id="Wallenius-67"><a href="#Wallenius-67"><span class="linenos">67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.MultisetExpression[T]&#39;</span><span class="p">:</span>
+</span><span id="Wallenius-68"><a href="#Wallenius-68"><span class="linenos">68</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Deals the specified number of outcomes from the Wallenius.</span>
+</span><span id="Wallenius-69"><a href="#Wallenius-69"><span class="linenos">69</span></a><span class="sd">        </span>
+</span><span id="Wallenius-70"><a href="#Wallenius-70"><span class="linenos">70</span></a><span class="sd">        The result is a `MultisetExpression` representing the multiset of</span>
+</span><span id="Wallenius-71"><a href="#Wallenius-71"><span class="linenos">71</span></a><span class="sd">        outcomes dealt.</span>
+</span><span id="Wallenius-72"><a href="#Wallenius-72"><span class="linenos">72</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Wallenius-73"><a href="#Wallenius-73"><span class="linenos">73</span></a>        <span class="k">if</span> <span class="n">hand_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Wallenius-74"><a href="#Wallenius-74"><span class="linenos">74</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">([])</span>
+</span><span id="Wallenius-75"><a href="#Wallenius-75"><span class="linenos">75</span></a>
+</span><span id="Wallenius-76"><a href="#Wallenius-76"><span class="linenos">76</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+</span><span id="Wallenius-77"><a href="#Wallenius-77"><span class="linenos">77</span></a>            <span class="n">weight_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="Wallenius-78"><a href="#Wallenius-78"><span class="linenos">78</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="Wallenius-79"><a href="#Wallenius-79"><span class="linenos">79</span></a>            <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">weight_counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Wallenius-80"><a href="#Wallenius-80"><span class="linenos">80</span></a>                <span class="n">deal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span><span class="o">.</span><span class="n">deal</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+</span><span id="Wallenius-81"><a href="#Wallenius-81"><span class="linenos">81</span></a>                <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Wallenius-82"><a href="#Wallenius-82"><span class="linenos">82</span></a>                    <span class="n">result</span> <span class="o">=</span> <span class="n">deal</span>
+</span><span id="Wallenius-83"><a href="#Wallenius-83"><span class="linenos">83</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Wallenius-84"><a href="#Wallenius-84"><span class="linenos">84</span></a>                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">+</span> <span class="n">deal</span>
+</span><span id="Wallenius-85"><a href="#Wallenius-85"><span class="linenos">85</span></a>            <span class="k">return</span> <span class="n">result</span>
+</span><span id="Wallenius-86"><a href="#Wallenius-86"><span class="linenos">86</span></a>
+</span><span id="Wallenius-87"><a href="#Wallenius-87"><span class="linenos">87</span></a>        <span class="n">hand_weights</span> <span class="o">=</span> <span class="n">_wallenius_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weight_die</span><span class="p">,</span> <span class="n">hand_size</span><span class="p">)</span>
+</span><span id="Wallenius-88"><a href="#Wallenius-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="n">hand_weights</span><span class="o">.</span><span class="n">map_to_pool</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -18616,6 +18635,52 @@ be formatted asa float with precision at least 1 part in int_start.</li>
 
 <p>This is sampling without replacement with weights, where the entire weight
 of a card goes away when it is pulled.</p>
+</div>
+
+
+                            <div id="Wallenius.__init__" class="classattr">
+                                        <input id="Wallenius.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">Wallenius</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">Mapping</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span></span>)</span>
+
+                <label class="view-source-button" for="Wallenius.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Wallenius.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Wallenius.__init__-37"><a href="#Wallenius.__init__-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+</span><span id="Wallenius.__init__-38"><a href="#Wallenius.__init__-38"><span class="linenos">38</span></a>                 <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]):</span>
+</span><span id="Wallenius.__init__-39"><a href="#Wallenius.__init__-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+</span><span id="Wallenius.__init__-40"><a href="#Wallenius.__init__-40"><span class="linenos">40</span></a><span class="sd">        </span>
+</span><span id="Wallenius.__init__-41"><a href="#Wallenius.__init__-41"><span class="linenos">41</span></a><span class="sd">        Args:</span>
+</span><span id="Wallenius.__init__-42"><a href="#Wallenius.__init__-42"><span class="linenos">42</span></a><span class="sd">            data: Either an iterable of (outcome, weight), or a mapping from</span>
+</span><span id="Wallenius.__init__-43"><a href="#Wallenius.__init__-43"><span class="linenos">43</span></a><span class="sd">                outcomes to either weights or (weight, quantity).</span>
+</span><span id="Wallenius.__init__-44"><a href="#Wallenius.__init__-44"><span class="linenos">44</span></a><span class="sd">            hand_size: The number of outcomes to pull.</span>
+</span><span id="Wallenius.__init__-45"><a href="#Wallenius.__init__-45"><span class="linenos">45</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Wallenius.__init__-46"><a href="#Wallenius.__init__-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="Wallenius.__init__-47"><a href="#Wallenius.__init__-47"><span class="linenos">47</span></a>
+</span><span id="Wallenius.__init__-48"><a href="#Wallenius.__init__-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+</span><span id="Wallenius.__init__-49"><a href="#Wallenius.__init__-49"><span class="linenos">49</span></a>            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Wallenius.__init__-50"><a href="#Wallenius.__init__-50"><span class="linenos">50</span></a>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="Wallenius.__init__-51"><a href="#Wallenius.__init__-51"><span class="linenos">51</span></a>                    <span class="n">weight</span> <span class="o">=</span> <span class="n">v</span>
+</span><span id="Wallenius.__init__-52"><a href="#Wallenius.__init__-52"><span class="linenos">52</span></a>                    <span class="n">quantity</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="Wallenius.__init__-53"><a href="#Wallenius.__init__-53"><span class="linenos">53</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Wallenius.__init__-54"><a href="#Wallenius.__init__-54"><span class="linenos">54</span></a>                    <span class="n">weight</span><span class="p">,</span> <span class="n">quantity</span> <span class="o">=</span> <span class="n">v</span>
+</span><span id="Wallenius.__init__-55"><a href="#Wallenius.__init__-55"><span class="linenos">55</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span id="Wallenius.__init__-56"><a href="#Wallenius.__init__-56"><span class="linenos">56</span></a>                    <span class="n">weight</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deck</span><span class="p">())</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">quantity</span><span class="p">)</span>
+</span><span id="Wallenius.__init__-57"><a href="#Wallenius.__init__-57"><span class="linenos">57</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Wallenius.__init__-58"><a href="#Wallenius.__init__-58"><span class="linenos">58</span></a>            <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+</span><span id="Wallenius.__init__-59"><a href="#Wallenius.__init__-59"><span class="linenos">59</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span><span id="Wallenius.__init__-60"><a href="#Wallenius.__init__-60"><span class="linenos">60</span></a>                    <span class="n">weight</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Deck</span><span class="p">())</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="Wallenius.__init__-61"><a href="#Wallenius.__init__-61"><span class="linenos">61</span></a>
+</span><span id="Wallenius.__init__-62"><a href="#Wallenius.__init__-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_die</span> <span class="o">=</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">({</span>
+</span><span id="Wallenius.__init__-63"><a href="#Wallenius.__init__-63"><span class="linenos">63</span></a>            <span class="n">weight</span><span class="p">:</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">deck</span><span class="o">.</span><span class="n">denominator</span><span class="p">()</span>
+</span><span id="Wallenius.__init__-64"><a href="#Wallenius.__init__-64"><span class="linenos">64</span></a>            <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">deck</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+</span><span id="Wallenius.__init__-65"><a href="#Wallenius.__init__-65"><span class="linenos">65</span></a>        <span class="p">})</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Constructor.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -18624,15 +18689,54 @@ of a card goes away when it is pulled.</p>
 outcomes to either weights or (weight, quantity).</li>
 <li><strong>hand_size:</strong>  The number of outcomes to pull.</li>
 </ul>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <p>A Die containing tuples of length <code>hand_size</code>.</p>
-</blockquote>
 </div>
 
 
+                            </div>
+                            <div id="Wallenius.deal" class="classattr">
+                                        <input id="Wallenius.deal-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">deal</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="o">/</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetExpression">MultisetExpression</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="Wallenius.deal-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Wallenius.deal"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Wallenius.deal-67"><a href="#Wallenius.deal-67"><span class="linenos">67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">deal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hand_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.MultisetExpression[T]&#39;</span><span class="p">:</span>
+</span><span id="Wallenius.deal-68"><a href="#Wallenius.deal-68"><span class="linenos">68</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Deals the specified number of outcomes from the Wallenius.</span>
+</span><span id="Wallenius.deal-69"><a href="#Wallenius.deal-69"><span class="linenos">69</span></a><span class="sd">        </span>
+</span><span id="Wallenius.deal-70"><a href="#Wallenius.deal-70"><span class="linenos">70</span></a><span class="sd">        The result is a `MultisetExpression` representing the multiset of</span>
+</span><span id="Wallenius.deal-71"><a href="#Wallenius.deal-71"><span class="linenos">71</span></a><span class="sd">        outcomes dealt.</span>
+</span><span id="Wallenius.deal-72"><a href="#Wallenius.deal-72"><span class="linenos">72</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Wallenius.deal-73"><a href="#Wallenius.deal-73"><span class="linenos">73</span></a>        <span class="k">if</span> <span class="n">hand_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Wallenius.deal-74"><a href="#Wallenius.deal-74"><span class="linenos">74</span></a>            <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Pool</span><span class="p">([])</span>
+</span><span id="Wallenius.deal-75"><a href="#Wallenius.deal-75"><span class="linenos">75</span></a>
+</span><span id="Wallenius.deal-76"><a href="#Wallenius.deal-76"><span class="linenos">76</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+</span><span id="Wallenius.deal-77"><a href="#Wallenius.deal-77"><span class="linenos">77</span></a>            <span class="n">weight_counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="Wallenius.deal-78"><a href="#Wallenius.deal-78"><span class="linenos">78</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="Wallenius.deal-79"><a href="#Wallenius.deal-79"><span class="linenos">79</span></a>            <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">weight_counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="Wallenius.deal-80"><a href="#Wallenius.deal-80"><span class="linenos">80</span></a>                <span class="n">deal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_decks</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span><span class="o">.</span><span class="n">deal</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+</span><span id="Wallenius.deal-81"><a href="#Wallenius.deal-81"><span class="linenos">81</span></a>                <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Wallenius.deal-82"><a href="#Wallenius.deal-82"><span class="linenos">82</span></a>                    <span class="n">result</span> <span class="o">=</span> <span class="n">deal</span>
+</span><span id="Wallenius.deal-83"><a href="#Wallenius.deal-83"><span class="linenos">83</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="Wallenius.deal-84"><a href="#Wallenius.deal-84"><span class="linenos">84</span></a>                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="o">+</span> <span class="n">deal</span>
+</span><span id="Wallenius.deal-85"><a href="#Wallenius.deal-85"><span class="linenos">85</span></a>            <span class="k">return</span> <span class="n">result</span>
+</span><span id="Wallenius.deal-86"><a href="#Wallenius.deal-86"><span class="linenos">86</span></a>
+</span><span id="Wallenius.deal-87"><a href="#Wallenius.deal-87"><span class="linenos">87</span></a>        <span class="n">hand_weights</span> <span class="o">=</span> <span class="n">_wallenius_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weight_die</span><span class="p">,</span> <span class="n">hand_size</span><span class="p">)</span>
+</span><span id="Wallenius.deal-88"><a href="#Wallenius.deal-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="n">hand_weights</span><span class="o">.</span><span class="n">map_to_pool</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">star</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Deals the specified number of outcomes from the Wallenius.</p>
+
+<p>The result is a <code><a href="#MultisetExpression">MultisetExpression</a></code> representing the multiset of
+outcomes dealt.</p>
+</div>
+
+
+                            </div>
                 </section>
     </main>
 <script>
