@@ -44,9 +44,9 @@
             <table id="chance_table">
                 <tr>
                     <th>Wanted substats</th>
-                    <th style="width:80px;">0 fixed</th>
-                    <th style="width:80px;">1 fixed</th>
-                    <th style="width:80px;">2 fixed</th>
+                    <th style="width:80px;">Select 0</th>
+                    <th style="width:80px;">Select 1</th>
+                    <th style="width:80px;">Select 2</th>
                 </tr>
                 <tr>
                     <td>At least 1</td>
@@ -78,9 +78,9 @@
             <table id="inv_table">
                 <tr>
                     <th>Wanted substats</th>
-                    <th style="width:80px;">0 fixed</th>
-                    <th style="width:80px;">1 fixed</th>
-                    <th style="width:80px;">2 fixed</th>
+                    <th style="width:80px;">Select 0</th>
+                    <th style="width:80px;">Select 1</th>
+                    <th style="width:80px;">Select 2</th>
                 </tr>
                 <tr>
                     <td>At least 1</td>
@@ -112,9 +112,9 @@
             <table id="score_table">
                 <tr>
                     <th>Wanted substats</th>
-                    <th style="width:80px;">0 fixed</th>
-                    <th style="width:80px;">1 fixed</th>
-                    <th style="width:80px;">2 fixed</th>
+                    <th style="width:80px;">Select 0</th>
+                    <th style="width:80px;">Select 1</th>
+                    <th style="width:80px;">Select 2</th>
                 </tr>
                 <tr>
                     <td>At least 1</td>
@@ -149,8 +149,8 @@
 
         <ul>
             <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool. All four substats are generated, including the fourth substat that may not be known until Level 3.</li>
-            <li>The lowest-weight wanted stat(s) will be fixed first, i.e. in the order they appear in the list.</li>
-            <li>Efficiency (bottom table) is the chance of getting at least N wanted substats (top table) divided by the Resin cost (Self-Modeling + Wishful) of fixing that many substats: 1, 2, or 5 Resin to fix 0, 1, or 2 substats respectively. The highest efficiency in each row is highlighted in green.</li>
+            <li>The lowest-weight wanted stat(s) will be selected first, i.e. in the order they appear in the list.</li>
+            <li>Efficiency (bottom table) is the chance of getting at least N wanted substats (top table) divided by the Resin cost (Self-Modeling + Wishful) of selecting that many substats: 1, 2, or 5 Resin to select 0, 1, or 2 substats respectively. The highest efficiency in each row is highlighted in green.</li>
             <li>The value of Resin compared to Relic Remains or normal farming will also depend on how rare the main stat chosen is. Since it is less clear how to make a meaningful comparison in this case, this calculator only compares the Resin options against each other.</li>
         </ul>
     </div>
@@ -206,7 +206,7 @@ def wanted_substat_count(haves, wants, pulls):
             possible_weights.append((stat in wants, weight))
     return Wallenius(possible_weights).deal(pulls).sum()
 
-def choose_fixed(wants, count):
+def select_substats(wants, count):
     if count == 0:
         return ()
     result = ()
@@ -241,37 +241,37 @@ wants = set(stat for stat in stats if js.document.getElementById(f'{stat}_want')
 
 results = {}
 
-for fixed_count in [0, 1, 2]:
-    fixed = choose_fixed(wants, fixed_count)
-    wanted_count = wanted_substat_count(haves + fixed, wants, 4 - fixed_count) + fixed_count
+for select_count in [0, 1, 2]:
+    selects = select_substats(wants, select_count)
+    wanted_count = wanted_substat_count(haves + selects, wants, 4 - select_count) + select_count
     for hits in [1, 2, 3, 4]:
         value = (wanted_count >= hits).mean()
-        results[(hits, fixed_count)] = value
+        results[(hits, select_count)] = value
         
 for hits in [1, 2, 3, 4]:
     if hits <= len(wants):
         best = 0
-        best_fixed_count = 0
-        for fixed_count, cost in zip([0, 1, 2], [1, 2, 5]):
-            score = results[(hits, fixed_count)] / cost
+        best_select_count = 0
+        for select_count, cost in zip([0, 1, 2], [1, 2, 5]):
+            score = results[(hits, select_count)] / cost
             if score > best:
                 best = score
-                best_fixed_count = fixed_count
-        for fixed_count, cost in zip([0, 1, 2], [1, 2, 5]):
-            chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
-            chance_cell.innerHTML = f'{results[(hits, fixed_count)]:0.2%}'
+                best_select_count = select_count
+        for select_count, cost in zip([0, 1, 2], [1, 2, 5]):
+            chance_cell = js.document.getElementById(f'chance{hits}{select_count}')
+            chance_cell.innerHTML = f'{results[(hits, select_count)]:0.2%}'
                 
-            inv_cell = js.document.getElementById(f'inv{hits}{fixed_count}')
-            if results[(hits, fixed_count)] == 1:
+            inv_cell = js.document.getElementById(f'inv{hits}{select_count}')
+            if results[(hits, select_count)] == 1:
                 inv_cell.innerHTML = 'always'
             else:
-                inv_cell.innerHTML = format_probability_inverse(results[(hits, fixed_count)])
+                inv_cell.innerHTML = format_probability_inverse(results[(hits, select_count)])
                 
-            score = results[(hits, fixed_count)] / results[(hits, 0)] / cost
-            score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
+            score = results[(hits, select_count)] / results[(hits, 0)] / cost
+            score_cell = js.document.getElementById(f'score{hits}{select_count}')
             score_cell.innerHTML = f'{score:0.2%}'
             
-            if fixed_count == best_fixed_count:
+            if select_count == best_select_count:
                 chance_cell.style.background = '#cfc'
                 inv_cell.style.background = '#cfc'
                 score_cell.style.background = '#cfc'
@@ -280,16 +280,16 @@ for hits in [1, 2, 3, 4]:
                 inv_cell.style.background = '#ddd'
                 score_cell.style.background = '#ddd'
     else:
-        for fixed_count in [0, 1, 2]:
-            chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
+        for select_count in [0, 1, 2]:
+            chance_cell = js.document.getElementById(f'chance{hits}{select_count}')
             chance_cell.innerHTML = f''
             chance_cell.style.background = '#ddd'
             
-            inv_cell = js.document.getElementById(f'inv{hits}{fixed_count}')
+            inv_cell = js.document.getElementById(f'inv{hits}{select_count}')
             inv_cell.innerHTML = f''
             inv_cell.style.background = '#ddd'
             
-            score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
+            score_cell = js.document.getElementById(f'score{hits}{select_count}')
             score_cell.innerHTML = f''
             score_cell.style.background = '#ddd'
 
