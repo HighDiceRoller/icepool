@@ -115,8 +115,9 @@
 
         <ul>
             <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool.</li>
-            <li>The lowest-weight wanted stats will be fixed first.</li>
-            <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the percentage divided by the resin cost of fixing that many substats: 1, 2, or 5 respectively.</li>
+            <li>The lowest-weight wanted stat(s) will be fixed first, i.e. in the order they appear in the list.</li>
+            <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the chance of getting at least N wanted substats divided by the Resin cost (Self-Modeling + Wishful) of fixing that many substats: 1, 2, or 5 Resin to fix 0, 1, or 2 substats respectively.</li>
+            <li>Efficiency is equal to the above score normalized by the 0-fixed-stats case.</li>
         </ul>
     </div>
     
@@ -142,12 +143,12 @@ await pyodide.loadPackage(["micropip"],
 setLoadingText('Loading icepool')
 await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.7.2a0')
+await micropip.install('icepool==1.7.2a1')
 
 import js
 import pyodide
 from functools import cache
-from icepool import wallenius
+from icepool import Wallenius
 
 stats = {
     'spd' : ('SPD', 4),
@@ -169,7 +170,7 @@ def wanted_substat_count(haves, wants, more):
     for stat, (full_name, weight) in stats.items():
         if stat not in haves:
             possible_weights.append((stat in wants, weight))
-    return wallenius(possible_weights, more).map(sum, star=False)
+    return Wallenius(possible_weights).deal(more).sum()
     
 
 @cache
