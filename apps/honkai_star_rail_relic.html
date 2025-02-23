@@ -74,6 +74,40 @@
                 </tr>
             </table>
             
+            <h2>Chances as inverses</h2>
+            <table id="inv_table">
+                <tr>
+                    <th>Wanted substats</th>
+                    <th style="width:80px;">0 fixed</th>
+                    <th style="width:80px;">1 fixed</th>
+                    <th style="width:80px;">2 fixed</th>
+                </tr>
+                <tr>
+                    <td>At least 1</td>
+                    <td id="inv10">loading...</td>
+                    <td id="inv11">loading...</td>
+                    <td id="inv12">loading...</td>
+                </tr>
+                <tr>
+                    <td>At least 2</td>
+                    <td id="inv20">loading...</td>
+                    <td id="inv21">loading...</td>
+                    <td id="inv22">loading...</td>
+                </tr>
+                <tr>
+                    <td>At least 3</td>
+                    <td id="inv30">loading...</td>
+                    <td id="inv31">loading...</td>
+                    <td id="inv32">loading...</td>
+                </tr>
+                <tr>
+                    <td>All 4</td>
+                    <td id="inv40">loading...</td>
+                    <td id="inv41">loading...</td>
+                    <td id="inv42">loading...</td>
+                </tr>
+            </table>
+            
             <h2>Efficiency</h2>
             <table id="score_table">
                 <tr>
@@ -114,10 +148,10 @@
         <h2>Notes</h2>
 
         <ul>
-            <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool.</li>
+            <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool. All four substats are generated, including the fourth substat that may not be known until Level 3.</li>
             <li>The lowest-weight wanted stat(s) will be fixed first, i.e. in the order they appear in the list.</li>
-            <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the chance of getting at least N wanted substats divided by the Resin cost (Self-Modeling + Wishful) of fixing that many substats: 1, 2, or 5 Resin to fix 0, 1, or 2 substats respectively.</li>
-            <li>Efficiency is equal to the above score normalized by the 0-fixed-stats case.</li>
+            <li>Efficiency (bottom table) is the chance of getting at least N wanted substats (top table) divided by the Resin cost (Self-Modeling + Wishful) of fixing that many substats: 1, 2, or 5 Resin to fix 0, 1, or 2 substats respectively. The highest efficiency in each row is highlighted in green.</li>
+            <li>The value of Resin compared to Relic Remains or normal farming will also depend on how rare the main stat chosen is. Since it is less clear how to make a meaningful comparison in this case, this calculator only compares the Resin options against each other.</li>
         </ul>
     </div>
     
@@ -148,7 +182,7 @@ await micropip.install('icepool==1.7.2a1')
 import js
 import pyodide
 from functools import cache
-from icepool import Wallenius
+from icepool import Wallenius, format_probability_inverse
 
 stats = {
     'spd' : ('SPD', 4),
@@ -165,20 +199,12 @@ stats = {
     'def' : ('DEF', 10),
 }
 
-def wanted_substat_count(haves, wants, more):
+def wanted_substat_count(haves, wants, pulls):
     possible_weights = []
     for stat, (full_name, weight) in stats.items():
         if stat not in haves:
             possible_weights.append((stat in wants, weight))
-    return Wallenius(possible_weights).deal(more).sum()
-    
-
-@cache
-def roll_substats(current, more):
-    if more == 0:
-        return current
-    else:
-        return base.reroll(current, depth=None).map(lambda x: roll_substats(current + (x,), more-1))
+    return Wallenius(possible_weights).deal(pulls).sum()
 
 def choose_fixed(wants, count):
     if count == 0:
@@ -234,23 +260,34 @@ for hits in [1, 2, 3, 4]:
         for fixed_count, cost in zip([0, 1, 2], [1, 2, 5]):
             chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
             chance_cell.innerHTML = f'{results[(hits, fixed_count)]:0.2%}'
-            if fixed_count == best_fixed_count:
-                chance_cell.style.background = '#cfc'
+                
+            inv_cell = js.document.getElementById(f'inv{hits}{fixed_count}')
+            if results[(hits, fixed_count)] == 1:
+                inv_cell.innerHTML = 'always'
             else:
-                chance_cell.style.background = '#ddd'
+                inv_cell.innerHTML = format_probability_inverse(results[(hits, fixed_count)])
                 
             score = results[(hits, fixed_count)] / results[(hits, 0)] / cost
             score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
             score_cell.innerHTML = f'{score:0.2%}'
+            
             if fixed_count == best_fixed_count:
+                chance_cell.style.background = '#cfc'
+                inv_cell.style.background = '#cfc'
                 score_cell.style.background = '#cfc'
             else:
+                chance_cell.style.background = '#ddd'
+                inv_cell.style.background = '#ddd'
                 score_cell.style.background = '#ddd'
     else:
         for fixed_count in [0, 1, 2]:
             chance_cell = js.document.getElementById(f'chance{hits}{fixed_count}')
             chance_cell.innerHTML = f''
             chance_cell.style.background = '#ddd'
+            
+            inv_cell = js.document.getElementById(f'inv{hits}{fixed_count}')
+            inv_cell.innerHTML = f''
+            inv_cell.style.background = '#ddd'
             
             score_cell = js.document.getElementById(f'score{hits}{fixed_count}')
             score_cell.innerHTML = f''
