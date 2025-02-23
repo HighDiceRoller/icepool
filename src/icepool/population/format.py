@@ -29,7 +29,7 @@ def format_probability_inverse(probability, /, int_start: int = 20):
             be formatted asa float with precision at least 1 part in int_start.
     """
     max_precision = math.ceil(math.log10(int_start))
-    if probability <= 0 or probability >= 1:
+    if probability <= 0 or probability > 1:
         return 'n/a'
     product = probability * int_start
     if product <= 1:
