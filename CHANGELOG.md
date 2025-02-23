@@ -2,7 +2,8 @@
 
 * Add `Population.append()` and `.remove()` methods.
 * Improve `Vector` performance.
-* Experimental `wallenius()` noncentral hypergeometric.
+* Adjusted typing of mixture expressions.
+* Experimental `Wallenius` noncentral hypergeometric.
 
 ## v1.7.1 - 10 February 2025
 
