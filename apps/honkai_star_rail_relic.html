@@ -115,8 +115,9 @@
 
         <ul>
             <li>This assumes substats are generated one at a time with the given weights, with already-existing stats removed from the pool.</li>
-            <li>The lowest-weight wanted stats will be fixed first.</li>
-            <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the percentage divided by the resin cost of fixing that many substats: 1, 2, or 5 respectively.</li>
+            <li>The lowest-weight wanted stat(s) will be fixed first, i.e. in the order they appear in the list.</li>
+            <li>The highest scoring choice in each row of the result table is highlighted in green. The score is equal to the chance of getting at least N wanted substats divided by the Resin cost (Self-Modeling + Wishful) of fixing that many substats: 1, 2, or 5 Resin to fix 0, 1, or 2 substats respectively.</li>
+            <li>Efficiency is equal to the above score normalized by the 0-fixed-stats case.</li>
         </ul>
     </div>
     
