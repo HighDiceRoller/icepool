@@ -210,7 +210,7 @@ def choose_fixed(wants, count):
     if count == 0:
         return ()
     result = ()
-    for _, stat in sorted(((weight, stat) for stat, (_, weight) in stats.items()), reverse=True):
+    for _, stat in sorted((weight, stat) for stat, (_, weight) in stats.items()):
         if stat in wants:
             result = result + (stat,)
             if len(result) == count:
