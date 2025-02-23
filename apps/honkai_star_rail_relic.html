@@ -142,12 +142,12 @@ await pyodide.loadPackage(["micropip"],
 setLoadingText('Loading icepool')
 await pyodide.runPythonAsync(`
 import micropip
-await micropip.install('icepool==1.7.2a0')
+await micropip.install('icepool==1.7.2a1')
 
 import js
 import pyodide
 from functools import cache
-from icepool import wallenius
+from icepool import Wallenius
 
 stats = {
     'spd' : ('SPD', 4),
@@ -169,7 +169,7 @@ def wanted_substat_count(haves, wants, more):
     for stat, (full_name, weight) in stats.items():
         if stat not in haves:
             possible_weights.append((stat in wants, weight))
-    return wallenius(possible_weights, more).map(sum, star=False)
+    return Wallenius(possible_weights).deal(more).sum()
     
 
 @cache
