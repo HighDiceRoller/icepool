@@ -1,41 +1,30 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.expression.base import MultisetExpressionBase
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
 
 import bisect
-from functools import cached_property
 import itertools
 import operator
 import random
 
-from icepool.typing import T, U, Expandable, ImplicitConversionError, T
+from icepool.typing import Q, T, U, Expandable, ImplicitConversionError, T
 from types import EllipsisType
-from typing import (Callable, Collection, Generic, Hashable, Iterator, Literal,
-                    Mapping, Sequence, Type, TypeAlias, cast, overload)
-
-from abc import ABC, abstractmethod
-
-InitialMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpression',
-                                                      int]]
-PopMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpression',
-                                                  Sequence, int]]
+from typing import (Callable, Collection, Literal, Mapping, Sequence, Type,
+                    cast, overload)
 
 
 class MultisetArityError(ValueError):
     """Indicates that an arity was not the same as required."""
 
 
-class MultisetBindingError(TypeError):
-    """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
-
-
 def implicit_convert_to_expression(
     arg: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
 ) -> 'MultisetExpression[T]':
-    """Implcitly converts the argument to a `MultisetExpression`.
+    """Implcitly converts the argument to a `MultisetExpression` with `int` counts.
 
     Args:
         arg: The argument must either already be a `MultisetExpression`;
@@ -51,8 +40,9 @@ def implicit_convert_to_expression(
         )
 
 
-class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
-    """Abstract base class representing an expression that operates on multisets.
+class MultisetExpression(MultisetExpressionBase[T, int],
+                         Expandable[tuple[T, ...]]):
+    """Abstract base class representing an expression that operates on single multisets.
 
     There are three types of multiset expressions:
 
@@ -114,180 +104,6 @@ class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    _children: 'tuple[MultisetExpression[T], ...]'
-    """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
-
-    @abstractmethod
-    def outcomes(self) -> Sequence[T]:
-        """The possible outcomes that could be generated, in ascending order."""
-
-    @abstractmethod
-    def output_arity(self) -> int:
-        """The number of multisets/counts generated. Must be constant."""
-
-    @abstractmethod
-    def _is_resolvable(self) -> bool:
-        """`True` iff the generator is capable of producing an overall outcome.
-
-        For example, a dice `Pool` will return `False` if it contains any dice
-        with no outcomes.
-        """
-
-    @abstractmethod
-    def _generate_initial(self) -> InitialMultisetGeneration:
-        """Initialize the expression before any outcomes are emitted.
-
-        Yields:
-            * Each possible initial expression.
-            * The weight for selecting that initial expression.
-        
-        Unitary expressions can just yield `(self, 1)` and return.
-        """
-
-    @abstractmethod
-    def _generate_min(self, min_outcome: T) -> PopMultisetGeneration:
-        """Pops the min outcome from this expression if it matches the argument.
-
-        Yields:
-            * Ax expression with the min outcome popped.
-            * A tuple of counts for the min outcome.
-            * The weight for this many of the min outcome appearing.
-
-            If the argument does not match the min outcome, or this expression
-            has no outcomes, only a single tuple is yielded:
-
-            * `self`
-            * A tuple of zeros.
-            * weight = 1.
-
-        Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
-        """
-
-    @abstractmethod
-    def _generate_max(self, max_outcome: T) -> PopMultisetGeneration:
-        """Pops the max outcome from this expression if it matches the argument.
-
-        Yields:
-            * An expression with the max outcome popped.
-            * A tuple of counts for the max outcome.
-            * The weight for this many of the max outcome appearing.
-
-            If the argument does not match the max outcome, or this expression
-            has no outcomes, only a single tuple is yielded:
-
-            * `self`
-            * A tuple of zeros.
-            * weight = 1.
-
-        Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
-        """
-
-    @abstractmethod
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        """Any ordering that is preferred or required by this expression node."""
-
-    @abstractmethod
-    def has_free_variables(self) -> bool:
-        """Whether this expression contains any free variables, i.e. parameters to a @multiset_function."""
-
-    @abstractmethod
-    def denominator(self) -> int:
-        """The total weight of all paths through this generator.
-        
-        Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
-        """
-
-    @abstractmethod
-    def _unbind(
-            self,
-            bound_inputs: 'list[MultisetExpression]' = []
-    ) -> 'MultisetExpression':
-        """Removes bound subexpressions, replacing them with variables.
-
-        Args:
-            bound_inputs: The list of bound subexpressions. Bound subexpressions
-                will be added to this list.
-
-        Returns:
-            A copy of this expression with any fully-bound subexpressions
-            replaced with variables. The `index` of each variable is equal to
-            the position of the expression they replaced in `bound_inputs`.
-        """
-
-    @abstractmethod
-    def _apply_variables(
-            self, outcome: T, bound_counts: tuple[int, ...],
-            free_counts: tuple[int,
-                               ...]) -> 'tuple[MultisetExpression[T], int]':
-        """Advances the state of this expression given counts emitted from variables and returns a count.
-        
-        Args:
-            outcome: The current outcome being processed.
-            bound_counts: The counts emitted by bound expressions.
-            free_counts: The counts emitted by arguments to the
-                `@mulitset_function`.
-
-        Returns:
-            An expression representing the next state and the count produced by
-            this expression.
-        """
-
-    @property
-    @abstractmethod
-    def _local_hash_key(self) -> Hashable:
-        """A hash key that logically identifies this object among MultisetExpressions.
-
-        Does not include the hash for children.
-
-        Used to implement `equals()` and `__hash__()`
-        """
-
-    @property
-    def _can_keep(self) -> bool:
-        """Whether the expression supports enhanced keep operations."""
-        return False
-
-    def min_outcome(self) -> T:
-        return self.outcomes()[0]
-
-    def max_outcome(self) -> T:
-        return self.outcomes()[-1]
-
-    @cached_property
-    def _hash_key(self) -> Hashable:
-        """A hash key that logically identifies this object among MultisetExpressions.
-
-        Used to implement `equals()` and `__hash__()`
-        """
-        return (self._local_hash_key,
-                tuple(child._hash_key for child in self._children))
-
-    def equals(self, other) -> bool:
-        """Whether this expression is logically equal to another object."""
-        if not isinstance(other, MultisetExpression):
-            return False
-        return self._hash_key == other._hash_key
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._hash_key)
-
-    def __hash__(self) -> int:
-        return self._hash
-
-    def _iter_nodes(self) -> 'Iterator[MultisetExpression]':
-        """Iterates over the nodes in this expression in post-order (leaves first)."""
-        for child in self._children:
-            yield from child._iter_nodes()
-        yield self
-
-    def order_preference(self) -> tuple[Order, OrderReason]:
-        return merge_order_preferences(*(node.local_order_preference()
-                                         for node in self._iter_nodes()))
-
     @property
     def _items_for_cartesian_product(
             self) -> Sequence[tuple[tuple[T, ...], int]]:
@@ -296,14 +112,14 @@ class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
 
     # Sampling.
 
-    def sample(self) -> tuple[tuple, ...]:
+    def sample(self) -> tuple[T, ...]:
         """EXPERIMENTAL: A single random sample from this generator.
 
         This uses the standard `random` package and is not cryptographically
         secure.
 
         Returns:
-            A sorted tuple of outcomes for each output of this generator.
+            A sorted tuple of outcomes.
         """
         if not self.outcomes():
             raise ValueError('Cannot sample from an empty set of outcomes.')
@@ -323,11 +139,11 @@ class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
         # We don't use random.choices since that is based on floats rather than ints.
         r = random.randrange(denominator)
         index = bisect.bisect_right(cumulative_weights, r)
-        popped_generator, counts, _ = generated[index]
-        head = tuple((outcome, ) * count for count in counts)
+        popped_generator, count, _ = generated[index]
+        head = (outcome, ) * count
         if popped_generator.outcomes():
             tail = popped_generator.sample()
-            return tuple(tuple(sorted(h + t)) for h, t, in zip(head, tail))
+            return tuple(sorted(head + tail))
         else:
             return head
 
@@ -1338,6 +1154,10 @@ class MultisetExpression(ABC, Expandable[tuple[T, ...]]):
                                  truth_value_callback=truth_value_callback)
         except TypeError:
             return NotImplemented
+
+    # We need to define this again since we have an override for __eq__.
+    def __hash__(self) -> int:
+        return self._hash
 
     def isdisjoint(
             self,

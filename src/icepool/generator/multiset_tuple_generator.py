@@ -4,6 +4,7 @@ import operator
 import icepool
 
 from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
 from icepool.collection.counts import Counts
 from icepool.expression.multiset_expression import MultisetExpression
@@ -25,23 +26,8 @@ Each element is a tuple of generator, counts, weight.
 """
 
 
-class MultisetGenerator(MultisetExpression[T]):
-    """Abstract base class for generating multisets.
-
-    These include dice pools (`Pool`) and card deals (`Deal`). Most likely you
-    will be using one of these two rather than writing your own subclass of
-    `MultisetGenerator`.
-
-    The multisets are incrementally generated one outcome at a time.
-    For each outcome, a `count` and `weight` are generated, along with a
-    smaller generator to produce the rest of the multiset.
-
-    You can perform simple evaluations using built-in operators and methods in
-    this class.
-    For more complex evaluations and better performance, particularly when
-    multiple generators are involved, you will want to write your own subclass
-    of `MultisetEvaluator`.
-    """
+class MultisetTupleGenerator(MultisetTupleExpression[T]):
+    """Abstract base class for generating tuples of multisets."""
 
     _children = ()
 
@@ -51,7 +37,7 @@ class MultisetGenerator(MultisetExpression[T]):
     # Overridden to switch bound generators with variables.
 
     @property
-    def _bound_inputs(self) -> 'tuple[icepool.MultisetGenerator, ...]':
+    def _bound_inputs(self) -> 'tuple[MultisetTupleGenerator, ...]':
         return (self, )
 
     def _unbind(

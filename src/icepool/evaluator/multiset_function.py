@@ -145,7 +145,7 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
     def __init__(self, *inputs: 'icepool.MultisetExpression[T]',
                  evaluator: MultisetEvaluator[T, U_co]) -> None:
         self._evaluator = evaluator
-        bound_inputs: 'list[icepool.MultisetExpression]' = []
+        bound_inputs: 'list[icepool.MultisetExpressionBase]' = []
         self._expressions = tuple(
             input._unbind(bound_inputs) for input in inputs)
         self._bound_inputs = tuple(bound_inputs)
@@ -215,7 +215,7 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
     def extra_outcomes(self, *generators) -> Collection[T]:
         return self._evaluator.extra_outcomes(*generators)
 
-    def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+    def bound_inputs(self) -> 'tuple[icepool.MultisetExpressionBase, ...]':
         return self._evaluator.bound_inputs() + self._bound_inputs
 
     @cached_property

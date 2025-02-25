@@ -1,11 +1,10 @@
 __docformat__ = 'google'
 
-from icepool.typing import Qs, T
+from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator
 
-from typing import Any, Hashable, cast
 import icepool
 from icepool.collection.counts import CountsKeysView
-from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.expression import InitialMultisetGeneration
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.math import iter_hypergeom
 from icepool.order import Order, OrderReason
@@ -13,14 +12,19 @@ from icepool.order import Order, OrderReason
 from functools import cached_property
 import math
 
+from icepool.typing import T
 
-class MultiDeal(MultisetGenerator[T, Qs]):
+from typing import Any, Hashable, Iterator, cast
+
+
+class MultiDeal(MultisetTupleGenerator[T]):
     """Represents an unordered deal of multiple hands from a `Deck`."""
 
     _deck: 'icepool.Deck[T]'
-    _hand_sizes: Qs
+    _hand_sizes: tuple[int, ...]
 
-    def __init__(self, deck: 'icepool.Deck[T]', *hand_sizes: int) -> None:
+    def __init__(self, deck: 'icepool.Deck[T]',
+                 hand_sizes: tuple[int, ...]) -> None:
         """Constructor.
 
         For algorithmic reasons, you must pre-commit to the number of cards to
@@ -41,7 +45,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
         if any(hand < 0 for hand in hand_sizes):
             raise ValueError('hand_sizes cannot be negative.')
         self._deck = deck
-        self._hand_sizes = cast(Qs, hand_sizes)
+        self._hand_sizes = hand_sizes
         if self.total_cards_dealt() > self.deck().size():
             raise ValueError(
                 'The total number of cards dealt cannot exceed the size of the deck.'
@@ -49,7 +53,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
 
     @classmethod
     def _new_raw(cls, deck: 'icepool.Deck[T]',
-                 hand_sizes: Qs) -> 'MultiDeal[T, Qs]':
+                 hand_sizes: tuple[int, ...]) -> 'MultiDeal[T]':
         self = super(MultiDeal, cls).__new__(cls)
         self._deck = deck
         self._hand_sizes = hand_sizes
@@ -59,7 +63,7 @@ class MultiDeal(MultisetGenerator[T, Qs]):
         """The `Deck` the cards are dealt from."""
         return self._deck
 
-    def hand_sizes(self) -> Qs:
+    def hand_sizes(self) -> tuple[int, ...]:
         """The number of cards dealt to each hand as a tuple."""
         return self._hand_sizes
 
@@ -96,8 +100,9 @@ class MultiDeal(MultisetGenerator[T, Qs]):
     def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_common(self, popped_deck: 'icepool.Deck[T]',
-                         deck_count: int) -> PopMultisetGeneration:
+    def _generate_common(
+            self, popped_deck: 'icepool.Deck[T]', deck_count: int
+    ) -> Iterator[tuple['MultiDeal', tuple[int, ...], int]]:
         """Common implementation for _generate_min and _generate_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck().size())
@@ -113,7 +118,9 @@ class MultiDeal(MultisetGenerator[T, Qs]):
                 weight = weight_total * weight_split
                 yield popped_deal, counts, weight
 
-    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
+    def _generate_min(
+            self,
+            min_outcome) -> Iterator[tuple['MultiDeal', tuple[int, ...], int]]:
         if not self.outcomes() or min_outcome != self.min_outcome():
             yield self, (0, ), 1
             return
@@ -122,7 +129,9 @@ class MultiDeal(MultisetGenerator[T, Qs]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
+    def _generate_max(
+            self,
+            max_outcome) -> Iterator[tuple['MultiDeal', tuple[int, ...], int]]:
         if not self.outcomes() or max_outcome != self.max_outcome():
             yield self, (0, ), 1
             return

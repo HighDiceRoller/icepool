@@ -4,13 +4,13 @@ import icepool
 import icepool.order
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
-from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.expression import InitialMultisetGeneration
 from icepool.order import Order, OrderReason
 
 from functools import cached_property
 
 from icepool.typing import T
-from typing import Hashable
+from typing import Hashable, Iterator
 
 
 class Deal(KeepGenerator[T]):
@@ -88,9 +88,9 @@ class Deal(KeepGenerator[T]):
     def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
+    def _generate_min(self, min_outcome) -> Iterator[tuple['Deal', int, int]]:
         if not self.outcomes() or min_outcome != self.min_outcome():
-            yield self, (0, ), 1
+            yield self, 0, 1
             return
 
         popped_deck, deck_count = self.deck()._pop_min()
@@ -109,15 +109,15 @@ class Deal(KeepGenerator[T]):
                 skip_weight = (skip_weight
                                or 0) + weight * popped_deal.denominator()
                 continue
-            yield popped_deal, (result_count, ), weight
+            yield popped_deal, result_count, weight
 
         if skip_weight is not None:
             popped_deal = Deal._new_raw(popped_deck, 0, ())
-            yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
+            yield popped_deal, sum(self.keep_tuple()), skip_weight
 
-    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
+    def _generate_max(self, max_outcome) -> Iterator[tuple['Deal', int, int]]:
         if not self.outcomes() or max_outcome != self.max_outcome():
-            yield self, (0, ), 1
+            yield self, 0, 1
             return
 
         popped_deck, deck_count = self.deck()._pop_max()
@@ -136,11 +136,11 @@ class Deal(KeepGenerator[T]):
                 skip_weight = (skip_weight
                                or 0) + weight * popped_deal.denominator()
                 continue
-            yield popped_deal, (result_count, ), weight
+            yield popped_deal, result_count, weight
 
         if skip_weight is not None:
             popped_deal = Deal._new_raw(popped_deck, 0, ())
-            yield popped_deal, (sum(self.keep_tuple()), ), skip_weight
+            yield popped_deal, sum(self.keep_tuple()), skip_weight
 
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())

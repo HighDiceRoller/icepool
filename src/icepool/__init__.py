@@ -125,14 +125,14 @@ from icepool.generator.pool import Pool, standard_pool
 from icepool.generator.keep import KeepGenerator
 from icepool.generator.compound_keep import CompoundKeepGenerator
 
-from icepool.multiset_expression import (MultisetExpression,
-                                         implicit_convert_to_expression,
-                                         InitialMultisetGeneration,
-                                         PopMultisetGeneration,
-                                         MultisetArityError,
-                                         MultisetBindingError)
+from icepool.expression import (MultisetExpressionBase, MultisetExpression,
+                                implicit_convert_to_expression,
+                                InitialMultisetGeneration,
+                                PopMultisetGeneration, MultisetArityError,
+                                MultisetBindingError)
 
 from icepool.generator.multiset_generator import MultisetGenerator
+from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator
 from icepool.generator.alignment import Alignment
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 

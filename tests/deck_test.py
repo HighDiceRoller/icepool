@@ -3,7 +3,7 @@ import pytest
 
 from icepool import MultisetEvaluator, Deck
 from icepool.evaluator import LargestStraightEvaluator
-from icepool.multiset_expression import MultisetArityError
+from icepool.expression.multiset_expression import MultisetArityError
 
 # no wraparound
 best_run_evaluator = LargestStraightEvaluator()
@@ -15,9 +15,9 @@ class TrivialEvaluator(MultisetEvaluator):
         return 0
 
 
-class SumEachEvaluator(MultisetEvaluator):
+class SumTupleEvaluator(MultisetEvaluator):
 
-    def next_state(self, state, outcome, *counts):
+    def next_state(self, state, outcome, counts):
         if state is None:
             return tuple(0 for x in counts)
         else:
@@ -26,7 +26,7 @@ class SumEachEvaluator(MultisetEvaluator):
 
 
 def test_empty_deal():
-    deal = icepool.Deck(range(13), times=4).deal()
+    deal = icepool.Deck(range(13), times=4).deal(())
     result = TrivialEvaluator().evaluate(deal)
     assert result.equals(icepool.Die([0]))
 
@@ -42,8 +42,8 @@ def test_two_hand_sum_same_size():
     deal1 = deck.deal(5)
     result1 = deal1.sum()
 
-    deal2 = deck.deal(5, 5)
-    result2 = SumEachEvaluator().evaluate(deal2)
+    deal2 = deck.deal((5, 5))
+    result2 = SumTupleEvaluator().evaluate(deal2)
 
     assert deal2.denominator() == result2.denominator()
     assert result1.equals(result2.marginals[0], simplify=True)
@@ -53,18 +53,11 @@ def test_two_hand_sum_same_size():
 def test_two_hand_sum_diff_size():
     deck = icepool.Deck(range(4), times=4)
 
-    deal = deck.deal(2, 4)
-    result = SumEachEvaluator().evaluate(deal)
+    deal = deck.deal((2, 4))
+    result = SumTupleEvaluator().evaluate(deal)
 
     assert deal.denominator() == result.denominator()
     assert (result.marginals[0] * 2).mean() == result.marginals[1].mean()
-
-
-def test_multiple_bind_error():
-    deck = icepool.Deck(range(4), times=4)
-    deal = deck.deal(2, 2)
-    with pytest.raises(MultisetArityError):
-        deal.unique().count()
 
 
 def test_add():

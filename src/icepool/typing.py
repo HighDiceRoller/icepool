@@ -6,7 +6,7 @@ import inspect
 from typing import Any, Callable, Generic, Hashable, Iterable, Literal, Mapping, Protocol, Sequence, Sized, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from icepool.multiset_expression import MultisetExpression
+    from icepool.expression.multiset_expression import MultisetExpression
 
 A_co = TypeVar('A_co', covariant=True)
 """Any type."""
@@ -29,8 +29,8 @@ U = TypeVar('U', bound='Outcome')
 U_co = TypeVar('U_co', bound='Outcome', covariant=True)
 """Another outcome type."""
 
-Qs = TypeVar('Qs', bound=tuple[int, ...])
-"""A tuple of count types. In this future this may be replaced with a TypeVarTuple."""
+Q = TypeVar('Q')
+"""The type of count emitted by a MultisetExpression."""
 
 
 class RerollType(enum.Enum):

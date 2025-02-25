@@ -1,11 +1,11 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.multiset_expression
+import icepool.expression.multiset_expression
 import icepool.math
 import icepool.creation_args
 import icepool.order
-from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.expression import InitialMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.order import Order, OrderReason
 
@@ -19,7 +19,7 @@ from icepool.typing import T
 from typing import TYPE_CHECKING, Any, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
 
 if TYPE_CHECKING:
-    from icepool.multiset_expression import MultisetExpression
+    from icepool.expression.multiset_expression import MultisetExpression
 
 
 class Pool(KeepGenerator[T]):
@@ -197,7 +197,7 @@ class Pool(KeepGenerator[T]):
     def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
+    def _generate_min(self, min_outcome) -> Iterator[tuple['Pool', int, int]]:
         """Pops the given outcome from this pool, if it is the min outcome.
 
         Yields:
@@ -207,10 +207,10 @@ class Pool(KeepGenerator[T]):
             weight: The weight of this incremental result.
         """
         if not self.outcomes():
-            yield self, (0, ), 1
+            yield self, 0, 1
             return
         if min_outcome != self.min_outcome():
-            yield self, (0, ), 1
+            yield self, 0, 1
             return
         generators = [
             iter_die_pop_min(die, die_count, min_outcome)
@@ -237,13 +237,13 @@ class Pool(KeepGenerator[T]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (result_count, ), result_weight
+            yield popped_pool, result_count, result_weight
 
         if skip_weight is not None:
             popped_pool = Pool._new_raw((), self._outcomes[1:], ())
-            yield popped_pool, (sum(self.keep_tuple()), ), skip_weight
+            yield popped_pool, sum(self.keep_tuple()), skip_weight
 
-    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
+    def _generate_max(self, max_outcome) -> Iterator[tuple['Pool', int, int]]:
         """Pops the given outcome from this pool, if it is the max outcome.
 
         Yields:
@@ -253,10 +253,10 @@ class Pool(KeepGenerator[T]):
             weight: The weight of this incremental result.
         """
         if not self.outcomes():
-            yield self, (0, ), 1
+            yield self, 0, 1
             return
         if max_outcome != self.max_outcome():
-            yield self, (0, ), 1
+            yield self, 0, 1
             return
         generators = [
             iter_die_pop_max(die, die_count, max_outcome)
@@ -283,11 +283,11 @@ class Pool(KeepGenerator[T]):
                                0) + result_weight * popped_pool.denominator()
                 continue
 
-            yield popped_pool, (result_count, ), result_weight
+            yield popped_pool, result_count, result_weight
 
         if skip_weight is not None:
             popped_pool = Pool._new_raw((), self._outcomes[:-1], ())
-            yield popped_pool, (sum(self.keep_tuple()), ), skip_weight
+            yield popped_pool, sum(self.keep_tuple()), skip_weight
 
     def _set_keep_tuple(self, keep_tuple: tuple[int,
                                                 ...]) -> 'KeepGenerator[T]':
@@ -297,8 +297,8 @@ class Pool(KeepGenerator[T]):
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
         args = tuple(
-            icepool.multiset_expression.implicit_convert_to_expression(arg)
-            for arg in args)
+            icepool.expression.multiset_expression.
+            implicit_convert_to_expression(arg) for arg in args)
         if all(isinstance(arg, Pool) for arg in args):
             pools = cast(tuple[Pool[T], ...], args)
             keep_tuple: tuple[int, ...] = tuple(

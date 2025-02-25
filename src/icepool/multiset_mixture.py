@@ -2,7 +2,8 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.multiset_expression import MultisetArityError, MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
+from icepool.expression.base import MultisetExpressionBase, InitialMultisetGeneration
+from icepool.expression.multiset_expression import MultisetArityError, MultisetExpression
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason, merge_order_preferences
 
@@ -11,7 +12,7 @@ import math
 from collections import defaultdict
 from functools import cached_property
 
-from icepool.typing import Qs, T, U
+from icepool.typing import T, U
 from types import EllipsisType
 from typing import TYPE_CHECKING, Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
 
@@ -65,29 +66,18 @@ class MultisetMixture(MultisetExpression[T]):
         return icepool.sorted_union(*(inner.outcomes()
                                       for inner in self._inner_expressions))
 
-    def output_arity(self) -> int:
-        result = None
-        for inner in self._inner_expressions:
-            if result is None:
-                result = inner.output_arity()
-            elif result != inner.output_arity():
-                raise MultisetArityError('Inconsistent output_arity.')
-        if result is None:
-            raise ValueError('Empty MultisetMixture.')
-        return result
-
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_expressions)
 
     def _generate_initial(self) -> InitialMultisetGeneration:
         yield from self._inner_expressions.items()
 
-    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
+    def _generate_min(self, min_outcome):
         raise RuntimeError(
             'MultisetMixture should have decayed to another generator type by this point.'
         )
 
-    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
+    def _generate_max(self, max_outcome):
         raise RuntimeError(
             'MultisetMixture should have decayed to another generator type by this point.'
         )
@@ -111,9 +101,9 @@ class MultisetMixture(MultisetExpression[T]):
         return self._denominator
 
     def _unbind(
-            self,
-            bound_inputs: 'list[MultisetExpression]' = []
-    ) -> 'MultisetExpression':
+        self,
+        bound_inputs: 'list[MultisetExpressionBase]' = []
+    ) -> 'MultisetExpressionBase':
         raise RuntimeError(
             'MultisetMixture should have decayed to another generator type by this point.'
         )

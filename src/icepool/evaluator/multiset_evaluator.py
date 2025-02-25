@@ -9,7 +9,7 @@ from functools import cached_property
 import itertools
 import math
 
-from icepool.typing import T, U_co
+from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Mapping,
                     MutableMapping, Sequence, TypeAlias, cast, TYPE_CHECKING,
                     overload)
@@ -235,7 +235,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+    def bound_inputs(self) -> 'tuple[icepool.MultisetExpressionBase, ...]':
         """An optional sequence of extra inputs whose counts will be prepended to *counts.
         
         (Prepending rather than appending is analogous to `functools.partial`.)
@@ -311,9 +311,6 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         # Otherwise, we perform the evaluation.
 
         inputs = self.bound_inputs() + inputs
-
-        # This is kept to verify inputs to operators each have arity exactly 1.
-        total_arity = sum(input.output_arity() for input in inputs)
 
         if not all(expression._is_resolvable() for expression in inputs):
             return icepool.Die([])
@@ -462,7 +459,6 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 Order(-order), extra_outcomes, inputs)
             for p in itertools.product(*iterators):
                 prev_inputs, counts, weights = zip(*p)
-                counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
                 prev = self._eval_internal(order, evaluation_cache,
                                            next_state_method,
@@ -512,7 +508,6 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
                 order, extra_outcomes, inputs)
             for p in itertools.product(*iterators):
                 next_inputs, counts, weights = zip(*p)
-                counts = tuple(itertools.chain.from_iterable(counts))
                 prod_weight = math.prod(weights)
                 next_state = next_state_method(initial_state, outcome, *counts)
                 if next_state is not icepool.Reroll:
@@ -527,14 +522,14 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
     @staticmethod
     def _initialize_inputs(
-        inputs: 'tuple[icepool.MultisetExpression[T], ...]'
+        inputs: 'tuple[icepool.MultisetExpressionBase[T, Q], ...]'
     ) -> 'tuple[icepool.InitialMultisetGeneration, ...]':
         return tuple(expression._generate_initial() for expression in inputs)
 
     @staticmethod
     def _pop_inputs(
         order: Order, extra_outcomes: 'Alignment[T]',
-        inputs: 'tuple[icepool.MultisetExpression[T], ...]'
+        inputs: 'tuple[icepool.MultisetExpressionBase[T, Q], ...]'
     ) -> 'tuple[T, Alignment[T], tuple[icepool.PopMultisetGeneration, ...]]':
         """Pops a single outcome from the inputs.
 

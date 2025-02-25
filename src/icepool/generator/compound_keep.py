@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.multiset_expression import InitialMultisetGeneration, PopMultisetGeneration
+from icepool.expression import InitialMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason, merge_order_preferences
@@ -9,7 +9,7 @@ from icepool.order import Order, OrderReason, merge_order_preferences
 import itertools
 import math
 
-from typing import Hashable, Sequence
+from typing import Hashable, Iterator, Sequence
 from icepool.typing import T
 
 
@@ -34,27 +34,31 @@ class CompoundKeepGenerator(KeepGenerator[T]):
     def _generate_initial(self) -> InitialMultisetGeneration:
         yield self, 1
 
-    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
+    def _generate_min(
+            self,
+            min_outcome) -> Iterator[tuple['CompoundKeepGenerator', int, int]]:
         for t in itertools.product(*(inner._generate_min(min_outcome)
                                      for inner in self._inner_generators)):
             generators, counts, weights = zip(*t)
-            total_count = sum(count[0] for count in counts)
+            total_count = sum(counts)
             total_weight = math.prod(weights)
             popped_keep_tuple, result_count = pop_min_from_keep_tuple(
                 self._keep_tuple, total_count)
             yield CompoundKeepGenerator(
-                generators, popped_keep_tuple), (result_count, ), total_weight
+                generators, popped_keep_tuple), result_count, total_weight
 
-    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
+    def _generate_max(
+            self,
+            max_outcome) -> Iterator[tuple['CompoundKeepGenerator', int, int]]:
         for t in itertools.product(*(inner._generate_max(max_outcome)
                                      for inner in self._inner_generators)):
             generators, counts, weights = zip(*t)
-            total_count = sum(count[0] for count in counts)
+            total_count = sum(counts)
             total_weight = math.prod(weights)
             popped_keep_tuple, result_count = pop_max_from_keep_tuple(
                 self._keep_tuple, total_count)
             yield CompoundKeepGenerator(
-                generators, popped_keep_tuple), (result_count, ), total_weight
+                generators, popped_keep_tuple), result_count, total_weight
 
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return merge_order_preferences(*(inner.local_order_preference()

@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.multiset_expression import MultisetArityError
+from icepool.expression.multiset_expression import MultisetArityError
 
 from icepool.order import Order, OrderReason
 from typing import Any

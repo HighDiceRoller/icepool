@@ -1,15 +1,16 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.expression.base import MultisetExpressionBase
 from icepool.order import Order, OrderReason
-from icepool.multiset_expression import MultisetExpression, InitialMultisetGeneration, PopMultisetGeneration
+from icepool.expression import MultisetExpression, InitialMultisetGeneration
 
 import enum
 
 from typing import Any, Hashable, Sequence
 
 
-class MultisetVariable(MultisetExpression[Any]):
+class MultisetVariable(MultisetExpression):
     """A variable to be filled in with a concrete sub-expression."""
 
     _children = ()
@@ -37,10 +38,10 @@ class MultisetVariable(MultisetExpression[Any]):
     def _generate_initial(self) -> InitialMultisetGeneration:
         raise icepool.MultisetBindingError()
 
-    def _generate_min(self, min_outcome) -> PopMultisetGeneration:
+    def _generate_min(self, min_outcome):
         raise icepool.MultisetBindingError()
 
-    def _generate_max(self, max_outcome) -> PopMultisetGeneration:
+    def _generate_max(self, max_outcome):
         raise icepool.MultisetBindingError()
 
     def local_order_preference(self) -> tuple[Order, OrderReason]:
@@ -52,19 +53,15 @@ class MultisetVariable(MultisetExpression[Any]):
     def denominator(self) -> int:
         raise icepool.MultisetBindingError()
 
-    def _unbind(
-            self,
-            bound_inputs: 'list[MultisetExpression]' = []
-    ) -> 'MultisetExpression':
+    def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
         if self._is_free:
             return self
         else:
             raise icepool.MultisetBindingError(
                 'Attempted to unbind an expression that was already unbound.')
 
-    def _apply_variables(
-            self, outcome, bound_counts: tuple[int, ...],
-            free_counts: tuple[int, ...]) -> 'tuple[MultisetExpression, int]':
+    def _apply_variables(self, outcome, bound_counts: tuple[int, ...],
+                         free_counts: tuple[int, ...]):
         if self._is_free:
             return self, free_counts[self._index]
         else:

@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.multiset_expression import MultisetExpression
+from icepool.expression.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
 from icepool.order import Order, OrderReason
 

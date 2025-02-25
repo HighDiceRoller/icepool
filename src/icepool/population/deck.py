@@ -122,33 +122,30 @@ class Deck(Population[T_co]):
 
     @overload
     def deal(
-            self, hand_size: int, hand_size_2: int, /, *more_hand_sizes:
-        int) -> 'icepool.MultiDeal[T_co, tuple[int, ...]]':
+        self, hand_sizes: Iterable[int]
+    ) -> 'icepool.MultiDeal[T_co, tuple[int, ...]]':
         ...
 
     @overload
     def deal(
-        self, *hand_sizes: int
+        self, hand_sizes: int | Iterable[int]
     ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
         ...
 
     def deal(
-        self, *hand_sizes: int
+        self, hand_sizes: int | Iterable[int]
     ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
         """Deals the specified number of cards from this deck.
 
         Args:
-            hand_sizes: Each element will result in one hand dealt.
-                The API for more than one hand is likely to change.
-
-        Returns:
-            A `Deal` object for a single hand, or a `MultiDeal` object for
-            multiple hands. The latter will likely change in the future.
+            hand_sizes: Either an integer, in which case a `Deal` will be
+                returned, or an iterable of multiple hand sizes, in which case a
+                `MultiDeal` will be returned.
         """
-        if len(hand_sizes) == 1:
-            return icepool.Deal(self, *hand_sizes)
+        if isinstance(hand_sizes, int):
+            return icepool.Deal(self, hand_sizes)
         else:
-            return icepool.MultiDeal(self, *hand_sizes)
+            return icepool.MultiDeal(self, hand_sizes)
 
     # Binary operators.
 
