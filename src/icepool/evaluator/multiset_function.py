@@ -3,7 +3,7 @@ import icepool
 import icepool.evaluator
 
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.multiset_variable import MultisetVariable as MV
+from icepool.expression.multiset_variable import MultisetVariable as MV
 
 import inspect
 from functools import cached_property, update_wrapper

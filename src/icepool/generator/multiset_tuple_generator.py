@@ -6,15 +6,7 @@ import icepool
 from icepool.expression.base import MultisetExpressionBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
-from icepool.collection.counts import Counts
-from icepool.expression.multiset_expression import MultisetExpression
-from icepool.order import Order, OrderReason
 from icepool.typing import Outcome, Q, T
-
-import bisect
-import functools
-import itertools
-import random
 
 from abc import ABC, abstractmethod
 from functools import cached_property
@@ -44,7 +36,7 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
         self,
         bound_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetExpressionBase':
-        result = icepool.MultisetVariable(False, len(bound_inputs))
+        result = icepool.MultisetTupleVariable(False, len(bound_inputs))
         bound_inputs.append(self)
         return result
 
