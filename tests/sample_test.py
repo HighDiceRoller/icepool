@@ -14,7 +14,7 @@ def test_deck_sample():
 
 
 def test_pool_sample():
-    result, = icepool.standard_pool([6, 6, 6, 8])[:-1].sample()
+    result = icepool.standard_pool([6, 6, 6, 8])[:-1].sample()
     assert all(x >= 1 for x in result)
     assert all(x <= 6 for x in result)
 
