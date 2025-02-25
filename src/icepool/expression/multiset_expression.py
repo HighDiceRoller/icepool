@@ -30,7 +30,7 @@ def implicit_convert_to_expression(
         arg: The argument must either already be a `MultisetExpression`;
             or a `Mapping` or `Collection`.
     """
-    if isinstance(arg, MultisetExpression):
+    if isinstance(arg, MultisetExpressionBase):
         return arg
     elif isinstance(arg, (Mapping, Sequence)):
         return icepool.Pool(arg)

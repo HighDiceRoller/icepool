@@ -14,7 +14,7 @@ import math
 
 from icepool.typing import T
 
-from typing import Any, Hashable, Iterator, cast
+from typing import Any, Hashable, Iterable, Iterator, cast
 
 
 class MultiDeal(MultisetTupleGenerator[T]):
@@ -24,7 +24,7 @@ class MultiDeal(MultisetTupleGenerator[T]):
     _hand_sizes: tuple[int, ...]
 
     def __init__(self, deck: 'icepool.Deck[T]',
-                 hand_sizes: tuple[int, ...]) -> None:
+                 hand_sizes: Iterable[int]) -> None:
         """Constructor.
 
         For algorithmic reasons, you must pre-commit to the number of cards to
@@ -45,7 +45,7 @@ class MultiDeal(MultisetTupleGenerator[T]):
         if any(hand < 0 for hand in hand_sizes):
             raise ValueError('hand_sizes cannot be negative.')
         self._deck = deck
-        self._hand_sizes = hand_sizes
+        self._hand_sizes = tuple(hand_sizes)
         if self.total_cards_dealt() > self.deck().size():
             raise ValueError(
                 'The total number of cards dealt cannot exceed the size of the deck.'

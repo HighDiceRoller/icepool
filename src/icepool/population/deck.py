@@ -121,20 +121,18 @@ class Deck(Population[T_co]):
         ...
 
     @overload
-    def deal(
-        self, hand_sizes: Iterable[int]
-    ) -> 'icepool.MultiDeal[T_co, tuple[int, ...]]':
+    def deal(self, hand_sizes: Iterable[int]) -> 'icepool.MultiDeal[T_co]':
         ...
 
     @overload
     def deal(
         self, hand_sizes: int | Iterable[int]
-    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
+    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co]':
         ...
 
     def deal(
         self, hand_sizes: int | Iterable[int]
-    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, tuple[int, ...]]':
+    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co]':
         """Deals the specified number of cards from this deck.
 
         Args:

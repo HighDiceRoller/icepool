@@ -136,10 +136,9 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
 
     @abstractmethod
     def _apply_variables(
-        self, outcome: T, bound_counts: tuple[int,
-                                              ...], free_counts: tuple[int,
-                                                                       ...]
-    ) -> 'tuple[MultisetExpressionBase[T, Q], int]':
+        self, outcome: T, bound_counts: tuple[int, ...],
+        free_counts: tuple[int,
+                           ...]) -> 'tuple[MultisetExpressionBase[T, Q], Q]':
         """Advances the state of this expression given counts emitted from variables and returns a count.
         
         Args:

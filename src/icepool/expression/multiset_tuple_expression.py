@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.base import InitialMultisetGeneration, MultisetExpressionBase
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
@@ -13,12 +13,83 @@ import random
 
 from icepool.typing import Q, T, U, Expandable, ImplicitConversionError, T
 from types import EllipsisType
-from typing import (Callable, Collection, Literal, Mapping, Sequence, Type,
-                    cast, overload)
+from typing import (Callable, Collection, Hashable, Iterator, Literal, Mapping,
+                    Sequence, Type, cast, overload)
 
 
-class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]],
-                              Expandable[tuple[T, ...]]):
+class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
     """Abstract base class representing an expression that operates on tuples of multisets.
 
     Currently the only operation is to subscript to produce a single multiset."""
+
+    def __getitem__(self, index: int, /) -> 'icepool.MultisetExpression[T]':
+        return MultisetTupleSubscript(self, index=index)
+
+
+class MultisetTupleSubscript(icepool.MultisetExpression[T]):
+    _children: 'tuple[MultisetTupleExpression[T]]'
+
+    def __init__(self, child: MultisetTupleExpression, /, *, index: int):
+        self._index = index
+        self._children = (child, )
+
+    def outcomes(self) -> Sequence[T]:
+        return self._children[0].outcomes()
+
+    def _is_resolvable(self) -> bool:
+        return self._children[0]._is_resolvable()
+
+    def _generate_initial(self) -> InitialMultisetGeneration:
+        for child, weight in self._children[0]._generate_initial():
+            yield MultisetTupleSubscript(child, index=self._index), weight
+
+    def _generate_min(
+        self, min_outcome: T
+    ) -> Iterator[tuple['MultisetTupleSubscript[T]', int, int]]:
+        for child, counts, weight in self._children[0]._generate_min(
+                min_outcome):
+            yield MultisetTupleSubscript(
+                child, index=self._index), counts[self._index], weight
+
+    def _generate_max(
+        self, min_outcome: T
+    ) -> Iterator[tuple['MultisetTupleSubscript[T]', int, int]]:
+        for child, counts, weight in self._children[0]._generate_max(
+                min_outcome):
+            yield MultisetTupleSubscript(
+                child, index=self._index), counts[self._index], weight
+
+    def has_free_variables(self) -> bool:
+        return self._children[0].has_free_variables()
+
+    def denominator(self) -> int:
+        return self._children[0].denominator()
+
+    def _unbind(
+        self,
+        bound_inputs: 'list[MultisetExpressionBase]' = []
+    ) -> 'MultisetExpressionBase':
+        if self.has_free_variables():
+            child = self._children[0]._unbind(bound_inputs)
+            return MultisetTupleSubscript(child, index=self._index)
+        else:
+            result = icepool.MultisetVariable(False, len(bound_inputs))
+            bound_inputs.append(self)
+            return result
+
+    def _apply_variables(
+        self, outcome: T, bound_counts: tuple[int,
+                                              ...], free_counts: tuple[int,
+                                                                       ...]
+    ) -> 'tuple[icepool.MultisetExpression[T], int]':
+        child, counts = self._children[0]._apply_variables(
+            outcome, bound_counts, free_counts)
+        return MultisetTupleSubscript(child,
+                                      index=self._index), counts[self._index]
+
+    def local_order_preference(self):
+        return self._children[0].local_order_preference()
+
+    @property
+    def _local_hash_key(self) -> Hashable:
+        return type(self)
