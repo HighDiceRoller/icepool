@@ -8,7 +8,7 @@ from icepool.expression.multiset_variable import MultisetVariable as MV
 import inspect
 from functools import cached_property, update_wrapper
 
-from typing import Callable, Collection, Hashable, TypeAlias, overload
+from typing import Any, Callable, Collection, Hashable, TypeAlias, overload
 
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.typing import T, U_co
@@ -142,7 +142,7 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
 class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
     __name__ = '(unnamed)'
 
-    def __init__(self, *inputs: 'icepool.MultisetExpression[T]',
+    def __init__(self, *inputs: 'icepool.MultisetExpressionBase[T, Any]',
                  evaluator: MultisetEvaluator[T, U_co]) -> None:
         self._evaluator = evaluator
         bound_inputs: 'list[icepool.MultisetExpressionBase]' = []

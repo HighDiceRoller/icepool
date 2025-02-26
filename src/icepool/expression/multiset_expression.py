@@ -12,19 +12,42 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, Expandable, ImplicitConversionError, T
+from icepool.typing import Q, T, U, Expandable, ImplicitConversionError
 from types import EllipsisType
-from typing import (Callable, Collection, Iterator, Literal, Mapping, Sequence,
-                    Type, cast, overload)
+from typing import (TYPE_CHECKING, Any, Callable, Collection, Iterator,
+                    Literal, Mapping, Sequence, Type, cast, overload)
+
+if TYPE_CHECKING:
+    from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 
 
 class MultisetArityError(ValueError):
     """Indicates that an arity was not the same as required."""
 
 
+@overload
 def implicit_convert_to_expression(
-    arg: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+    arg: 'MultisetExpression[T]| Mapping[T, int] | Sequence[T]'
 ) -> 'MultisetExpression[T]':
+    ...
+
+
+@overload
+def implicit_convert_to_expression(
+        arg: 'MultisetTupleExpression[T]') -> 'MultisetTupleExpression[T]':
+    ...
+
+
+@overload
+def implicit_convert_to_expression(
+    arg: 'MultisetExpressionBase | Mapping[T, int] | Sequence[T]'
+) -> 'MultisetExpression[T] | MultisetTupleExpression[T]':
+    ...
+
+
+def implicit_convert_to_expression(
+    arg: 'MultisetExpressionBase[T, Q] | Mapping[T, int] | Sequence[T]'
+) -> 'MultisetExpressionBase[T, Q]':
     """Implcitly converts the argument to a `MultisetExpression` with `int` counts.
 
     Args:
@@ -370,8 +393,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         [1, 2, 2, 3] ^ [1, 2, 4] -> [2, 3, 4]
         ```
         """
-        other = implicit_convert_to_expression(other)
-        return icepool.operator.MultisetSymmetricDifference(self, other)
+        return icepool.operator.MultisetSymmetricDifference(
+            self, implicit_convert_to_expression(other))
 
     def keep_outcomes(
             self, target:
@@ -936,8 +959,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     def __rfloordiv__(
         self, other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'icepool.Die[int] | icepool.MultisetEvaluator[T, int]':
-        other = implicit_convert_to_expression(other)
-        return other.count_subset(self)
+        return implicit_convert_to_expression(other).count_subset(self)
 
     def count_subset(
         self,

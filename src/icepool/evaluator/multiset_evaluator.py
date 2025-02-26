@@ -16,17 +16,17 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Mapping,
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
-    from icepool import MultisetExpression
+    from icepool.expression.multiset_expression import MultisetExpressionBase
 
 PREFERRED_ORDER_COST_FACTOR = 10
 """The preferred order will be favored this times as much."""
 
-EvaluationCache: TypeAlias = 'MutableMapping[tuple[Alignment, tuple[MultisetExpression, ...], Hashable], Mapping[Any, int]]'
+EvaluationCache: TypeAlias = 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase, ...], Hashable], Mapping[Any, int]]'
 """Type representing the cache used within an evaluation."""
 
 
 class MultisetEvaluator(ABC, Generic[T, U_co]):
-    """An abstract, immutable, callable class for evaulating one or more input `MultisetExpression`s.
+    """An abstract, immutable, callable class for evaulating one or more input `MultisetExpressionBase`s.
 
     There is one abstract method to implement: `next_state()`.
     This should incrementally calculate the result given one outcome at a time
@@ -57,8 +57,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
     Otherwise, values in the cache may be incorrect.
     """
 
-    def next_state(self, state: Hashable, outcome: T, /, *counts:
-                   int) -> Hashable:
+    def next_state(self, state: Hashable, outcome: T, /, *counts) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -117,8 +116,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         """
         raise NotImplementedError()
 
-    def next_state_ascending(self, state: Hashable, outcome: T, /, *counts:
-                             int) -> Hashable:
+    def next_state_ascending(self, state: Hashable, outcome: T, /,
+                             *counts) -> Hashable:
         """As next_state() but handles outcomes in ascending order only.
         
         You can implement both `next_state_ascending()` and 
@@ -127,8 +126,8 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
         """
         raise NotImplementedError()
 
-    def next_state_descending(self, state: Hashable, outcome: T, /, *counts:
-                              int) -> Hashable:
+    def next_state_descending(self, state: Hashable, outcome: T, /,
+                              *counts) -> Hashable:
         """As next_state() but handles outcomes in descending order only.
         
         You can implement both `next_state_ascending()` and 
@@ -265,18 +264,20 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
     @overload
     def evaluate(
-            self,
-            *args: 'MultisetExpression[T]') -> 'MultisetEvaluator[T, U_co]':
+            self, *args:
+        'MultisetExpressionBase[T, Q]') -> 'MultisetEvaluator[T, U_co]':
         ...
 
     @overload
     def evaluate(
-        self, *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+        self, *args:
+        'MultisetExpressionBase[T, Q] | Mapping[T, int] | Sequence[T]'
     ) -> 'icepool.Die[U_co] | MultisetEvaluator[T, U_co]':
         ...
 
     def evaluate(
-        self, *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
+        self, *args:
+        'MultisetExpressionBase[T, Q] | Mapping[T, int] | Sequence[T]'
     ) -> 'icepool.Die[U_co] | MultisetEvaluator[T, U_co]':
         """Evaluates input expression(s).
 
@@ -378,7 +379,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             f'Could not find next_state* implementation for order {order}.')
 
     def _select_algorithm(
-        self, *inputs: 'icepool.MultisetExpression[T]'
+        self, *inputs: 'icepool.MultisetExpressionBase[T, Any]'
     ) -> tuple[
             'Callable[[Order, EvaluationCache, Callable[..., Hashable], Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
             Order]:
