@@ -1,4 +1,4 @@
-## v1.7.2
+## v1.7.2 - 25 February 2025
 
 * Add `Population.append()` and `.remove()` methods.
 * Improve `Vector` performance.
