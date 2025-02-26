@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from abc import abstractmethod
 import icepool
 from icepool.expression.base import InitialMultisetGeneration, MultisetExpressionBase
 from icepool.collection.counts import Counts
@@ -22,6 +23,39 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
 
     Currently the only operation is to subscript to produce a single multiset."""
 
+    # Abstract overrides with more specific signatures.
+    @abstractmethod
+    def _generate_initial(
+            self) -> Iterator[tuple['MultisetTupleExpression[T]', int]]:
+        ...
+
+    @abstractmethod
+    def _generate_min(
+        self, min_outcome: T
+    ) -> Iterator[tuple['MultisetTupleExpression[T]', tuple[int, ...], int]]:
+        ...
+
+    @abstractmethod
+    def _generate_max(
+        self, max_outcome: T
+    ) -> Iterator[tuple['MultisetTupleExpression[T]', tuple[int, ...], int]]:
+        ...
+
+    @abstractmethod
+    def _unbind(
+        self,
+        bound_inputs: 'list[MultisetExpressionBase]' = []
+    ) -> 'MultisetTupleExpression[T]':
+        ...
+
+    @abstractmethod
+    def _apply_variables(
+        self, outcome: T, bound_counts: tuple[int,
+                                              ...], free_counts: tuple[int,
+                                                                       ...]
+    ) -> 'tuple[MultisetTupleExpression[T], tuple[int, ...]]':
+        ...
+
     def __getitem__(self, index: int, /) -> 'icepool.MultisetExpression[T]':
         return MultisetTupleSubscript(self, index=index)
 
@@ -39,7 +73,7 @@ class MultisetTupleSubscript(icepool.MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return self._children[0]._is_resolvable()
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         for child, weight in self._children[0]._generate_initial():
             yield MultisetTupleSubscript(child, index=self._index), weight
 
@@ -65,10 +99,7 @@ class MultisetTupleSubscript(icepool.MultisetExpression[T]):
     def denominator(self) -> int:
         return self._children[0].denominator()
 
-    def _unbind(
-        self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase':
+    def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
         if self.has_free_variables():
             child = self._children[0]._unbind(bound_inputs)
             return MultisetTupleSubscript(child, index=self._index)
@@ -77,11 +108,8 @@ class MultisetTupleSubscript(icepool.MultisetExpression[T]):
             bound_inputs.append(self)
             return result
 
-    def _apply_variables(
-        self, outcome: T, bound_counts: tuple[int,
-                                              ...], free_counts: tuple[int,
-                                                                       ...]
-    ) -> 'tuple[icepool.MultisetExpression[T], int]':
+    def _apply_variables(self, outcome: T, bound_counts: tuple[int, ...],
+                         free_counts: tuple[int, ...]):
         child, counts = self._children[0]._apply_variables(
             outcome, bound_counts, free_counts)
         return MultisetTupleSubscript(child,

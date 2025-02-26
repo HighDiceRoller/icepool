@@ -38,18 +38,6 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
     """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 
     @abstractmethod
-    def outcomes(self) -> Sequence[T]:
-        """The possible outcomes that could be generated, in ascending order."""
-
-    @abstractmethod
-    def _is_resolvable(self) -> bool:
-        """`True` iff the generator is capable of producing an overall outcome.
-
-        For example, a dice `Pool` will return `False` if it contains any dice
-        with no outcomes.
-        """
-
-    @abstractmethod
     def _generate_initial(
             self) -> Iterator[tuple['MultisetExpressionBase[T, Q]', int]]:
         """Initialize the expression before any outcomes are emitted.
@@ -102,22 +90,6 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
         """
 
     @abstractmethod
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        """Any ordering that is preferred or required by this expression node."""
-
-    @abstractmethod
-    def has_free_variables(self) -> bool:
-        """Whether this expression contains any free variables, i.e. parameters to a @multiset_function."""
-
-    @abstractmethod
-    def denominator(self) -> int:
-        """The total weight of all paths through this generator.
-        
-        Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
-        """
-
-    @abstractmethod
     def _unbind(
         self,
         bound_inputs: 'list[MultisetExpressionBase]' = []
@@ -150,6 +122,34 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
         Returns:
             An expression representing the next state and the count produced by
             this expression.
+        """
+
+    @abstractmethod
+    def outcomes(self) -> Sequence[T]:
+        """The possible outcomes that could be generated, in ascending order."""
+
+    @abstractmethod
+    def _is_resolvable(self) -> bool:
+        """`True` iff the generator is capable of producing an overall outcome.
+
+        For example, a dice `Pool` will return `False` if it contains any dice
+        with no outcomes.
+        """
+
+    @abstractmethod
+    def local_order_preference(self) -> tuple[Order, OrderReason]:
+        """Any ordering that is preferred or required by this expression node."""
+
+    @abstractmethod
+    def has_free_variables(self) -> bool:
+        """Whether this expression contains any free variables, i.e. parameters to a @multiset_function."""
+
+    @abstractmethod
+    def denominator(self) -> int:
+        """The total weight of all paths through this generator.
+        
+        Raises:
+            UnboundMultisetExpressionError if this is called on an expression with free variables.
         """
 
     @property

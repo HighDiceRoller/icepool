@@ -35,9 +35,7 @@ class MultisetSortMatch(MultisetOperator[T]):
         self._right_first = right_first
         self._left_lead = left_lead
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetSortMatch(*new_children,
                                  order=self._order,
                                  tie=self._tie,
@@ -45,10 +43,9 @@ class MultisetSortMatch(MultisetOperator[T]):
                                  right_first=self._right_first,
                                  left_lead=self._left_lead)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         left_count, right_count = counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
@@ -100,19 +97,16 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         self._keep = keep
         self._prev_matchable = prev_matchable
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetMaximumMatch(*new_children,
                                     order=self._order,
                                     match_equal=self._match_equal,
                                     keep=self._keep,
                                     prev_matchable=self._prev_matchable)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         left_count, right_count = counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)

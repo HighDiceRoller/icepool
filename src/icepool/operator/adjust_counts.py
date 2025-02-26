@@ -31,15 +31,12 @@ class MultisetMapCounts(MultisetOperator[T]):
         self._children = children
         self._function = function
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetMapCounts(*new_children, function=self._function)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         count = self._function(outcome, *counts)
         return MultisetMapCounts(*new_children, function=self._function), count
 
@@ -62,15 +59,12 @@ class MultisetCountOperator(MultisetOperator[T]):
     def operator(self, count: int) -> int:
         """Operation to apply to the counts."""
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return type(self)(*new_children, constant=self._constant)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         count = self.operator(counts[0])
         return type(self)(*new_children, constant=self._constant), count
 
@@ -145,17 +139,14 @@ class MultisetKeepCounts(MultisetOperator[T]):
         self._comparison = comparison
         self._op = operators[comparison]
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetKeepCounts(*new_children,
                                   comparison=self._comparison,
                                   constant=self._constant)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         if self._op(counts[0], self._constant):
             count = counts[0]
         else:

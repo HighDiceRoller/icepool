@@ -113,18 +113,15 @@ class MultisetKeep(MultisetOperator[T]):
         self._drop = drop
         return self
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetKeep._new_raw(new_children[0],
                                      keep_order=self._keep_order,
                                      keep_tuple=self._keep_tuple,
                                      drop=self._drop)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         child_count = max(counts[0], 0)
 
         if self._drop is None:

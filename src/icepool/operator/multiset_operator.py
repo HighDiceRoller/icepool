@@ -55,7 +55,7 @@ class MultisetOperator(MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return all(child._is_resolvable() for child in self._children)
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         for t in itertools.product(*(child._generate_initial()
                                      for child in self._children)):
             new_children, weights = zip(*t)
@@ -88,10 +88,7 @@ class MultisetOperator(MultisetExpression[T]):
     def denominator(self) -> int:
         return math.prod(child.denominator() for child in self._children)
 
-    def _unbind(
-        self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase':
+    def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
         if self.has_free_variables():
             unbound_children = tuple(
                 child._unbind(bound_inputs) for child in self._children)
@@ -101,10 +98,8 @@ class MultisetOperator(MultisetExpression[T]):
             bound_inputs.append(self)
             return result
 
-    def _apply_variables(
-            self, outcome: T, bound_counts: tuple[int, ...],
-            free_counts: tuple[int,
-                               ...]) -> 'tuple[MultisetExpression[T], int]':
+    def _apply_variables(self, outcome: T, bound_counts: tuple[int, ...],
+                         free_counts: tuple[int, ...]):
         new_children, counts = zip(
             *(child._apply_variables(outcome, bound_counts, free_counts)
               for child in self._children))

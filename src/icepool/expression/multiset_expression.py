@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from abc import abstractmethod
 import icepool
 from icepool.expression.base import MultisetExpressionBase
 from icepool.collection.counts import Counts
@@ -13,8 +14,8 @@ import random
 
 from icepool.typing import Q, T, U, Expandable, ImplicitConversionError, T
 from types import EllipsisType
-from typing import (Callable, Collection, Literal, Mapping, Sequence, Type,
-                    cast, overload)
+from typing import (Callable, Collection, Iterator, Literal, Mapping, Sequence,
+                    Type, cast, overload)
 
 
 class MultisetArityError(ValueError):
@@ -103,6 +104,38 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `largest_straight_and_outcome` | Same but also with the corresponding outcome                               |
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
+
+    # Abstract overrides with more specific signatures.
+    @abstractmethod
+    def _generate_initial(
+            self) -> Iterator[tuple['MultisetExpression[T]', int]]:
+        ...
+
+    @abstractmethod
+    def _generate_min(
+            self, min_outcome: T
+    ) -> Iterator[tuple['MultisetExpression[T]', int, int]]:
+        ...
+
+    @abstractmethod
+    def _generate_max(
+            self, max_outcome: T
+    ) -> Iterator[tuple['MultisetExpression[T]', int, int]]:
+        ...
+
+    @abstractmethod
+    def _unbind(
+        self,
+        bound_inputs: 'list[MultisetExpressionBase]' = []
+    ) -> 'MultisetExpression[T]':
+        ...
+
+    @abstractmethod
+    def _apply_variables(
+            self, outcome: T, bound_counts: tuple[int, ...],
+            free_counts: tuple[int,
+                               ...]) -> 'tuple[MultisetExpression[T], int]':
+        ...
 
     @property
     def _items_for_cartesian_product(

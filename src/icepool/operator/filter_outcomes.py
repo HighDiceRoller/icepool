@@ -50,17 +50,14 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
 
             self._func = function
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetFilterOutcomes(*new_children,
                                       target=self._func,
                                       invert=self._invert)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         if bool(self._func(outcome)) != self._invert:
             count = counts[0]
         else:
@@ -109,15 +106,12 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
         self._children = (source, target)
         self._invert = invert
 
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetExpression[T]':
+    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
         return MultisetFilterOutcomesBinary(*new_children, invert=self._invert)
 
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetExpression[T], int]':
+    def _transform_next(self,
+                        new_children: 'tuple[MultisetExpression[T], ...]',
+                        outcome: T, counts: 'tuple[int, ...]'):
         source_count, target_count = counts
         if (target_count > 0) != self._invert:
             count = source_count
