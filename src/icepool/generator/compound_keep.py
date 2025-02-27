@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression import InitialMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason, merge_order_preferences
@@ -31,7 +30,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_generators)
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         yield self, 1
 
     def _generate_min(

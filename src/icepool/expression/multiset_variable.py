@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 from icepool.expression.base import MultisetExpressionBase
 from icepool.order import Order, OrderReason
-from icepool.expression import MultisetExpression, InitialMultisetGeneration
+from icepool.expression.multiset_expression import MultisetExpression
 
 import enum
 
@@ -35,7 +35,7 @@ class MultisetVariable(MultisetExpression):
     def _is_resolvable(self) -> bool:
         raise icepool.MultisetBindingError()
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         raise icepool.MultisetBindingError()
 
     def _generate_min(self, min_outcome):

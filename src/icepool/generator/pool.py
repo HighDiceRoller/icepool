@@ -5,7 +5,6 @@ import icepool.expression.multiset_expression
 import icepool.math
 import icepool.creation_args
 import icepool.order
-from icepool.expression import InitialMultisetGeneration
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.order import Order, OrderReason
 
@@ -194,7 +193,7 @@ class Pool(KeepGenerator[T]):
         """The max outcome among all dice in this pool."""
         return self._outcomes[-1]
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         yield self, 1
 
     def _generate_min(self, min_outcome) -> Iterator[tuple['Pool', int, int]]:

@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression import InitialMultisetGeneration
 from icepool.generator.multiset_generator import MultisetGenerator
 
 import operator

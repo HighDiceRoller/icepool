@@ -4,7 +4,6 @@ import icepool
 import icepool.order
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
-from icepool.expression import InitialMultisetGeneration
 from icepool.order import Order, OrderReason
 
 from functools import cached_property
@@ -85,7 +84,7 @@ class Deal(KeepGenerator[T]):
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self._hand_size)
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         yield self, 1
 
     def _generate_min(self, min_outcome) -> Iterator[tuple['Deal', int, int]]:

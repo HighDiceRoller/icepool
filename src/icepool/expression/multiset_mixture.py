@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.expression.base import MultisetExpressionBase, InitialMultisetGeneration
+from icepool.expression.base import MultisetExpressionBase
 from icepool.expression.multiset_expression import MultisetArityError, MultisetExpression
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason, merge_order_preferences
@@ -69,7 +69,7 @@ class MultisetMixture(MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_expressions)
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         yield from self._inner_expressions.items()
 
     def _generate_min(self, min_outcome):
@@ -103,7 +103,7 @@ class MultisetMixture(MultisetExpression[T]):
     def _unbind(
         self,
         bound_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase':
+    ) -> 'MultisetExpression[T]':
         raise RuntimeError(
             'MultisetMixture should have decayed to another generator type by this point.'
         )

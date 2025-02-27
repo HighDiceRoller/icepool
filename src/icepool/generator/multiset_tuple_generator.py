@@ -35,7 +35,7 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
     def _unbind(
         self,
         bound_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase':
+    ) -> 'MultisetTupleExpression':
         result = icepool.MultisetTupleVariable(False, len(bound_inputs))
         bound_inputs.append(self)
         return result

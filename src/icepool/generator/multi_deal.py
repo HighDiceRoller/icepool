@@ -4,7 +4,6 @@ from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator
 
 import icepool
 from icepool.collection.counts import CountsKeysView
-from icepool.expression import InitialMultisetGeneration
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.math import iter_hypergeom
 from icepool.order import Order, OrderReason
@@ -97,7 +96,7 @@ class MultiDeal(MultisetTupleGenerator[T]):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _generate_initial(self) -> InitialMultisetGeneration:
+    def _generate_initial(self):
         yield self, 1
 
     def _generate_common(

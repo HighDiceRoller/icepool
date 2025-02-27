@@ -2,7 +2,8 @@ __docformat__ = 'google'
 
 from abc import abstractmethod
 import icepool
-from icepool.expression.base import InitialMultisetGeneration, MultisetExpressionBase
+from icepool.expression.multiset_expression import MultisetExpression
+from icepool.expression.base import MultisetExpressionBase
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
@@ -60,7 +61,7 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
         return MultisetTupleSubscript(self, index=index)
 
 
-class MultisetTupleSubscript(icepool.MultisetExpression[T]):
+class MultisetTupleSubscript(MultisetExpression[T]):
     _children: 'tuple[MultisetTupleExpression[T]]'
 
     def __init__(self, child: MultisetTupleExpression, /, *, index: int):
