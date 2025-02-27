@@ -37,6 +37,12 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]'
     """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 
+    @property
+    @abstractmethod
+    def _variable_type(self) -> type:
+        """Returns the corresponding multiset variable type."""
+        ...
+
     @abstractmethod
     def _generate_initial(
             self) -> Iterator[tuple['MultisetExpressionBase[T, Q]', int]]:
