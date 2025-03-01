@@ -24,9 +24,6 @@ class CompoundKeepGenerator(KeepGenerator[T]):
         return icepool.sorted_union(*(inner.outcomes()
                                       for inner in self._inner_generators))
 
-    def output_arity(self) -> int:
-        return 1
-
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_generators)
 

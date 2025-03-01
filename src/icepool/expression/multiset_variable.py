@@ -29,9 +29,6 @@ class MultisetVariable(MultisetExpression):
     def outcomes(self) -> Sequence:
         raise icepool.MultisetBindingError()
 
-    def output_arity(self) -> int:
-        return 1
-
     def _is_resolvable(self) -> bool:
         raise icepool.MultisetBindingError()
 

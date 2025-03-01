@@ -32,9 +32,6 @@ class Alignment(MultisetExpressionBase[T, None]):
     def outcomes(self) -> Sequence[T]:
         return self._outcomes
 
-    def output_arity(self) -> int:
-        return 0
-
     def _is_resolvable(self) -> bool:
         return True
 

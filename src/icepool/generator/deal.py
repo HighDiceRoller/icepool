@@ -75,9 +75,6 @@ class Deal(KeepGenerator[T]):
         """
         return self.deck().outcomes()
 
-    def output_arity(self) -> int:
-        return 1
-
     def _is_resolvable(self) -> bool:
         return len(self.outcomes()) > 0
 

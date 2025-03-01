@@ -147,8 +147,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
 
     @cached_property
     def _extra_arity(self) -> int:
-        return sum(expression.output_arity()
-                   for expression in self.bound_inputs())
+        return len(self.bound_inputs())
 
     @cached_property
     def _extra_slices(self) -> tuple[slice, ...]:
@@ -156,8 +155,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
         result = []
         index = 0
         for subeval in self._sub_evaluators:
-            counts_length = sum(expression.output_arity()
-                                for expression in subeval.bound_inputs())
+            counts_length = len(subeval.bound_inputs())
             result.append(slice(index, index + counts_length))
             index += counts_length
         return tuple(result)
