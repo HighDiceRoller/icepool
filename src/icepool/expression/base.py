@@ -24,16 +24,11 @@ class MultisetBindingError(TypeError):
     """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
 
 
-InitialMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpressionBase',
-                                                      int]]
-PopMultisetGeneration: TypeAlias = Iterator[tuple['MultisetExpressionBase',
-                                                  Any, int]]
-
 C = TypeVar('C', bound='MultisetExpressionBase')
 """Type variable representing a subclass of `MultisetExpressionBase`."""
 
 
-class MultisetExpressionBase(ABC, Generic[T, Q]):
+class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]'
     """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 

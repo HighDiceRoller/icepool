@@ -25,6 +25,10 @@ class Alignment(MultisetExpressionBase[T, None]):
     def __init__(self, outcomes: Collection[T]):
         self._outcomes = tuple(sorted(outcomes))
 
+    @property
+    def _variable_type(self):
+        return Alignment
+
     def outcomes(self) -> Sequence[T]:
         return self._outcomes
 

@@ -10,9 +10,9 @@ import itertools
 import math
 
 from icepool.typing import Q, T, U_co
-from typing import (Any, Callable, Collection, Generic, Hashable, Mapping,
-                    MutableMapping, Sequence, TypeAlias, cast, TYPE_CHECKING,
-                    overload)
+from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
+                    Mapping, MutableMapping, Sequence, TypeAlias, cast,
+                    TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
     from icepool.generator.alignment import Alignment
@@ -234,7 +234,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    def bound_inputs(self) -> 'tuple[icepool.MultisetExpressionBase, ...]':
+    def bound_inputs(self) -> 'tuple[MultisetExpressionBase, ...]':
         """An optional sequence of extra inputs whose counts will be prepended to *counts.
         
         (Prepending rather than appending is analogous to `functools.partial`.)
@@ -379,7 +379,7 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
             f'Could not find next_state* implementation for order {order}.')
 
     def _select_algorithm(
-        self, *inputs: 'icepool.MultisetExpressionBase[T, Any]'
+        self, *inputs: 'MultisetExpressionBase[T, Any]'
     ) -> tuple[
             'Callable[[Order, EvaluationCache, Callable[..., Hashable], Alignment[T], tuple[icepool.MultisetExpression[T], ...]], Mapping[Any, int]]',
             Order]:
@@ -523,15 +523,15 @@ class MultisetEvaluator(ABC, Generic[T, U_co]):
 
     @staticmethod
     def _initialize_inputs(
-        inputs: 'tuple[icepool.MultisetExpressionBase[T, Q], ...]'
-    ) -> 'tuple[icepool.InitialMultisetGeneration, ...]':
+        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
+    ) -> 'tuple[Iterator[tuple[MultisetExpressionBase[T, Q], int]], ...]':
         return tuple(expression._generate_initial() for expression in inputs)
 
     @staticmethod
     def _pop_inputs(
         order: Order, extra_outcomes: 'Alignment[T]',
-        inputs: 'tuple[icepool.MultisetExpressionBase[T, Q], ...]'
-    ) -> 'tuple[T, Alignment[T], tuple[icepool.PopMultisetGeneration, ...]]':
+        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
+    ) -> 'tuple[T, Alignment[T], tuple[Iterator[tuple[MultisetExpressionBase, Any, int]], ...]]':
         """Pops a single outcome from the inputs.
 
         Args:
