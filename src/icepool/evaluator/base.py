@@ -31,7 +31,10 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     @abstractmethod
     def prepare(self, order: Order,
                 kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
-        ...
+        """Prepares an evaluation.
+        
+        In the future this will likely allow yielding multiple results.
+        """
 
     @abstractmethod
     def order(self) -> Order:
@@ -86,6 +89,25 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     def evaluate(self, *args:
                  'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
                  **kwargs: Hashable) -> 'icepool.Die[U_co]':
+        """Evaluates input expression(s).
+
+        You can call the `MultisetEvaluator` object directly for the same effect,
+        e.g. `sum_evaluator(input)` is an alias for `sum_evaluator.evaluate(input)`.
+
+        Most evaluators will expect a fixed number of input multisets.
+        The union of the outcomes of the input(s) must be totally orderable.
+
+        Args:
+            *args: Each may be one of the following:
+                * A `MultisetExpression`.
+                * A mappable mapping outcomes to the number of those outcomes.
+                * A sequence of outcomes.
+
+        Returns:
+            A `Die` representing the distribution of the final outcome if no
+            arg contains a free variable. Otherwise, returns a new evaluator.
+        """
+
         # Convert arguments to expressions.
         inputs = tuple(
             icepool.implicit_convert_to_expression(arg) for arg in args)
@@ -308,6 +330,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         self, input_order: Order, extra_outcomes: 'Alignment[T]',
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
+        """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
         if input_order == self.eval_order:
             return self.evaluate_forward(extra_outcomes, inputs)
         else:
