@@ -8,11 +8,13 @@ def test_die_sample():
     assert result <= 6
 
 
+@pytest.mark.skip(reason="sampling expressions not supported for now")
 def test_deck_sample():
     result = icepool.Deck({'A': 1, 'B': 2, 'C': 3}).sample()
     assert result in ['A', 'B', 'C']
 
 
+@pytest.mark.skip(reason="sampling expressions not supported for now")
 def test_pool_sample():
     result = icepool.standard_pool([6, 6, 6, 8])[:-1].sample()
     assert all(x >= 1 for x in result)

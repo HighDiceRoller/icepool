@@ -170,43 +170,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         expansion = cast('icepool.Die[tuple[T, ...]]', self.expand())
         return expansion.items()
 
-    # Sampling.
-
-    def sample(self) -> tuple[T, ...]:
-        """EXPERIMENTAL: A single random sample from this generator.
-
-        This uses the standard `random` package and is not cryptographically
-        secure.
-
-        Returns:
-            A sorted tuple of outcomes.
-        """
-        if not self.outcomes():
-            raise ValueError('Cannot sample from an empty set of outcomes.')
-
-        order, order_reason = self.order_preference()
-
-        if order is not None and order > 0:
-            outcome = self.min_outcome()
-            generated = tuple(self._generate_min(outcome))
-        else:
-            outcome = self.max_outcome()
-            generated = tuple(self._generate_max(outcome))
-
-        cumulative_weights = tuple(
-            itertools.accumulate(g.denominator() * w for g, _, w in generated))
-        denominator = cumulative_weights[-1]
-        # We don't use random.choices since that is based on floats rather than ints.
-        r = random.randrange(denominator)
-        index = bisect.bisect_right(cumulative_weights, r)
-        popped_generator, count, _ = generated[index]
-        head = (outcome, ) * count
-        if popped_generator.outcomes():
-            tail = popped_generator.sample()
-            return tuple(sorted(head + tail))
-        else:
-            return head
-
     # Binary operators.
 
     def __add__(self,
