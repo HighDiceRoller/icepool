@@ -416,22 +416,13 @@
                                 <a class="function" href="#MultisetFunctionEvaluator.__init__">MultisetFunctionEvaluator</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultisetFunctionEvaluator.next_state_ascending">next_state_ascending</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#MultisetFunctionEvaluator.next_state_descending">next_state_descending</a>
+                                <a class="function" href="#MultisetFunctionEvaluator.prepare">prepare</a>
                         </li>
                         <li>
                                 <a class="function" href="#MultisetFunctionEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultisetFunctionEvaluator.order">order</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#MultisetFunctionEvaluator.extra_outcomes">extra_outcomes</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#MultisetFunctionEvaluator.bound_inputs">bound_inputs</a>
                         </li>
                 </ul>
 
@@ -651,29 +642,27 @@
 </span><span id="JointEvaluator-148"><a href="#JointEvaluator-148"><span class="linenos">148</span></a>
 </span><span id="JointEvaluator-149"><a href="#JointEvaluator-149"><span class="linenos">149</span></a>    <span class="nd">@cached_property</span>
 </span><span id="JointEvaluator-150"><a href="#JointEvaluator-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_extra_arity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="JointEvaluator-151"><a href="#JointEvaluator-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">output_arity</span><span class="p">()</span>
-</span><span id="JointEvaluator-152"><a href="#JointEvaluator-152"><span class="linenos">152</span></a>                   <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">())</span>
-</span><span id="JointEvaluator-153"><a href="#JointEvaluator-153"><span class="linenos">153</span></a>
-</span><span id="JointEvaluator-154"><a href="#JointEvaluator-154"><span class="linenos">154</span></a>    <span class="nd">@cached_property</span>
-</span><span id="JointEvaluator-155"><a href="#JointEvaluator-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_extra_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span id="JointEvaluator-156"><a href="#JointEvaluator-156"><span class="linenos">156</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Precomputed slices for determining which extra counts go with which sub-evaluator.&quot;&quot;&quot;</span>
-</span><span id="JointEvaluator-157"><a href="#JointEvaluator-157"><span class="linenos">157</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="JointEvaluator-158"><a href="#JointEvaluator-158"><span class="linenos">158</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="JointEvaluator-159"><a href="#JointEvaluator-159"><span class="linenos">159</span></a>        <span class="k">for</span> <span class="n">subeval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_evaluators</span><span class="p">:</span>
-</span><span id="JointEvaluator-160"><a href="#JointEvaluator-160"><span class="linenos">160</span></a>            <span class="n">counts_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">output_arity</span><span class="p">()</span>
-</span><span id="JointEvaluator-161"><a href="#JointEvaluator-161"><span class="linenos">161</span></a>                                <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">subeval</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">())</span>
-</span><span id="JointEvaluator-162"><a href="#JointEvaluator-162"><span class="linenos">162</span></a>            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">counts_length</span><span class="p">))</span>
-</span><span id="JointEvaluator-163"><a href="#JointEvaluator-163"><span class="linenos">163</span></a>            <span class="n">index</span> <span class="o">+=</span> <span class="n">counts_length</span>
-</span><span id="JointEvaluator-164"><a href="#JointEvaluator-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-</span><span id="JointEvaluator-165"><a href="#JointEvaluator-165"><span class="linenos">165</span></a>
-</span><span id="JointEvaluator-166"><a href="#JointEvaluator-166"><span class="linenos">166</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_split_extra_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_counts</span><span class="p">:</span>
-</span><span id="JointEvaluator-167"><a href="#JointEvaluator-167"><span class="linenos">167</span></a>                            <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-</span><span id="JointEvaluator-168"><a href="#JointEvaluator-168"><span class="linenos">168</span></a>        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_slices</span><span class="p">:</span>
-</span><span id="JointEvaluator-169"><a href="#JointEvaluator-169"><span class="linenos">169</span></a>            <span class="k">yield</span> <span class="n">extra_counts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</span><span id="JointEvaluator-170"><a href="#JointEvaluator-170"><span class="linenos">170</span></a>
-</span><span id="JointEvaluator-171"><a href="#JointEvaluator-171"><span class="linenos">171</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="JointEvaluator-172"><a href="#JointEvaluator-172"><span class="linenos">172</span></a>        <span class="k">return</span> <span class="s1">&#39;JointEvaluator(</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-</span><span id="JointEvaluator-173"><a href="#JointEvaluator-173"><span class="linenos">173</span></a>            <span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">subeval</span><span class="si">}</span><span class="s1">,</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">subeval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_evaluators</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
+</span><span id="JointEvaluator-151"><a href="#JointEvaluator-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">())</span>
+</span><span id="JointEvaluator-152"><a href="#JointEvaluator-152"><span class="linenos">152</span></a>
+</span><span id="JointEvaluator-153"><a href="#JointEvaluator-153"><span class="linenos">153</span></a>    <span class="nd">@cached_property</span>
+</span><span id="JointEvaluator-154"><a href="#JointEvaluator-154"><span class="linenos">154</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_extra_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span id="JointEvaluator-155"><a href="#JointEvaluator-155"><span class="linenos">155</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Precomputed slices for determining which extra counts go with which sub-evaluator.&quot;&quot;&quot;</span>
+</span><span id="JointEvaluator-156"><a href="#JointEvaluator-156"><span class="linenos">156</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="JointEvaluator-157"><a href="#JointEvaluator-157"><span class="linenos">157</span></a>        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="JointEvaluator-158"><a href="#JointEvaluator-158"><span class="linenos">158</span></a>        <span class="k">for</span> <span class="n">subeval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_evaluators</span><span class="p">:</span>
+</span><span id="JointEvaluator-159"><a href="#JointEvaluator-159"><span class="linenos">159</span></a>            <span class="n">counts_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subeval</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">())</span>
+</span><span id="JointEvaluator-160"><a href="#JointEvaluator-160"><span class="linenos">160</span></a>            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="n">counts_length</span><span class="p">))</span>
+</span><span id="JointEvaluator-161"><a href="#JointEvaluator-161"><span class="linenos">161</span></a>            <span class="n">index</span> <span class="o">+=</span> <span class="n">counts_length</span>
+</span><span id="JointEvaluator-162"><a href="#JointEvaluator-162"><span class="linenos">162</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="JointEvaluator-163"><a href="#JointEvaluator-163"><span class="linenos">163</span></a>
+</span><span id="JointEvaluator-164"><a href="#JointEvaluator-164"><span class="linenos">164</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_split_extra_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">extra_counts</span><span class="p">:</span>
+</span><span id="JointEvaluator-165"><a href="#JointEvaluator-165"><span class="linenos">165</span></a>                            <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+</span><span id="JointEvaluator-166"><a href="#JointEvaluator-166"><span class="linenos">166</span></a>        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_slices</span><span class="p">:</span>
+</span><span id="JointEvaluator-167"><a href="#JointEvaluator-167"><span class="linenos">167</span></a>            <span class="k">yield</span> <span class="n">extra_counts</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="JointEvaluator-168"><a href="#JointEvaluator-168"><span class="linenos">168</span></a>
+</span><span id="JointEvaluator-169"><a href="#JointEvaluator-169"><span class="linenos">169</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="JointEvaluator-170"><a href="#JointEvaluator-170"><span class="linenos">170</span></a>        <span class="k">return</span> <span class="s1">&#39;JointEvaluator(</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+</span><span id="JointEvaluator-171"><a href="#JointEvaluator-171"><span class="linenos">171</span></a>            <span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">subeval</span><span class="si">}</span><span class="s1">,</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">subeval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_evaluators</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span>
 </span></pre></div>
 
 
@@ -943,11 +932,7 @@ See <code><a href="#JointEvaluator.consecutive">consecutive()</a></code> below.<
 </span></pre></div>
 
 
-            <div class="docstring"><p>An optional sequence of extra inputs whose counts will be prepended to *counts.</p>
-
-<p>(Prepending rather than appending is analogous to <code>functools.partial</code>.)</p>
-</div>
-
+    
 
                             </div>
                 </section>
@@ -1737,7 +1722,7 @@ final outcomes.</p>
 <li>If you want to guarantee ascending or descending order, you can 
 implement <code><a href="#CountSubsetEvaluator.next_state_ascending">next_state_ascending()</a></code> or <code><a href="#CountSubsetEvaluator.next_state_descending">next_state_descending()</a></code> 
 instead.</li>
-<li>Alternatively, implement <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> and override <code><a href="#CountSubsetEvaluator.order">order()</a></code> to
+<li>Alternatively, implement <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> and override <code>order()</code> to
 return the necessary order. This is useful if the necessary order
 depends on the instance.</li>
 <li>If you want to handle either order, but have a different 
@@ -1759,7 +1744,7 @@ current outcome. If this is the first outcome being considered,
 <code>state</code> will be <code>None</code>.</li>
 <li><strong>outcome:</strong>  The current outcome.
 <code><a href="#CountSubsetEvaluator.next_state">next_state</a></code> will see all rolled outcomes in monotonic order;
-either ascending or descending depending on <code><a href="#CountSubsetEvaluator.order">order()</a></code>.
+either ascending or descending depending on <code>order()</code>.
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
@@ -2087,27 +2072,27 @@ If <code>None</code>, no filtering will be done.</li>
 
     </div>
     <a class="headerlink" href="#LargestStraightEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.extra_outcomes-216"><a href="#LargestStraightEvaluator.extra_outcomes-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-217"><a href="#LargestStraightEvaluator.extra_outcomes-217"><span class="linenos">217</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-218"><a href="#LargestStraightEvaluator.extra_outcomes-218"><span class="linenos">218</span></a>
-</span><span id="LargestStraightEvaluator.extra_outcomes-219"><a href="#LargestStraightEvaluator.extra_outcomes-219"><span class="linenos">219</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-220"><a href="#LargestStraightEvaluator.extra_outcomes-220"><span class="linenos">220</span></a>
-</span><span id="LargestStraightEvaluator.extra_outcomes-221"><a href="#LargestStraightEvaluator.extra_outcomes-221"><span class="linenos">221</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-222"><a href="#LargestStraightEvaluator.extra_outcomes-222"><span class="linenos">222</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-223"><a href="#LargestStraightEvaluator.extra_outcomes-223"><span class="linenos">223</span></a><span class="sd">            inclusive.</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-224"><a href="#LargestStraightEvaluator.extra_outcomes-224"><span class="linenos">224</span></a>
-</span><span id="LargestStraightEvaluator.extra_outcomes-225"><a href="#LargestStraightEvaluator.extra_outcomes-225"><span class="linenos">225</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-226"><a href="#LargestStraightEvaluator.extra_outcomes-226"><span class="linenos">226</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-227"><a href="#LargestStraightEvaluator.extra_outcomes-227"><span class="linenos">227</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-228"><a href="#LargestStraightEvaluator.extra_outcomes-228"><span class="linenos">228</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-229"><a href="#LargestStraightEvaluator.extra_outcomes-229"><span class="linenos">229</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-230"><a href="#LargestStraightEvaluator.extra_outcomes-230"><span class="linenos">230</span></a>
-</span><span id="LargestStraightEvaluator.extra_outcomes-231"><a href="#LargestStraightEvaluator.extra_outcomes-231"><span class="linenos">231</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-232"><a href="#LargestStraightEvaluator.extra_outcomes-232"><span class="linenos">232</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-233"><a href="#LargestStraightEvaluator.extra_outcomes-233"><span class="linenos">233</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-234"><a href="#LargestStraightEvaluator.extra_outcomes-234"><span class="linenos">234</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightEvaluator.extra_outcomes-235"><a href="#LargestStraightEvaluator.extra_outcomes-235"><span class="linenos">235</span></a>
-</span><span id="LargestStraightEvaluator.extra_outcomes-236"><a href="#LargestStraightEvaluator.extra_outcomes-236"><span class="linenos">236</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.extra_outcomes-153"><a href="#LargestStraightEvaluator.extra_outcomes-153"><span class="linenos">153</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-154"><a href="#LargestStraightEvaluator.extra_outcomes-154"><span class="linenos">154</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-155"><a href="#LargestStraightEvaluator.extra_outcomes-155"><span class="linenos">155</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-156"><a href="#LargestStraightEvaluator.extra_outcomes-156"><span class="linenos">156</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-157"><a href="#LargestStraightEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-158"><a href="#LargestStraightEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-159"><a href="#LargestStraightEvaluator.extra_outcomes-159"><span class="linenos">159</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-160"><a href="#LargestStraightEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-161"><a href="#LargestStraightEvaluator.extra_outcomes-161"><span class="linenos">161</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-162"><a href="#LargestStraightEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-163"><a href="#LargestStraightEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-164"><a href="#LargestStraightEvaluator.extra_outcomes-164"><span class="linenos">164</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-165"><a href="#LargestStraightEvaluator.extra_outcomes-165"><span class="linenos">165</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-166"><a href="#LargestStraightEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-167"><a href="#LargestStraightEvaluator.extra_outcomes-167"><span class="linenos">167</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-168"><a href="#LargestStraightEvaluator.extra_outcomes-168"><span class="linenos">168</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-169"><a href="#LargestStraightEvaluator.extra_outcomes-169"><span class="linenos">169</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-170"><a href="#LargestStraightEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-171"><a href="#LargestStraightEvaluator.extra_outcomes-171"><span class="linenos">171</span></a>            <span class="p">)</span>
+</span><span id="LargestStraightEvaluator.extra_outcomes-172"><a href="#LargestStraightEvaluator.extra_outcomes-172"><span class="linenos">172</span></a>
+</span><span id="LargestStraightEvaluator.extra_outcomes-173"><a href="#LargestStraightEvaluator.extra_outcomes-173"><span class="linenos">173</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2398,27 +2383,27 @@ happens.</p>
 
     </div>
     <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-216"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-217"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-217"><span class="linenos">217</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-218"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-218"><span class="linenos">218</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-219"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-219"><span class="linenos">219</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-220"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-220"><span class="linenos">220</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-221"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-221"><span class="linenos">221</span></a><span class="sd">        Returns:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-222"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-222"><span class="linenos">222</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-223"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-223"><span class="linenos">223</span></a><span class="sd">            inclusive.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-224"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-224"><span class="linenos">224</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-225"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-225"><span class="linenos">225</span></a><span class="sd">        Raises:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-226"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-226"><span class="linenos">226</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-227"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-227"><span class="linenos">227</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-228"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-228"><span class="linenos">228</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-229"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-229"><span class="linenos">229</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-230"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-230"><span class="linenos">230</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-231"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-231"><span class="linenos">231</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-232"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-232"><span class="linenos">232</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-233"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-233"><span class="linenos">233</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-234"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-234"><span class="linenos">234</span></a>            <span class="p">)</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-235"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-235"><span class="linenos">235</span></a>
-</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-236"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-236"><span class="linenos">236</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-153"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-153"><span class="linenos">153</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-154"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-154"><span class="linenos">154</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-155"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-155"><span class="linenos">155</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-156"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-156"><span class="linenos">156</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-158"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="sd">        Returns:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-159"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-159"><span class="linenos">159</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-160"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">            inclusive.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-161"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-161"><span class="linenos">161</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-162"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        Raises:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-163"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-164"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-164"><span class="linenos">164</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-165"><span class="linenos">165</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-166"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-167"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-167"><span class="linenos">167</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-168"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-168"><span class="linenos">168</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-169"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-169"><span class="linenos">169</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-170"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-171"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-171"><span class="linenos">171</span></a>            <span class="p">)</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-172"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-172"><span class="linenos">172</span></a>
+</span><span id="LargestStraightAndOutcomeEvaluator.extra_outcomes-173"><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes-173"><span class="linenos">173</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2583,27 +2568,27 @@ elements are preferentially assigned to the longer straight.</p>
 
     </div>
     <a class="headerlink" href="#AllStraightsEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.extra_outcomes-216"><a href="#AllStraightsEvaluator.extra_outcomes-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-217"><a href="#AllStraightsEvaluator.extra_outcomes-217"><span class="linenos">217</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-218"><a href="#AllStraightsEvaluator.extra_outcomes-218"><span class="linenos">218</span></a>
-</span><span id="AllStraightsEvaluator.extra_outcomes-219"><a href="#AllStraightsEvaluator.extra_outcomes-219"><span class="linenos">219</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-220"><a href="#AllStraightsEvaluator.extra_outcomes-220"><span class="linenos">220</span></a>
-</span><span id="AllStraightsEvaluator.extra_outcomes-221"><a href="#AllStraightsEvaluator.extra_outcomes-221"><span class="linenos">221</span></a><span class="sd">        Returns:</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-222"><a href="#AllStraightsEvaluator.extra_outcomes-222"><span class="linenos">222</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-223"><a href="#AllStraightsEvaluator.extra_outcomes-223"><span class="linenos">223</span></a><span class="sd">            inclusive.</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-224"><a href="#AllStraightsEvaluator.extra_outcomes-224"><span class="linenos">224</span></a>
-</span><span id="AllStraightsEvaluator.extra_outcomes-225"><a href="#AllStraightsEvaluator.extra_outcomes-225"><span class="linenos">225</span></a><span class="sd">        Raises:</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-226"><a href="#AllStraightsEvaluator.extra_outcomes-226"><span class="linenos">226</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-227"><a href="#AllStraightsEvaluator.extra_outcomes-227"><span class="linenos">227</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-228"><a href="#AllStraightsEvaluator.extra_outcomes-228"><span class="linenos">228</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-229"><a href="#AllStraightsEvaluator.extra_outcomes-229"><span class="linenos">229</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-230"><a href="#AllStraightsEvaluator.extra_outcomes-230"><span class="linenos">230</span></a>
-</span><span id="AllStraightsEvaluator.extra_outcomes-231"><a href="#AllStraightsEvaluator.extra_outcomes-231"><span class="linenos">231</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-232"><a href="#AllStraightsEvaluator.extra_outcomes-232"><span class="linenos">232</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-233"><a href="#AllStraightsEvaluator.extra_outcomes-233"><span class="linenos">233</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-234"><a href="#AllStraightsEvaluator.extra_outcomes-234"><span class="linenos">234</span></a>            <span class="p">)</span>
-</span><span id="AllStraightsEvaluator.extra_outcomes-235"><a href="#AllStraightsEvaluator.extra_outcomes-235"><span class="linenos">235</span></a>
-</span><span id="AllStraightsEvaluator.extra_outcomes-236"><a href="#AllStraightsEvaluator.extra_outcomes-236"><span class="linenos">236</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.extra_outcomes-153"><a href="#AllStraightsEvaluator.extra_outcomes-153"><span class="linenos">153</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-154"><a href="#AllStraightsEvaluator.extra_outcomes-154"><span class="linenos">154</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-155"><a href="#AllStraightsEvaluator.extra_outcomes-155"><span class="linenos">155</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-156"><a href="#AllStraightsEvaluator.extra_outcomes-156"><span class="linenos">156</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-157"><a href="#AllStraightsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-158"><a href="#AllStraightsEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-159"><a href="#AllStraightsEvaluator.extra_outcomes-159"><span class="linenos">159</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-160"><a href="#AllStraightsEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-161"><a href="#AllStraightsEvaluator.extra_outcomes-161"><span class="linenos">161</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-162"><a href="#AllStraightsEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-163"><a href="#AllStraightsEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-164"><a href="#AllStraightsEvaluator.extra_outcomes-164"><span class="linenos">164</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-165"><a href="#AllStraightsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-166"><a href="#AllStraightsEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-167"><a href="#AllStraightsEvaluator.extra_outcomes-167"><span class="linenos">167</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-168"><a href="#AllStraightsEvaluator.extra_outcomes-168"><span class="linenos">168</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-169"><a href="#AllStraightsEvaluator.extra_outcomes-169"><span class="linenos">169</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-170"><a href="#AllStraightsEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-171"><a href="#AllStraightsEvaluator.extra_outcomes-171"><span class="linenos">171</span></a>            <span class="p">)</span>
+</span><span id="AllStraightsEvaluator.extra_outcomes-172"><a href="#AllStraightsEvaluator.extra_outcomes-172"><span class="linenos">172</span></a>
+</span><span id="AllStraightsEvaluator.extra_outcomes-173"><a href="#AllStraightsEvaluator.extra_outcomes-173"><span class="linenos">173</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2825,27 +2810,27 @@ elements for each straight, e.g. cribbage.</li>
 
     </div>
     <a class="headerlink" href="#AllStraightsReduceCountsEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-216"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-217"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-217"><span class="linenos">217</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-218"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-218"><span class="linenos">218</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-219"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-219"><span class="linenos">219</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-220"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-220"><span class="linenos">220</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-221"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-221"><span class="linenos">221</span></a><span class="sd">        Returns:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-222"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-222"><span class="linenos">222</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-223"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-223"><span class="linenos">223</span></a><span class="sd">            inclusive.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-224"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-224"><span class="linenos">224</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-225"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-225"><span class="linenos">225</span></a><span class="sd">        Raises:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-226"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-226"><span class="linenos">226</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-227"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-227"><span class="linenos">227</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-228"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-228"><span class="linenos">228</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-229"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-229"><span class="linenos">229</span></a>            <span class="k">return</span> <span class="p">()</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-230"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-230"><span class="linenos">230</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-231"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-231"><span class="linenos">231</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-232"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-232"><span class="linenos">232</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-233"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-233"><span class="linenos">233</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-234"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-234"><span class="linenos">234</span></a>            <span class="p">)</span>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-235"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-235"><span class="linenos">235</span></a>
-</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-236"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-236"><span class="linenos">236</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-153"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-153"><span class="linenos">153</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">consecutive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-154"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-154"><span class="linenos">154</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-155"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-155"><span class="linenos">155</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-156"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-156"><span class="linenos">156</span></a><span class="sd">        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-157"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-157"><span class="linenos">157</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-158"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-158"><span class="linenos">158</span></a><span class="sd">        Returns:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-159"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-159"><span class="linenos">159</span></a><span class="sd">            All `int`s from the min outcome to the max outcome among the inputs,</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-160"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-160"><span class="linenos">160</span></a><span class="sd">            inclusive.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-161"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-161"><span class="linenos">161</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-162"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-162"><span class="linenos">162</span></a><span class="sd">        Raises:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-163"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-163"><span class="linenos">163</span></a><span class="sd">            TypeError: if any input has any non-`int` outcome.</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-164"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-164"><span class="linenos">164</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-165"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-165"><span class="linenos">165</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">outcomes</span><span class="p">:</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-166"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-166"><span class="linenos">166</span></a>            <span class="k">return</span> <span class="p">()</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-167"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-167"><span class="linenos">167</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-168"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-168"><span class="linenos">168</span></a>        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outcomes</span><span class="p">):</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-169"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-169"><span class="linenos">169</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-170"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-170"><span class="linenos">170</span></a>                <span class="s2">&quot;consecutive cannot be used with outcomes of type other than &#39;int&#39;.&quot;</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-171"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-171"><span class="linenos">171</span></a>            <span class="p">)</span>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-172"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-172"><span class="linenos">172</span></a>
+</span><span id="AllStraightsReduceCountsEvaluator.extra_outcomes-173"><a href="#AllStraightsReduceCountsEvaluator.extra_outcomes-173"><span class="linenos">173</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -3903,36 +3888,7 @@ happens.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method that specifies what outcome orderings this evaluator supports.</p>
-
-<p>By default, this is determined by which of <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code>, 
-<code><a href="#ArgsortEvaluator.next_state_ascending">next_state_ascending()</a></code>, and <code><a href="#ArgsortEvaluator.next_state_descending">next_state_descending()</a></code> are
-overridden.</p>
-
-<p>This is most often overridden by subclasses whose iteration order is
-determined on a per-instance basis.</p>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <ul>
-  <li>Order.Ascending (= 1)
-  if outcomes are to be seen in ascending order.
-  In this case either <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> or <code><a href="#ArgsortEvaluator.next_state_ascending">next_state_ascending()</a></code>
-  are implemented.</li>
-  <li>Order.Descending (= -1)
-  if outcomes are to be seen in descending order.
-  In this case either <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> or <code><a href="#ArgsortEvaluator.next_state_descending">next_state_descending()</a></code>
-  are implemented.</li>
-  <li>Order.Any (= 0)
-  if outcomes can be seen in any order.
-  In this case either <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> or both
-  <code><a href="#ArgsortEvaluator.next_state_ascending">next_state_ascending()</a></code> and <code><a href="#ArgsortEvaluator.next_state_descending">next_state_descending()</a></code>
-  are implemented.</li>
-  </ul>
-</blockquote>
-</div>
-
+    
 
                             </div>
                 </section>
@@ -3941,135 +3897,55 @@ determined on a per-instance basis.</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">MultisetFunctionEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[~T, +U_co]</span>):
+    <span class="name">MultisetFunctionEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator_base.MultisetEvaluatorBase[~T, +U_co]</span>):
 
                 <label class="view-source-button" for="MultisetFunctionEvaluator-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MultisetFunctionEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator-143"><a href="#MultisetFunctionEvaluator-143"><span class="linenos">143</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetFunctionEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
-</span><span id="MultisetFunctionEvaluator-144"><a href="#MultisetFunctionEvaluator-144"><span class="linenos">144</span></a>    <span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;(unnamed)&#39;</span>
-</span><span id="MultisetFunctionEvaluator-145"><a href="#MultisetFunctionEvaluator-145"><span class="linenos">145</span></a>
-</span><span id="MultisetFunctionEvaluator-146"><a href="#MultisetFunctionEvaluator-146"><span class="linenos">146</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;icepool.MultisetExpressionBase[T, Any]&#39;</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-147"><a href="#MultisetFunctionEvaluator-147"><span class="linenos">147</span></a>                 <span class="n">evaluator</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-148"><a href="#MultisetFunctionEvaluator-148"><span class="linenos">148</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span> <span class="o">=</span> <span class="n">evaluator</span>
-</span><span id="MultisetFunctionEvaluator-149"><a href="#MultisetFunctionEvaluator-149"><span class="linenos">149</span></a>        <span class="n">bound_inputs</span><span class="p">:</span> <span class="s1">&#39;list[icepool.MultisetExpressionBase]&#39;</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="MultisetFunctionEvaluator-150"><a href="#MultisetFunctionEvaluator-150"><span class="linenos">150</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-151"><a href="#MultisetFunctionEvaluator-151"><span class="linenos">151</span></a>            <span class="nb">input</span><span class="o">.</span><span class="n">_unbind</span><span class="p">(</span><span class="n">bound_inputs</span><span class="p">)</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-152"><a href="#MultisetFunctionEvaluator-152"><span class="linenos">152</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_bound_inputs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bound_inputs</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-153"><a href="#MultisetFunctionEvaluator-153"><span class="linenos">153</span></a>
-</span><span id="MultisetFunctionEvaluator-154"><a href="#MultisetFunctionEvaluator-154"><span class="linenos">154</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_ascending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator-155"><a href="#MultisetFunctionEvaluator-155"><span class="linenos">155</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-156"><a href="#MultisetFunctionEvaluator-156"><span class="linenos">156</span></a>            <span class="n">expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span>
-</span><span id="MultisetFunctionEvaluator-157"><a href="#MultisetFunctionEvaluator-157"><span class="linenos">157</span></a>            <span class="n">evaluator_state</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="MultisetFunctionEvaluator-158"><a href="#MultisetFunctionEvaluator-158"><span class="linenos">158</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-159"><a href="#MultisetFunctionEvaluator-159"><span class="linenos">159</span></a>            <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span> <span class="o">=</span> <span class="n">state</span>
-</span><span id="MultisetFunctionEvaluator-160"><a href="#MultisetFunctionEvaluator-160"><span class="linenos">160</span></a>
-</span><span id="MultisetFunctionEvaluator-161"><a href="#MultisetFunctionEvaluator-161"><span class="linenos">161</span></a>        <span class="n">evaluator_slice</span><span class="p">,</span> <span class="n">bound_slice</span><span class="p">,</span> <span class="n">free_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_slices</span>
-</span><span id="MultisetFunctionEvaluator-162"><a href="#MultisetFunctionEvaluator-162"><span class="linenos">162</span></a>        <span class="n">evaluator_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">evaluator_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-163"><a href="#MultisetFunctionEvaluator-163"><span class="linenos">163</span></a>        <span class="n">bound_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">bound_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-164"><a href="#MultisetFunctionEvaluator-164"><span class="linenos">164</span></a>        <span class="n">free_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">free_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-165"><a href="#MultisetFunctionEvaluator-165"><span class="linenos">165</span></a>
-</span><span id="MultisetFunctionEvaluator-166"><a href="#MultisetFunctionEvaluator-166"><span class="linenos">166</span></a>        <span class="n">expressions</span><span class="p">,</span> <span class="n">expression_counts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-167"><a href="#MultisetFunctionEvaluator-167"><span class="linenos">167</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">_apply_variables</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">bound_counts</span><span class="p">,</span> <span class="n">free_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-168"><a href="#MultisetFunctionEvaluator-168"><span class="linenos">168</span></a>              <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">expressions</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator-169"><a href="#MultisetFunctionEvaluator-169"><span class="linenos">169</span></a>        <span class="n">evaluator_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_method_ascending</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-170"><a href="#MultisetFunctionEvaluator-170"><span class="linenos">170</span></a>            <span class="n">evaluator_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">evaluator_counts</span><span class="p">,</span> <span class="o">*</span><span class="n">expression_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-171"><a href="#MultisetFunctionEvaluator-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span>
-</span><span id="MultisetFunctionEvaluator-172"><a href="#MultisetFunctionEvaluator-172"><span class="linenos">172</span></a>
-</span><span id="MultisetFunctionEvaluator-173"><a href="#MultisetFunctionEvaluator-173"><span class="linenos">173</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_descending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator-174"><a href="#MultisetFunctionEvaluator-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-175"><a href="#MultisetFunctionEvaluator-175"><span class="linenos">175</span></a>            <span class="n">expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span>
-</span><span id="MultisetFunctionEvaluator-176"><a href="#MultisetFunctionEvaluator-176"><span class="linenos">176</span></a>            <span class="n">evaluator_state</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="MultisetFunctionEvaluator-177"><a href="#MultisetFunctionEvaluator-177"><span class="linenos">177</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-178"><a href="#MultisetFunctionEvaluator-178"><span class="linenos">178</span></a>            <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span> <span class="o">=</span> <span class="n">state</span>
-</span><span id="MultisetFunctionEvaluator-179"><a href="#MultisetFunctionEvaluator-179"><span class="linenos">179</span></a>
-</span><span id="MultisetFunctionEvaluator-180"><a href="#MultisetFunctionEvaluator-180"><span class="linenos">180</span></a>        <span class="n">evaluator_slice</span><span class="p">,</span> <span class="n">bound_slice</span><span class="p">,</span> <span class="n">free_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_slices</span>
-</span><span id="MultisetFunctionEvaluator-181"><a href="#MultisetFunctionEvaluator-181"><span class="linenos">181</span></a>        <span class="n">evaluator_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">evaluator_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-182"><a href="#MultisetFunctionEvaluator-182"><span class="linenos">182</span></a>        <span class="n">bound_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">bound_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-183"><a href="#MultisetFunctionEvaluator-183"><span class="linenos">183</span></a>        <span class="n">free_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">free_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-184"><a href="#MultisetFunctionEvaluator-184"><span class="linenos">184</span></a>
-</span><span id="MultisetFunctionEvaluator-185"><a href="#MultisetFunctionEvaluator-185"><span class="linenos">185</span></a>        <span class="n">expressions</span><span class="p">,</span> <span class="n">expression_counts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-186"><a href="#MultisetFunctionEvaluator-186"><span class="linenos">186</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">_apply_variables</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">bound_counts</span><span class="p">,</span> <span class="n">free_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-187"><a href="#MultisetFunctionEvaluator-187"><span class="linenos">187</span></a>              <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">expressions</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator-188"><a href="#MultisetFunctionEvaluator-188"><span class="linenos">188</span></a>        <span class="n">evaluator_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_method_descending</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-189"><a href="#MultisetFunctionEvaluator-189"><span class="linenos">189</span></a>            <span class="n">evaluator_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">evaluator_counts</span><span class="p">,</span> <span class="o">*</span><span class="n">expression_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-190"><a href="#MultisetFunctionEvaluator-190"><span class="linenos">190</span></a>        <span class="k">return</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span>
-</span><span id="MultisetFunctionEvaluator-191"><a href="#MultisetFunctionEvaluator-191"><span class="linenos">191</span></a>
-</span><span id="MultisetFunctionEvaluator-192"><a href="#MultisetFunctionEvaluator-192"><span class="linenos">192</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-193"><a href="#MultisetFunctionEvaluator-193"><span class="linenos">193</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-194"><a href="#MultisetFunctionEvaluator-194"><span class="linenos">194</span></a>            <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;U_co | icepool.Die[U_co] | icepool.RerollType&#39;</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-195"><a href="#MultisetFunctionEvaluator-195"><span class="linenos">195</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-196"><a href="#MultisetFunctionEvaluator-196"><span class="linenos">196</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-197"><a href="#MultisetFunctionEvaluator-197"><span class="linenos">197</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-198"><a href="#MultisetFunctionEvaluator-198"><span class="linenos">198</span></a>            <span class="n">_</span><span class="p">,</span> <span class="n">evaluator_state</span> <span class="o">=</span> <span class="n">final_state</span>
-</span><span id="MultisetFunctionEvaluator-199"><a href="#MultisetFunctionEvaluator-199"><span class="linenos">199</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">evaluator_state</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-200"><a href="#MultisetFunctionEvaluator-200"><span class="linenos">200</span></a>
-</span><span id="MultisetFunctionEvaluator-201"><a href="#MultisetFunctionEvaluator-201"><span class="linenos">201</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Order</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-202"><a href="#MultisetFunctionEvaluator-202"><span class="linenos">202</span></a>        <span class="n">expression_order</span><span class="p">,</span> <span class="n">expression_order_reason</span> <span class="o">=</span> <span class="n">merge_order_preferences</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-203"><a href="#MultisetFunctionEvaluator-203"><span class="linenos">203</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">order_preference</span><span class="p">()</span>
-</span><span id="MultisetFunctionEvaluator-204"><a href="#MultisetFunctionEvaluator-204"><span class="linenos">204</span></a>              <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span><span class="p">),</span>
-</span><span id="MultisetFunctionEvaluator-205"><a href="#MultisetFunctionEvaluator-205"><span class="linenos">205</span></a>            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">order</span><span class="p">(),</span> <span class="n">OrderReason</span><span class="o">.</span><span class="n">Mandatory</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator-206"><a href="#MultisetFunctionEvaluator-206"><span class="linenos">206</span></a>        <span class="k">return</span> <span class="n">expression_order</span>
-</span><span id="MultisetFunctionEvaluator-207"><a href="#MultisetFunctionEvaluator-207"><span class="linenos">207</span></a>
-</span><span id="MultisetFunctionEvaluator-208"><a href="#MultisetFunctionEvaluator-208"><span class="linenos">208</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MultisetFunctionEvaluator-209"><a href="#MultisetFunctionEvaluator-209"><span class="linenos">209</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_next_state_method_ascending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">]:</span>
-</span><span id="MultisetFunctionEvaluator-210"><a href="#MultisetFunctionEvaluator-210"><span class="linenos">210</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">next_state_method</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">Ascending</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-211"><a href="#MultisetFunctionEvaluator-211"><span class="linenos">211</span></a>
-</span><span id="MultisetFunctionEvaluator-212"><a href="#MultisetFunctionEvaluator-212"><span class="linenos">212</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MultisetFunctionEvaluator-213"><a href="#MultisetFunctionEvaluator-213"><span class="linenos">213</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_next_state_method_descending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">]:</span>
-</span><span id="MultisetFunctionEvaluator-214"><a href="#MultisetFunctionEvaluator-214"><span class="linenos">214</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">next_state_method</span><span class="p">(</span><span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-215"><a href="#MultisetFunctionEvaluator-215"><span class="linenos">215</span></a>
-</span><span id="MultisetFunctionEvaluator-216"><a href="#MultisetFunctionEvaluator-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-</span><span id="MultisetFunctionEvaluator-217"><a href="#MultisetFunctionEvaluator-217"><span class="linenos">217</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-218"><a href="#MultisetFunctionEvaluator-218"><span class="linenos">218</span></a>
-</span><span id="MultisetFunctionEvaluator-219"><a href="#MultisetFunctionEvaluator-219"><span class="linenos">219</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bound_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[icepool.MultisetExpressionBase, ...]&#39;</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-220"><a href="#MultisetFunctionEvaluator-220"><span class="linenos">220</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_inputs</span>
-</span><span id="MultisetFunctionEvaluator-221"><a href="#MultisetFunctionEvaluator-221"><span class="linenos">221</span></a>
-</span><span id="MultisetFunctionEvaluator-222"><a href="#MultisetFunctionEvaluator-222"><span class="linenos">222</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MultisetFunctionEvaluator-223"><a href="#MultisetFunctionEvaluator-223"><span class="linenos">223</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_count_slices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[slice, slice, slice]&#39;</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-224"><a href="#MultisetFunctionEvaluator-224"><span class="linenos">224</span></a>        <span class="n">evaluator_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">()))</span>
-</span><span id="MultisetFunctionEvaluator-225"><a href="#MultisetFunctionEvaluator-225"><span class="linenos">225</span></a>        <span class="n">bound_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">evaluator_slice</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-226"><a href="#MultisetFunctionEvaluator-226"><span class="linenos">226</span></a>                            <span class="n">evaluator_slice</span><span class="o">.</span><span class="n">stop</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bound_inputs</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator-227"><a href="#MultisetFunctionEvaluator-227"><span class="linenos">227</span></a>        <span class="n">free_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">bound_slice</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-228"><a href="#MultisetFunctionEvaluator-228"><span class="linenos">228</span></a>        <span class="k">return</span> <span class="n">evaluator_slice</span><span class="p">,</span> <span class="n">bound_slice</span><span class="p">,</span> <span class="n">free_slice</span>
-</span><span id="MultisetFunctionEvaluator-229"><a href="#MultisetFunctionEvaluator-229"><span class="linenos">229</span></a>
-</span><span id="MultisetFunctionEvaluator-230"><a href="#MultisetFunctionEvaluator-230"><span class="linenos">230</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-231"><a href="#MultisetFunctionEvaluator-231"><span class="linenos">231</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;multiset_function </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&gt;&#39;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator-109"><a href="#MultisetFunctionEvaluator-109"><span class="linenos">109</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetFunctionEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluatorBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
+</span><span id="MultisetFunctionEvaluator-110"><a href="#MultisetFunctionEvaluator-110"><span class="linenos">110</span></a>
+</span><span id="MultisetFunctionEvaluator-111"><a href="#MultisetFunctionEvaluator-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">MultisetEvaluatorBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]]):</span>
+</span><span id="MultisetFunctionEvaluator-112"><a href="#MultisetFunctionEvaluator-112"><span class="linenos">112</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
+</span><span id="MultisetFunctionEvaluator-113"><a href="#MultisetFunctionEvaluator-113"><span class="linenos">113</span></a>        <span class="n">wrapped_parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-114"><a href="#MultisetFunctionEvaluator-114"><span class="linenos">114</span></a>                                               <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="MultisetFunctionEvaluator-115"><a href="#MultisetFunctionEvaluator-115"><span class="linenos">115</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="MultisetFunctionEvaluator-116"><a href="#MultisetFunctionEvaluator-116"><span class="linenos">116</span></a>        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrapped_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+</span><span id="MultisetFunctionEvaluator-117"><a href="#MultisetFunctionEvaluator-117"><span class="linenos">117</span></a>
+</span><span id="MultisetFunctionEvaluator-118"><a href="#MultisetFunctionEvaluator-118"><span class="linenos">118</span></a>            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator-119"><a href="#MultisetFunctionEvaluator-119"><span class="linenos">119</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-120"><a href="#MultisetFunctionEvaluator-120"><span class="linenos">120</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-121"><a href="#MultisetFunctionEvaluator-121"><span class="linenos">121</span></a>            <span class="p">]:</span>
+</span><span id="MultisetFunctionEvaluator-122"><a href="#MultisetFunctionEvaluator-122"><span class="linenos">122</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-123"><a href="#MultisetFunctionEvaluator-123"><span class="linenos">123</span></a>
+</span><span id="MultisetFunctionEvaluator-124"><a href="#MultisetFunctionEvaluator-124"><span class="linenos">124</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-125"><a href="#MultisetFunctionEvaluator-125"><span class="linenos">125</span></a>
+</span><span id="MultisetFunctionEvaluator-126"><a href="#MultisetFunctionEvaluator-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span>
+</span><span id="MultisetFunctionEvaluator-127"><a href="#MultisetFunctionEvaluator-127"><span class="linenos">127</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-128"><a href="#MultisetFunctionEvaluator-128"><span class="linenos">128</span></a>        <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;tuple[MultisetExpressionBase[T, Q], ...]&#39;</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-129"><a href="#MultisetFunctionEvaluator-129"><span class="linenos">129</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
+</span><span id="MultisetFunctionEvaluator-130"><a href="#MultisetFunctionEvaluator-130"><span class="linenos">130</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetDungeon&#39;</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-131"><a href="#MultisetFunctionEvaluator-131"><span class="linenos">131</span></a>        <span class="n">multiset_variables</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator-132"><a href="#MultisetFunctionEvaluator-132"><span class="linenos">132</span></a>            <span class="n">expression</span><span class="o">.</span><span class="n">_variable_type</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span id="MultisetFunctionEvaluator-133"><a href="#MultisetFunctionEvaluator-133"><span class="linenos">133</span></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">expression</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-134"><a href="#MultisetFunctionEvaluator-134"><span class="linenos">134</span></a>        <span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator-135"><a href="#MultisetFunctionEvaluator-135"><span class="linenos">135</span></a>        <span class="n">wrapped_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">multiset_variables</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-136"><a href="#MultisetFunctionEvaluator-136"><span class="linenos">136</span></a>        <span class="c1"># TODO: cache?</span>
+</span><span id="MultisetFunctionEvaluator-137"><a href="#MultisetFunctionEvaluator-137"><span class="linenos">137</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapped_result</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator-138"><a href="#MultisetFunctionEvaluator-138"><span class="linenos">138</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="MultisetFunctionEvaluator-139"><a href="#MultisetFunctionEvaluator-139"><span class="linenos">139</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-140"><a href="#MultisetFunctionEvaluator-140"><span class="linenos">140</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="MultisetFunctionEvaluator-141"><a href="#MultisetFunctionEvaluator-141"><span class="linenos">141</span></a>
+</span><span id="MultisetFunctionEvaluator-142"><a href="#MultisetFunctionEvaluator-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator-143"><a href="#MultisetFunctionEvaluator-143"><span class="linenos">143</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="MultisetFunctionEvaluator-144"><a href="#MultisetFunctionEvaluator-144"><span class="linenos">144</span></a>
+</span><span id="MultisetFunctionEvaluator-145"><a href="#MultisetFunctionEvaluator-145"><span class="linenos">145</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span id="MultisetFunctionEvaluator-146"><a href="#MultisetFunctionEvaluator-146"><span class="linenos">146</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>An abstract, immutable, callable class for evaulating one or more input <code>MultisetExpressionBase</code>s.</p>
-
-<p>There is one abstract method to implement: <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code>.
-This should incrementally calculate the result given one outcome at a time
-along with how many of that outcome were produced.</p>
-
-<p>An example sequence of calls, as far as <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code> is concerned, is:</p>
-
-<ol>
-<li><code>state = next_state(state=None, outcome=1, count_of_1s)</code></li>
-<li><code>state = next_state(state, 2, count_of_2s)</code></li>
-<li><code>state = next_state(state, 3, count_of_3s)</code></li>
-<li><code>state = next_state(state, 4, count_of_4s)</code></li>
-<li><code>state = next_state(state, 5, count_of_5s)</code></li>
-<li><code>state = next_state(state, 6, count_of_6s)</code></li>
-<li><code>outcome = final_outcome(state)</code></li>
-</ol>
-
-<p>A few other methods can optionally be overridden to further customize behavior.</p>
-
-<p>It is not expected that subclasses of <code>MultisetEvaluator</code>
-be able to handle arbitrary types or numbers of inputs.
-Indeed, most are expected to handle only a fixed number of inputs,
-and often even only inputs with a particular outcome type.</p>
-
-<p>Instances cache all intermediate state distributions.
-You should therefore reuse instances when possible.</p>
-
-<p>Instances should not be modified after construction
-in any way that affects the return values of these methods.
-Otherwise, values in the cache may be incorrect.</p>
+            <div class="docstring"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p>
 </div>
 
 
@@ -4077,103 +3953,64 @@ Otherwise, values in the cache may be incorrect.</p>
                                         <input id="MultisetFunctionEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">MultisetFunctionEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>,</span><span class="param">	<span class="n">evaluator</span><span class="p">:</span> <span class="n"><a href="../icepool.html#MultisetEvaluator">icepool.MultisetEvaluator</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">+</span><span class="n">U_co</span><span class="p">]</span></span>)</span>
+        <span class="name">MultisetFunctionEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">multiset_evaluator_base</span><span class="o">.</span><span class="n">MultisetEvaluatorBase</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">+</span><span class="n">U_co</span><span class="p">]]</span></span>)</span>
 
                 <label class="view-source-button" for="MultisetFunctionEvaluator.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MultisetFunctionEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.__init__-146"><a href="#MultisetFunctionEvaluator.__init__-146"><span class="linenos">146</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;icepool.MultisetExpressionBase[T, Any]&#39;</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.__init__-147"><a href="#MultisetFunctionEvaluator.__init__-147"><span class="linenos">147</span></a>                 <span class="n">evaluator</span><span class="p">:</span> <span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.__init__-148"><a href="#MultisetFunctionEvaluator.__init__-148"><span class="linenos">148</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span> <span class="o">=</span> <span class="n">evaluator</span>
-</span><span id="MultisetFunctionEvaluator.__init__-149"><a href="#MultisetFunctionEvaluator.__init__-149"><span class="linenos">149</span></a>        <span class="n">bound_inputs</span><span class="p">:</span> <span class="s1">&#39;list[icepool.MultisetExpressionBase]&#39;</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="MultisetFunctionEvaluator.__init__-150"><a href="#MultisetFunctionEvaluator.__init__-150"><span class="linenos">150</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.__init__-151"><a href="#MultisetFunctionEvaluator.__init__-151"><span class="linenos">151</span></a>            <span class="nb">input</span><span class="o">.</span><span class="n">_unbind</span><span class="p">(</span><span class="n">bound_inputs</span><span class="p">)</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.__init__-152"><a href="#MultisetFunctionEvaluator.__init__-152"><span class="linenos">152</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_bound_inputs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bound_inputs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.__init__-111"><a href="#MultisetFunctionEvaluator.__init__-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">MultisetEvaluatorBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]]):</span>
+</span><span id="MultisetFunctionEvaluator.__init__-112"><a href="#MultisetFunctionEvaluator.__init__-112"><span class="linenos">112</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
+</span><span id="MultisetFunctionEvaluator.__init__-113"><a href="#MultisetFunctionEvaluator.__init__-113"><span class="linenos">113</span></a>        <span class="n">wrapped_parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-114"><a href="#MultisetFunctionEvaluator.__init__-114"><span class="linenos">114</span></a>                                               <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="MultisetFunctionEvaluator.__init__-115"><a href="#MultisetFunctionEvaluator.__init__-115"><span class="linenos">115</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="MultisetFunctionEvaluator.__init__-116"><a href="#MultisetFunctionEvaluator.__init__-116"><span class="linenos">116</span></a>        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrapped_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+</span><span id="MultisetFunctionEvaluator.__init__-117"><a href="#MultisetFunctionEvaluator.__init__-117"><span class="linenos">117</span></a>
+</span><span id="MultisetFunctionEvaluator.__init__-118"><a href="#MultisetFunctionEvaluator.__init__-118"><span class="linenos">118</span></a>            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator.__init__-119"><a href="#MultisetFunctionEvaluator.__init__-119"><span class="linenos">119</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-120"><a href="#MultisetFunctionEvaluator.__init__-120"><span class="linenos">120</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-121"><a href="#MultisetFunctionEvaluator.__init__-121"><span class="linenos">121</span></a>            <span class="p">]:</span>
+</span><span id="MultisetFunctionEvaluator.__init__-122"><a href="#MultisetFunctionEvaluator.__init__-122"><span class="linenos">122</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator.__init__-123"><a href="#MultisetFunctionEvaluator.__init__-123"><span class="linenos">123</span></a>
+</span><span id="MultisetFunctionEvaluator.__init__-124"><a href="#MultisetFunctionEvaluator.__init__-124"><span class="linenos">124</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="MultisetFunctionEvaluator.next_state_ascending" class="classattr">
-                                        <input id="MultisetFunctionEvaluator.next_state_ascending-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="MultisetFunctionEvaluator.prepare" class="classattr">
+                                        <input id="MultisetFunctionEvaluator.prepare-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">next_state_ascending</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="o">*</span><span class="n">counts</span></span><span class="return-annotation">):</span></span>
+        <span class="name">prepare</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">inputs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">~</span><span class="n">Q</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>,</span><span class="param">	<span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">multiset_evaluator_base</span><span class="o">.</span><span class="n">MultisetDungeon</span>:</span></span>
 
-                <label class="view-source-button" for="MultisetFunctionEvaluator.next_state_ascending-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="MultisetFunctionEvaluator.prepare-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#MultisetFunctionEvaluator.next_state_ascending"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.next_state_ascending-154"><a href="#MultisetFunctionEvaluator.next_state_ascending-154"><span class="linenos">154</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_ascending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-155"><a href="#MultisetFunctionEvaluator.next_state_ascending-155"><span class="linenos">155</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-156"><a href="#MultisetFunctionEvaluator.next_state_ascending-156"><span class="linenos">156</span></a>            <span class="n">expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-157"><a href="#MultisetFunctionEvaluator.next_state_ascending-157"><span class="linenos">157</span></a>            <span class="n">evaluator_state</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-158"><a href="#MultisetFunctionEvaluator.next_state_ascending-158"><span class="linenos">158</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-159"><a href="#MultisetFunctionEvaluator.next_state_ascending-159"><span class="linenos">159</span></a>            <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span> <span class="o">=</span> <span class="n">state</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-160"><a href="#MultisetFunctionEvaluator.next_state_ascending-160"><span class="linenos">160</span></a>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-161"><a href="#MultisetFunctionEvaluator.next_state_ascending-161"><span class="linenos">161</span></a>        <span class="n">evaluator_slice</span><span class="p">,</span> <span class="n">bound_slice</span><span class="p">,</span> <span class="n">free_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_slices</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-162"><a href="#MultisetFunctionEvaluator.next_state_ascending-162"><span class="linenos">162</span></a>        <span class="n">evaluator_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">evaluator_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-163"><a href="#MultisetFunctionEvaluator.next_state_ascending-163"><span class="linenos">163</span></a>        <span class="n">bound_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">bound_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-164"><a href="#MultisetFunctionEvaluator.next_state_ascending-164"><span class="linenos">164</span></a>        <span class="n">free_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">free_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-165"><a href="#MultisetFunctionEvaluator.next_state_ascending-165"><span class="linenos">165</span></a>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-166"><a href="#MultisetFunctionEvaluator.next_state_ascending-166"><span class="linenos">166</span></a>        <span class="n">expressions</span><span class="p">,</span> <span class="n">expression_counts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-167"><a href="#MultisetFunctionEvaluator.next_state_ascending-167"><span class="linenos">167</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">_apply_variables</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">bound_counts</span><span class="p">,</span> <span class="n">free_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-168"><a href="#MultisetFunctionEvaluator.next_state_ascending-168"><span class="linenos">168</span></a>              <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">expressions</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-169"><a href="#MultisetFunctionEvaluator.next_state_ascending-169"><span class="linenos">169</span></a>        <span class="n">evaluator_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_method_ascending</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-170"><a href="#MultisetFunctionEvaluator.next_state_ascending-170"><span class="linenos">170</span></a>            <span class="n">evaluator_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">evaluator_counts</span><span class="p">,</span> <span class="o">*</span><span class="n">expression_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.next_state_ascending-171"><a href="#MultisetFunctionEvaluator.next_state_ascending-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span>
+    <a class="headerlink" href="#MultisetFunctionEvaluator.prepare"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.prepare-126"><a href="#MultisetFunctionEvaluator.prepare-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span>
+</span><span id="MultisetFunctionEvaluator.prepare-127"><a href="#MultisetFunctionEvaluator.prepare-127"><span class="linenos">127</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.prepare-128"><a href="#MultisetFunctionEvaluator.prepare-128"><span class="linenos">128</span></a>        <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;tuple[MultisetExpressionBase[T, Q], ...]&#39;</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.prepare-129"><a href="#MultisetFunctionEvaluator.prepare-129"><span class="linenos">129</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
+</span><span id="MultisetFunctionEvaluator.prepare-130"><a href="#MultisetFunctionEvaluator.prepare-130"><span class="linenos">130</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetDungeon&#39;</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator.prepare-131"><a href="#MultisetFunctionEvaluator.prepare-131"><span class="linenos">131</span></a>        <span class="n">multiset_variables</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator.prepare-132"><a href="#MultisetFunctionEvaluator.prepare-132"><span class="linenos">132</span></a>            <span class="n">expression</span><span class="o">.</span><span class="n">_variable_type</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</span><span id="MultisetFunctionEvaluator.prepare-133"><a href="#MultisetFunctionEvaluator.prepare-133"><span class="linenos">133</span></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">expression</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator.prepare-134"><a href="#MultisetFunctionEvaluator.prepare-134"><span class="linenos">134</span></a>        <span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator.prepare-135"><a href="#MultisetFunctionEvaluator.prepare-135"><span class="linenos">135</span></a>        <span class="n">wrapped_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">multiset_variables</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator.prepare-136"><a href="#MultisetFunctionEvaluator.prepare-136"><span class="linenos">136</span></a>        <span class="c1"># TODO: cache?</span>
+</span><span id="MultisetFunctionEvaluator.prepare-137"><a href="#MultisetFunctionEvaluator.prepare-137"><span class="linenos">137</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wrapped_result</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator.prepare-138"><a href="#MultisetFunctionEvaluator.prepare-138"><span class="linenos">138</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="MultisetFunctionEvaluator.prepare-139"><a href="#MultisetFunctionEvaluator.prepare-139"><span class="linenos">139</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator.prepare-140"><a href="#MultisetFunctionEvaluator.prepare-140"><span class="linenos">140</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>As next_state() but handles outcomes in ascending order only.</p>
+            <div class="docstring"><p>Prepares an evaluation.</p>
 
-<p>You can implement both <code><a href="#MultisetFunctionEvaluator.next_state_ascending">next_state_ascending()</a></code> and 
-<code><a href="#MultisetFunctionEvaluator.next_state_descending">next_state_descending()</a></code> if you want to handle both outcome orders
-with a separate implementation for each.</p>
-</div>
-
-
-                            </div>
-                            <div id="MultisetFunctionEvaluator.next_state_descending" class="classattr">
-                                        <input id="MultisetFunctionEvaluator.next_state_descending-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">next_state_descending</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="o">*</span><span class="n">counts</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="MultisetFunctionEvaluator.next_state_descending-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#MultisetFunctionEvaluator.next_state_descending"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.next_state_descending-173"><a href="#MultisetFunctionEvaluator.next_state_descending-173"><span class="linenos">173</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_descending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-174"><a href="#MultisetFunctionEvaluator.next_state_descending-174"><span class="linenos">174</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-175"><a href="#MultisetFunctionEvaluator.next_state_descending-175"><span class="linenos">175</span></a>            <span class="n">expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-176"><a href="#MultisetFunctionEvaluator.next_state_descending-176"><span class="linenos">176</span></a>            <span class="n">evaluator_state</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-177"><a href="#MultisetFunctionEvaluator.next_state_descending-177"><span class="linenos">177</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-178"><a href="#MultisetFunctionEvaluator.next_state_descending-178"><span class="linenos">178</span></a>            <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span> <span class="o">=</span> <span class="n">state</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-179"><a href="#MultisetFunctionEvaluator.next_state_descending-179"><span class="linenos">179</span></a>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-180"><a href="#MultisetFunctionEvaluator.next_state_descending-180"><span class="linenos">180</span></a>        <span class="n">evaluator_slice</span><span class="p">,</span> <span class="n">bound_slice</span><span class="p">,</span> <span class="n">free_slice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_slices</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-181"><a href="#MultisetFunctionEvaluator.next_state_descending-181"><span class="linenos">181</span></a>        <span class="n">evaluator_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">evaluator_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-182"><a href="#MultisetFunctionEvaluator.next_state_descending-182"><span class="linenos">182</span></a>        <span class="n">bound_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">bound_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-183"><a href="#MultisetFunctionEvaluator.next_state_descending-183"><span class="linenos">183</span></a>        <span class="n">free_counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">free_slice</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-184"><a href="#MultisetFunctionEvaluator.next_state_descending-184"><span class="linenos">184</span></a>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-185"><a href="#MultisetFunctionEvaluator.next_state_descending-185"><span class="linenos">185</span></a>        <span class="n">expressions</span><span class="p">,</span> <span class="n">expression_counts</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-186"><a href="#MultisetFunctionEvaluator.next_state_descending-186"><span class="linenos">186</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">_apply_variables</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">bound_counts</span><span class="p">,</span> <span class="n">free_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-187"><a href="#MultisetFunctionEvaluator.next_state_descending-187"><span class="linenos">187</span></a>              <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">expressions</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-188"><a href="#MultisetFunctionEvaluator.next_state_descending-188"><span class="linenos">188</span></a>        <span class="n">evaluator_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_method_descending</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-189"><a href="#MultisetFunctionEvaluator.next_state_descending-189"><span class="linenos">189</span></a>            <span class="n">evaluator_state</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">evaluator_counts</span><span class="p">,</span> <span class="o">*</span><span class="n">expression_counts</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.next_state_descending-190"><a href="#MultisetFunctionEvaluator.next_state_descending-190"><span class="linenos">190</span></a>        <span class="k">return</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">evaluator_state</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>As next_state() but handles outcomes in descending order only.</p>
-
-<p>You can implement both <code><a href="#MultisetFunctionEvaluator.next_state_ascending">next_state_ascending()</a></code> and 
-<code><a href="#MultisetFunctionEvaluator.next_state_descending">next_state_descending()</a></code> if you want to handle both outcome orders
-with a separate implementation for each.</p>
+<p>In the future this will likely allow yielding multiple results.</p>
 </div>
 
 
@@ -4183,98 +4020,18 @@ with a separate implementation for each.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">final_state</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="o">+</span><span class="n">U_co</span><span class="p">,</span> <span class="n"><a href="../icepool.html#Die">icepool.Die</a></span><span class="p">[</span><span class="o">+</span><span class="n">U_co</span><span class="p">],</span> <span class="n"><a href="../icepool.html#RerollType">icepool.RerollType</a></span><span class="p">]</span>:</span></span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span><span class="p">:</span> <span class="n">Hashable</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MultisetFunctionEvaluator.final_outcome-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MultisetFunctionEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.final_outcome-192"><a href="#MultisetFunctionEvaluator.final_outcome-192"><span class="linenos">192</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-193"><a href="#MultisetFunctionEvaluator.final_outcome-193"><span class="linenos">193</span></a>            <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-194"><a href="#MultisetFunctionEvaluator.final_outcome-194"><span class="linenos">194</span></a>            <span class="n">final_state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;U_co | icepool.Die[U_co] | icepool.RerollType&#39;</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-195"><a href="#MultisetFunctionEvaluator.final_outcome-195"><span class="linenos">195</span></a>        <span class="k">if</span> <span class="n">final_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-196"><a href="#MultisetFunctionEvaluator.final_outcome-196"><span class="linenos">196</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-197"><a href="#MultisetFunctionEvaluator.final_outcome-197"><span class="linenos">197</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-198"><a href="#MultisetFunctionEvaluator.final_outcome-198"><span class="linenos">198</span></a>            <span class="n">_</span><span class="p">,</span> <span class="n">evaluator_state</span> <span class="o">=</span> <span class="n">final_state</span>
-</span><span id="MultisetFunctionEvaluator.final_outcome-199"><a href="#MultisetFunctionEvaluator.final_outcome-199"><span class="linenos">199</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">(</span><span class="n">evaluator_state</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.final_outcome-142"><a href="#MultisetFunctionEvaluator.final_outcome-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator.final_outcome-143"><a href="#MultisetFunctionEvaluator.final_outcome-143"><span class="linenos">143</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to generate a final output outcome from a final state.</p>
-
-<p>By default, the final outcome is equal to the final state.
-Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
-and if there are no outcomes, <code><a href="#MultisetFunctionEvaluator.final_outcome">final_outcome</a></code> will be immediately
-be callled with <code>final_state=None</code>.
-Subclasses that want to handle this case should explicitly define what
-happens.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>final_state:</strong>  A state after all outcomes have been processed.</li>
-</ul>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <p>A final outcome that will be used as part of constructing the result <code>Die</code>.
-  As usual for <code>Die()</code>, this could itself be a <code>Die</code> or <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code>.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="MultisetFunctionEvaluator.order" class="classattr">
-                                        <input id="MultisetFunctionEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="../icepool.html#Order">icepool.Order</a></span>:</span></span>
-
-                <label class="view-source-button" for="MultisetFunctionEvaluator.order-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#MultisetFunctionEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.order-201"><a href="#MultisetFunctionEvaluator.order-201"><span class="linenos">201</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Order</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.order-202"><a href="#MultisetFunctionEvaluator.order-202"><span class="linenos">202</span></a>        <span class="n">expression_order</span><span class="p">,</span> <span class="n">expression_order_reason</span> <span class="o">=</span> <span class="n">merge_order_preferences</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.order-203"><a href="#MultisetFunctionEvaluator.order-203"><span class="linenos">203</span></a>            <span class="o">*</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">order_preference</span><span class="p">()</span>
-</span><span id="MultisetFunctionEvaluator.order-204"><a href="#MultisetFunctionEvaluator.order-204"><span class="linenos">204</span></a>              <span class="k">for</span> <span class="n">expression</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expressions</span><span class="p">),</span>
-</span><span id="MultisetFunctionEvaluator.order-205"><a href="#MultisetFunctionEvaluator.order-205"><span class="linenos">205</span></a>            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">order</span><span class="p">(),</span> <span class="n">OrderReason</span><span class="o">.</span><span class="n">Mandatory</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator.order-206"><a href="#MultisetFunctionEvaluator.order-206"><span class="linenos">206</span></a>        <span class="k">return</span> <span class="n">expression_order</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Optional method that specifies what outcome orderings this evaluator supports.</p>
-
-<p>By default, this is determined by which of <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code>, 
-<code><a href="#MultisetFunctionEvaluator.next_state_ascending">next_state_ascending()</a></code>, and <code><a href="#MultisetFunctionEvaluator.next_state_descending">next_state_descending()</a></code> are
-overridden.</p>
-
-<p>This is most often overridden by subclasses whose iteration order is
-determined on a per-instance basis.</p>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <ul>
-  <li>Order.Ascending (= 1)
-  if outcomes are to be seen in ascending order.
-  In this case either <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code> or <code><a href="#MultisetFunctionEvaluator.next_state_ascending">next_state_ascending()</a></code>
-  are implemented.</li>
-  <li>Order.Descending (= -1)
-  if outcomes are to be seen in descending order.
-  In this case either <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code> or <code><a href="#MultisetFunctionEvaluator.next_state_descending">next_state_descending()</a></code>
-  are implemented.</li>
-  <li>Order.Any (= 0)
-  if outcomes can be seen in any order.
-  In this case either <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code> or both
-  <code><a href="#MultisetFunctionEvaluator.next_state_ascending">next_state_ascending()</a></code> and <code><a href="#MultisetFunctionEvaluator.next_state_descending">next_state_descending()</a></code>
-  are implemented.</li>
-  </ul>
-</blockquote>
-</div>
-
+    
 
                             </div>
                             <div id="MultisetFunctionEvaluator.extra_outcomes" class="classattr">
@@ -4282,26 +4039,26 @@ determined on a per-instance basis.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span><span class="n">generators</span></span><span class="return-annotation">) -> <span class="n">Collection</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+        <span class="name">extra_outcomes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MultisetFunctionEvaluator.extra_outcomes-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MultisetFunctionEvaluator.extra_outcomes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.extra_outcomes-216"><a href="#MultisetFunctionEvaluator.extra_outcomes-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">generators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-</span><span id="MultisetFunctionEvaluator.extra_outcomes-217"><a href="#MultisetFunctionEvaluator.extra_outcomes-217"><span class="linenos">217</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.extra_outcomes-145"><a href="#MultisetFunctionEvaluator.extra_outcomes-145"><span class="linenos">145</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_outcomes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span id="MultisetFunctionEvaluator.extra_outcomes-146"><a href="#MultisetFunctionEvaluator.extra_outcomes-146"><span class="linenos">146</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen as inputs to <code><a href="#MultisetFunctionEvaluator.next_state">next_state()</a></code>.</p>
+            <div class="docstring"><p>Optional method to specify extra outcomes that should be seen as inputs to <code>next_state()</code>.</p>
 
-<p>These will be seen by <code><a href="#MultisetFunctionEvaluator.next_state">next_state</a></code> even if they do not appear in the
+<p>These will be seen by <code>next_state</code> even if they do not appear in the
 input(s). The default implementation returns <code>()</code>, or no additional
 outcomes.</p>
 
-<p>If you want <code><a href="#MultisetFunctionEvaluator.next_state">next_state</a></code> to see consecutive <code>int</code> outcomes, you can set
+<p>If you want <code>next_state</code> to see consecutive <code>int</code> outcomes, you can set
 <code>extra_outcomes = <a href="../icepool.html#MultisetEvaluator.consecutive">icepool.MultisetEvaluator.consecutive</a></code>.
-See <code><a href="#MultisetFunctionEvaluator.consecutive">consecutive()</a></code> below.</p>
+See <code>consecutive()</code> below.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
@@ -4309,29 +4066,6 @@ See <code><a href="#MultisetFunctionEvaluator.consecutive">consecutive()</a></co
 <li><strong>outcomes:</strong>  The outcomes that could be produced by the inputs, in</li>
 <li>ascending order.</li>
 </ul>
-</div>
-
-
-                            </div>
-                            <div id="MultisetFunctionEvaluator.bound_inputs" class="classattr">
-                                        <input id="MultisetFunctionEvaluator.bound_inputs-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">bound_inputs</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">tuple</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">MultisetExpressionBase</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="MultisetFunctionEvaluator.bound_inputs-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#MultisetFunctionEvaluator.bound_inputs"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.bound_inputs-219"><a href="#MultisetFunctionEvaluator.bound_inputs-219"><span class="linenos">219</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bound_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[icepool.MultisetExpressionBase, ...]&#39;</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.bound_inputs-220"><a href="#MultisetFunctionEvaluator.bound_inputs-220"><span class="linenos">220</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="o">.</span><span class="n">bound_inputs</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bound_inputs</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>An optional sequence of extra inputs whose counts will be prepended to *counts.</p>
-
-<p>(Prepending rather than appending is analogous to <code>functools.partial</code>.)</p>
 </div>
 
 
