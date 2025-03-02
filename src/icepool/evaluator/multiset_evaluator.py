@@ -14,7 +14,8 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
-    def next_state(self, state: Hashable, outcome: T, /, *counts) -> Hashable:
+    def next_state(self, state: Hashable, outcome: T, /, *counts,
+                   **kwargs: Hashable) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -27,6 +28,9 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         Thus, you are free to:
         * Rename `state` or `outcome` in a subclass.
         * Replace `*counts` with a fixed set of parameters.
+
+        Likewise, you may replace **kwargs with a fixed set of keyword
+        parameters.
 
         Make sure to handle the base case where `state is None`.
 
@@ -73,8 +77,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
-    def next_state_ascending(self, state: Hashable, outcome: T, /,
-                             *counts) -> Hashable:
+    def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,
+                             **kwargs: Hashable) -> Hashable:
         """As next_state() but handles outcomes in ascending order only.
         
         You can implement both `next_state_ascending()` and 
@@ -83,8 +87,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
-    def next_state_descending(self, state: Hashable, outcome: T, /,
-                              *counts) -> Hashable:
+    def next_state_descending(self, state: Hashable, outcome: T, /, *counts,
+                              **kwargs: Hashable) -> Hashable:
         """As next_state() but handles outcomes in descending order only.
         
         You can implement both `next_state_ascending()` and 
@@ -110,8 +114,9 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         return ()
 
-    def final_outcome(self, final_state: Hashable,
-                      /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+    def final_outcome(
+            self, final_state: Hashable, /, **kwargs: Hashable
+    ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Optional method to generate a final output outcome from a final state.
 
         By default, the final outcome is equal to the final state.
@@ -123,6 +128,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         Args:
             final_state: A state after all outcomes have been processed.
+            kwargs: Any kwargs that were passed to the evaluation.
 
         Returns:
             A final outcome that will be used as part of constructing the result `Die`.
