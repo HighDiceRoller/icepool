@@ -808,8 +808,7 @@ def map_to_pool(
     'Callable[..., icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]',
         /,
         *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-        star: bool | None = None,
-        denominator: int | None = None) -> 'icepool.MultisetExpression[T]':
+        star: bool | None = None) -> 'icepool.MultisetExpression[T]':
     """EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetExpression.
     
     Args:
@@ -852,5 +851,4 @@ def map_to_pool(
         else:
             data[icepool.Pool(pool)] += quantity
     # I couldn't get the covariance / contravariance to work.
-    return icepool.MultisetMixture(data,
-                                   denominator=denominator)  # type: ignore
+    return icepool.MultisetMixture(data)  # type: ignore

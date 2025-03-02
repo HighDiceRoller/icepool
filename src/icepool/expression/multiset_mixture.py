@@ -24,11 +24,8 @@ class MultisetMixture(MultisetExpression[T]):
 
     _inner_expressions: Mapping[MultisetExpression[T], int]
 
-    def __init__(self,
-                 inners: Sequence[MultisetExpression[T]]
-                 | Mapping[MultisetExpression[T], int],
-                 *,
-                 denominator: int | None = None):
+    def __init__(self, inners: Sequence[MultisetExpression[T]]
+                 | Mapping[MultisetExpression[T], int]):
 
         if isinstance(inners, Mapping):
             self._inner_expressions = {
@@ -98,8 +95,8 @@ class MultisetMixture(MultisetExpression[T]):
     def _unary_operation(self, op: Callable) -> 'MultisetMixture[T]':
         data: MutableMapping = defaultdict(int)
         for inner, factor in self._inner_expressions.items():
-            data[op(inner)] += inner.denominator() * factor
-        return MultisetMixture(data, denominator=self.denominator())
+            data[op(inner)] += factor
+        return MultisetMixture(data)
 
     @overload
     def keep(

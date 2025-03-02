@@ -1000,11 +1000,7 @@ class Die(Population[T_co]):
         """
         if repl is None:
             repl = lambda x: x
-        return icepool.map_to_pool(repl,
-                                   self,
-                                   *extra_args,
-                                   star=star,
-                                   denominator=denominator)
+        return icepool.map_to_pool(repl, self, *extra_args, star=star)
 
     def explode_to_pool(
             self,
@@ -1149,6 +1145,9 @@ class Die(Population[T_co]):
                                star=False)
 
         pool_composition = rerollable.map(split, star=False)
+        denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
+        pool_composition = pool_composition.multiply_to_denominator(
+            denominator)
 
         def make_pool(initial_rerollable, rerolled_to_rerollable,
                       not_rerollable, not_rerolled):
@@ -1171,11 +1170,7 @@ class Die(Population[T_co]):
                         f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', 'highest', 'drop'."
                     )
 
-        denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
-
-        return pool_composition.map_to_pool(make_pool,
-                                            star=True,
-                                            denominator=denominator)
+        return pool_composition.map_to_pool(make_pool, star=True)
 
     # Unary operators.
 
