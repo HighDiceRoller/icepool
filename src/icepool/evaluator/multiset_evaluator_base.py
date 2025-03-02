@@ -29,7 +29,11 @@ def _initialize_inputs(
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
     @abstractmethod
-    def prepare(self, kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
+    def prepare(
+        self,
+        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
+        kwargs: Mapping[str, Hashable],
+    ) -> 'MultisetDungeon':
         """Prepares an evaluation.
         
         In the future this will likely allow yielding multiple results.
@@ -109,15 +113,13 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         if not all(expression._is_resolvable() for expression in inputs):
             return icepool.Die([])
 
-        dungeon = self.prepare(kwargs)
-
-        # TODO: get cached dungeon
-
         final_states: MutableMapping[Any, int] = defaultdict(int)
         iterators = _initialize_inputs(inputs)
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
             # TODO: inputs = self.bound_inputs() + sub_inputs
+            dungeon = self.prepare(sub_inputs, kwargs)
+            # TODO: get cached dungeon
             prod_weight = math.prod(sub_weights)
             outcomes = icepool.sorted_union(*(expression.outcomes()
                                               for expression in sub_inputs))

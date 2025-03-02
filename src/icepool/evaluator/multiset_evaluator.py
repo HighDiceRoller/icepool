@@ -1,9 +1,10 @@
 __docformat__ = 'google'
 
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon
+from icepool.expression.base import MultisetExpressionBase
 from icepool.order import Order
 
-from icepool.typing import T, U_co
+from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     Mapping, MutableMapping, Sequence, TypeAlias, cast,
                     TYPE_CHECKING, overload)
@@ -147,7 +148,11 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    def prepare(self, kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
+    def prepare(
+        self,
+        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
+        kwargs: Mapping[str, Hashable],
+    ) -> 'MultisetDungeon':
         return MultisetDungeon(self.next_state_method(Order.Ascending),
                                self.next_state_method(Order.Descending),
                                kwargs)

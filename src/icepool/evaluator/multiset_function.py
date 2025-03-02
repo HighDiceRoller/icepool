@@ -1,14 +1,16 @@
 __docformat__ = 'google'
 
 from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetEvaluatorBase
+from icepool.expression.base import MultisetExpressionBase
 from icepool.expression.multiset_variable import MultisetVariable
 from icepool.expression.multiset_tuple_variable import MultisetTupleVariable
 
+import inspect
 from functools import cached_property, update_wrapper
 
 from icepool.order import Order
-from icepool.typing import T, U_co
-from typing import Any, Callable, Collection, Hashable, Mapping, TypeAlias, overload
+from icepool.typing import Q, T, U_co
+from typing import Any, Callable, Collection, Hashable, Mapping, Sequence, TypeAlias, overload
 
 MV: TypeAlias = MultisetVariable | MultisetTupleVariable
 
@@ -107,10 +109,37 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def __init__(self, wrapped: Callable[..., MultisetEvaluatorBase[T, U_co]]):
         self._wrapped = wrapped
+        wrapped_parameters = inspect.signature(function,
+                                               follow_wrapped=False).parameters
+        self._positional_names = []
+        for index, parameter in enumerate(wrapped_parameters.values()):
+
+            if parameter.kind in [
+                    inspect.Parameter.POSITIONAL_ONLY,
+                    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+            ]:
+                self._positional_names.append(parameter.name)
+
         update_wrapper(self, wrapped)
 
-    def prepare(self, kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
+    def prepare(
+        self,
+        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
+        kwargs: Mapping[str, Hashable],
+    ) -> 'MultisetDungeon':
+        multiset_variables = [
+            expression._variable_type(True, i, self._positional_names[i])
+            for i, expression in enumerate(inputs)
+        ]
+        wrapped_result = self._wrapped(*multiset_variables, **kwargs)
+        # TODO: cache?
+        if isinstance(wrapped_result, tuple):
+            raise NotImplementedError()
+        else:
+            raise NotImplementedError()
+
+    def final_outcome(self, final_state: Hashable, /):
         raise NotImplementedError()
 
-    def order(self) -> Order:
+    def extra_outcomes(self, outcomes: Sequence[T]):
         raise NotImplementedError()
