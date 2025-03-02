@@ -85,9 +85,6 @@ class MultisetOperator(MultisetExpression[T]):
     def has_free_variables(self) -> bool:
         return any(child.has_free_variables() for child in self._children)
 
-    def denominator(self) -> int:
-        return math.prod(child.denominator() for child in self._children)
-
     def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
         if self.has_free_variables():
             unbound_children = tuple(

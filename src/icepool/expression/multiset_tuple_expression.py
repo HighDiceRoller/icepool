@@ -101,9 +101,6 @@ class MultisetTupleSubscript(MultisetExpression[T]):
     def has_free_variables(self) -> bool:
         return self._children[0].has_free_variables()
 
-    def denominator(self) -> int:
-        return self._children[0].denominator()
-
     def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
         if self.has_free_variables():
             child = self._children[0]._unbind(bound_inputs)

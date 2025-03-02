@@ -47,9 +47,6 @@ class MultisetTupleVariable(MultisetTupleExpression):
     def has_free_variables(self) -> bool:
         return self._is_free
 
-    def denominator(self) -> int:
-        raise icepool.MultisetBindingError()
-
     def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
         if self._is_free:
             return self

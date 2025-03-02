@@ -22,8 +22,6 @@ class MultisetMixture(MultisetExpression[T]):
 
     _children = ()
 
-    # Note that the total weight of an inner is the product of the factor here
-    # and the denominator of the inner.
     _inner_expressions: Mapping[MultisetExpression[T], int]
 
     def __init__(self,
@@ -31,36 +29,16 @@ class MultisetMixture(MultisetExpression[T]):
                  | Mapping[MultisetExpression[T], int],
                  *,
                  denominator: int | None = None):
-        data: Mapping[MultisetExpression[T], int]
 
         if isinstance(inners, Mapping):
-            data = {inner: weight for inner, weight in inners.items()}
+            self._inner_expressions = {
+                inner: weight
+                for inner, weight in inners.items()
+            }
         else:
-            data = defaultdict(int)
+            self._inner_expressions = defaultdict(int)
             for inner in inners:
-                data[inner] += 1
-
-        denominator_lcm = math.lcm(
-            *(inner.denominator() // math.gcd(inner.denominator(), weight)
-              for inner, weight in data.items()
-              if inner.denominator() > 0 and weight > 0))
-
-        self._inner_expressions = defaultdict(int)
-        min_denominator = 0
-        for inner, weight in data.items():
-            factor = denominator_lcm * weight // inner.denominator(
-            ) if inner.denominator() else 0
-            self._inner_expressions[inner] += factor
-            min_denominator += factor * inner.denominator()
-
-        if denominator is not None:
-            scale, mod = divmod(denominator, min_denominator)
-            if mod != 0:
-                raise ValueError(
-                    f'Specified denominator of {denominator} is not consistent with the minimum possible denominator {min_denominator}.'
-                )
-            for inner in self._inner_expressions:
-                self._inner_expressions[inner] *= scale
+                self._inner_expressions[inner] += 1
 
     def outcomes(self) -> Sequence[T]:
         return icepool.sorted_union(*(inner.outcomes()
@@ -89,16 +67,6 @@ class MultisetMixture(MultisetExpression[T]):
     def has_free_variables(self):
         return any(inner.has_free_variables()
                    for inner in self._inner_expressions)
-
-    @cached_property
-    def _denominator(self) -> int:
-        result = 0
-        for inner, weight in self._inner_expressions.items():
-            result += weight * inner.denominator()
-        return result
-
-    def denominator(self) -> int:
-        return self._denominator
 
     def _unbind(
         self,

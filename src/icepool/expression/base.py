@@ -145,14 +145,6 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
     def has_free_variables(self) -> bool:
         """Whether this expression contains any free variables, i.e. parameters to a @multiset_function."""
 
-    @abstractmethod
-    def denominator(self) -> int:
-        """The total weight of all paths through this generator.
-        
-        Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
-        """
-
     @property
     @abstractmethod
     def _local_hash_key(self) -> Hashable:

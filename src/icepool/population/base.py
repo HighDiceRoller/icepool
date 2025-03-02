@@ -358,6 +358,18 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             )
         return self._new_type(data)
 
+    def multiply_to_denominator(self: C, denominator: int, /) -> C:
+        """Multiplies all quantities to reach the target denominiator.
+        
+        Raises:
+            ValueError if this cannot be achieved using an integer scaling.
+        """
+        if denominator % self.denominator():
+            raise ValueError(
+                'Target denominator is not an integer factor of the current denominator.'
+            )
+        return self.multiply_quantities(denominator // self.denominator())
+
     def append(self: C, outcome, quantity: int = 1, /) -> C:
         """This population with an outcome appended.
         

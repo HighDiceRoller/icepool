@@ -60,10 +60,6 @@ class CompoundKeepGenerator(KeepGenerator[T]):
         return merge_order_preferences(*(inner.local_order_preference()
                                          for inner in self._inner_generators))
 
-    def denominator(self) -> int:
-        return math.prod(inner.denominator()
-                         for inner in self._inner_generators)
-
     def _set_keep_tuple(self, keep_tuple: tuple[int,
                                                 ...]) -> 'KeepGenerator[T]':
         return CompoundKeepGenerator(self._inner_generators, keep_tuple)

@@ -60,9 +60,6 @@ class Alignment(MultisetExpressionBase[T, None]):
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
-    def denominator(self) -> int:
-        return 1
-
     @cached_property
     def _local_hash_key(self) -> Hashable:
         return Alignment, self._outcomes
