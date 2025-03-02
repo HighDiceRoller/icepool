@@ -39,23 +39,6 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         In the future this will likely allow yielding multiple results.
         """
 
-    def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
-        """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
-
-        These will be seen by `next_state` even if they do not appear in the
-        input(s). The default implementation returns `()`, or no additional
-        outcomes.
-
-        If you want `next_state` to see consecutive `int` outcomes, you can set
-        `extra_outcomes = icepool.MultisetEvaluator.consecutive`.
-        See `consecutive()` below.
-
-        Args:
-            outcomes: The outcomes that could be produced by the inputs, in
-            ascending order.
-        """
-        return ()
-
     def evaluate(self, *args:
                  'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
                  **kwargs: Hashable) -> 'icepool.Die[U_co]':
@@ -102,7 +85,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             prod_weight = math.prod(sub_weights)
             outcomes = icepool.sorted_union(*(expression.outcomes()
                                               for expression in sub_inputs))
-            extra_outcomes = icepool.Alignment(self.extra_outcomes(outcomes))
+            extra_outcomes = icepool.Alignment(
+                dungeon.extra_outcomes(outcomes))
             sub_result = dungeon.evaluate(
                 extra_outcomes,
                 sub_inputs,
@@ -139,26 +123,14 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         This method may be set to None in subclasses.
         """
 
+    @abstractmethod
+    def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
+        """Extra outcomes that should be seen."""
+
+    @abstractmethod
     def final_outcome(self, final_state: Hashable,
                       /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
-        """Optional method to generate a final output outcome from a final state.
-
-        By default, the final outcome is equal to the final state.
-        Note that `None` is not a valid outcome for a `Die`,
-        and if there are no outcomes, `final_outcome` will be immediately
-        be callled with `final_state=None`.
-        Subclasses that want to handle this case should explicitly define what
-        happens.
-
-        Args:
-            final_state: A state after all outcomes have been processed.
-
-        Returns:
-            A final outcome that will be used as part of constructing the result `Die`.
-            As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
-        """
-        # If not overriden, the final_state should have type U_co.
-        return cast(U_co, final_state)
+        """Generates a final outcome from a final state."""
 
     def evaluation_order(self) -> Order:
         """Which evaluation orders are supported."""

@@ -93,6 +93,23 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
+    def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
+        """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
+
+        These will be seen by `next_state` even if they do not appear in the
+        input(s). The default implementation returns `()`, or no additional
+        outcomes.
+
+        If you want `next_state` to see consecutive `int` outcomes, you can set
+        `extra_outcomes = icepool.MultisetEvaluator.consecutive`.
+        See `consecutive()` below.
+
+        Args:
+            outcomes: The outcomes that could be produced by the inputs, in
+            ascending order.
+        """
+        return ()
+
     def final_outcome(self, final_state: Hashable,
                       /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Optional method to generate a final output outcome from a final state.
@@ -178,22 +195,27 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
     ) -> 'MultisetDungeon':
         return MultisetEvaluatorDungeon(
             self, self.next_state_method(Order.Ascending),
-            self.next_state_method(Order.Descending), self.final_outcome,
-            kwargs)
+            self.next_state_method(Order.Descending), self.extra_outcomes,
+            self.final_outcome, kwargs)
 
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
 
+    # These are filled in by the constructor.
     next_state_ascending = None  # type: ignore
     next_state_descending = None  # type: ignore
+    extra_outcomes = None  # type: ignore
+    final_outcome = None  # type: ignore
 
     def __init__(self, preparer: MultisetEvaluator,
                  next_state_ascending: Callable[..., Hashable] | None,
                  next_state_descending: Callable[..., Hashable] | None,
-                 final_outcome: Callable, kwargs: Mapping[str, Hashable]):
+                 extra_outcomes: Callable, final_outcome: Callable,
+                 kwargs: Mapping[str, Hashable]):
         self.preparer = preparer
         self.next_state_ascending = next_state_ascending  # type: ignore
         self.next_state_descending = next_state_descending  # type: ignore
+        self.extra_outcomes = extra_outcomes  # type: ignore
         self.final_outcome = final_outcome  # type: ignore
         self.kwargs = kwargs
         self.ascending_cache = {}

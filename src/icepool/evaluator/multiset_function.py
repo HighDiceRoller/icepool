@@ -138,8 +138,38 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         else:
             raise NotImplementedError()
 
-    def final_outcome(self, final_state: Hashable, /):
-        raise NotImplementedError()
-
     def extra_outcomes(self, outcomes: Sequence[T]):
         raise NotImplementedError()
+
+
+class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
+    next_state_ascending = None  # type: ignore
+    next_state_descending = None  # type: ignore
+
+    def __init__(self, expressions,
+                 next_state_ascending: Callable[..., Hashable] | None,
+                 next_state_descending: Callable[..., Hashable] | None,
+                 final_outcome: Callable, kwargs: Mapping[str, Hashable]):
+        self.expressions = expressions  # TODO
+        self.next_state_ascending = next_state_ascending  # type: ignore
+        self.next_state_descending = next_state_descending  # type: ignore
+        self.final_outcome = final_outcome  # type: ignore
+        self.kwargs = kwargs
+        self.ascending_cache = {}
+        self.descending_cache = {}
+
+    @cached_property
+    def _hash_key(self) -> Hashable:
+        return NotImplementedError()
+
+    @cached_property
+    def _hash(self) -> int:
+        return hash(self._hash_key)
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, MultisetFunctionDungeon):
+            return False
+        return self._hash_key == other._hash_key
