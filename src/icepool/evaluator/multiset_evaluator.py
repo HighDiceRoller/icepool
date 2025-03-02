@@ -1,5 +1,7 @@
 __docformat__ = 'google'
 
+from functools import cached_property
+import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon
 from icepool.expression.base import MultisetExpressionBase
 from icepool.order import Order
@@ -91,6 +93,27 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
+    def final_outcome(self, final_state: Hashable,
+                      /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+        """Optional method to generate a final output outcome from a final state.
+
+        By default, the final outcome is equal to the final state.
+        Note that `None` is not a valid outcome for a `Die`,
+        and if there are no outcomes, `final_outcome` will be immediately
+        be callled with `final_state=None`.
+        Subclasses that want to handle this case should explicitly define what
+        happens.
+
+        Args:
+            final_state: A state after all outcomes have been processed.
+
+        Returns:
+            A final outcome that will be used as part of constructing the result `Die`.
+            As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
+        """
+        # If not overriden, the final_state should have type U_co.
+        return cast(U_co, final_state)
+
     def _get_next_state_method(
             self, method_name: str) -> Callable[..., Hashable] | None:
         """Returns the next_state method by name, or `None` if not implemented."""
@@ -153,6 +176,42 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
     ) -> 'MultisetDungeon':
-        return MultisetDungeon(self.next_state_method(Order.Ascending),
-                               self.next_state_method(Order.Descending),
-                               kwargs)
+        return MultisetEvaluatorDungeon(
+            self, self.next_state_method(Order.Ascending),
+            self.next_state_method(Order.Descending), self.final_outcome,
+            kwargs)
+
+
+class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
+
+    next_state_ascending = None  # type: ignore
+    next_state_descending = None  # type: ignore
+
+    def __init__(self, preparer: MultisetEvaluator,
+                 next_state_ascending: Callable[..., Hashable] | None,
+                 next_state_descending: Callable[..., Hashable] | None,
+                 final_outcome: Callable, kwargs: Mapping[str, Hashable]):
+        self.preparer = preparer
+        self.next_state_ascending = next_state_ascending  # type: ignore
+        self.next_state_descending = next_state_descending  # type: ignore
+        self.final_outcome = final_outcome  # type: ignore
+        self.kwargs = kwargs
+        self.ascending_cache = {}
+        self.descending_cache = {}
+
+    @cached_property
+    def _hash_key(self) -> Hashable:
+        return (MultisetEvaluatorDungeon, self.preparer,
+                tuple(sorted(self.kwargs.items())))
+
+    @cached_property
+    def _hash(self) -> int:
+        return hash(self._hash_key)
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, MultisetEvaluatorDungeon):
+            return False
+        return self._hash_key == other._hash_key

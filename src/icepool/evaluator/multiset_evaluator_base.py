@@ -39,27 +39,6 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         In the future this will likely allow yielding multiple results.
         """
 
-    def final_outcome(self, final_state: Hashable,
-                      /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
-        """Optional method to generate a final output outcome from a final state.
-
-        By default, the final outcome is equal to the final state.
-        Note that `None` is not a valid outcome for a `Die`,
-        and if there are no outcomes, `final_outcome` will be immediately
-        be callled with `final_state=None`.
-        Subclasses that want to handle this case should explicitly define what
-        happens.
-
-        Args:
-            final_state: A state after all outcomes have been processed.
-
-        Returns:
-            A final outcome that will be used as part of constructing the result `Die`.
-            As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
-        """
-        # If not overriden, the final_state should have type U_co.
-        return cast(U_co, final_state)
-
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
         """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
 
@@ -113,7 +92,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         if not all(expression._is_resolvable() for expression in inputs):
             return icepool.Die([])
 
-        final_states: MutableMapping[Any, int] = defaultdict(int)
+        final_data: 'MutableMapping[icepool.Die[U_co], int]' = defaultdict(int)
         iterators = _initialize_inputs(inputs)
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
@@ -124,27 +103,13 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             outcomes = icepool.sorted_union(*(expression.outcomes()
                                               for expression in sub_inputs))
             extra_outcomes = icepool.Alignment(self.extra_outcomes(outcomes))
-            sub_final_states = dungeon.evaluate(
+            sub_result = dungeon.evaluate(
                 extra_outcomes,
                 sub_inputs,
             )
-            for sub_state, sub_weight in sub_final_states.items():
-                final_states[sub_state] += sub_weight * prod_weight
+            final_data[sub_result] += prod_weight
 
-        final_outcomes = []
-        final_weights = []
-        for state, weight in final_states.items():
-            outcome = self.final_outcome(state)
-            if outcome is None:
-                raise TypeError(
-                    "None is not a valid final outcome.\n"
-                    "This may have been a result of not supplying any input with an outcome."
-                )
-            if outcome is not icepool.Reroll:
-                final_outcomes.append(outcome)
-                final_weights.append(weight)
-
-        return icepool.Die(final_outcomes, final_weights)
+        return icepool.Die(final_data)
 
     __call__ = evaluate
 
@@ -152,53 +117,56 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 class MultisetDungeon(Generic[T, U_co], Hashable):
     """Holds values that are constant within a single evaluation, along with a cache."""
 
+    kwargs: 'Mapping[str, Hashable]'
     ascending_cache: 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
     """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_ascending_function."""
     descending_cache: 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
     """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
 
-    def __init__(self,
-                 next_state_ascending_function: Callable[..., Hashable] | None,
-                 next_state_descending_function: Callable[..., Hashable]
-                 | None, kwargs: Mapping[str, Hashable]):
-        """Constructor.
+    @abstractmethod
+    def next_state_ascending(self, state: Hashable, outcome: T, /,
+                             *counts) -> Hashable:
+        """The next_state function to use when going in ascending order.
         
-        Args:
-            next_state: The `next_state()` function to use.
-            final_outcome: The `final_outcome()` function to use.
-            kwargs: These will be sent to `next_state()` and `final_outcome()`.
+        This method may be set to None in subclasses.
         """
-        self.next_state_ascending_function = next_state_ascending_function
-        self.next_state_descending_function = next_state_descending_function
-        self.kwargs = kwargs
-        self.ascending_cache = {}
-        self.descending_cache = {}
 
-    @cached_property
-    def _hash_key(self):
-        return (self.next_state_ascending_function,
-                self.next_state_descending_function,
-                tuple(sorted(self.kwargs.items())))
+    @abstractmethod
+    def next_state_descending(self, state: Hashable, outcome: T, /,
+                              *counts) -> Hashable:
+        """The next_state function to use when going in descending order.
+        
+        This method may be set to None in subclasses.
+        """
 
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._hash_key)
+    def final_outcome(self, final_state: Hashable,
+                      /) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+        """Optional method to generate a final output outcome from a final state.
 
-    def __hash__(self) -> int:
-        return self._hash
+        By default, the final outcome is equal to the final state.
+        Note that `None` is not a valid outcome for a `Die`,
+        and if there are no outcomes, `final_outcome` will be immediately
+        be callled with `final_state=None`.
+        Subclasses that want to handle this case should explicitly define what
+        happens.
 
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, MultisetDungeon):
-            return False
-        return self._hash_key == other._hash_key
+        Args:
+            final_state: A state after all outcomes have been processed.
+
+        Returns:
+            A final outcome that will be used as part of constructing the result `Die`.
+            As usual for `Die()`, this could itself be a `Die` or `icepool.Reroll`.
+        """
+        # If not overriden, the final_state should have type U_co.
+        return cast(U_co, final_state)
 
     def evaluation_order(self) -> Order:
         """Which evaluation orders are supported."""
-        if self.next_state_ascending_function is not None and self.next_state_descending_function is not None:
+        if self.next_state_ascending is not None and self.next_state_descending is not None:
             return Order.Any
-        elif self.next_state_ascending_function is not None:
+        elif self.next_state_ascending is not None:
             return Order.Ascending
-        elif self.next_state_descending_function is not None:
+        elif self.next_state_descending is not None:
             return Order.Descending
         else:
             raise ConflictingOrderError('No evaluation order is supported.')
@@ -260,12 +228,10 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         """
         if eval_order > 0:
             cache = self.ascending_cache
-            next_state_function = cast(Callable,
-                                       self.next_state_ascending_function)
+            next_state_function = cast(Callable, self.next_state_ascending)
         else:
             cache = self.descending_cache
-            next_state_function = cast(Callable,
-                                       self.next_state_descending_function)
+            next_state_function = cast(Callable, self.next_state_descending)
 
         cache_key = (extra_outcomes, inputs, None)
         if cache_key in cache:
@@ -314,12 +280,10 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         """
         if eval_order > 0:
             cache = self.ascending_cache
-            next_state_function = cast(Callable,
-                                       self.next_state_ascending_function)
+            next_state_function = cast(Callable, self.next_state_ascending)
         else:
             cache = self.descending_cache
-            next_state_function = cast(Callable,
-                                       self.next_state_descending_function)
+            next_state_function = cast(Callable, self.next_state_descending)
 
         cache_key = (extra_outcomes, inputs, initial_state)
         if cache_key in cache:
@@ -351,13 +315,30 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     def evaluate(
         self, extra_outcomes: 'Alignment[T]',
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
-    ) -> Mapping[Any, int]:
+    ) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
         input_order, eval_order = self._select_order(inputs)
         if input_order == eval_order:
-            return self.evaluate_forward(eval_order, extra_outcomes, inputs)
+            final_states = self.evaluate_forward(eval_order, extra_outcomes,
+                                                 inputs)
         else:
-            return self.evaluate_backward(eval_order, extra_outcomes, inputs)
+            final_states = self.evaluate_backward(eval_order, extra_outcomes,
+                                                  inputs)
+
+        final_outcomes = []
+        final_weights = []
+        for state, weight in final_states.items():
+            outcome = self.final_outcome(state)
+            if outcome is None:
+                raise TypeError(
+                    "None is not a valid final outcome.\n"
+                    "This may have been a result of not supplying any input with an outcome."
+                )
+            if outcome is not icepool.Reroll:
+                final_outcomes.append(outcome)
+                final_weights.append(weight)
+
+        return icepool.Die(final_outcomes, final_weights)
 
     @staticmethod
     def _pop_inputs(
