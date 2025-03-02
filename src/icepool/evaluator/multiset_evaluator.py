@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.evaluator.base import MultisetEvaluatorBase, MultisetDungeon
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon
 from icepool.order import Order
 
 from icepool.typing import T, U_co
@@ -90,72 +90,40 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
-    def _has_override(self, method_name: str) -> bool:
-        """Returns True iff the method name is overridden from MultisetEvaluator."""
+    def _get_next_state_method(
+            self, method_name: str) -> Callable[..., Hashable] | None:
+        """Returns the next_state method by name, or `None` if not implemented."""
         try:
             method = getattr(self, method_name)
+            if method is None:
+                return None
             method_func = getattr(method, '__func__', method)
         except AttributeError:
-            return False
-        return method_func is not getattr(MultisetEvaluator, method_name)
+            return None
+        if method_func is getattr(MultisetEvaluator, method_name):
+            return None
+        return method
 
-    def next_state_method(self, order: Order, /) -> Callable[..., Hashable]:
-        """Returns the bound next_state* method for the given order.
+    def next_state_method(self, order: Order,
+                          /) -> Callable[..., Hashable] | None:
+        """Returns the bound next_state* method for the given order, or `None` if that order is not supported.
         
         `next_state_ascending` and `next_state_descending` are prioritized over
         `next_state`.
-
-        Raises:
-            NotImplementedError if no such method is implemented.
         """
-        if order == Order.Descending:
-            if self._has_override('next_state_descending'):
-                return self.next_state_descending
+        if order > 0:
+            return self._get_next_state_method(
+                'next_state_ascending') or self._get_next_state_method(
+                    'next_state')
+        elif order < 0:
+            return self._get_next_state_method(
+                'next_state_descending') or self._get_next_state_method(
+                    'next_state')
         else:
-            if self._has_override('next_state_ascending'):
-                return self.next_state_ascending
-        if self._has_override('next_state'):
-            return self.next_state
-        raise NotImplementedError(
-            f'Could not find next_state* implementation for order {order}.')
-
-    def order(self) -> Order:
-        """Optional method that specifies what outcome orderings this evaluator supports.
-
-        By default, this is determined by which of `next_state()`, 
-        `next_state_ascending()`, and `next_state_descending()` are
-        overridden.
-
-        This is most often overridden by subclasses whose iteration order is
-        determined on a per-instance basis.
-
-        Returns:
-            * Order.Ascending (= 1)
-                if outcomes are to be seen in ascending order.
-                In this case either `next_state()` or `next_state_ascending()`
-                are implemented.
-            * Order.Descending (= -1)
-                if outcomes are to be seen in descending order.
-                In this case either `next_state()` or `next_state_descending()`
-                are implemented.
-            * Order.Any (= 0)
-                if outcomes can be seen in any order.
-                In this case either `next_state()` or both
-                `next_state_ascending()` and `next_state_descending()`
-                are implemented.
-        """
-        overrides_ascending = self._has_override('next_state_ascending')
-        overrides_descending = self._has_override('next_state_descending')
-        overrides_any = self._has_override('next_state')
-        if overrides_any or (overrides_ascending and overrides_descending):
-            return Order.Any
-        if overrides_ascending:
-            return Order.Ascending
-        if overrides_descending:
-            return Order.Descending
-        raise NotImplementedError(
-            'Subclasses of MultisetEvaluator must implement at least one of next_state, next_state_ascending, next_state_descending.'
-        )
+            return self._get_next_state_method(
+                'next_state_ascending') or self._get_next_state_method(
+                    'next_state_descending') or self._get_next_state_method(
+                        'next_state')
 
     def consecutive(self, outcomes: Sequence[int]) -> Collection[int]:
         """Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.
@@ -179,6 +147,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    def prepare(self, order: Order,
-                kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
-        return MultisetDungeon(self.next_state_method(order), order, kwargs)
+    def prepare(self, kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
+        return MultisetDungeon(self.next_state_method(Order.Ascending),
+                               self.next_state_method(Order.Descending),
+                               kwargs)
