@@ -36,19 +36,23 @@ def test_order(eval_pool, pool):
 # The auto order should maximize skips if there are no other considerations.
 # Note that this is the *opposite* of the preferred pop order.
 def test_auto_order_uniform():
-    algorithm, order = icepool.evaluator.sum_evaluator._select_algorithm(
+    input_order, eval_order = icepool.evaluator.sum_evaluator._select_order(
         icepool.d6.pool([0, 0, 1, 1]))
-    assert order > 0
-    algorithm, order = icepool.evaluator.sum_evaluator._select_algorithm(
+    assert input_order < 0
+    assert eval_order > 0
+    input_order, eval_order = icepool.evaluator.sum_evaluator._select_order(
         icepool.d6.pool([1, 1, 0, 0]))
-    assert order < 0
+    assert input_order > 0
+    assert eval_order < 0
 
 
 # Above that, the auto order should favor the wide-to-narrow ordering.
 def test_auto_order_max_truncate_min():
-    algorithm, order = icepool.evaluator.sum_evaluator._select_algorithm(
+    input_order, eval_order = icepool.evaluator.sum_evaluator._select_order(
         Pool([d8, d6, d6, d6])[1, 1, 1, 0])
-    assert order > 0
-    algorithm, order = icepool.evaluator.sum_evaluator._select_algorithm(
+    assert input_order < 0
+    assert eval_order > 0
+    input_order, eval_order = icepool.evaluator.sum_evaluator._select_order(
         Pool([d8, d6, d6, d6])[0, 1, 1, 1])
-    assert order > 0
+    assert input_order < 0
+    assert eval_order > 0

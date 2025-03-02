@@ -83,7 +83,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         """
         return ()
 
-    def __call__(self, *args:
+    def evaluate(self, *args:
                  'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
                  **kwargs: Hashable) -> 'icepool.Die[U_co]':
         # Convert arguments to expressions.
@@ -114,11 +114,11 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             prod_weight = math.prod(sub_weights)
             outcomes = icepool.sorted_union(*(expression.outcomes()
                                               for expression in sub_inputs))
-            extra_outcomes = Alignment(self.extra_outcomes(outcomes))
+            extra_outcomes = icepool.Alignment(self.extra_outcomes(outcomes))
             sub_final_states = dungeon.evaluate(
                 input_order,
                 extra_outcomes,
-                *sub_inputs,
+                sub_inputs,
             )
             for sub_state, sub_weight in sub_final_states.items():
                 final_states[sub_state] += sub_weight * prod_weight
@@ -137,6 +137,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
                 final_weights.append(weight)
 
         return icepool.Die(final_outcomes, final_weights)
+
+    __call__ = evaluate
 
     def _select_order(
             self, *inputs:

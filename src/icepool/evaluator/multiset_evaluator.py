@@ -157,6 +157,28 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             'Subclasses of MultisetEvaluator must implement at least one of next_state, next_state_ascending, next_state_descending.'
         )
 
+    def consecutive(self, outcomes: Sequence[int]) -> Collection[int]:
+        """Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.
+
+        Set `extra_outcomes = icepool.MultisetEvaluator.consecutive` to use this.
+
+        Returns:
+            All `int`s from the min outcome to the max outcome among the inputs,
+            inclusive.
+
+        Raises:
+            TypeError: if any input has any non-`int` outcome.
+        """
+        if not outcomes:
+            return ()
+
+        if any(not isinstance(x, int) for x in outcomes):
+            raise TypeError(
+                "consecutive cannot be used with outcomes of type other than 'int'."
+            )
+
+        return range(outcomes[0], outcomes[-1] + 1)
+
     def prepare(self, order: Order,
                 kwargs: Mapping[str, Hashable]) -> 'MultisetDungeon':
         return MultisetDungeon(self.next_state_method(order), order, kwargs)
