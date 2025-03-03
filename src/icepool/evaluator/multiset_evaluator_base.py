@@ -104,7 +104,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     descending_cache: 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
     """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
 
-    kwargs: 'Mapping[str, Hashable]'
+    direct_kwargs: 'Mapping[str, Hashable]' = {}
     """These will be sent to next_state_ascending, next_state_descending, and final_outcome.
     
     This allows to (sometimes) avoid wrapping these in another function just to

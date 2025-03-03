@@ -70,26 +70,7 @@ def multiset_function(wrapped: Callable[..., MultisetEvaluatorBase[T, U_co]
         return (a - b).expand(), (b - a).expand()
     ```
 
-    Any globals inside `function` are currently effectively bound at the time
-    `multiset_function` is invoked. Note that this is different than how
-    ordinary Python closures behave. For example,
-
-    ```python
-    target = [1, 2, 3]
-
-    @multiset_function
-    def count_intersection(a):
-        return (a & target).count()
-
-    print(count_intersection(d6.pool(3)))
-
-    target = [1]
-    print(count_intersection(d6.pool(3)))
-    ```
-
-    would produce the same thing both times. This behavior may change in the 
-    future; I recommend to use only pure functions with `@mulitset_function`
-    (i.e. not producing any side effects, nor being affected by them).
+    I recommend to only use pure functions with `@multiset_function`.
 
     Be careful when using control structures: you cannot branch on the value of
     a multiset expression or evaluation, so e.g.
@@ -131,6 +112,8 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
             ]:
                 self._positional_names.append(parameter.name)
 
+            # TODO: anything needed for kwargs here?
+
         update_wrapper(self, wrapped)
 
     def prepare(
@@ -165,19 +148,34 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
         self.inner_inputs = tuple(
             input._unbind(non_parameters) for input in inner_inputs)
         self.inner_dungeon = evaluator.prepare(self.inner_inputs, inner_kwargs)
-        self.next_state_ascending = self.inner_dungeon.next_state_ascending  # type: ignore
-        self.next_state_descending = self.inner_dungeon.next_state_descending  # type: ignore
         self.extra_outcomes = self.inner_dungeon.extra_outcomes  # type: ignore
         self.final_outcome = self.inner_dungeon.final_outcome  # type: ignore
-        self.kwargs = inner_kwargs
+        self.inner_kwargs = inner_kwargs
         self.ascending_cache = {}
         self.descending_cache = {}
+
+        # TODO: variable management
+
+        if self.inner_dungeon.next_state_ascending is not None:
+
+            def next_state_ascending(state, outcome, *counts) -> Hashable:
+                return self.inner_dungeon.next_state_ascending(
+                    state, outcome, *counts, **self.inner_kwargs)
+
+            self.next_state_ascending = next_state_ascending
+        if self.inner_dungeon.next_state_descending is not None:
+
+            def next_state_descending(state, outcome, *counts) -> Hashable:
+                return self.inner_dungeon.next_state_descending(
+                    state, outcome, *counts, **self.inner_kwargs)
+
+            self.next_state_descending = next_state_descending
 
     @cached_property
     def _hash_key(self) -> Hashable:
         # TODO: is this enough?
         return (MultisetFunctionDungeon, self.inner_dungeon, self.inner_inputs,
-                tuple(sorted(self.kwargs.items())))
+                tuple(sorted(self.inner_kwargs.items())))
 
     @cached_property
     def _hash(self) -> int:
@@ -199,7 +197,7 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
         'tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]], ...]'
     ):
         # In this joint case we forward directly.
-        self.kwargs = {}
+        self.direct_kwargs = {}
         self.all_inner_kwargs = ()  # TODO
         raise NotImplementedError()
 
