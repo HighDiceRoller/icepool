@@ -33,7 +33,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'MultisetDungeon':
+    ) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
         """Prepares an evaluation.
         
         In the future this will likely allow yielding multiple results.
@@ -80,15 +80,15 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         iterators = _initialize_inputs(inputs)
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
-            # TODO: inputs = self.body_inputs() + sub_inputs
-            dungeon = self.prepare(sub_inputs, kwargs)
+            dungeon, body_inputs = self.prepare(sub_inputs, kwargs)
             # TODO: get cached dungeon
             prod_weight = math.prod(sub_weights)
             outcomes = icepool.sorted_union(*(expression.outcomes()
                                               for expression in sub_inputs))
             extra_outcomes = icepool.Alignment(
                 dungeon.extra_outcomes(outcomes))
-            sub_result = dungeon.evaluate(extra_outcomes, sub_inputs, kwargs)
+            sub_result = dungeon.evaluate(extra_outcomes,
+                                          body_inputs + sub_inputs, kwargs)
             final_data[sub_result] += prod_weight
 
         return icepool.Die(final_data)
@@ -110,6 +110,9 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     This allows to (sometimes) avoid wrapping these in another function just to
     feed them kwargs.
     """
+
+    body_input_count: int
+    """The number of body inputs for a @multiset_function. 0 if not a @multiset_function."""
 
     @abstractmethod
     def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,

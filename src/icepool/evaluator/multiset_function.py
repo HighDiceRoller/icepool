@@ -120,7 +120,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'MultisetDungeon':
+    ):
         multiset_variables = [
             expression._variable_type(True, i, self._positional_names[i])
             for i, expression in enumerate(inputs)
@@ -128,48 +128,111 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         wrapped_result = self._wrapped(*multiset_variables, **kwargs)
         # TODO: cache? or is the cache done outside?
         if isinstance(wrapped_result, tuple):
-            return MultisetFunctionDungeon(wrapped_result)
+            return prepare_multiset_function(wrapped_result)
         else:
-            return MultisetFunctionJointDungeon(wrapped_result)
+            return prepare_multiset_joint_function(wrapped_result)
+
+
+def prepare_multiset_function(
+    wrapped_result:
+    'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]'
+) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
+    evaluator, inner_inputs, inner_kwargs = wrapped_result
+    body_inputs: 'list[MultisetExpressionBase]' = []
+    inner_inputs = tuple(input._detach(body_inputs) for input in inner_inputs)
+    inner_dungeon, nested_body_inputs = evaluator.prepare(
+        inner_inputs, inner_kwargs)
+    all_body_inputs = nested_body_inputs + tuple(body_inputs)
+    return MultisetFunctionDungeon(len(body_inputs), inner_inputs,
+                                   inner_dungeon,
+                                   inner_kwargs), tuple(all_body_inputs)
+
+
+def prepare_multiset_joint_function(
+    wrapped_result:
+    'tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]], ...]'
+) -> 'MultisetDungeon':
+    raise NotImplementedError()
 
 
 class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
-    next_state_ascending = None  # type: ignore
-    next_state_descending = None  # type: ignore
-    extra_outcomes = None  # type: ignore
-    final_outcome = None  # type: ignore
 
-    def __init__(
-        self, wrapped_result:
-        'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]'
-    ):
-        evaluator, inner_inputs, inner_kwargs = wrapped_result
-        non_parameters: 'list[MultisetExpressionBase]' = []
-        self.inner_inputs = tuple(
-            input._detach(non_parameters) for input in inner_inputs)
-        self.inner_dungeon = evaluator.prepare(self.inner_inputs, inner_kwargs)
-        self.extra_outcomes = self.inner_dungeon.extra_outcomes  # type: ignore
-        self.final_outcome = self.inner_dungeon.final_outcome  # type: ignore
+    def __init__(self, body_input_count: int,
+                 inner_inputs: tuple[MultisetExpressionBase[T, Any], ...],
+                 inner_dungeon: MultisetDungeon[T, U_co],
+                 inner_kwargs: Mapping[str, Hashable]):
+        self.body_input_count = body_input_count
+        self.inner_inputs = inner_inputs
+        self.inner_dungeon = inner_dungeon
         self.inner_kwargs = inner_kwargs
         self.ascending_cache = {}
         self.descending_cache = {}
 
-        # TODO: variable management
+        if self.inner_dungeon.next_state_ascending is None:
+            self.next_state_ascending = None
+        if self.inner_dungeon.next_state_descending is None:
+            self.next_state_descending = None
 
-        if self.inner_dungeon.next_state_ascending is not None:
+    def next_state_ascending(self, state, outcome, /, *counts,
+                             **kwargs) -> Hashable:
+        if state is None:
+            inner_inputs = self.inner_inputs
+            inner_state = None
+        else:
+            inner_inputs, inner_state = state
+        nested_slice, body_slice, param_slice = self._count_slices
+        nested_counts = counts[nested_slice]
+        body_counts = counts[body_slice]
+        param_counts = counts[param_slice]
 
-            def next_state_ascending(state, outcome, *counts) -> Hashable:
-                return self.inner_dungeon.next_state_ascending(
-                    state, outcome, *counts, **self.inner_kwargs)
+        inner_inputs, inner_counts = zip(
+            *(inner_input._apply_variables(outcome, body_counts, param_counts)
+              for inner_input in inner_inputs))
+        inner_state = self.inner_dungeon.next_state_ascending(
+            inner_state, outcome, *nested_counts, *inner_counts,
+            **self.inner_kwargs)
 
-            self.next_state_ascending = next_state_ascending
-        if self.inner_dungeon.next_state_descending is not None:
+        return inner_inputs, inner_state
 
-            def next_state_descending(state, outcome, *counts) -> Hashable:
-                return self.inner_dungeon.next_state_descending(
-                    state, outcome, *counts, **self.inner_kwargs)
+    def next_state_descending(self, state, outcome, /, *counts,
+                              **kwargs) -> Hashable:
+        if state is None:
+            inner_inputs = self.inner_inputs
+            inner_state = None
+        else:
+            inner_inputs, inner_state = state
+        nested_slice, body_slice, param_slice = self._count_slices
+        nested_counts = counts[nested_slice]
+        body_counts = counts[body_slice]
+        param_counts = counts[param_slice]
 
-            self.next_state_descending = next_state_descending
+        inner_inputs, inner_counts = zip(
+            *(inner_input._apply_variables(outcome, body_counts, param_counts)
+              for inner_input in inner_inputs))
+        inner_state = self.inner_dungeon.next_state_descending(
+            inner_state, outcome, *nested_counts, *inner_counts,
+            **self.inner_kwargs)
+
+        return inner_inputs, inner_state
+
+    def extra_outcomes(self, outcomes):
+        return self.inner_dungeon.extra_outcomes(outcomes)
+
+    def final_outcome(self, final_state, **kwargs):
+        if final_state is None:
+            return self.inner_dungeon.final_outcome(None, **self.inner_kwargs)
+        else:
+            _, inner_state = final_state
+        return self.inner_dungeon.final_outcome(inner_state,
+                                                **self.inner_kwargs)
+
+    @cached_property
+    def _count_slices(self) -> 'tuple[slice, slice, slice]':
+        nested_slice = slice(None, self.inner_dungeon.body_input_count)
+        body_slice = slice(nested_slice.stop,
+                           nested_slice.stop + self.body_input_count)
+        param_slice = slice(body_slice.stop, None)
+        return nested_slice, body_slice, param_slice
 
     @cached_property
     def _hash_key(self) -> Hashable:

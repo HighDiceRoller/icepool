@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.base import MultisetExpressionBase, MultisetVariableBase
 from icepool.order import Order, OrderReason
 from icepool.expression.multiset_expression import MultisetExpression
 
@@ -10,24 +10,10 @@ import enum
 from typing import Any, Hashable, Sequence
 
 
-class MultisetVariable(MultisetExpression):
+class MultisetVariable(MultisetExpression, MultisetVariableBase):
     """A variable to be filled in with a concrete sub-expression."""
 
     _children = ()
-
-    def __init__(self,
-                 is_parameter: bool,
-                 index: int,
-                 name: str | None = None):
-        self._is_parameter = is_parameter
-        self._index = index
-        if name is None:
-            if is_parameter:
-                self._name = f'mvf[{index}]'
-            else:
-                self._name = f'mvb[{index}]'
-        else:
-            self._name = name
 
     def outcomes(self) -> Sequence:
         raise icepool.MultisetVariableError()
@@ -55,8 +41,7 @@ class MultisetVariable(MultisetExpression):
             return self
         else:
             raise icepool.MultisetVariableError(
-                'Attempted to detatch an expression that was already detatched.'
-            )
+                'Attempted to detach an expression that was already detached.')
 
     def _apply_variables(self, outcome, body_counts: tuple[int, ...],
                          param_counts: tuple[int, ...]):

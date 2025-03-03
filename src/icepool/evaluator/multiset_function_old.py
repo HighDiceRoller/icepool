@@ -147,7 +147,7 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         self._evaluator = evaluator
         body_inputs: 'list[icepool.MultisetExpressionBase]' = []
         self._expressions = tuple(
-            input._detatch(body_inputs) for input in inputs)
+            input._detach(body_inputs) for input in inputs)
         self._body_inputs = tuple(body_inputs)
 
     def next_state_ascending(self, state, outcome, *counts):

@@ -68,7 +68,7 @@ class Alignment(MultisetExpressionBase[T, None]):
         self,
         body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetExpressionBase':
-        raise RuntimeError('Alignment should not have _detatch called.')
+        raise RuntimeError('Alignment should not have _detach called.')
 
     def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
                          param_counts: tuple[int, ...]):

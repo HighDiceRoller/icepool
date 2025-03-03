@@ -87,9 +87,9 @@ class MultisetOperator(MultisetExpression[T]):
 
     def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
         if self.has_parameters():
-            detatched_children = tuple(
+            detached_children = tuple(
                 child._detach(body_inputs) for child in self._children)
-            return self._copy(detatched_children)
+            return self._copy(detached_children)
         else:
             result = icepool.MultisetVariable(False, len(body_inputs))
             body_inputs.append(self)

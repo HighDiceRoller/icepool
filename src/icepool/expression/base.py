@@ -13,15 +13,32 @@ import random
 
 from icepool.typing import Q, T, U, Expandable, ImplicitConversionError, T
 from types import EllipsisType
-from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
-                    Literal, Mapping, Sequence, Type, TypeAlias, TypeVar, cast,
-                    overload)
+from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
+                    Hashable, Iterator, Literal, Mapping, Sequence, Type,
+                    TypeAlias, TypeVar, cast, overload)
 
 from abc import ABC, abstractmethod
 
 
 class MultisetVariableError(TypeError):
     """Indicates a multiset variable was misused."""
+
+
+class MultisetVariableBase(ABC, Hashable):
+
+    def __init__(self,
+                 is_parameter: bool,
+                 index: int,
+                 name: str | None = None):
+        self._is_parameter = is_parameter
+        self._index = index
+        if name is None:
+            if is_parameter:
+                self._name = f'mvf[{index}]'
+            else:
+                self._name = f'mvb[{index}]'
+        else:
+            self._name = name
 
 
 C = TypeVar('C', bound='MultisetExpressionBase')
@@ -34,7 +51,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
 
     @property
     @abstractmethod
-    def _variable_type(self) -> type:
+    def _variable_type(self) -> 'Type[MultisetVariableBase]':
         """Returns the corresponding multiset variable type."""
         ...
 

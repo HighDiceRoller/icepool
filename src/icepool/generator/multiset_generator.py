@@ -65,4 +65,4 @@ class MultisetGenerator(MultisetExpression[T]):
     def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
                          param_counts: tuple[int, ...]):
         raise icepool.MultisetVariableError(
-            '_detatch should have been called before _apply_variables.')
+            '_detach should have been called before _apply_variables.')

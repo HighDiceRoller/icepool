@@ -198,14 +198,16 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'MultisetDungeon':
+    ):
         return MultisetEvaluatorDungeon(
             self, self.next_state_method(Order.Ascending),
             self.next_state_method(Order.Descending), self.extra_outcomes,
-            self.final_outcome, kwargs)
+            self.final_outcome, kwargs), ()
 
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
+
+    body_input_count = 0
 
     # These are filled in by the constructor.
     next_state_ascending = None  # type: ignore
