@@ -15,11 +15,14 @@ class MultisetVariable(MultisetExpression):
 
     _children = ()
 
-    def __init__(self, is_free: bool, index: int, name: str | None = None):
-        self._is_free = is_free
+    def __init__(self,
+                 is_parameter: bool,
+                 index: int,
+                 name: str | None = None):
+        self._is_parameter = is_parameter
         self._index = index
         if name is None:
-            if is_free:
+            if is_parameter:
                 self._name = f'mvf[{index}]'
             else:
                 self._name = f'mvb[{index}]'
@@ -45,10 +48,10 @@ class MultisetVariable(MultisetExpression):
         return Order.Any, OrderReason.NoPreference
 
     def has_parameters(self) -> bool:
-        return self._is_free
+        return self._is_parameter
 
     def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
-        if self._is_free:
+        if self._is_parameter:
             return self
         else:
             raise icepool.MultisetVariableError(
@@ -57,7 +60,7 @@ class MultisetVariable(MultisetExpression):
 
     def _apply_variables(self, outcome, body_counts: tuple[int, ...],
                          param_counts: tuple[int, ...]):
-        if self._is_free:
+        if self._is_parameter:
             return self, param_counts[self._index]
         else:
             return self, body_counts[self._index]
@@ -65,7 +68,7 @@ class MultisetVariable(MultisetExpression):
     @property
     def _local_hash_key(self) -> Hashable:
         # name is ignored.
-        return (MultisetVariable, self._is_free, self._index)
+        return (MultisetVariable, self._is_parameter, self._index)
 
     def __str__(self) -> str:
         return self._name

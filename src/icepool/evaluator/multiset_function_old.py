@@ -132,7 +132,7 @@ def multiset_function(function: Callable[..., NestedTupleOrEvaluator[T, U_co]],
                 'Callable must take only a fixed number of positional arguments.'
             )
         multiset_variables.append(
-            MV(is_free=True, index=index, name=parameter.name))
+            MV(is_parameter=True, index=index, name=parameter.name))
     tuple_or_evaluator = function(*multiset_variables)
     evaluator = replace_tuples_with_joint_evaluator(tuple_or_evaluator)
     # This is not actually a function.
