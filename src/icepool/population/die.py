@@ -955,14 +955,13 @@ class Die(Population[T_co]):
         return self.pool(rolls).middle(keep, tie=tie).sum()  # type: ignore
 
     def map_to_pool(
-        self,
-        repl:
+            self,
+            repl:
         'Callable[..., Sequence[icepool.Die[U] | U] | Mapping[icepool.Die[U], int] | Mapping[U, int] | icepool.RerollType] | None' = None,
-        /,
-        *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-        star: bool | None = None,
-        denominator: int | None = None
-    ) -> 'icepool.MultisetGenerator[U, tuple[int]]':
+            /,
+            *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+            star: bool | None = None,
+            denominator: int | None = None) -> 'icepool.MultisetExpression[U]':
         """EXPERIMENTAL: Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
 
         As `icepool.map_to_pool(repl, self, ...)`.
@@ -1002,14 +1001,14 @@ class Die(Population[T_co]):
             repl = lambda x: x
         return icepool.map_to_pool(repl, self, *extra_args, star=star)
 
-    def explode_to_pool(
-            self,
-            rolls: int,
-            which: Collection[T_co] | Callable[..., bool] | None = None,
-            /,
-            *,
-            star: bool | None = None,
-            depth: int = 9) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
+    def explode_to_pool(self,
+                        rolls: int,
+                        which: Collection[T_co] | Callable[..., bool]
+                        | None = None,
+                        /,
+                        *,
+                        star: bool | None = None,
+                        depth: int = 9) -> 'icepool.MultisetExpression[T_co]':
         """EXPERIMENTAL: Causes outcomes to be rolled again, keeping that outcome as an individual die in a pool.
         
         Args:
@@ -1067,7 +1066,7 @@ class Die(Population[T_co]):
         *,
         star: bool | None = None,
         mode: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
-    ) -> 'icepool.MultisetGenerator[T_co, tuple[int]]':
+    ) -> 'icepool.MultisetExpression[T_co]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
         Each die can only be rerolled once (effectively `depth=1`), and no more

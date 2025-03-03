@@ -54,10 +54,7 @@ class MultisetGenerator(MultisetExpression[T]):
     def _body_inputs(self) -> 'tuple[icepool.MultisetGenerator, ...]':
         return (self, )
 
-    def _detach(
-        self,
-        body_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase':
+    def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
         result = icepool.MultisetVariable(False, len(body_inputs))
         body_inputs.append(self)
         return result

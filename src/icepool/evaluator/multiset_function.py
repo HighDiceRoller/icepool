@@ -94,6 +94,7 @@ def multiset_function(wrapped: Callable[
 
 
 class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
+    """A result of running an evaluator with `@multiset_function` parameters."""
     evaluator: MultisetEvaluatorBase[T, U_co]
     inner_inputs: tuple[MultisetExpressionBase[T, Any], ...]
     inner_kwargs: Mapping[str, Hashable]
