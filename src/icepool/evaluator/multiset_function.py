@@ -157,11 +157,11 @@ def prepare_multiset_joint_function(
 
 class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
-    def __init__(self, body_input_len: int,
+    def __init__(self, body_inputs_len: int,
                  inner_inputs: tuple[MultisetExpressionBase[T, Any], ...],
                  inner_dungeon: MultisetDungeon[T, U_co],
                  inner_kwargs: Mapping[str, Hashable]):
-        self.body_input_len = body_input_len
+        self.body_inputs_len = body_inputs_len
         self.inner_inputs = inner_inputs
         self.inner_dungeon = inner_dungeon
         self.inner_kwargs = inner_kwargs
@@ -228,15 +228,15 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
     @cached_property
     def _count_slices(self) -> 'tuple[slice, slice, slice]':
-        nested_slice = slice(None, self.inner_dungeon.body_input_len)
+        nested_slice = slice(None, self.inner_dungeon.body_inputs_len)
         body_slice = slice(nested_slice.stop,
-                           nested_slice.stop + self.body_input_len)
+                           nested_slice.stop + self.body_inputs_len)
         param_slice = slice(body_slice.stop, None)
         return nested_slice, body_slice, param_slice
 
     @cached_property
     def _hash_key(self) -> Hashable:
-        return (MultisetFunctionDungeon, self.body_input_len,
+        return (MultisetFunctionDungeon, self.body_inputs_len,
                 self.inner_inputs, self.inner_dungeon,
                 tuple(sorted(self.inner_kwargs.items())))
 

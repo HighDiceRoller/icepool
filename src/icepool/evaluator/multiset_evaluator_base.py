@@ -111,7 +111,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     feed them kwargs.
     """
 
-    body_input_len: int
+    body_inputs_len: int
     """The number of body inputs for a @multiset_function. 0 if not a @multiset_function."""
 
     @abstractmethod

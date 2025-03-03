@@ -207,7 +207,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
 
-    body_input_len = 0
+    body_inputs_len = 0
 
     # These are filled in by the constructor.
     next_state_ascending = None  # type: ignore
