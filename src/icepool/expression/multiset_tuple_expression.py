@@ -98,11 +98,11 @@ class MultisetTupleSubscript(MultisetExpression[T]):
             yield MultisetTupleSubscript(
                 child, index=self._index), counts[self._index], weight
 
-    def has_free_variables(self) -> bool:
-        return self._children[0].has_free_variables()
+    def has_parameters(self) -> bool:
+        return self._children[0].has_parameters()
 
     def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
-        if self.has_free_variables():
+        if self.has_parameters():
             child = self._children[0]._detach(body_inputs)
             return MultisetTupleSubscript(child, index=self._index)
         else:

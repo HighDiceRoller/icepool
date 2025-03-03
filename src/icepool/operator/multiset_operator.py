@@ -45,7 +45,7 @@ class MultisetOperator(MultisetExpression[T]):
 
         Raises:
             MultisetVariableError if this is called on an expression
-            with free variables.
+            with parameters.
         """
 
     def outcomes(self) -> Sequence[T]:
@@ -82,11 +82,11 @@ class MultisetOperator(MultisetExpression[T]):
                                                     counts)
             yield next_self, count, math.prod(weights)
 
-    def has_free_variables(self) -> bool:
-        return any(child.has_free_variables() for child in self._children)
+    def has_parameters(self) -> bool:
+        return any(child.has_parameters() for child in self._children)
 
     def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
-        if self.has_free_variables():
+        if self.has_parameters():
             detatched_children = tuple(
                 child._detach(body_inputs) for child in self._children)
             return self._copy(detatched_children)

@@ -61,9 +61,8 @@ class MultisetMixture(MultisetExpression[T]):
         return merge_order_preferences(*(inner.local_order_preference()
                                          for inner in self._inner_expressions))
 
-    def has_free_variables(self):
-        return any(inner.has_free_variables()
-                   for inner in self._inner_expressions)
+    def has_parameters(self):
+        return any(inner.has_parameters() for inner in self._inner_expressions)
 
     def _detach(
         self,

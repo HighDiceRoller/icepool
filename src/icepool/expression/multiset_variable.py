@@ -44,7 +44,7 @@ class MultisetVariable(MultisetExpression):
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
-    def has_free_variables(self) -> bool:
+    def has_parameters(self) -> bool:
         return self._is_free
 
     def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):

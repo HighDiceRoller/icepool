@@ -45,7 +45,7 @@ class MultisetGenerator(MultisetExpression[T]):
 
     _children = ()
 
-    def has_free_variables(self) -> bool:
+    def has_parameters(self) -> bool:
         return False
 
     # Overridden to switch body generators with variables.

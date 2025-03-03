@@ -54,7 +54,7 @@ class Alignment(MultisetExpressionBase[T, None]):
         else:
             yield Alignment(self.outcomes()[:-1]), None, 1
 
-    def has_free_variables(self) -> bool:
+    def has_parameters(self) -> bool:
         return False
 
     def local_order_preference(self) -> tuple[Order, OrderReason]:

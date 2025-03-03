@@ -67,7 +67,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
             * weight = 1.
 
         Raises:
-            MultisetVariableError if this is called on an expression with free variables.
+            MultisetVariableError if this is called on an expression with parameters.
         """
 
     @abstractmethod
@@ -87,7 +87,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
             * weight = 1.
 
         Raises:
-            MultisetVariableError if this is called on an expression with free variables.
+            MultisetVariableError if this is called on an expression with parameters.
         """
 
     @abstractmethod
@@ -142,8 +142,8 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
         """Any ordering that is preferred or required by this expression node."""
 
     @abstractmethod
-    def has_free_variables(self) -> bool:
-        """Whether this expression contains any free variables, i.e. parameters to a @multiset_function."""
+    def has_parameters(self) -> bool:
+        """Whether this expression contains any parameters to a @multiset_function."""
 
     @property
     @abstractmethod
