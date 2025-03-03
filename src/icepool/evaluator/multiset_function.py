@@ -146,7 +146,7 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
         evaluator, inner_inputs, inner_kwargs = wrapped_result
         non_parameters: 'list[MultisetExpressionBase]' = []
         self.inner_inputs = tuple(
-            input._unbind(non_parameters) for input in inner_inputs)
+            input._detach(non_parameters) for input in inner_inputs)
         self.inner_dungeon = evaluator.prepare(self.inner_inputs, inner_kwargs)
         self.extra_outcomes = self.inner_dungeon.extra_outcomes  # type: ignore
         self.final_outcome = self.inner_dungeon.final_outcome  # type: ignore

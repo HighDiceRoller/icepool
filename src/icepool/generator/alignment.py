@@ -64,13 +64,13 @@ class Alignment(MultisetExpressionBase[T, None]):
     def _local_hash_key(self) -> Hashable:
         return Alignment, self._outcomes
 
-    def _unbind(
+    def _detach(
         self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
+        body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetExpressionBase':
-        raise RuntimeError('Alignment should not have _unbind called.')
+        raise RuntimeError('Alignment should not have _detatch called.')
 
-    def _apply_variables(self, outcome: T, bound_counts: tuple[int, ...],
-                         free_counts: tuple[int, ...]):
+    def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
+                         param_counts: tuple[int, ...]):
         raise RuntimeError(
             'Alignment should not have _apply_variables called.')

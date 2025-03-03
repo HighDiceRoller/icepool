@@ -145,10 +145,10 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
     def __init__(self, *inputs: 'icepool.MultisetExpressionBase[T, Any]',
                  evaluator: MultisetEvaluator[T, U_co]) -> None:
         self._evaluator = evaluator
-        bound_inputs: 'list[icepool.MultisetExpressionBase]' = []
+        body_inputs: 'list[icepool.MultisetExpressionBase]' = []
         self._expressions = tuple(
-            input._unbind(bound_inputs) for input in inputs)
-        self._bound_inputs = tuple(bound_inputs)
+            input._detatch(body_inputs) for input in inputs)
+        self._body_inputs = tuple(body_inputs)
 
     def next_state_ascending(self, state, outcome, *counts):
         if state is None:
@@ -157,13 +157,13 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         else:
             expressions, evaluator_state = state
 
-        evaluator_slice, bound_slice, free_slice = self._count_slices
+        evaluator_slice, body_slice, param_slice = self._count_slices
         evaluator_counts = counts[evaluator_slice]
-        bound_counts = counts[bound_slice]
-        free_counts = counts[free_slice]
+        body_counts = counts[body_slice]
+        param_counts = counts[param_slice]
 
         expressions, expression_counts = zip(
-            *(expression._apply_variables(outcome, bound_counts, free_counts)
+            *(expression._apply_variables(outcome, body_counts, param_counts)
               for expression in expressions))
         evaluator_state = self._next_state_method_ascending(
             evaluator_state, outcome, *evaluator_counts, *expression_counts)
@@ -176,13 +176,13 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
         else:
             expressions, evaluator_state = state
 
-        evaluator_slice, bound_slice, free_slice = self._count_slices
+        evaluator_slice, body_slice, param_slice = self._count_slices
         evaluator_counts = counts[evaluator_slice]
-        bound_counts = counts[bound_slice]
-        free_counts = counts[free_slice]
+        body_counts = counts[body_slice]
+        param_counts = counts[param_slice]
 
         expressions, expression_counts = zip(
-            *(expression._apply_variables(outcome, bound_counts, free_counts)
+            *(expression._apply_variables(outcome, body_counts, param_counts)
               for expression in expressions))
         evaluator_state = self._next_state_method_descending(
             evaluator_state, outcome, *evaluator_counts, *expression_counts)
@@ -215,16 +215,16 @@ class MultisetFunctionEvaluator(MultisetEvaluator[T, U_co]):
     def extra_outcomes(self, *generators) -> Collection[T]:
         return self._evaluator.extra_outcomes(*generators)
 
-    def bound_inputs(self) -> 'tuple[icepool.MultisetExpressionBase, ...]':
-        return self._evaluator.bound_inputs() + self._bound_inputs
+    def body_inputs(self) -> 'tuple[icepool.MultisetExpressionBase, ...]':
+        return self._evaluator.body_inputs() + self._body_inputs
 
     @cached_property
     def _count_slices(self) -> 'tuple[slice, slice, slice]':
-        evaluator_slice = slice(None, len(self._evaluator.bound_inputs()))
-        bound_slice = slice(evaluator_slice.stop,
-                            evaluator_slice.stop + len(self._bound_inputs))
-        free_slice = slice(bound_slice.stop, None)
-        return evaluator_slice, bound_slice, free_slice
+        evaluator_slice = slice(None, len(self._evaluator.body_inputs()))
+        body_slice = slice(evaluator_slice.stop,
+                           evaluator_slice.stop + len(self._body_inputs))
+        param_slice = slice(body_slice.stop, None)
+        return evaluator_slice, body_slice, param_slice
 
     def __str__(self) -> str:
         return f'<multiset_function {self.__name__}>'

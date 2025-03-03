@@ -59,7 +59,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
         Returns:
             A `Die` representing the distribution of the final outcome if no
-            arg contains a free variable. Otherwise returns information
+            arg contains a parameter. Otherwise returns information
             needed to construct a multiset function.
         """
 
@@ -80,7 +80,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         iterators = _initialize_inputs(inputs)
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
-            # TODO: inputs = self.bound_inputs() + sub_inputs
+            # TODO: inputs = self.body_inputs() + sub_inputs
             dungeon = self.prepare(sub_inputs, kwargs)
             # TODO: get cached dungeon
             prod_weight = math.prod(sub_weights)

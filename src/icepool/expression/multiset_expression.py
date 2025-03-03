@@ -151,17 +151,17 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         ...
 
     @abstractmethod
-    def _unbind(
+    def _detach(
         self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
+        body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetExpression[T]':
         ...
 
     @abstractmethod
     def _apply_variables(
-            self, outcome: T, bound_counts: tuple[int, ...],
-            free_counts: tuple[int,
-                               ...]) -> 'tuple[MultisetExpression[T], int]':
+            self, outcome: T, body_counts: tuple[int, ...],
+            param_counts: tuple[int,
+                                ...]) -> 'tuple[MultisetExpression[T], int]':
         ...
 
     @property
@@ -572,8 +572,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             `Ellipsis` treated as enough zeros (possibly "negative") to
             fill the rest of the elements.
         * An `int`, which evaluates by taking the element at the specified
-            index. In this case the result is a `Die` (if fully bound) or a
-            `MultisetEvaluator` (if there are free variables).
+            index. In this case the result is a `Die`.
 
         Negative incoming counts are treated as zero counts.
 

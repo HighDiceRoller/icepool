@@ -540,8 +540,7 @@ def map(
             * Single outcome.
             * `Die`. All outcomes will be sent to `func`.
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
-                to `func`, as `MultisetExpression.expand()`. The expression must
-                be fully bound.
+                to `func`, as `MultisetExpression.expand()`.
         star: If `True`, the first of the args will be unpacked before giving
             them to `func`.
             If not provided, it will be guessed based on the signature of `func`

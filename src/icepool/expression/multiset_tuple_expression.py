@@ -43,16 +43,16 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
         ...
 
     @abstractmethod
-    def _unbind(
+    def _detach(
         self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
+        body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetTupleExpression[T]':
         ...
 
     @abstractmethod
     def _apply_variables(
-        self, outcome: T, bound_counts: tuple[int,
-                                              ...], free_counts: tuple[int,
+        self, outcome: T, body_counts: tuple[int,
+                                             ...], param_counts: tuple[int,
                                                                        ...]
     ) -> 'tuple[MultisetTupleExpression[T], tuple[int, ...]]':
         ...
@@ -101,19 +101,19 @@ class MultisetTupleSubscript(MultisetExpression[T]):
     def has_free_variables(self) -> bool:
         return self._children[0].has_free_variables()
 
-    def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
+    def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
         if self.has_free_variables():
-            child = self._children[0]._unbind(bound_inputs)
+            child = self._children[0]._detach(body_inputs)
             return MultisetTupleSubscript(child, index=self._index)
         else:
-            result = icepool.MultisetVariable(False, len(bound_inputs))
-            bound_inputs.append(self)
+            result = icepool.MultisetVariable(False, len(body_inputs))
+            body_inputs.append(self)
             return result
 
-    def _apply_variables(self, outcome: T, bound_counts: tuple[int, ...],
-                         free_counts: tuple[int, ...]):
+    def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
+                         param_counts: tuple[int, ...]):
         child, counts = self._children[0]._apply_variables(
-            outcome, bound_counts, free_counts)
+            outcome, body_counts, param_counts)
         return MultisetTupleSubscript(child,
                                       index=self._index), counts[self._index]
 

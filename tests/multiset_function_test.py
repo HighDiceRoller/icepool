@@ -13,7 +13,7 @@ def test_single_expression():
     assert evaluator(d6.pool(3)) == 3 @ d6
 
 
-def test_bound_generator():
+def test_body_generator():
 
     @multiset_function
     def evaluator(a):

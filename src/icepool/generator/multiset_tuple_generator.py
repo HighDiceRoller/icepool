@@ -26,21 +26,21 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
     def has_free_variables(self) -> bool:
         return False
 
-    # Overridden to switch bound generators with variables.
+    # Overridden to switch body generators with variables.
 
     @property
-    def _bound_inputs(self) -> 'tuple[MultisetTupleGenerator, ...]':
+    def _body_inputs(self) -> 'tuple[MultisetTupleGenerator, ...]':
         return (self, )
 
-    def _unbind(
+    def _detach(
         self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
+        body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetTupleExpression':
-        result = icepool.MultisetTupleVariable(False, len(bound_inputs))
-        bound_inputs.append(self)
+        result = icepool.MultisetTupleVariable(False, len(body_inputs))
+        body_inputs.append(self)
         return result
 
-    def _apply_variables(self, outcome: T, bound_counts: tuple[int, ...],
-                         free_counts: tuple[int, ...]):
-        raise icepool.MultisetBindingError(
-            '_unbind should have been called before _apply_variables.')
+    def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
+                         param_counts: tuple[int, ...]):
+        raise icepool.MultisetVariableError(
+            '_detatch should have been called before _apply_variables.')

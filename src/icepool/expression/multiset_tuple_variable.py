@@ -27,19 +27,19 @@ class MultisetTupleVariable(MultisetTupleExpression):
             self._name = name
 
     def outcomes(self) -> Sequence:
-        raise icepool.MultisetBindingError()
+        raise icepool.MultisetVariableError()
 
     def _is_resolvable(self) -> bool:
-        raise icepool.MultisetBindingError()
+        raise icepool.MultisetVariableError()
 
     def _generate_initial(self):
-        raise icepool.MultisetBindingError()
+        raise icepool.MultisetVariableError()
 
     def _generate_min(self, min_outcome):
-        raise icepool.MultisetBindingError()
+        raise icepool.MultisetVariableError()
 
     def _generate_max(self, max_outcome):
-        raise icepool.MultisetBindingError()
+        raise icepool.MultisetVariableError()
 
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
@@ -47,19 +47,20 @@ class MultisetTupleVariable(MultisetTupleExpression):
     def has_free_variables(self) -> bool:
         return self._is_free
 
-    def _unbind(self, bound_inputs: 'list[MultisetExpressionBase]' = []):
+    def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
         if self._is_free:
             return self
         else:
-            raise icepool.MultisetBindingError(
-                'Attempted to unbind an expression that was already unbound.')
+            raise icepool.MultisetVariableError(
+                'Attempted to detatch an expression that was already detatched.'
+            )
 
-    def _apply_variables(self, outcome, bound_counts: tuple[int, ...],
-                         free_counts: tuple[int, ...]):
+    def _apply_variables(self, outcome, body_counts: tuple[int, ...],
+                         param_counts: tuple[int, ...]):
         if self._is_free:
-            return self, free_counts[self._index]
+            return self, param_counts[self._index]
         else:
-            return self, bound_counts[self._index]
+            return self, body_counts[self._index]
 
     @property
     def _local_hash_key(self) -> Hashable:

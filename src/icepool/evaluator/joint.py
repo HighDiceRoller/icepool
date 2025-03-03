@@ -137,17 +137,17 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
                                       for subeval in self._sub_evaluators))
 
     @cached_property
-    def _bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+    def _body_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
         return tuple(
-            itertools.chain.from_iterable(subeval.bound_inputs()
+            itertools.chain.from_iterable(subeval.body_inputs()
                                           for subeval in self._sub_evaluators))
 
-    def bound_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
-        return self._bound_inputs
+    def body_inputs(self) -> 'tuple[icepool.MultisetExpression, ...]':
+        return self._body_inputs
 
     @cached_property
     def _extra_arity(self) -> int:
-        return len(self.bound_inputs())
+        return len(self.body_inputs())
 
     @cached_property
     def _extra_slices(self) -> tuple[slice, ...]:
@@ -155,7 +155,7 @@ class JointEvaluator(MultisetEvaluator[T, tuple]):
         result = []
         index = 0
         for subeval in self._sub_evaluators:
-            counts_length = len(subeval.bound_inputs())
+            counts_length = len(subeval.body_inputs())
             result.append(slice(index, index + counts_length))
             index += counts_length
         return tuple(result)

@@ -20,8 +20,8 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
 from abc import ABC, abstractmethod
 
 
-class MultisetBindingError(TypeError):
-    """Indicates a bound multiset variable was found where a free variable was expected, or vice versa."""
+class MultisetVariableError(TypeError):
+    """Indicates a multiset variable was misused."""
 
 
 C = TypeVar('C', bound='MultisetExpressionBase')
@@ -67,7 +67,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
             * weight = 1.
 
         Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
+            MultisetVariableError if this is called on an expression with free variables.
         """
 
     @abstractmethod
@@ -87,37 +87,37 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
             * weight = 1.
 
         Raises:
-            UnboundMultisetExpressionError if this is called on an expression with free variables.
+            MultisetVariableError if this is called on an expression with free variables.
         """
 
     @abstractmethod
-    def _unbind(
+    def _detach(
         self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
+        body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetExpressionBase[T, Q]':
-        """Removes bound subexpressions, replacing them with variables.
+        """Removes body subexpressions, replacing them with body variables.
 
         Args:
-            bound_inputs: The list of bound subexpressions. Bound subexpressions
-                will be added to this list.
+            body_inputs: The list of body inputs, which will be appended to.
 
         Returns:
-            A copy of this expression with any fully-bound subexpressions
-            replaced with variables. The `index` of each variable is equal to
-            the position of the expression they replaced in `bound_inputs`.
+            A copy of this expression with any subexpressions not containing
+            parameter variables replaced with body variables. 
+            The `index` of each variable is equal to the position of the
+            expression they replaced in `body_inputs`.
         """
 
     @abstractmethod
     def _apply_variables(
-        self, outcome: T, bound_counts: tuple[int, ...],
-        free_counts: tuple[int,
-                           ...]) -> 'tuple[MultisetExpressionBase[T, Q], Q]':
+        self, outcome: T, body_counts: tuple[int, ...],
+        param_counts: tuple[int,
+                            ...]) -> 'tuple[MultisetExpressionBase[T, Q], Q]':
         """Advances the state of this expression given counts emitted from variables and returns a count.
         
         Args:
             outcome: The current outcome being processed.
-            bound_counts: The counts emitted by bound expressions.
-            free_counts: The counts emitted by arguments to the
+            body_counts: The counts emitted by body expressions.
+            param_counts: The counts emitted by arguments to the
                 `@mulitset_function`.
 
         Returns:

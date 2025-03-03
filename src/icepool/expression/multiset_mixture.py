@@ -65,18 +65,18 @@ class MultisetMixture(MultisetExpression[T]):
         return any(inner.has_free_variables()
                    for inner in self._inner_expressions)
 
-    def _unbind(
+    def _detach(
         self,
-        bound_inputs: 'list[MultisetExpressionBase]' = []
+        body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetExpression[T]':
         raise RuntimeError(
             'MultisetMixture should have decayed to another generator type by this point.'
         )
 
     def _apply_variables(
-            self, outcome: T, bound_counts: tuple[int, ...],
-            free_counts: tuple[int,
-                               ...]) -> 'tuple[MultisetExpression[T], int]':
+            self, outcome: T, body_counts: tuple[int, ...],
+            param_counts: tuple[int,
+                                ...]) -> 'tuple[MultisetExpression[T], int]':
         raise RuntimeError(
             'MultisetMixture should have decayed to another generator type by this point.'
         )
