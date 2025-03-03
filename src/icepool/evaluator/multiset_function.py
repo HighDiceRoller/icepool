@@ -236,8 +236,8 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
     @cached_property
     def _hash_key(self) -> Hashable:
-        # TODO: is this enough?
-        return (MultisetFunctionDungeon, self.inner_dungeon, self.inner_inputs,
+        return (MultisetFunctionDungeon, self.body_input_count,
+                self.inner_inputs, self.inner_dungeon,
                 tuple(sorted(self.inner_kwargs.items())))
 
     @cached_property
