@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetEvaluatorBase
 from icepool.expression.base import MultisetExpressionBase
 from icepool.expression.multiset_variable import MultisetVariable
@@ -16,44 +17,41 @@ MV: TypeAlias = MultisetVariable | MultisetTupleVariable
 
 
 @overload
-def multiset_function(wrapped: Callable[[MV], MultisetEvaluatorBase[T, U_co]
-                                        | tuple[MultisetEvaluatorBase[T, U_co],
-                                                ...]],
-                      /) -> MultisetEvaluatorBase[T, U_co]:
+def multiset_function(wrapped: Callable[[
+    MV
+], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+                      /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
 
 @overload
-def multiset_function(wrapped: Callable[[MV, MV],
-                                        MultisetEvaluatorBase[T, U_co]
-                                        | tuple[MultisetEvaluatorBase[T, U_co],
-                                                ...]],
-                      /) -> MultisetEvaluatorBase[T, U_co]:
+def multiset_function(wrapped: Callable[[
+    MV, MV
+], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+                      /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
 
 @overload
-def multiset_function(wrapped: Callable[[MV, MV, MV],
-                                        MultisetEvaluatorBase[T, U_co]
-                                        | tuple[MultisetEvaluatorBase[T, U_co],
-                                                ...]],
-                      /) -> MultisetEvaluatorBase[T, U_co]:
+def multiset_function(wrapped: Callable[[
+    MV, MV, MV
+], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+                      /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
 
 @overload
-def multiset_function(wrapped: Callable[[MV, MV, MV, MV],
-                                        MultisetEvaluatorBase[T, U_co]
-                                        | tuple[MultisetEvaluatorBase[T, U_co],
-                                                ...]],
-                      /) -> MultisetEvaluatorBase[T, U_co]:
+def multiset_function(wrapped: Callable[[
+    MV, MV, MV, MV
+], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+                      /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
 
-def multiset_function(wrapped: Callable[..., MultisetEvaluatorBase[T, U_co]
-                                        | tuple[MultisetEvaluatorBase[T, U_co],
-                                                ...]],
-                      /) -> MultisetEvaluatorBase[T, U_co]:
+def multiset_function(wrapped: Callable[
+    ...,
+    'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+                      /) -> 'MultisetEvaluatorBase[T, U_co]':
     """EXPERIMENTAL: A decorator that turns a function into a multiset evaluator.
 
     The provided function should take in arguments representing multisets,
@@ -97,9 +95,10 @@ def multiset_function(wrapped: Callable[..., MultisetEvaluatorBase[T, U_co]
 
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
-    def __init__(
-        self, wrapped: Callable[..., MultisetEvaluatorBase[T, U_co]
-                                | tuple[MultisetEvaluatorBase[T, U_co], ...]]):
+    def __init__(self, wrapped: Callable[
+        ...,
+        'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]']
+                 ):
         self._wrapped = wrapped
         wrapped_parameters = inspect.signature(wrapped,
                                                follow_wrapped=False).parameters
@@ -127,10 +126,10 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         ]
         wrapped_result = self._wrapped(*multiset_variables, **kwargs)
         # TODO: cache? or is the cache done outside?
-        if isinstance(wrapped_result, tuple):
-            return prepare_multiset_function(wrapped_result)
-        else:
+        if isinstance(wrapped_result[0], tuple):
             return prepare_multiset_joint_function(wrapped_result)
+        else:
+            return prepare_multiset_function(wrapped_result)
 
 
 def prepare_multiset_function(
@@ -142,17 +141,10 @@ def prepare_multiset_function(
     inner_inputs = tuple(input._detach(body_inputs) for input in inner_inputs)
     inner_dungeon, nested_body_inputs = evaluator.prepare(
         inner_inputs, inner_kwargs)
-    all_body_inputs = nested_body_inputs + tuple(body_inputs)
+    combined_body_inputs = nested_body_inputs + tuple(body_inputs)
     return MultisetFunctionDungeon(len(body_inputs), inner_inputs,
                                    inner_dungeon,
-                                   inner_kwargs), tuple(all_body_inputs)
-
-
-def prepare_multiset_joint_function(
-    wrapped_result:
-    'tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]], ...]'
-) -> 'MultisetDungeon':
-    raise NotImplementedError()
+                                   inner_kwargs), tuple(combined_body_inputs)
 
 
 class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
@@ -253,20 +245,83 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
         return self._hash_key == other._hash_key
 
 
+def prepare_multiset_joint_function(
+    wrapped_result:
+    'tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]], ...]'
+) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
+    all_body_inputs_len: list[int] = []
+    all_body_inputs = []
+    all_inner_inputs = []
+    all_inner_dungeon = []
+    all_inner_kwargs = []
+    for evaluator, inner_inputs, inner_kwargs in wrapped_result:
+        body_inputs: 'list[MultisetExpressionBase]' = []
+        inner_inputs = tuple(
+            input._detach(body_inputs) for input in inner_inputs)
+        inner_dungeon, nested_body_inputs = evaluator.prepare(
+            inner_inputs, inner_kwargs)
+
+        all_body_inputs_len.append(len(body_inputs))
+
+        all_inner_inputs.append(inner_inputs)
+        all_inner_dungeon.append(inner_dungeon)
+
+        # TODO: all nested before all current, or interleaved?
+        all_body_inputs += list(nested_body_inputs)
+        all_body_inputs += body_inputs
+
+        all_inner_kwargs.append(inner_kwargs)
+    return MultisetFunctionJointDungeon(
+        tuple(all_body_inputs_len), tuple(all_inner_inputs),
+        tuple(all_inner_dungeon),
+        tuple(all_inner_kwargs)), tuple(all_body_inputs)
+
+
 class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
 
-    def __init__(
-        self, wrapped_result:
-        'tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]], ...]'
-    ):
-        # In this joint case we forward directly.
-        self.direct_kwargs = {}
-        self.all_inner_kwargs = ()  # TODO
+    def __init__(self, all_body_inputs_len: tuple[int, ...],
+                 all_inner_inputs: tuple[tuple[MultisetExpressionBase[T, Any],
+                                               ...], ...],
+                 all_inner_dungeon: tuple[MultisetDungeon[T, U_co], ...],
+                 all_inner_kwargs: tuple[Mapping[str, Hashable], ...]):
+        self.body_inputs_len = sum(all_body_inputs_len)
+        self.all_body_inputs_len = all_body_inputs_len
+        self.all_inner_inputs = all_inner_inputs
+        self.all_inner_dungeon = all_inner_dungeon
+        self.all_inner_kwargs = all_inner_kwargs
+
+        self.ascending_cache = {}
+        self.descending_cache = {}
+
+        for inner_dungeon in self.all_inner_dungeon:
+            if inner_dungeon.next_state_ascending is None:
+                self.next_state_ascending = None
+            if inner_dungeon.next_state_descending is None:
+                self.next_state_descending = None
+
+    def next_state_ascending(self, state, outcome, /, *counts,
+                             **kwargs) -> Hashable:
+        raise NotImplementedError()
+
+    def next_state_descending(self, state, outcome, /, *counts,
+                              **kwargs) -> Hashable:
+        raise NotImplementedError()
+
+    def extra_outcomes(self, outcomes):
+        return icepool.sorted_union(
+            *(inner_dungeon.extra_outcomes(outcomes)
+              for inner_dungeon in self.all_inner_dungeon))
+
+    def final_outcome(self, final_state, **kwargs):
         raise NotImplementedError()
 
     @cached_property
     def _hash_key(self) -> Hashable:
-        raise NotImplementedError()
+        return (MultisetFunctionJointDungeon, self.all_body_inputs_len,
+                self.all_inner_inputs, self.all_inner_dungeon,
+                tuple(
+                    tuple(sorted(inner_kwargs.items()))
+                    for inner_kwargs in self.all_inner_kwargs))
 
     @cached_property
     def _hash(self) -> int:
@@ -276,6 +331,6 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
         return self._hash
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, MultisetFunctionDungeon):
+        if not isinstance(other, MultisetFunctionJointDungeon):
             return False
         return self._hash_key == other._hash_key

@@ -81,6 +81,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
             dungeon, body_inputs = self.prepare(sub_inputs, kwargs)
+            # TODO: initialize body_inputs? or should this be inside prepare?
             # TODO: get cached dungeon
             prod_weight = math.prod(sub_weights)
             outcomes = icepool.sorted_union(*(expression.outcomes()
@@ -112,7 +113,10 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     """
 
     body_inputs_len: int
-    """The number of body inputs for a @multiset_function. 0 if not a @multiset_function."""
+    """The number of body inputs for a `@multiset_function`. 0 if not a `@multiset_function`.
+    
+    Does not include contribution from nested `@multiset_function`s.
+    """
 
     @abstractmethod
     def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,
