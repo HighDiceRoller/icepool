@@ -11,7 +11,7 @@ from functools import cached_property, update_wrapper
 
 from icepool.order import Order
 from icepool.typing import Q, T, U_co
-from typing import Any, Callable, Collection, Hashable, Mapping, Sequence, TypeAlias, overload
+from typing import Any, Callable, Collection, Generic, Hashable, Mapping, NamedTuple, Sequence, TypeAlias, overload
 
 MV: TypeAlias = MultisetVariable | MultisetTupleVariable
 
@@ -19,7 +19,7 @@ MV: TypeAlias = MultisetVariable | MultisetTupleVariable
 @overload
 def multiset_function(wrapped: Callable[[
     MV
-], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+], 'MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]'],
                       /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
@@ -27,7 +27,7 @@ def multiset_function(wrapped: Callable[[
 @overload
 def multiset_function(wrapped: Callable[[
     MV, MV
-], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+], 'MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]'],
                       /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
@@ -35,7 +35,7 @@ def multiset_function(wrapped: Callable[[
 @overload
 def multiset_function(wrapped: Callable[[
     MV, MV, MV
-], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+], 'MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]'],
                       /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
@@ -43,14 +43,14 @@ def multiset_function(wrapped: Callable[[
 @overload
 def multiset_function(wrapped: Callable[[
     MV, MV, MV, MV
-], 'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+], 'MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]'],
                       /) -> 'MultisetEvaluatorBase[T, U_co]':
     ...
 
 
 def multiset_function(wrapped: Callable[
     ...,
-    'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]'],
+    'MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]'],
                       /) -> 'MultisetEvaluatorBase[T, U_co]':
     """EXPERIMENTAL: A decorator that turns a function into a multiset evaluator.
 
@@ -93,11 +93,17 @@ def multiset_function(wrapped: Callable[
     return MultisetFunctionEvaluator(wrapped)
 
 
+class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
+    evaluator: MultisetEvaluatorBase[T, U_co]
+    inner_inputs: tuple[MultisetExpressionBase[T, Any], ...]
+    inner_kwargs: Mapping[str, Hashable]
+
+
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def __init__(self, wrapped: Callable[
         ...,
-        'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]] | tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]]']
+        'MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]']
                  ):
         self._wrapped = wrapped
         wrapped_parameters = inspect.signature(wrapped,
@@ -124,19 +130,18 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
             expression._variable_type(True, i, self._positional_names[i])
             for i, expression in enumerate(inputs)
         ]
-        wrapped_result = self._wrapped(*multiset_variables, **kwargs)
+        raw_result = self._wrapped(*multiset_variables, **kwargs)
         # TODO: cache? or is the cache done outside?
-        if isinstance(wrapped_result[0], tuple):
-            return prepare_multiset_joint_function(wrapped_result)
+        if isinstance(raw_result, MultisetFunctionRawResult):
+            return prepare_multiset_function(raw_result)
         else:
-            return prepare_multiset_function(wrapped_result)
+            return prepare_multiset_joint_function(raw_result)
 
 
 def prepare_multiset_function(
-    wrapped_result:
-    'tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]'
+    raw_result: 'MultisetFunctionRawResult[T, U_co]'
 ) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
-    evaluator, inner_inputs, inner_kwargs = wrapped_result
+    evaluator, inner_inputs, inner_kwargs = raw_result
     body_inputs: 'list[MultisetExpressionBase]' = []
     inner_inputs = tuple(input._detach(body_inputs) for input in inner_inputs)
     inner_dungeon, nested_body_inputs = evaluator.prepare(
@@ -246,15 +251,14 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
 
 def prepare_multiset_joint_function(
-    wrapped_result:
-    'tuple[tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]], ...]'
+    raw_result: 'tuple[MultisetFunctionRawResult[T, U_co], ...]'
 ) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
     all_body_inputs_len: list[int] = []
     all_body_inputs = []
     all_inner_inputs = []
     all_inner_dungeon = []
     all_inner_kwargs = []
-    for evaluator, inner_inputs, inner_kwargs in wrapped_result:
+    for evaluator, inner_inputs, inner_kwargs in raw_result:
         body_inputs: 'list[MultisetExpressionBase]' = []
         inner_inputs = tuple(
             input._detach(body_inputs) for input in inner_inputs)

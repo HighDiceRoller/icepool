@@ -16,6 +16,7 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
 
 if TYPE_CHECKING:
     from icepool.expression.base import MultisetExpressionBase
+    from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool.generator.alignment import Alignment
     from icepool import MultisetExpression
 
@@ -42,7 +43,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     def evaluate(
         self, *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
         **kwargs: Hashable
-    ) -> 'icepool.Die[U_co] | tuple[MultisetEvaluatorBase[T, U_co], tuple[MultisetExpressionBase[T, Any], ...], Mapping[str, Hashable]]':
+    ) -> 'icepool.Die[U_co] | MultisetFunctionRawResult[T, U_co]':
         """Evaluates input expression(s).
 
         You can call the `MultisetEvaluator` object directly for the same effect,
@@ -69,7 +70,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
         # In this case we are inside a @multiset_function.
         if any(input.has_parameters() for input in inputs):
-            return self, inputs, kwargs
+            from icepool.evaluator.multiset_function import MultisetFunctionRawResult
+            return MultisetFunctionRawResult(self, inputs, kwargs)
 
         # Otherwise, we perform the evaluation.
 
