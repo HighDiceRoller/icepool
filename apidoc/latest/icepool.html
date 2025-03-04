@@ -17172,49 +17172,62 @@ Prefer to use the name <code><a href="#MultiDeal.outcomes">outcomes</a></code>.<
 
     </div>
     <a class="headerlink" href="#multiset_function"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="multiset_function-52"><a href="#multiset_function-52"><span class="linenos">52</span></a><span class="k">def</span><span class="w"> </span><span class="nf">multiset_function</span><span class="p">(</span><span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
-</span><span id="multiset_function-53"><a href="#multiset_function-53"><span class="linenos">53</span></a>    <span class="o">...</span><span class="p">,</span>
-</span><span id="multiset_function-54"><a href="#multiset_function-54"><span class="linenos">54</span></a>    <span class="s1">&#39;MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]&#39;</span><span class="p">],</span>
-</span><span id="multiset_function-55"><a href="#multiset_function-55"><span class="linenos">55</span></a>                      <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetEvaluatorBase[T, U_co]&#39;</span><span class="p">:</span>
-</span><span id="multiset_function-56"><a href="#multiset_function-56"><span class="linenos">56</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: A decorator that turns a function into a multiset evaluator.</span>
-</span><span id="multiset_function-57"><a href="#multiset_function-57"><span class="linenos">57</span></a>
-</span><span id="multiset_function-58"><a href="#multiset_function-58"><span class="linenos">58</span></a><span class="sd">    The provided function should take in arguments representing multisets,</span>
-</span><span id="multiset_function-59"><a href="#multiset_function-59"><span class="linenos">59</span></a><span class="sd">    do a limited set of operations on them (see `MultisetExpression`), and</span>
-</span><span id="multiset_function-60"><a href="#multiset_function-60"><span class="linenos">60</span></a><span class="sd">    finish off with an evaluation. You can return a tuple to perform a joint</span>
-</span><span id="multiset_function-61"><a href="#multiset_function-61"><span class="linenos">61</span></a><span class="sd">    evaluation.</span>
-</span><span id="multiset_function-62"><a href="#multiset_function-62"><span class="linenos">62</span></a>
-</span><span id="multiset_function-63"><a href="#multiset_function-63"><span class="linenos">63</span></a><span class="sd">    For example, to create an evaluator which computes the elements each of two</span>
-</span><span id="multiset_function-64"><a href="#multiset_function-64"><span class="linenos">64</span></a><span class="sd">    multisets has that the other doesn&#39;t:</span>
-</span><span id="multiset_function-65"><a href="#multiset_function-65"><span class="linenos">65</span></a>
-</span><span id="multiset_function-66"><a href="#multiset_function-66"><span class="linenos">66</span></a><span class="sd">    ```python</span>
-</span><span id="multiset_function-67"><a href="#multiset_function-67"><span class="linenos">67</span></a><span class="sd">    @multiset_function</span>
-</span><span id="multiset_function-68"><a href="#multiset_function-68"><span class="linenos">68</span></a><span class="sd">    def two_way_difference(a, b):</span>
-</span><span id="multiset_function-69"><a href="#multiset_function-69"><span class="linenos">69</span></a><span class="sd">        return (a - b).expand(), (b - a).expand()</span>
-</span><span id="multiset_function-70"><a href="#multiset_function-70"><span class="linenos">70</span></a><span class="sd">    ```</span>
-</span><span id="multiset_function-71"><a href="#multiset_function-71"><span class="linenos">71</span></a>
-</span><span id="multiset_function-72"><a href="#multiset_function-72"><span class="linenos">72</span></a><span class="sd">    I recommend to only use pure functions with `@multiset_function`.</span>
-</span><span id="multiset_function-73"><a href="#multiset_function-73"><span class="linenos">73</span></a>
-</span><span id="multiset_function-74"><a href="#multiset_function-74"><span class="linenos">74</span></a><span class="sd">    Be careful when using control structures: you cannot branch on the value of</span>
-</span><span id="multiset_function-75"><a href="#multiset_function-75"><span class="linenos">75</span></a><span class="sd">    a multiset expression or evaluation, so e.g.</span>
-</span><span id="multiset_function-76"><a href="#multiset_function-76"><span class="linenos">76</span></a>
-</span><span id="multiset_function-77"><a href="#multiset_function-77"><span class="linenos">77</span></a><span class="sd">    ```python</span>
-</span><span id="multiset_function-78"><a href="#multiset_function-78"><span class="linenos">78</span></a><span class="sd">    @multiset_function</span>
-</span><span id="multiset_function-79"><a href="#multiset_function-79"><span class="linenos">79</span></a><span class="sd">    def bad(a, b)</span>
-</span><span id="multiset_function-80"><a href="#multiset_function-80"><span class="linenos">80</span></a><span class="sd">        if a == b:</span>
-</span><span id="multiset_function-81"><a href="#multiset_function-81"><span class="linenos">81</span></a><span class="sd">            ...</span>
-</span><span id="multiset_function-82"><a href="#multiset_function-82"><span class="linenos">82</span></a><span class="sd">    ```</span>
-</span><span id="multiset_function-83"><a href="#multiset_function-83"><span class="linenos">83</span></a>
-</span><span id="multiset_function-84"><a href="#multiset_function-84"><span class="linenos">84</span></a><span class="sd">    is not allowed.</span>
-</span><span id="multiset_function-85"><a href="#multiset_function-85"><span class="linenos">85</span></a>
-</span><span id="multiset_function-86"><a href="#multiset_function-86"><span class="linenos">86</span></a><span class="sd">    `multiset_function` has considerable overhead, being effectively a</span>
-</span><span id="multiset_function-87"><a href="#multiset_function-87"><span class="linenos">87</span></a><span class="sd">    mini-language within Python. For better performance, you can try</span>
-</span><span id="multiset_function-88"><a href="#multiset_function-88"><span class="linenos">88</span></a><span class="sd">    implementing your own subclass of `MultisetEvaluator` directly.</span>
-</span><span id="multiset_function-89"><a href="#multiset_function-89"><span class="linenos">89</span></a>
-</span><span id="multiset_function-90"><a href="#multiset_function-90"><span class="linenos">90</span></a><span class="sd">    Args:</span>
-</span><span id="multiset_function-91"><a href="#multiset_function-91"><span class="linenos">91</span></a><span class="sd">        function: This should take in a fixed number of multiset variables and</span>
-</span><span id="multiset_function-92"><a href="#multiset_function-92"><span class="linenos">92</span></a><span class="sd">            output an evaluator or tuple of evaluators. </span>
-</span><span id="multiset_function-93"><a href="#multiset_function-93"><span class="linenos">93</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="multiset_function-94"><a href="#multiset_function-94"><span class="linenos">94</span></a>    <span class="k">return</span> <span class="n">MultisetFunctionEvaluator</span><span class="p">(</span><span class="n">wrapped</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="multiset_function-52"><a href="#multiset_function-52"><span class="linenos"> 52</span></a><span class="k">def</span><span class="w"> </span><span class="nf">multiset_function</span><span class="p">(</span><span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
+</span><span id="multiset_function-53"><a href="#multiset_function-53"><span class="linenos"> 53</span></a>    <span class="o">...</span><span class="p">,</span>
+</span><span id="multiset_function-54"><a href="#multiset_function-54"><span class="linenos"> 54</span></a>    <span class="s1">&#39;MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]&#39;</span><span class="p">],</span>
+</span><span id="multiset_function-55"><a href="#multiset_function-55"><span class="linenos"> 55</span></a>                      <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetEvaluatorBase[T, U_co]&#39;</span><span class="p">:</span>
+</span><span id="multiset_function-56"><a href="#multiset_function-56"><span class="linenos"> 56</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: A decorator that turns a function into a multiset evaluator.</span>
+</span><span id="multiset_function-57"><a href="#multiset_function-57"><span class="linenos"> 57</span></a>
+</span><span id="multiset_function-58"><a href="#multiset_function-58"><span class="linenos"> 58</span></a><span class="sd">    The provided function should take in arguments representing multisets,</span>
+</span><span id="multiset_function-59"><a href="#multiset_function-59"><span class="linenos"> 59</span></a><span class="sd">    do a limited set of operations on them (see `MultisetExpression`), and</span>
+</span><span id="multiset_function-60"><a href="#multiset_function-60"><span class="linenos"> 60</span></a><span class="sd">    finish off with an evaluation. You can return a tuple to perform a joint</span>
+</span><span id="multiset_function-61"><a href="#multiset_function-61"><span class="linenos"> 61</span></a><span class="sd">    evaluation.</span>
+</span><span id="multiset_function-62"><a href="#multiset_function-62"><span class="linenos"> 62</span></a>
+</span><span id="multiset_function-63"><a href="#multiset_function-63"><span class="linenos"> 63</span></a><span class="sd">    For example, to create an evaluator which computes the elements each of two</span>
+</span><span id="multiset_function-64"><a href="#multiset_function-64"><span class="linenos"> 64</span></a><span class="sd">    multisets has that the other doesn&#39;t:</span>
+</span><span id="multiset_function-65"><a href="#multiset_function-65"><span class="linenos"> 65</span></a>
+</span><span id="multiset_function-66"><a href="#multiset_function-66"><span class="linenos"> 66</span></a><span class="sd">    ```python</span>
+</span><span id="multiset_function-67"><a href="#multiset_function-67"><span class="linenos"> 67</span></a><span class="sd">    @multiset_function</span>
+</span><span id="multiset_function-68"><a href="#multiset_function-68"><span class="linenos"> 68</span></a><span class="sd">    def two_way_difference(a, b):</span>
+</span><span id="multiset_function-69"><a href="#multiset_function-69"><span class="linenos"> 69</span></a><span class="sd">        return (a - b).expand(), (b - a).expand()</span>
+</span><span id="multiset_function-70"><a href="#multiset_function-70"><span class="linenos"> 70</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-71"><a href="#multiset_function-71"><span class="linenos"> 71</span></a>
+</span><span id="multiset_function-72"><a href="#multiset_function-72"><span class="linenos"> 72</span></a><span class="sd">    You can send non-multiset variables as keyword arguments:</span>
+</span><span id="multiset_function-73"><a href="#multiset_function-73"><span class="linenos"> 73</span></a><span class="sd">    ```python</span>
+</span><span id="multiset_function-74"><a href="#multiset_function-74"><span class="linenos"> 74</span></a><span class="sd">    @multiset_function</span>
+</span><span id="multiset_function-75"><a href="#multiset_function-75"><span class="linenos"> 75</span></a><span class="sd">    def count_outcomes(a, target):</span>
+</span><span id="multiset_function-76"><a href="#multiset_function-76"><span class="linenos"> 76</span></a><span class="sd">        return a.keep_outcomes(target).count()</span>
+</span><span id="multiset_function-77"><a href="#multiset_function-77"><span class="linenos"> 77</span></a>
+</span><span id="multiset_function-78"><a href="#multiset_function-78"><span class="linenos"> 78</span></a><span class="sd">    count_outcomes(a, target=[5, 6])</span>
+</span><span id="multiset_function-79"><a href="#multiset_function-79"><span class="linenos"> 79</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-80"><a href="#multiset_function-80"><span class="linenos"> 80</span></a><span class="sd">    Currently non-multiset variables are not expanded (in the sense of `map`)</span>
+</span><span id="multiset_function-81"><a href="#multiset_function-81"><span class="linenos"> 81</span></a><span class="sd">    but this is likely to change in the future.</span>
+</span><span id="multiset_function-82"><a href="#multiset_function-82"><span class="linenos"> 82</span></a>
+</span><span id="multiset_function-83"><a href="#multiset_function-83"><span class="linenos"> 83</span></a><span class="sd">    I recommend to only use pure functions with `@multiset_function`.</span>
+</span><span id="multiset_function-84"><a href="#multiset_function-84"><span class="linenos"> 84</span></a>
+</span><span id="multiset_function-85"><a href="#multiset_function-85"><span class="linenos"> 85</span></a><span class="sd">    Be careful when using control structures: you cannot branch on the value of</span>
+</span><span id="multiset_function-86"><a href="#multiset_function-86"><span class="linenos"> 86</span></a><span class="sd">    a multiset expression or evaluation, so e.g.</span>
+</span><span id="multiset_function-87"><a href="#multiset_function-87"><span class="linenos"> 87</span></a>
+</span><span id="multiset_function-88"><a href="#multiset_function-88"><span class="linenos"> 88</span></a><span class="sd">    ```python</span>
+</span><span id="multiset_function-89"><a href="#multiset_function-89"><span class="linenos"> 89</span></a><span class="sd">    @multiset_function</span>
+</span><span id="multiset_function-90"><a href="#multiset_function-90"><span class="linenos"> 90</span></a><span class="sd">    def bad(a, b)</span>
+</span><span id="multiset_function-91"><a href="#multiset_function-91"><span class="linenos"> 91</span></a><span class="sd">        if a == b:</span>
+</span><span id="multiset_function-92"><a href="#multiset_function-92"><span class="linenos"> 92</span></a><span class="sd">            ...</span>
+</span><span id="multiset_function-93"><a href="#multiset_function-93"><span class="linenos"> 93</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-94"><a href="#multiset_function-94"><span class="linenos"> 94</span></a>
+</span><span id="multiset_function-95"><a href="#multiset_function-95"><span class="linenos"> 95</span></a><span class="sd">    is not allowed.</span>
+</span><span id="multiset_function-96"><a href="#multiset_function-96"><span class="linenos"> 96</span></a>
+</span><span id="multiset_function-97"><a href="#multiset_function-97"><span class="linenos"> 97</span></a><span class="sd">    `multiset_function` has considerable overhead, being effectively a</span>
+</span><span id="multiset_function-98"><a href="#multiset_function-98"><span class="linenos"> 98</span></a><span class="sd">    mini-language within Python. For better performance, you can try</span>
+</span><span id="multiset_function-99"><a href="#multiset_function-99"><span class="linenos"> 99</span></a><span class="sd">    implementing your own subclass of `MultisetEvaluator` directly.</span>
+</span><span id="multiset_function-100"><a href="#multiset_function-100"><span class="linenos">100</span></a>
+</span><span id="multiset_function-101"><a href="#multiset_function-101"><span class="linenos">101</span></a><span class="sd">    Args:</span>
+</span><span id="multiset_function-102"><a href="#multiset_function-102"><span class="linenos">102</span></a><span class="sd">        function: This should take in multiset expressions as positional</span>
+</span><span id="multiset_function-103"><a href="#multiset_function-103"><span class="linenos">103</span></a><span class="sd">            arguments, and non-multiset variables as keyword arguments.</span>
+</span><span id="multiset_function-104"><a href="#multiset_function-104"><span class="linenos">104</span></a><span class="sd">            Currently keyword arguments are not expanded (in the sense of `map`)</span>
+</span><span id="multiset_function-105"><a href="#multiset_function-105"><span class="linenos">105</span></a><span class="sd">            but this is likely to change in the future.</span>
+</span><span id="multiset_function-106"><a href="#multiset_function-106"><span class="linenos">106</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="multiset_function-107"><a href="#multiset_function-107"><span class="linenos">107</span></a>    <span class="k">return</span> <span class="n">MultisetFunctionEvaluator</span><span class="p">(</span><span class="n">wrapped</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -17234,6 +17247,20 @@ multisets has that the other doesn't:</p>
     <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(),</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
 </code></pre>
 </div>
+
+<p>You can send non-multiset variables as keyword arguments:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="nd">@multiset_function</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_outcomes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">keep_outcomes</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+
+<span class="n">count_outcomes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+</code></pre>
+</div>
+
+<p>Currently non-multiset variables are not expanded (in the sense of <code><a href="#map">map</a></code>)
+but this is likely to change in the future.</p>
 
 <p>I recommend to only use pure functions with <code>@multiset_function</code>.</p>
 
@@ -17257,8 +17284,10 @@ implementing your own subclass of <code><a href="#MultisetEvaluator">MultisetEva
 <h6 id="arguments">Arguments:</h6>
 
 <ul>
-<li><strong>function:</strong>  This should take in a fixed number of multiset variables and
-output an evaluator or tuple of evaluators.</li>
+<li><strong>function:</strong>  This should take in multiset expressions as positional
+arguments, and non-multiset variables as keyword arguments.
+Currently keyword arguments are not expanded (in the sense of <code><a href="#map">map</a></code>)
+but this is likely to change in the future.</li>
 </ul>
 </div>
 
