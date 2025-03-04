@@ -47,15 +47,17 @@ Operation in specific cases:
 
 # Expose certain names at top-level.
 
-from icepool.function import (
-    d, z, __getattr__, coin, stochastic_round, one_hot, iter_cartesian_product,
-    from_cumulative, from_rv, pointwise_max, pointwise_min, min_outcome,
-    max_outcome, consecutive, sorted_union, commonize_denominator, reduce,
-    accumulate, map, map_function, map_and_time, map_to_pool)
+from icepool.function import (d, z, __getattr__, coin, stochastic_round,
+                              one_hot, from_cumulative, from_rv, pointwise_max,
+                              pointwise_min, min_outcome, max_outcome,
+                              consecutive, sorted_union, commonize_denominator,
+                              reduce, accumulate, map, map_function,
+                              map_and_time, map_to_pool)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
-from icepool.collection.vector import cartesian_product, tupleize, vectorize, Vector
+from icepool.expand import iter_cartesian_product, cartesian_product, tupleize, vectorize
+from icepool.collection.vector import Vector
 from icepool.collection.symbols import Symbols
 from icepool.population.again import AgainExpression
 
@@ -150,6 +152,7 @@ import icepool.evaluator as evaluator
 import icepool.operator as operator
 
 import icepool.typing as typing
+from icepool.expand import Expandable
 
 __all__ = [
     'd', 'z', 'coin', 'stochastic_round', 'one_hot', 'Outcome', 'Die',

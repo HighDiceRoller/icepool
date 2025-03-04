@@ -40,6 +40,14 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         """Prepares an evaluation.
         
         In the future this will likely allow yielding multiple results.
+
+        Args:
+            inputs: This is just for the benefit of `@multiset_function`
+                so it can know whether the arguments are single multisets or
+                multiset tuples.
+            kwargs: Used as part of the dungeon's cache key.
+                `@multiset_function` also determines how to forward these to
+                the inner evaluators.
         """
 
     def evaluate(

@@ -53,17 +53,6 @@ class ImplicitConversionError(TypeError):
     """Indicates that an implicit conversion failed."""
 
 
-# We don't use @runtime_checkable due to poor performance and the validation is
-# limited anyways.
-class Expandable(Protocol[A_co]):
-    """Objects that can be expanded in Cartesian products."""
-
-    @property
-    def _items_for_cartesian_product(self) -> Sequence[tuple[A_co, int]]:
-        """Returns a sequence of (outcome, quantity) pairs."""
-        ...
-
-
 def count_positional_parameters(function: Callable) -> tuple[int, int | None]:
     """Counts the number of positional parameters of the callable.
 

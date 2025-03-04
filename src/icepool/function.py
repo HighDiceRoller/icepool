@@ -4,7 +4,6 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.population.markov_chain
-from icepool.collection.vector import iter_cartesian_product
 from icepool.typing import Outcome, T, U, infer_star
 
 from fractions import Fraction
@@ -604,7 +603,8 @@ def map(
         elif repeat == 1 and time_limit is None:
             final_outcomes: 'list[T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]' = []
             final_quantities: list[int] = []
-            for outcomes, final_quantity in iter_cartesian_product(*args):
+            for outcomes, final_quantity in icepool.iter_cartesian_product(
+                    *args):
                 final_outcome = transition_function(*outcomes)
                 if final_outcome is not icepool.Reroll:
                     final_outcomes.append(final_outcome)
@@ -841,7 +841,7 @@ def map_to_pool(
 
     data: 'MutableMapping[icepool.MultisetExpression[T], int]' = defaultdict(
         int)
-    for outcomes, quantity in iter_cartesian_product(*args):
+    for outcomes, quantity in icepool.iter_cartesian_product(*args):
         pool = transition_function(*outcomes)
         if pool is icepool.Reroll:
             continue

@@ -13,7 +13,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, Expandable, ImplicitConversionError, T
+from icepool.typing import Q, T, U, ImplicitConversionError, T
 from types import EllipsisType
 from typing import (Callable, Collection, Hashable, Iterator, Literal, Mapping,
                     Sequence, Type, cast, overload)

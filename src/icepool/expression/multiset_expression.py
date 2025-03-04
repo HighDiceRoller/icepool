@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 from abc import abstractmethod
 import icepool
+from icepool.expand import Expandable
 from icepool.expression.base import MultisetExpressionBase
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
@@ -12,7 +13,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, Expandable, ImplicitConversionError
+from icepool.typing import Q, T, U, ImplicitConversionError
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Iterator,
                     Literal, Mapping, Sequence, Type, cast, overload)
