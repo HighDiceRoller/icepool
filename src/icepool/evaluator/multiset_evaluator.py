@@ -19,7 +19,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
-        and the count of that outcome produced by each input.
+        the count of that outcome produced by each multiset input, and any
+        **kwargs provided to `evaluate()`.
 
         `evaluate()` will always call this with `state, outcome, *counts` as
         positional arguments. Furthermore, there is no expectation that a 
@@ -29,8 +30,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         * Rename `state` or `outcome` in a subclass.
         * Replace `*counts` with a fixed set of parameters.
 
-        Likewise, you may replace **kwargs with a fixed set of keyword
-        parameters.
+        **kwargs are non-multiset arguments that were provided to evaluate().
+        You may replace **kwargs with a fixed set of keyword parameters.
 
         Make sure to handle the base case where `state is None`.
 

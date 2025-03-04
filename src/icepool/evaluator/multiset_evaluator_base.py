@@ -48,11 +48,15 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     ) -> 'icepool.Die[U_co] | MultisetFunctionRawResult[T, U_co]':
         """Evaluates input expression(s).
 
-        You can call the `MultisetEvaluator` object directly for the same effect,
+        You can call the evaluator object directly for the same effect,
         e.g. `sum_evaluator(input)` is an alias for `sum_evaluator.evaluate(input)`.
 
-        Most evaluators will expect a fixed number of input multisets.
-        The union of the outcomes of the input(s) must be totally orderable.
+        Positional arguments are multisets. Most evaluators will expect a 
+        fixed number of input multisets of these. The union of the outcomes of
+        the input(s) must be totally orderable.
+
+        Keyword arguments are non-multisets. Currently they are not expanded
+        (in the sense of `map()`) but this is likely to change.
 
         Args:
             *args: Each may be one of the following:
@@ -63,7 +67,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         Returns:
             A `Die` representing the distribution of the final outcome if no
             arg contains a parameter. Otherwise returns information
-            needed to construct a multiset function.
+            needed to construct a `@multiset_function`.
         """
 
         # Convert arguments to expressions.
