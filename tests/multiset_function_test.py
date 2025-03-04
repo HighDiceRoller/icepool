@@ -20,3 +20,13 @@ def test_body_generator():
         return (a + d6.pool(2)).sum()
 
     assert evaluator(d6.pool(1)) == 3 @ d6
+
+
+def test_kwargs():
+
+    @multiset_function
+    def evaluator(x, target):
+        return x.keep_outcomes([target]).count()
+
+    for i in range(1, 7):
+        assert evaluator(d6.pool(1), target=i) == (d6 == 1)

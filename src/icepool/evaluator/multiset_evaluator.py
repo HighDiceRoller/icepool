@@ -225,14 +225,14 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
         self.next_state_descending = next_state_descending  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore
         self.final_outcome = final_outcome  # type: ignore
-        self.direct_kwargs = kwargs
+        self.kwargs = kwargs
         self.ascending_cache = {}
         self.descending_cache = {}
 
     @cached_property
     def _hash_key(self) -> Hashable:
         return (MultisetEvaluatorDungeon, self.preparer,
-                tuple(sorted(self.direct_kwargs.items())))
+                tuple(sorted(self.kwargs.items())))
 
     @cached_property
     def _hash(self) -> int:

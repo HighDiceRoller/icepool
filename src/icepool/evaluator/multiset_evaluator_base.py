@@ -29,6 +29,8 @@ def _initialize_inputs(
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
+    _cache: 'MutableMapping[MultisetDungeon, MultisetDungeon] | None' = None
+
     @abstractmethod
     def prepare(
         self,
@@ -78,13 +80,20 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         if not all(expression._is_resolvable() for expression in inputs):
             return icepool.Die([])
 
+        if self._cache is None:
+            self._cache = {}
+
         final_data: 'MutableMapping[icepool.Die[U_co], int]' = defaultdict(int)
         iterators = _initialize_inputs(inputs)
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
             dungeon, body_inputs = self.prepare(sub_inputs, kwargs)
+            # replace with cached version if available
+            if dungeon in self._cache:
+                dungeon = self._cache[dungeon]
+            else:
+                self._cache[dungeon] = dungeon
             # TODO: initialize body_inputs? or should this be inside prepare?
-            # TODO: get cached dungeon
             prod_weight = math.prod(sub_weights)
             outcomes = icepool.sorted_union(*(expression.outcomes()
                                               for expression in sub_inputs))
@@ -106,13 +115,6 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_ascending_function."""
     descending_cache: 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
     """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
-
-    direct_kwargs: 'Mapping[str, Hashable]' = {}
-    """These will be sent to next_state_ascending, next_state_descending, and final_outcome.
-    
-    This allows to (sometimes) avoid wrapping these in another function just to
-    feed them kwargs.
-    """
 
     @abstractmethod
     def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,

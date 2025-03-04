@@ -68,6 +68,17 @@ def multiset_function(wrapped: Callable[
         return (a - b).expand(), (b - a).expand()
     ```
 
+    You can send non-multiset variables as keyword arguments:
+    ```python
+    @multiset_function
+    def count_outcomes(a, target):
+        return a.keep_outcomes(target).count()
+
+    count_outcomes(a, target=[5, 6])
+    ```
+    Currently non-multiset variables are not expanded (in the sense of `map`)
+    but this is likely to change in the future.
+
     I recommend to only use pure functions with `@multiset_function`.
 
     Be careful when using control structures: you cannot branch on the value of
@@ -87,8 +98,10 @@ def multiset_function(wrapped: Callable[
     implementing your own subclass of `MultisetEvaluator` directly.
 
     Args:
-        function: This should take in a fixed number of multiset variables and
-            output an evaluator or tuple of evaluators. 
+        function: This should take in multiset expressions as positional
+            arguments, and non-multiset variables as keyword arguments.
+            Currently keyword arguments are not expanded (in the sense of `map`)
+            but this is likely to change in the future.
     """
     return MultisetFunctionEvaluator(wrapped)
 
@@ -118,8 +131,6 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
             ]:
                 self._positional_names.append(parameter.name)
 
-            # TODO: anything needed for kwargs here?
-
         update_wrapper(self, wrapped)
 
     def prepare(
@@ -132,7 +143,6 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
             for i, expression in enumerate(inputs)
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
-        # TODO: cache? or is the cache done outside?
         if isinstance(raw_result, MultisetFunctionRawResult):
             return prepare_multiset_function(raw_result)
         else:
@@ -235,8 +245,7 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
     @cached_property
     def _hash_key(self) -> Hashable:
-        return (MultisetFunctionDungeon, self.body_inputs_len,
-                self.inner_inputs, self.inner_dungeon,
+        return (MultisetFunctionDungeon, self.inner_inputs, self.inner_dungeon,
                 tuple(sorted(self.inner_kwargs.items())))
 
     @cached_property
@@ -414,8 +423,8 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
 
     @cached_property
     def _hash_key(self) -> Hashable:
-        return (MultisetFunctionJointDungeon, self.all_body_inputs_len,
-                self.all_inner_inputs, self.all_inner_dungeon,
+        return (MultisetFunctionJointDungeon, self.all_inner_inputs,
+                self.all_inner_dungeon,
                 tuple(
                     tuple(sorted(inner_kwargs.items()))
                     for inner_kwargs in self.all_inner_kwargs))
