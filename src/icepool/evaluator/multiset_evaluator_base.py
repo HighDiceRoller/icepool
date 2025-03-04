@@ -114,12 +114,6 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     feed them kwargs.
     """
 
-    body_inputs_len: int
-    """The number of body inputs for a `@multiset_function`. 0 if not a `@multiset_function`.
-    
-    Does not include contribution from nested `@multiset_function`s.
-    """
-
     @abstractmethod
     def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,
                              **kwargs: Hashable) -> Hashable:

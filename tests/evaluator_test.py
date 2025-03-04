@@ -175,8 +175,11 @@ def test_sum_order(pool):
 
 
 def test_joint_evaluate():
-    test_evaluator = icepool.evaluator.JointEvaluator(
-        icepool.evaluator.sum_evaluator, icepool.evaluator.sum_evaluator)
+
+    @multiset_function
+    def test_evaluator(x):
+        return x.sum(), x.sum()
+
     result = test_evaluator(icepool.d6.pool(3))
     expected = (3 @ icepool.d6).map(lambda x: (x, x))
     assert result.equals(expected)

@@ -148,17 +148,18 @@ def prepare_multiset_function(
     inner_dungeon, nested_body_inputs = evaluator.prepare(
         inner_inputs, inner_kwargs)
     combined_body_inputs = nested_body_inputs + tuple(body_inputs)
-    return MultisetFunctionDungeon(len(body_inputs), inner_inputs,
-                                   inner_dungeon,
+    return MultisetFunctionDungeon(len(nested_body_inputs), len(body_inputs),
+                                   inner_inputs, inner_dungeon,
                                    inner_kwargs), tuple(combined_body_inputs)
 
 
 class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
-    def __init__(self, body_inputs_len: int,
+    def __init__(self, nested_body_inputs_len: int, body_inputs_len: int,
                  inner_inputs: tuple[MultisetExpressionBase[T, Any], ...],
                  inner_dungeon: MultisetDungeon[T, U_co],
                  inner_kwargs: Mapping[str, Hashable]):
+        self.nested_body_inputs_len = nested_body_inputs_len
         self.body_inputs_len = body_inputs_len
         self.inner_inputs = inner_inputs
         self.inner_dungeon = inner_dungeon
@@ -226,7 +227,7 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
     @cached_property
     def _count_slices(self) -> 'tuple[slice, slice, slice]':
-        nested_slice = slice(None, self.inner_dungeon.body_inputs_len)
+        nested_slice = slice(0, self.nested_body_inputs_len)
         body_slice = slice(nested_slice.stop,
                            nested_slice.stop + self.body_inputs_len)
         param_slice = slice(body_slice.stop, None)
@@ -254,11 +255,12 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 def prepare_multiset_joint_function(
     raw_result: 'tuple[MultisetFunctionRawResult[T, U_co], ...]'
 ) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
+    all_nested_body_inputs_len: list[int] = []
     all_body_inputs_len: list[int] = []
-    all_body_inputs = []
     all_inner_inputs = []
     all_inner_dungeon = []
     all_inner_kwargs = []
+    all_combined_body_inputs = []
     for evaluator, inner_inputs, inner_kwargs in raw_result:
         body_inputs: 'list[MultisetExpressionBase]' = []
         inner_inputs = tuple(
@@ -266,30 +268,31 @@ def prepare_multiset_joint_function(
         inner_dungeon, nested_body_inputs = evaluator.prepare(
             inner_inputs, inner_kwargs)
 
+        all_nested_body_inputs_len.append(len(nested_body_inputs))
         all_body_inputs_len.append(len(body_inputs))
 
         all_inner_inputs.append(inner_inputs)
         all_inner_dungeon.append(inner_dungeon)
 
-        # TODO: all nested before all current, or interleaved?
-        all_body_inputs += list(nested_body_inputs)
-        all_body_inputs += body_inputs
+        all_combined_body_inputs += list(nested_body_inputs)
+        all_combined_body_inputs += body_inputs
 
         all_inner_kwargs.append(inner_kwargs)
     return MultisetFunctionJointDungeon(
-        tuple(all_body_inputs_len), tuple(all_inner_inputs),
-        tuple(all_inner_dungeon),
-        tuple(all_inner_kwargs)), tuple(all_body_inputs)
+        tuple(all_nested_body_inputs_len), tuple(all_body_inputs_len),
+        tuple(all_inner_inputs), tuple(all_inner_dungeon),
+        tuple(all_inner_kwargs)), tuple(all_combined_body_inputs)
 
 
 class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
 
-    def __init__(self, all_body_inputs_len: tuple[int, ...],
+    def __init__(self, all_nested_body_inputs_len: tuple[int, ...],
+                 all_body_inputs_len: tuple[int, ...],
                  all_inner_inputs: tuple[tuple[MultisetExpressionBase[T, Any],
                                                ...], ...],
                  all_inner_dungeon: tuple[MultisetDungeon[T, U_co], ...],
                  all_inner_kwargs: tuple[Mapping[str, Hashable], ...]):
-        self.body_inputs_len = sum(all_body_inputs_len)
+        self.all_nested_body_inputs_len = all_nested_body_inputs_len
         self.all_body_inputs_len = all_body_inputs_len
         self.all_inner_inputs = all_inner_inputs
         self.all_inner_dungeon = all_inner_dungeon
@@ -306,11 +309,69 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
 
     def next_state_ascending(self, state, outcome, /, *counts,
                              **kwargs) -> Hashable:
-        raise NotImplementedError()
+        if state is None:
+            all_inner_inputs = self.all_inner_inputs
+            all_inner_states = (None, ) * len(self.all_inner_dungeon)
+        else:
+            all_inner_inputs, all_inner_states = state
+
+        next_all_inner_inputs = []
+        next_all_inner_states = []
+
+        nested_body_slices, body_slices, param_slice = self._count_slices
+        param_counts = counts[param_slice]
+
+        for (inner_inputs, inner_state, nested_body_slice,
+             body_slice, inner_dungeon, inner_kwargs) in zip(
+                 all_inner_inputs, all_inner_states, nested_body_slices,
+                 body_slices, self.all_inner_dungeon, self.all_inner_kwargs):
+            nested_counts = counts[nested_body_slice]
+            body_counts = counts[body_slice]
+
+            inner_inputs, inner_counts = zip(
+                *(inner_input._apply_variables(outcome, body_counts,
+                                               param_counts)
+                  for inner_input in inner_inputs))
+            inner_state = inner_dungeon.next_state_ascending(
+                inner_state, outcome, *nested_counts, *inner_counts,
+                **inner_kwargs)
+            next_all_inner_inputs.append(inner_inputs)
+            next_all_inner_states.append(inner_state)
+
+        return tuple(next_all_inner_inputs), tuple(next_all_inner_states)
 
     def next_state_descending(self, state, outcome, /, *counts,
                               **kwargs) -> Hashable:
-        raise NotImplementedError()
+        if state is None:
+            all_inner_inputs = self.all_inner_inputs
+            all_inner_states = (None, ) * len(self.all_inner_dungeon)
+        else:
+            all_inner_inputs, all_inner_states = state
+
+        next_all_inner_inputs = []
+        next_all_inner_states = []
+
+        nested_body_slices, body_slices, param_slice = self._count_slices
+        param_counts = counts[param_slice]
+
+        for (inner_inputs, inner_state, nested_body_slice,
+             body_slice, inner_dungeon, inner_kwargs) in zip(
+                 all_inner_inputs, all_inner_states, nested_body_slices,
+                 body_slices, self.all_inner_dungeon, self.all_inner_kwargs):
+            nested_counts = counts[nested_body_slice]
+            body_counts = counts[body_slice]
+
+            inner_inputs, inner_counts = zip(
+                *(inner_input._apply_variables(outcome, body_counts,
+                                               param_counts)
+                  for inner_input in inner_inputs))
+            inner_state = inner_dungeon.next_state_descending(
+                inner_state, outcome, *nested_counts, *inner_counts,
+                **inner_kwargs)
+            next_all_inner_inputs.append(inner_inputs)
+            next_all_inner_states.append(inner_state)
+
+        return tuple(next_all_inner_inputs), tuple(next_all_inner_states)
 
     def extra_outcomes(self, outcomes):
         return icepool.sorted_union(
@@ -318,7 +379,38 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
               for inner_dungeon in self.all_inner_dungeon))
 
     def final_outcome(self, final_state, **kwargs):
-        raise NotImplementedError()
+        if final_state is None:
+            result = tuple(
+                inner_dungeon.final_outcome(None, **inner_kwargs)
+                for inner_dungeon, inner_kwargs in zip(self.all_inner_dungeon,
+                                                       self.all_inner_kwargs))
+        else:
+            result = tuple(
+                inner_dungeon.final_outcome(inner_final_state, **inner_kwargs)
+                for inner_dungeon, inner_final_state, inner_kwargs, in zip(
+                    self.all_inner_dungeon, final_state[1],
+                    self.all_inner_kwargs))
+        if icepool.Reroll in result:
+            return icepool.Reroll
+        else:
+            return result
+
+    @cached_property
+    def _count_slices(
+            self) -> tuple[tuple[slice, ...], tuple[slice, ...], slice]:
+        pos = 0
+        nested_body_slices = []
+        body_slices = []
+        for nested_body_len, body_len in zip(self.all_nested_body_inputs_len,
+                                             self.all_body_inputs_len):
+            nested_body_slice = slice(pos, pos + nested_body_len)
+            pos += nested_body_len
+            nested_body_slices.append(nested_body_slice)
+            body_slice = slice(pos, pos + body_len)
+            pos += body_len
+            body_slices.append(body_slice)
+        param_slice = slice(pos, None)
+        return tuple(nested_body_slices), tuple(body_slices), param_slice
 
     @cached_property
     def _hash_key(self) -> Hashable:
