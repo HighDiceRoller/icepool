@@ -8,6 +8,9 @@ from typing import Any, Callable, Generic, Hashable, Iterable, Literal, Mapping,
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression
 
+A = TypeVar('A')
+"""Any type."""
+
 A_co = TypeVar('A_co', covariant=True)
 """Any type."""
 

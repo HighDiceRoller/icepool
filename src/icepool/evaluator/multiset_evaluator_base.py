@@ -96,24 +96,31 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             self._cache = {}
 
         final_data: 'MutableMapping[icepool.Die[U_co], int]' = defaultdict(int)
-        iterators = _initialize_inputs(inputs)
-        for p in itertools.product(*iterators):
+        input_iterators = _initialize_inputs(inputs)
+        for p in itertools.product(*input_iterators):
             sub_inputs, sub_weights = zip(*p)
-            dungeon, body_inputs = self.prepare(sub_inputs, kwargs)
-            # replace with cached version if available
-            if dungeon in self._cache:
-                dungeon = self._cache[dungeon]
-            else:
-                self._cache[dungeon] = dungeon
-            # TODO: initialize body_inputs? or should this be inside prepare?
-            prod_weight = math.prod(sub_weights)
-            outcomes = icepool.sorted_union(*(expression.outcomes()
-                                              for expression in sub_inputs))
-            extra_outcomes = icepool.Alignment(
-                dungeon.extra_outcomes(outcomes))
-            sub_result = dungeon.evaluate(extra_outcomes,
-                                          body_inputs + sub_inputs, kwargs)
-            final_data[sub_result] += prod_weight
+            prod_sub_weight = math.prod(sub_weights)
+            for sub_kwargs, sub_kwargs_weight in icepool.iter_expand_kwargs(
+                    kwargs):
+                prod_weight = prod_sub_weight * sub_kwargs_weight
+                dungeon, body_inputs = self.prepare(sub_inputs, sub_kwargs)
+
+                # replace with cached version if available
+                if dungeon in self._cache:
+                    dungeon = self._cache[dungeon]
+                else:
+                    self._cache[dungeon] = dungeon
+
+                # TODO: initialize body_inputs? or should this be inside prepare?
+                prod_weight = math.prod(sub_weights)
+                outcomes = icepool.sorted_union(
+                    *(expression.outcomes() for expression in sub_inputs))
+                extra_outcomes = icepool.Alignment(
+                    dungeon.extra_outcomes(outcomes))
+                sub_result = dungeon.evaluate(extra_outcomes,
+                                              body_inputs + sub_inputs,
+                                              sub_kwargs)
+                final_data[sub_result] += prod_weight
 
         return icepool.Die(final_data)
 

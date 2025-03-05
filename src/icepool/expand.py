@@ -5,9 +5,9 @@ import icepool
 import itertools
 import math
 import operator
-from typing import Any, Callable, Hashable, Iterable, Iterator, Protocol, Sequence, Type, cast, overload
+from typing import Any, Callable, Hashable, Iterable, Iterator, Mapping, Protocol, Sequence, Type, cast, overload
 
-from icepool.typing import A_co, Outcome, S, T, T_co, U
+from icepool.typing import A, A_co, Outcome, S, T, T_co, U
 
 
 # We don't use @runtime_checkable due to poor performance and the validation is
@@ -130,3 +130,26 @@ def vectorize(
         `Vector`s with one element per argument.
     """
     return cartesian_product(*args, outcome_type=icepool.Vector)
+
+
+def iter_expand_kwargs(
+        kwargs: Mapping[str, A]) -> Iterator[tuple[Mapping[str, A], int]]:
+    """Expands all values in the given kwargs, yielding mappings with the same keys."""
+
+    if not kwargs:
+        yield {}, 1
+        return
+
+    def arg_items(arg: A) -> Sequence[tuple[A, int]]:
+        items = getattr(arg, '_items_for_cartesian_product', None)
+        if items is not None:
+            return items
+        else:
+            return [(arg, 1)]
+
+    for t in itertools.product(*(arg_items(value)
+                                 for value in kwargs.values())):
+        values, quantities = zip(*t)
+        result = {k: v for k, v in zip(kwargs.keys(), values)}
+        final_quantity = math.prod(quantities)
+        yield result, final_quantity
