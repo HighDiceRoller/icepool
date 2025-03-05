@@ -385,9 +385,6 @@
                         <li>
                                 <a class="function" href="#MultisetFunctionEvaluator.__init__">MultisetFunctionEvaluator</a>
                         </li>
-                        <li>
-                                <a class="function" href="#MultisetFunctionEvaluator.prepare">prepare</a>
-                        </li>
                 </ul>
 
             </li>
@@ -3472,7 +3469,7 @@ happens.</p>
 </span><span id="MultisetFunctionEvaluator-134"><a href="#MultisetFunctionEvaluator-134"><span class="linenos">134</span></a>
 </span><span id="MultisetFunctionEvaluator-135"><a href="#MultisetFunctionEvaluator-135"><span class="linenos">135</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
 </span><span id="MultisetFunctionEvaluator-136"><a href="#MultisetFunctionEvaluator-136"><span class="linenos">136</span></a>
-</span><span id="MultisetFunctionEvaluator-137"><a href="#MultisetFunctionEvaluator-137"><span class="linenos">137</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span>
+</span><span id="MultisetFunctionEvaluator-137"><a href="#MultisetFunctionEvaluator-137"><span class="linenos">137</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
 </span><span id="MultisetFunctionEvaluator-138"><a href="#MultisetFunctionEvaluator-138"><span class="linenos">138</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MultisetFunctionEvaluator-139"><a href="#MultisetFunctionEvaluator-139"><span class="linenos">139</span></a>        <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;tuple[MultisetExpressionBase[T, Q], ...]&#39;</span><span class="p">,</span>
 </span><span id="MultisetFunctionEvaluator-140"><a href="#MultisetFunctionEvaluator-140"><span class="linenos">140</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
@@ -3525,52 +3522,6 @@ inheritance.</p>
 
 
     
-
-                            </div>
-                            <div id="MultisetFunctionEvaluator.prepare" class="classattr">
-                                        <input id="MultisetFunctionEvaluator.prepare-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">prepare</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">inputs</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">icepool</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">~</span><span class="n">Q</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>,</span><span class="param">	<span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="MultisetFunctionEvaluator.prepare-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#MultisetFunctionEvaluator.prepare"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.prepare-137"><a href="#MultisetFunctionEvaluator.prepare-137"><span class="linenos">137</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator.prepare-138"><a href="#MultisetFunctionEvaluator.prepare-138"><span class="linenos">138</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.prepare-139"><a href="#MultisetFunctionEvaluator.prepare-139"><span class="linenos">139</span></a>        <span class="n">inputs</span><span class="p">:</span> <span class="s1">&#39;tuple[MultisetExpressionBase[T, Q], ...]&#39;</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.prepare-140"><a href="#MultisetFunctionEvaluator.prepare-140"><span class="linenos">140</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
-</span><span id="MultisetFunctionEvaluator.prepare-141"><a href="#MultisetFunctionEvaluator.prepare-141"><span class="linenos">141</span></a>    <span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator.prepare-142"><a href="#MultisetFunctionEvaluator.prepare-142"><span class="linenos">142</span></a>        <span class="n">multiset_variables</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="MultisetFunctionEvaluator.prepare-143"><a href="#MultisetFunctionEvaluator.prepare-143"><span class="linenos">143</span></a>            <span class="n">expression</span><span class="o">.</span><span class="n">_variable_type</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-</span><span id="MultisetFunctionEvaluator.prepare-144"><a href="#MultisetFunctionEvaluator.prepare-144"><span class="linenos">144</span></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">expression</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.prepare-145"><a href="#MultisetFunctionEvaluator.prepare-145"><span class="linenos">145</span></a>        <span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.prepare-146"><a href="#MultisetFunctionEvaluator.prepare-146"><span class="linenos">146</span></a>        <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">multiset_variables</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.prepare-147"><a href="#MultisetFunctionEvaluator.prepare-147"><span class="linenos">147</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_result</span><span class="p">,</span> <span class="n">MultisetFunctionRawResult</span><span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator.prepare-148"><a href="#MultisetFunctionEvaluator.prepare-148"><span class="linenos">148</span></a>            <span class="k">return</span> <span class="n">prepare_multiset_function</span><span class="p">(</span><span class="n">raw_result</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.prepare-149"><a href="#MultisetFunctionEvaluator.prepare-149"><span class="linenos">149</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.prepare-150"><a href="#MultisetFunctionEvaluator.prepare-150"><span class="linenos">150</span></a>            <span class="k">return</span> <span class="n">prepare_multiset_joint_function</span><span class="p">(</span><span class="n">raw_result</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Prepares an evaluation.</p>
-
-<p>In the future this will likely allow yielding multiple results.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>inputs:</strong>  This is just for the benefit of <code>@multiset_function</code>
-so it can know whether the arguments are single multisets or
-multiset tuples.</li>
-<li><strong>kwargs:</strong>  Used as part of the dungeon's cache key.
-<code>@multiset_function</code> also determines how to forward these to
-the inner evaluators.</li>
-</ul>
-</div>
-
 
                             </div>
                 </section>
