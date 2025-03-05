@@ -195,7 +195,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    def prepare(
+    def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],

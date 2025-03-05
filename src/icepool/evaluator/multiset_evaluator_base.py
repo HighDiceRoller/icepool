@@ -32,7 +32,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     _cache: 'MutableMapping[MultisetDungeon, MultisetDungeon] | None' = None
 
     @abstractmethod
-    def prepare(
+    def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
@@ -99,7 +99,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         iterators = _initialize_inputs(inputs)
         for p in itertools.product(*iterators):
             sub_inputs, sub_weights = zip(*p)
-            dungeon, body_inputs = self.prepare(sub_inputs, kwargs)
+            dungeon, body_inputs = self._prepare(sub_inputs, kwargs)
             # replace with cached version if available
             if dungeon in self._cache:
                 dungeon = self._cache[dungeon]

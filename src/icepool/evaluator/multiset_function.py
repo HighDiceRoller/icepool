@@ -133,7 +133,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         update_wrapper(self, wrapped)
 
-    def prepare(
+    def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
@@ -155,7 +155,7 @@ def prepare_multiset_function(
     evaluator, inner_inputs, inner_kwargs = raw_result
     body_inputs: 'list[MultisetExpressionBase]' = []
     inner_inputs = tuple(input._detach(body_inputs) for input in inner_inputs)
-    inner_dungeon, nested_body_inputs = evaluator.prepare(
+    inner_dungeon, nested_body_inputs = evaluator._prepare(
         inner_inputs, inner_kwargs)
     combined_body_inputs = nested_body_inputs + tuple(body_inputs)
     return MultisetFunctionDungeon(len(nested_body_inputs), len(body_inputs),
@@ -274,7 +274,7 @@ def prepare_multiset_joint_function(
         body_inputs: 'list[MultisetExpressionBase]' = []
         inner_inputs = tuple(
             input._detach(body_inputs) for input in inner_inputs)
-        inner_dungeon, nested_body_inputs = evaluator.prepare(
+        inner_dungeon, nested_body_inputs = evaluator._prepare(
             inner_inputs, inner_kwargs)
 
         all_nested_body_inputs_len.append(len(nested_body_inputs))
