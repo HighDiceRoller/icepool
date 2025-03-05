@@ -3,6 +3,7 @@ import icepool.evaluator
 import pytest
 
 from icepool import d4, d6, d8, d10, d12, Pool
+import icepool.evaluator.multiset_evaluator
 
 
 class VerifyOrderAscending(icepool.MultisetEvaluator):
@@ -42,13 +43,14 @@ def test_auto_order_uniform():
 
 # Above that, the auto order should favor the wide-to-narrow ordering.
 def test_auto_order_max_truncate_min():
+    # dummy object
+    dungeon = icepool.evaluator.multiset_evaluator.MultisetEvaluatorDungeon(
+        None, lambda: None, lambda: None, lambda: None, lambda: None, {})
     inputs = (Pool([d8, d6, d6, d6])[1, 1, 1, 0], )
-    input_order, eval_order = icepool.evaluator.sum_evaluator._prepare(
-        inputs, {})[0]._select_order(inputs)
+    input_order, eval_order = dungeon._select_order(inputs)
     assert input_order < 0
     assert eval_order > 0
     inputs = (Pool([d8, d6, d6, d6])[0, 1, 1, 1], )
-    input_order, eval_order = icepool.evaluator.sum_evaluator._prepare(
-        inputs, {})[0]._select_order(inputs)
+    input_order, eval_order = dungeon._select_order(inputs)
     assert input_order < 0
     assert eval_order > 0
