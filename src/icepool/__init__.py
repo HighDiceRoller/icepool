@@ -56,7 +56,7 @@ from icepool.function import (d, z, __getattr__, coin, stochastic_round,
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
-from icepool.expand import iter_cartesian_product, cartesian_product, tupleize, vectorize, iter_expand_kwargs
+from icepool.expand import iter_cartesian_product, cartesian_product, tupleize, vectorize
 from icepool.collection.vector import Vector
 from icepool.collection.symbols import Symbols
 from icepool.population.again import AgainExpression
