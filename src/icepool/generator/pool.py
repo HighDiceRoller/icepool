@@ -190,7 +190,7 @@ class Pool(KeepGenerator[T]):
         """The max outcome among all dice in this pool."""
         return self._outcomes[-1]
 
-    def _generate_initial(self):
+    def _prepare(self):
         yield self, 1
 
     def _generate_min(self, min_outcome) -> Iterator[tuple['Pool', int, int]]:

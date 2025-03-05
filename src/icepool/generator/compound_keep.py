@@ -27,7 +27,7 @@ class CompoundKeepGenerator(KeepGenerator[T]):
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_generators)
 
-    def _generate_initial(self):
+    def _prepare(self):
         yield self, 1
 
     def _generate_min(

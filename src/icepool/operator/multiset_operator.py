@@ -55,8 +55,8 @@ class MultisetOperator(MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return all(child._is_resolvable() for child in self._children)
 
-    def _generate_initial(self):
-        for t in itertools.product(*(child._generate_initial()
+    def _prepare(self):
+        for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
             new_children, weights = zip(*t)
             next_self = self._copy(new_children)

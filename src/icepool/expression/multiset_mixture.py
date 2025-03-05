@@ -44,7 +44,7 @@ class MultisetMixture(MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return all(inner._is_resolvable() for inner in self._inner_expressions)
 
-    def _generate_initial(self):
+    def _prepare(self):
         yield from self._inner_expressions.items()
 
     def _generate_min(self, min_outcome):

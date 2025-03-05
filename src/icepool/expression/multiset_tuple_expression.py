@@ -26,8 +26,7 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
 
     # Abstract overrides with more specific signatures.
     @abstractmethod
-    def _generate_initial(
-            self) -> Iterator[tuple['MultisetTupleExpression[T]', int]]:
+    def _prepare(self) -> Iterator[tuple['MultisetTupleExpression[T]', int]]:
         ...
 
     @abstractmethod
@@ -78,8 +77,8 @@ class MultisetTupleSubscript(MultisetExpression[T]):
     def _is_resolvable(self) -> bool:
         return self._children[0]._is_resolvable()
 
-    def _generate_initial(self):
-        for child, weight in self._children[0]._generate_initial():
+    def _prepare(self):
+        for child, weight in self._children[0]._prepare():
             yield MultisetTupleSubscript(child, index=self._index), weight
 
     def _generate_min(

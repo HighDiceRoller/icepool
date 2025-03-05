@@ -35,7 +35,7 @@ class Alignment(MultisetExpressionBase[T, None]):
     def _is_resolvable(self) -> bool:
         return True
 
-    def _generate_initial(self) -> InitialAlignmentGenerator:
+    def _prepare(self) -> InitialAlignmentGenerator:
         yield self, 1
 
     def _generate_min(self,

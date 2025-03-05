@@ -56,8 +56,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
         ...
 
     @abstractmethod
-    def _generate_initial(
-            self) -> Iterator[tuple['MultisetExpressionBase[T, Q]', int]]:
+    def _prepare(self) -> Iterator[tuple['MultisetExpressionBase[T, Q]', int]]:
         """Initialize the expression before any outcomes are emitted.
 
         Yields:

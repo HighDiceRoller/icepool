@@ -93,7 +93,7 @@ class MultiDeal(MultisetTupleGenerator[T]):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _generate_initial(self):
+    def _prepare(self):
         yield self, 1
 
     def _generate_common(

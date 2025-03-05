@@ -81,7 +81,7 @@ class Deal(KeepGenerator[T]):
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self._hand_size)
 
-    def _generate_initial(self):
+    def _prepare(self):
         yield self, 1
 
     def _generate_min(self, min_outcome) -> Iterator[tuple['Deal', int, int]]:

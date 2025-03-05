@@ -136,8 +136,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
     # Abstract overrides with more specific signatures.
     @abstractmethod
-    def _generate_initial(
-            self) -> Iterator[tuple['MultisetExpression[T]', int]]:
+    def _prepare(self) -> Iterator[tuple['MultisetExpression[T]', int]]:
         ...
 
     @abstractmethod

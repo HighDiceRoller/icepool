@@ -21,7 +21,7 @@ class MultisetVariable(MultisetExpression, MultisetVariableBase):
     def _is_resolvable(self) -> bool:
         raise icepool.MultisetVariableError()
 
-    def _generate_initial(self):
+    def _prepare(self):
         raise icepool.MultisetVariableError()
 
     def _generate_min(self, min_outcome):
