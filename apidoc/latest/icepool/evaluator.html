@@ -3542,6 +3542,17 @@ inheritance.</p>
             <div class="docstring"><p>Prepares an evaluation.</p>
 
 <p>In the future this will likely allow yielding multiple results.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>inputs:</strong>  This is just for the benefit of <code>@multiset_function</code>
+so it can know whether the arguments are single multisets or
+multiset tuples.</li>
+<li><strong>kwargs:</strong>  Used as part of the dungeon's cache key.
+<code>@multiset_function</code> also determines how to forward these to
+the inner evaluators.</li>
+</ul>
 </div>
 
 
