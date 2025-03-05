@@ -20,18 +20,27 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
     Outcomes with negative count will be treated as 0 count.
     """
 
-    def __init__(self, order: Order = Order.Ascending):
-        self._order = order
-
-    def next_state(self, state, outcome, count):
+    def next_state(  # type: ignore
+            self,
+            state,
+            outcome,
+            count,
+            /,
+            *,
+            order: Order = Order.Ascending):
         """Implementation."""
         return (state or ()) + (outcome, ) * count
 
-    def final_outcome(self, final_state) -> tuple:
+    def final_outcome(  # type: ignore
+            self,
+            final_state,
+            /,
+            *,
+            order: Order = Order.Ascending) -> tuple:
         """Implementation."""
         if final_state is None:
             return ()
-        reverse = self._order != Order.Ascending
+        reverse = order != Order.Ascending
         return tuple(sorted(final_state, reverse=reverse))
 
 
@@ -88,7 +97,8 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return (state or 0) + count
 
-    def final_outcome(self, final_state) -> int:
+    def final_outcome(  # type: ignore
+            self, final_state) -> int:
         """Implementation."""
         return final_state or 0
 
@@ -104,7 +114,8 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
         """Implementation."""
         return state or (count > 0)
 
-    def final_outcome(self, final_state) -> bool:
+    def final_outcome(  # type: ignore
+            self, final_state) -> bool:
         """Implementation."""
         return final_state or False
 

@@ -65,7 +65,8 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         else:
             return state
 
-    def final_outcome(self, final_state) -> tuple:
+    def final_outcome(  # type: ignore
+            self, final_state) -> tuple:
         """Implementation."""
         if final_state is None:
             return ()
@@ -145,7 +146,8 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
             run = 0
         return max(best_run, run), run
 
-    def final_outcome(self, final_state) -> int:
+    def final_outcome(  # type: ignore
+            self, final_state) -> int:
         """Implementation."""
         if final_state is None:
             return 0
@@ -215,7 +217,8 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
             else:
                 return best_run, best_outcome, run
 
-    def final_outcome(self, final_state) -> tuple[int, int]:
+    def final_outcome(  # type: ignore
+            self, final_state) -> tuple[int, int]:
         best_run, best_outcome, run = final_state
         return best_run, best_outcome
 
@@ -252,7 +255,8 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
             next_ended_runs = ended_runs
         return next_current_runs, next_ended_runs
 
-    def final_outcome(self, final_state) -> tuple[int, ...]:
+    def final_outcome(  # type: ignore
+            self, final_state) -> tuple[int, ...]:
         """Implementation."""
         current_runs, ended_runs = final_state or ((), ())
         return tuple(sorted(current_runs + ended_runs, reverse=True))
@@ -304,7 +308,8 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
             current_run_score = None
         return current_run_length, current_run_score, ended_runs
 
-    def final_outcome(self, final_state) -> tuple[tuple[int, int], ...]:
+    def final_outcome(  # type: ignore
+            self, final_state) -> tuple[tuple[int, int], ...]:
         """Implementation."""
         current_run_length, current_run_score, ended_runs = final_state or (
             None, None, ())

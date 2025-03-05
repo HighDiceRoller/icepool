@@ -29,7 +29,7 @@ class MultisetArityError(ValueError):
 
 @overload
 def implicit_convert_to_expression(
-    arg: 'MultisetExpression[T]| Mapping[T, int] | Sequence[T]'
+    arg: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
 ) -> 'MultisetExpression[T]':
     ...
 
@@ -59,7 +59,7 @@ def implicit_convert_to_expression(
     if isinstance(arg, MultisetExpressionBase):
         return arg
     elif isinstance(arg, (Mapping, Sequence)):
-        return icepool.Pool(arg)
+        return icepool.Pool(arg)  # type: ignore
     else:
         raise ImplicitConversionError(
             f'Argument of type {arg.__class__.__name__} cannot be implicitly converted to a Pool.'
@@ -851,7 +851,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             order: Whether the elements are in ascending (default) or descending
                 order.
         """
-        return icepool.evaluator.ExpandEvaluator(order=order).evaluate(self)
+        return icepool.evaluator.ExpandEvaluator().evaluate(self, order=order)
 
     def sum(
         self,
