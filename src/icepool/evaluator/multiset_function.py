@@ -1,5 +1,7 @@
 __docformat__ = 'google'
 
+import itertools
+import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetEvaluatorBase
 from icepool.expression.base import MultisetExpressionBase
@@ -11,7 +13,7 @@ from functools import cached_property, update_wrapper
 
 from icepool.order import Order
 from icepool.typing import Q, T, U_co
-from typing import Any, Callable, Collection, Generic, Hashable, Mapping, NamedTuple, Sequence, TypeAlias, overload
+from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, NamedTuple, Sequence, TypeAlias, overload
 
 MV: TypeAlias = MultisetVariable | MultisetTupleVariable
 
@@ -144,23 +146,23 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
         if isinstance(raw_result, MultisetFunctionRawResult):
-            return prepare_multiset_function(raw_result)
+            yield from prepare_multiset_function(raw_result)
         else:
-            return prepare_multiset_joint_function(raw_result)
+            yield from prepare_multiset_joint_function(raw_result)
 
 
 def prepare_multiset_function(
     raw_result: 'MultisetFunctionRawResult[T, U_co]'
-) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
+) -> 'Iterator[tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...], int]]':
     evaluator, inner_inputs, inner_kwargs = raw_result
     body_inputs: 'list[MultisetExpressionBase]' = []
     inner_inputs = tuple(input._detach(body_inputs) for input in inner_inputs)
-    inner_dungeon, nested_body_inputs = evaluator._prepare(
-        inner_inputs, inner_kwargs)
-    combined_body_inputs = nested_body_inputs + tuple(body_inputs)
-    return MultisetFunctionDungeon(len(nested_body_inputs), len(body_inputs),
-                                   inner_inputs, inner_dungeon,
-                                   inner_kwargs), tuple(combined_body_inputs)
+    for inner_dungeon, nested_body_inputs, weight in evaluator._prepare(
+            inner_inputs, inner_kwargs):
+        combined_body_inputs = nested_body_inputs + tuple(body_inputs)
+        yield MultisetFunctionDungeon(
+            len(nested_body_inputs), len(body_inputs), inner_inputs,
+            inner_dungeon, inner_kwargs), tuple(combined_body_inputs), weight
 
 
 class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
@@ -263,34 +265,31 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
 
 def prepare_multiset_joint_function(
     raw_result: 'tuple[MultisetFunctionRawResult[T, U_co], ...]'
-) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
-    all_nested_body_inputs_len: list[int] = []
-    all_body_inputs_len: list[int] = []
-    all_inner_inputs = []
-    all_inner_dungeon = []
-    all_inner_kwargs = []
-    all_combined_body_inputs = []
-    for evaluator, inner_inputs, inner_kwargs in raw_result:
+) -> 'Iterator[tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...], int]]':
+
+    def inner_info(raw: MultisetFunctionRawResult):
+        evaluator, inner_inputs, inner_kwargs = raw
         body_inputs: 'list[MultisetExpressionBase]' = []
         inner_inputs = tuple(
             input._detach(body_inputs) for input in inner_inputs)
-        inner_dungeon, nested_body_inputs = evaluator._prepare(
-            inner_inputs, inner_kwargs)
+        for inner_dungeon, nested_body_inputs, weight in evaluator._prepare(
+                inner_inputs, inner_kwargs):
+            yield (nested_body_inputs, tuple(body_inputs), inner_inputs,
+                   inner_dungeon, inner_kwargs, weight)
 
-        all_nested_body_inputs_len.append(len(nested_body_inputs))
-        all_body_inputs_len.append(len(body_inputs))
-
-        all_inner_inputs.append(inner_inputs)
-        all_inner_dungeon.append(inner_dungeon)
-
-        all_combined_body_inputs += list(nested_body_inputs)
-        all_combined_body_inputs += body_inputs
-
-        all_inner_kwargs.append(inner_kwargs)
-    return MultisetFunctionJointDungeon(
-        tuple(all_nested_body_inputs_len), tuple(all_body_inputs_len),
-        tuple(all_inner_inputs), tuple(all_inner_dungeon),
-        tuple(all_inner_kwargs)), tuple(all_combined_body_inputs)
+    for t in itertools.product(*(inner_info(raw) for raw in raw_result)):
+        (all_nested_body_inputs, all_body_inputs, all_inner_inputs,
+         all_inner_dungeon, all_inner_kwargs, all_weight) = zip(*t)
+        all_nested_body_inputs_len = tuple(
+            len(x) for x in all_nested_body_inputs)
+        all_body_inputs_len = tuple(len(x) for x in all_body_inputs)
+        all_combined_body_inputs = (
+            *itertools.chain.from_iterable(all_nested_body_inputs),
+            *itertools.chain.from_iterable(all_body_inputs))
+        yield MultisetFunctionJointDungeon(
+            all_nested_body_inputs_len, all_body_inputs_len, all_inner_inputs,
+            all_inner_dungeon,
+            all_inner_kwargs), all_combined_body_inputs, math.prod(all_weight)
 
 
 class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
@@ -410,14 +409,15 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
         pos = 0
         nested_body_slices = []
         body_slices = []
-        for nested_body_len, body_len in zip(self.all_nested_body_inputs_len,
-                                             self.all_body_inputs_len):
-            nested_body_slice = slice(pos, pos + nested_body_len)
-            pos += nested_body_len
+        for nested_len in self.all_nested_body_inputs_len:
+            nested_body_slice = slice(pos, pos + nested_len)
+            pos += nested_len
             nested_body_slices.append(nested_body_slice)
+        for body_len in self.all_body_inputs_len:
             body_slice = slice(pos, pos + body_len)
             pos += body_len
             body_slices.append(body_slice)
+
         param_slice = slice(pos, None)
         return tuple(nested_body_slices), tuple(body_slices), param_slice
 

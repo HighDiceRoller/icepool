@@ -30,10 +30,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...]]':
+    ) -> 'Iterator[tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...], int]]':
         """Prepares an evaluation.
-        
-        In the future this will likely allow yielding multiple results.
 
         Args:
             inputs: This is just for the benefit of `@multiset_function`
@@ -42,6 +40,9 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             kwargs: Used as part of the dungeon's cache key.
                 `@multiset_function` also determines how to forward these to
                 the inner evaluators.
+
+        Yields:
+            dungeon, body_inputs, weight
         """
 
     def evaluate(
@@ -93,21 +94,24 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         for p in itertools.product(*(expression._prepare()
                                      for expression in inputs)):
             sub_inputs, sub_weights = zip(*p)
-            dungeon, body_inputs = self._prepare(sub_inputs, kwargs)
-            # replace with cached version if available
-            if dungeon in self._cache:
-                dungeon = self._cache[dungeon]
-            else:
-                self._cache[dungeon] = dungeon
-            # TODO: initialize body_inputs? or should this be inside prepare?
-            prod_weight = math.prod(sub_weights)
-            outcomes = icepool.sorted_union(*(expression.outcomes()
-                                              for expression in sub_inputs))
-            extra_outcomes = icepool.Alignment(
-                dungeon.extra_outcomes(outcomes))
-            sub_result = dungeon.evaluate(extra_outcomes,
-                                          body_inputs + sub_inputs, kwargs)
-            final_data[sub_result] += prod_weight
+            for dungeon, body_inputs, dungeon_weight in self._prepare(
+                    sub_inputs, kwargs):
+                # TODO: initialize body_inputs inside prepare
+
+                # replace dungeon with cached version if available
+                if dungeon in self._cache:
+                    dungeon = self._cache[dungeon]
+                else:
+                    self._cache[dungeon] = dungeon
+
+                prod_weight = math.prod(sub_weights) * dungeon_weight
+                outcomes = icepool.sorted_union(
+                    *(expression.outcomes() for expression in sub_inputs))
+                extra_outcomes = icepool.Alignment(
+                    dungeon.extra_outcomes(outcomes))
+                sub_result = dungeon.evaluate(extra_outcomes,
+                                              body_inputs + sub_inputs, kwargs)
+                final_data[sub_result] += prod_weight
 
         return icepool.Die(final_data)
 
