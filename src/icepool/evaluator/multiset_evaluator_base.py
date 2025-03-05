@@ -21,12 +21,6 @@ if TYPE_CHECKING:
     from icepool import MultisetExpression
 
 
-def _prepare_inputs(
-    inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
-) -> 'tuple[Iterator[tuple[MultisetExpressionBase[T, Q], int]], ...]':
-    return tuple(expression._prepare() for expression in inputs)
-
-
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
     _cache: 'MutableMapping[MultisetDungeon, MultisetDungeon] | None' = None
@@ -96,8 +90,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             self._cache = {}
 
         final_data: 'MutableMapping[icepool.Die[U_co], int]' = defaultdict(int)
-        iterators = _prepare_inputs(inputs)
-        for p in itertools.product(*iterators):
+        for p in itertools.product(*(expression._prepare()
+                                     for expression in inputs)):
             sub_inputs, sub_weights = zip(*p)
             dungeon, body_inputs = self._prepare(sub_inputs, kwargs)
             # replace with cached version if available
