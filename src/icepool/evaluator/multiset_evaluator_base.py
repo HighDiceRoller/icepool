@@ -58,8 +58,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         fixed number of input multisets of these. The union of the outcomes of
         the input(s) must be totally orderable.
 
-        Keyword arguments are non-multisets. Currently they are not expanded
-        (in the sense of `map()`) but this is likely to change.
+        Non-multiset arguments can be provided as keyword arguments.
 
         Args:
             *args: Each may be one of the following:

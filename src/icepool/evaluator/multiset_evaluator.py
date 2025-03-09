@@ -30,8 +30,10 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         * Rename `state` or `outcome` in a subclass.
         * Replace `*counts` with a fixed set of parameters.
 
-        **kwargs are non-multiset arguments that were provided to evaluate().
-        You may replace **kwargs with a fixed set of keyword parameters.
+        `**kwargs` are non-multiset arguments that were provided to
+        `evaluate()`.
+        You may replace `**kwargs` with a fixed set of keyword parameters;
+        `final_state()` should take the same set of keyword parameters.
 
         Make sure to handle the base case where `state is None`.
 
@@ -122,6 +124,11 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         be callled with `final_state=None`.
         Subclasses that want to handle this case should explicitly define what
         happens.
+
+        `**kwargs` are non-multiset arguments that were provided to
+        `evaluate()`.
+        You may replace `**kwargs` with a fixed set of keyword parameters;
+        `final_state()` should take the same set of keyword parameters.
 
         Args:
             final_state: A state after all outcomes have been processed.

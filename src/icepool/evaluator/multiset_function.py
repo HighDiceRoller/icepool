@@ -78,8 +78,7 @@ def multiset_function(wrapped: Callable[
 
     count_outcomes(a, target=[5, 6])
     ```
-    Currently non-multiset variables are not expanded (in the sense of `map`)
-    but this is likely to change in the future.
+    Non-multiset arguments can be provided as keyword arguments.
 
     I recommend to only use pure functions with `@multiset_function`.
 
@@ -102,8 +101,6 @@ def multiset_function(wrapped: Callable[
     Args:
         function: This should take in multiset expressions as positional
             arguments, and non-multiset variables as keyword arguments.
-            Currently keyword arguments are not expanded (in the sense of `map`)
-            but this is likely to change in the future.
     """
     return MultisetFunctionEvaluator(wrapped)
 
