@@ -63,24 +63,24 @@ def multiset_function(wrapped: Callable[
 
     For example, to create an evaluator which computes the elements each of two
     multisets has that the other doesn't:
-
     ```python
     @multiset_function
     def two_way_difference(a, b):
         return (a - b).expand(), (b - a).expand()
     ```
 
-    You can send non-multiset variables as keyword arguments:
+    You can send non-multiset variables as keyword arguments
+    (recommended to be defined as keyword-only).
     ```python
     @multiset_function
-    def count_outcomes(a, target):
+    def count_outcomes(a, *, target):
         return a.keep_outcomes(target).count()
 
     count_outcomes(a, target=[5, 6])
     ```
-    Non-multiset arguments can be provided as keyword arguments.
 
-    I recommend to only use pure functions with `@multiset_function`.
+    While in theory `@multiset_function` implements late binding similar to
+    ordinary Python functions, I recommend using only pure functions.
 
     Be careful when using control structures: you cannot branch on the value of
     a multiset expression or evaluation, so e.g.
