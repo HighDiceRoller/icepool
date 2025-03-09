@@ -113,7 +113,8 @@ class MultisetMixture(MultisetExpression[T]):
         if self._can_keep:
             result = self._unary_operation(lambda inner: inner.keep(index))
             if isinstance(index, int):
-                return icepool.evaluator.KeepEvaluator().evaluate(result)
+                return icepool.evaluator.keep_evaluator.evaluate(result,
+                                                                 index=None)
             else:
                 return result
         else:

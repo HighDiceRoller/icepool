@@ -19,7 +19,7 @@ from icepool.evaluator.comparison import (
     ComparisonEvaluator, IsSubsetEvaluator, IsProperSubsetEvaluator,
     IsSupersetEvaluator, IsProperSupersetEvaluator, IsEqualSetEvaluator,
     IsNotEqualSetEvaluator, IsDisjointSetEvaluator)
-from icepool.evaluator.keep import KeepEvaluator
+from icepool.evaluator.keep import KeepEvaluator, keep_evaluator
 from icepool.evaluator.argsort import ArgsortEvaluator
 from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
 
@@ -37,5 +37,5 @@ __all__ = [
     'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
     'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'KeepEvaluator',
-    'ArgsortEvaluator', 'MultisetFunctionEvaluator'
+    'keep_evaluator', 'ArgsortEvaluator', 'MultisetFunctionEvaluator'
 ]

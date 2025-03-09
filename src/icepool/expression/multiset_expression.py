@@ -580,7 +580,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Use the `[]` operator for the same effect as this method.
         """
         if isinstance(index, int):
-            return icepool.evaluator.KeepEvaluator(index).evaluate(self)
+            return icepool.evaluator.keep_evaluator.evaluate(self, index=index)
         else:
             return icepool.operator.MultisetKeep(self, index=index)
 

@@ -151,8 +151,9 @@ class KeepGenerator(MultisetGenerator[T]):
         result = self._set_keep_tuple(keep_tuple)
 
         if convert_to_die:
-            return cast(icepool.Die[T],
-                        icepool.evaluator.KeepEvaluator().evaluate(result))
+            return cast(
+                icepool.Die[T],
+                icepool.evaluator.keep_evaluator.evaluate(result, index=None))
         else:
             return result
 

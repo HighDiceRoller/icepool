@@ -295,7 +295,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         final_outcomes = []
         final_weights = []
         for state, weight in final_states.items():
-            outcome = self.final_outcome(state)
+            outcome = self.final_outcome(state, **kwargs)
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome.\n"
