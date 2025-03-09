@@ -17195,24 +17195,24 @@ Prefer to use the name <code><a href="#MultiDeal.outcomes">outcomes</a></code>.<
 </span><span id="multiset_function-64"><a href="#multiset_function-64"><span class="linenos"> 64</span></a>
 </span><span id="multiset_function-65"><a href="#multiset_function-65"><span class="linenos"> 65</span></a><span class="sd">    For example, to create an evaluator which computes the elements each of two</span>
 </span><span id="multiset_function-66"><a href="#multiset_function-66"><span class="linenos"> 66</span></a><span class="sd">    multisets has that the other doesn&#39;t:</span>
-</span><span id="multiset_function-67"><a href="#multiset_function-67"><span class="linenos"> 67</span></a>
-</span><span id="multiset_function-68"><a href="#multiset_function-68"><span class="linenos"> 68</span></a><span class="sd">    ```python</span>
-</span><span id="multiset_function-69"><a href="#multiset_function-69"><span class="linenos"> 69</span></a><span class="sd">    @multiset_function</span>
-</span><span id="multiset_function-70"><a href="#multiset_function-70"><span class="linenos"> 70</span></a><span class="sd">    def two_way_difference(a, b):</span>
-</span><span id="multiset_function-71"><a href="#multiset_function-71"><span class="linenos"> 71</span></a><span class="sd">        return (a - b).expand(), (b - a).expand()</span>
-</span><span id="multiset_function-72"><a href="#multiset_function-72"><span class="linenos"> 72</span></a><span class="sd">    ```</span>
-</span><span id="multiset_function-73"><a href="#multiset_function-73"><span class="linenos"> 73</span></a>
-</span><span id="multiset_function-74"><a href="#multiset_function-74"><span class="linenos"> 74</span></a><span class="sd">    You can send non-multiset variables as keyword arguments:</span>
+</span><span id="multiset_function-67"><a href="#multiset_function-67"><span class="linenos"> 67</span></a><span class="sd">    ```python</span>
+</span><span id="multiset_function-68"><a href="#multiset_function-68"><span class="linenos"> 68</span></a><span class="sd">    @multiset_function</span>
+</span><span id="multiset_function-69"><a href="#multiset_function-69"><span class="linenos"> 69</span></a><span class="sd">    def two_way_difference(a, b):</span>
+</span><span id="multiset_function-70"><a href="#multiset_function-70"><span class="linenos"> 70</span></a><span class="sd">        return (a - b).expand(), (b - a).expand()</span>
+</span><span id="multiset_function-71"><a href="#multiset_function-71"><span class="linenos"> 71</span></a><span class="sd">    ```</span>
+</span><span id="multiset_function-72"><a href="#multiset_function-72"><span class="linenos"> 72</span></a>
+</span><span id="multiset_function-73"><a href="#multiset_function-73"><span class="linenos"> 73</span></a><span class="sd">    You can send non-multiset variables as keyword arguments</span>
+</span><span id="multiset_function-74"><a href="#multiset_function-74"><span class="linenos"> 74</span></a><span class="sd">    (recommended to be defined as keyword-only).</span>
 </span><span id="multiset_function-75"><a href="#multiset_function-75"><span class="linenos"> 75</span></a><span class="sd">    ```python</span>
 </span><span id="multiset_function-76"><a href="#multiset_function-76"><span class="linenos"> 76</span></a><span class="sd">    @multiset_function</span>
-</span><span id="multiset_function-77"><a href="#multiset_function-77"><span class="linenos"> 77</span></a><span class="sd">    def count_outcomes(a, target):</span>
+</span><span id="multiset_function-77"><a href="#multiset_function-77"><span class="linenos"> 77</span></a><span class="sd">    def count_outcomes(a, *, target):</span>
 </span><span id="multiset_function-78"><a href="#multiset_function-78"><span class="linenos"> 78</span></a><span class="sd">        return a.keep_outcomes(target).count()</span>
 </span><span id="multiset_function-79"><a href="#multiset_function-79"><span class="linenos"> 79</span></a>
 </span><span id="multiset_function-80"><a href="#multiset_function-80"><span class="linenos"> 80</span></a><span class="sd">    count_outcomes(a, target=[5, 6])</span>
 </span><span id="multiset_function-81"><a href="#multiset_function-81"><span class="linenos"> 81</span></a><span class="sd">    ```</span>
-</span><span id="multiset_function-82"><a href="#multiset_function-82"><span class="linenos"> 82</span></a><span class="sd">    Non-multiset arguments can be provided as keyword arguments.</span>
-</span><span id="multiset_function-83"><a href="#multiset_function-83"><span class="linenos"> 83</span></a>
-</span><span id="multiset_function-84"><a href="#multiset_function-84"><span class="linenos"> 84</span></a><span class="sd">    I recommend to only use pure functions with `@multiset_function`.</span>
+</span><span id="multiset_function-82"><a href="#multiset_function-82"><span class="linenos"> 82</span></a>
+</span><span id="multiset_function-83"><a href="#multiset_function-83"><span class="linenos"> 83</span></a><span class="sd">    While in theory `@multiset_function` implements late binding similar to</span>
+</span><span id="multiset_function-84"><a href="#multiset_function-84"><span class="linenos"> 84</span></a><span class="sd">    ordinary Python functions, I recommend using only pure functions.</span>
 </span><span id="multiset_function-85"><a href="#multiset_function-85"><span class="linenos"> 85</span></a>
 </span><span id="multiset_function-86"><a href="#multiset_function-86"><span class="linenos"> 86</span></a><span class="sd">    Be careful when using control structures: you cannot branch on the value of</span>
 </span><span id="multiset_function-87"><a href="#multiset_function-87"><span class="linenos"> 87</span></a><span class="sd">    a multiset expression or evaluation, so e.g.</span>
@@ -17255,20 +17255,20 @@ multisets has that the other doesn't:</p>
 </code></pre>
 </div>
 
-<p>You can send non-multiset variables as keyword arguments:</p>
+<p>You can send non-multiset variables as keyword arguments
+(recommended to be defined as keyword-only).</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="nd">@multiset_function</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">count_outcomes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_outcomes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">keep_outcomes</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 
 <span class="n">count_outcomes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
 </code></pre>
 </div>
 
-<p>Non-multiset arguments can be provided as keyword arguments.</p>
-
-<p>I recommend to only use pure functions with <code>@multiset_function</code>.</p>
+<p>While in theory <code>@multiset_function</code> implements late binding similar to
+ordinary Python functions, I recommend using only pure functions.</p>
 
 <p>Be careful when using control structures: you cannot branch on the value of
 a multiset expression or evaluation, so e.g.</p>
