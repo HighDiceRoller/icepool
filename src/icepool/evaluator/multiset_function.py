@@ -160,6 +160,7 @@ def prepare_multiset_function(
     for inner_dungeon, nested_body_inputs, weight in evaluator._prepare(
             inner_inputs, inner_kwargs):
         combined_body_inputs = nested_body_inputs + tuple(body_inputs)
+        # TODO: make this a MultisetFunctionRawResult.__iter__?
         yield MultisetFunctionDungeon(
             len(nested_body_inputs), len(body_inputs), inner_inputs,
             inner_dungeon, inner_kwargs), tuple(combined_body_inputs), weight

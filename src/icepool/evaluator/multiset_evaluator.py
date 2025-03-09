@@ -40,20 +40,16 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         orderable, you must override `final_outcome` to create totally orderable
         final outcomes.
 
-        By default, this method may receive outcomes in any order:
+        By default, this method may receive outcomes in any order. You can
+        adjust this as follows:
         
         * If you want to guarantee ascending or descending order, you can 
           implement `next_state_ascending()` or `next_state_descending()` 
-          instead.
-        * Alternatively, implement `next_state()` and override `order()` to
-          return the necessary order. This is useful if the necessary order
-          depends on the instance.
-        * If you want to handle either order, but have a different 
-          implementation for each, override both `next_state_ascending()` and 
-          `next_state_descending()`. If your evaluator wraps subevaluator(s),
-          you can do this and use `subevaluator.next_state_method(order)` to
-          retrieve the correct method for the subevaluator(s).
-          See `JointEvaluator` for an example.
+          instead. You can implement both if you want the implementation to
+          depend on order.
+        * You can raise an `UnsupportedOrderError` if you don't want to 
+          support the current order. In this case, the opposite order will then 
+          be attempted (if it hasn't already been attempted).
 
         The behavior of returning a `Die` from `next_state` is currently
         undefined.

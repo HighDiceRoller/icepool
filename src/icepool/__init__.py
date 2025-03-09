@@ -22,7 +22,7 @@ __version__ = '1.7.2'
 from typing import Final
 
 from icepool.typing import Outcome, RerollType
-from icepool.order import Order
+from icepool.order import Order, ConflictingOrderError, UnsupportedOrderError
 
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
@@ -163,7 +163,8 @@ __all__ = [
     'commonize_denominator', 'reduce', 'accumulate', 'map', 'map_function',
     'map_and_time', 'map_to_pool', 'Reroll', 'RerollType', 'Pool',
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
-    'MultisetEvaluator', 'Order', 'Deck', 'Deal', 'MultiDeal',
-    'multiset_function', 'function', 'typing', 'evaluator',
-    'format_probability_inverse', 'Wallenius'
+    'MultisetEvaluator', 'Order', 'ConflictingOrderError',
+    'UnsupportedOrderError', 'Deck', 'Deal', 'MultiDeal', 'multiset_function',
+    'function', 'typing', 'evaluator', 'format_probability_inverse',
+    'Wallenius'
 ]

@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.order import ConflictingOrderError, Order, OrderReason, merge_order_preferences
+from icepool.order import ConflictingOrderError, Order, OrderReason, UnsupportedOrderError, merge_order_preferences
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -152,54 +152,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
-    def evaluation_order(self) -> Order:
-        """Which evaluation orders are supported."""
-        if self.next_state_ascending is not None and self.next_state_descending is not None:
-            return Order.Any
-        elif self.next_state_ascending is not None:
-            return Order.Ascending
-        elif self.next_state_descending is not None:
-            return Order.Descending
-        else:
-            raise ConflictingOrderError('No evaluation order is supported.')
-
-    def _select_order(
-        self, inputs: 'Sequence[MultisetExpressionBase[T, Any]]'
-    ) -> tuple[Order, Order]:
-        """Selects a iteration order.
-
-        Note that we prefer the input order to be opposite the eval order.
-
-        Returns:
-            * The input (pop) order to use.
-            * The eval (next_state) order to use.
-        """
-        eval_order = self.evaluation_order()
-
-        if not inputs:
-            # No inputs.
-            return Order(-eval_order), eval_order
-
-        input_order, input_order_reason = merge_order_preferences(
-            *(input.order_preference() for input in inputs))
-
-        if input_order is None:
-            input_order = Order.Any
-            input_order_reason = OrderReason.NoPreference
-
-        # No mandatory evaluation order, go with preferred algorithm.
-        # Note that this has order *opposite* the pop order.
-        if eval_order == Order.Any:
-            eval_order = Order(-input_order or Order.Ascending)
-            return Order(-eval_order), eval_order
-
-        # Mandatory evaluation order.
-        if input_order == Order.Any:
-            return Order(-eval_order), eval_order
-        else:
-            return input_order, eval_order
-
-    def evaluate_backward(self, eval_order: Order,
+    def evaluate_backward(self, input_order: Order,
                           extra_outcomes: 'Alignment[T]',
                           inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
                           kwargs: Mapping[str, Hashable]) -> Mapping[Any, int]:
@@ -218,12 +171,17 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        if eval_order > 0:
-            cache = self.ascending_cache
-            next_state_function = cast(Callable, self.next_state_ascending)
-        else:
+        # Since this is the backward evaluation, these are opposite of the
+        # input order.
+        if input_order > 0:
             cache = self.descending_cache
-            next_state_function = cast(Callable, self.next_state_descending)
+            next_state_function = self.next_state_descending
+        else:
+            cache = self.ascending_cache
+            next_state_function = self.next_state_ascending
+
+        if next_state_function is None:
+            raise UnsupportedOrderError()
 
         cache_key = (extra_outcomes, inputs, None)
         if cache_key in cache:
@@ -236,11 +194,11 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             result = {None: 1}
         else:
             outcome, prev_extra_outcomes, iterators = MultisetDungeon._pop_inputs(
-                Order(-eval_order), extra_outcomes, inputs)
+                input_order, extra_outcomes, inputs)
             for p in itertools.product(*iterators):
                 prev_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self.evaluate_backward(eval_order, prev_extra_outcomes,
+                prev = self.evaluate_backward(input_order, prev_extra_outcomes,
                                               prev_inputs, kwargs)
                 for prev_state, prev_weight in prev.items():
                     state = next_state_function(prev_state, outcome, *counts,
@@ -252,7 +210,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         return result
 
     def evaluate_forward(self,
-                         eval_order: Order,
+                         input_order: Order,
                          extra_outcomes: 'Alignment[T]',
                          inputs: 'tuple[icepool.MultisetExpression[T], ...]',
                          kwargs: Mapping[str, Hashable],
@@ -272,12 +230,15 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        if eval_order > 0:
+        if input_order > 0:
             cache = self.ascending_cache
-            next_state_function = cast(Callable, self.next_state_ascending)
+            next_state_function = self.next_state_ascending
         else:
             cache = self.descending_cache
-            next_state_function = cast(Callable, self.next_state_descending)
+            next_state_function = self.next_state_descending
+
+        if next_state_function is None:
+            raise UnsupportedOrderError()
 
         cache_key = (extra_outcomes, inputs, initial_state)
         if cache_key in cache:
@@ -290,14 +251,14 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             result = {initial_state: 1}
         else:
             outcome, next_extra_outcomes, iterators = MultisetDungeon._pop_inputs(
-                eval_order, extra_outcomes, inputs)
+                input_order, extra_outcomes, inputs)
             for p in itertools.product(*iterators):
                 next_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
                 next_state = next_state_function(initial_state, outcome,
                                                  *counts, **kwargs)
                 if next_state is not icepool.Reroll:
-                    final_dist = self.evaluate_forward(eval_order,
+                    final_dist = self.evaluate_forward(input_order,
                                                        next_extra_outcomes,
                                                        next_inputs, kwargs,
                                                        next_state)
@@ -311,13 +272,25 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                  inputs: 'tuple[icepool.MultisetExpression[T], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
-        input_order, eval_order = self._select_order(inputs)
-        if input_order == eval_order:
-            final_states = self.evaluate_forward(eval_order, extra_outcomes,
-                                                 inputs, kwargs)
-        else:
-            final_states = self.evaluate_backward(eval_order, extra_outcomes,
+
+        input_order, input_order_reason = merge_order_preferences(
+            (Order.Descending, OrderReason.Default),
+            *(input.order_preference() for input in inputs))
+
+        try:
+            final_states = self.evaluate_backward(input_order, extra_outcomes,
                                                   inputs, kwargs)
+        except UnsupportedOrderError:
+            try:
+                final_states = self.evaluate_forward(input_order,
+                                                     extra_outcomes, inputs,
+                                                     kwargs)
+            except UnsupportedOrderError:
+                raise ConflictingOrderError(
+                    'Neither ascending nor descending order is compatable with the evaluation. '
+                    +
+                    f'Preferred input order was {input_order.name} with reason {input_order_reason.name}.'
+                )
 
         final_outcomes = []
         final_weights = []

@@ -7,8 +7,16 @@ import enum
 from typing import Collection
 
 
-class ConflictingOrderError(Exception):
+class OrderError(Exception):
+    """An error realted to outcome orderings."""
+
+
+class ConflictingOrderError(OrderError):
     """Indicates that two conflicting mandatory outcome orderings were encountered."""
+
+
+class UnsupportedOrderError(OrderError):
+    """Indicates that the given order is not supported under the current context."""
 
 
 class Order(enum.IntEnum):
@@ -43,12 +51,14 @@ class Order(enum.IntEnum):
 
 class OrderReason(enum.IntEnum):
     """Greater values represent higher priorities, which strictly override lower priorities."""
-    Mandatory = 3
+    Mandatory = 4
     """Something strictly requires this pop order."""
-    PoolComposition = 2
+    PoolComposition = 3
     """The composition of dice in the pool favor this pop order."""
-    KeepSkip = 1
+    KeepSkip = 2
     """The keep_tuple for allows more skips in this pop order."""
+    Default = 1
+    """This ordering is preferred by default."""
     NoPreference = 0
     """There is no preference for either pop order."""
 
