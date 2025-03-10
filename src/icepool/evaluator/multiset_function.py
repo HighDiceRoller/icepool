@@ -185,6 +185,8 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
                  inner_inputs: tuple[MultisetExpressionBase[T, Any], ...],
                  inner_dungeon: MultisetDungeon[T, U_co],
                  inner_kwargs: Mapping[str, Hashable]):
+        # TODO: do we actually need these lengths?
+        # Though this question might be obviated by expression._prepare().
         self.nested_body_inputs_len = nested_body_inputs_len
         self.body_inputs_len = body_inputs_len
         self.inner_inputs = inner_inputs
