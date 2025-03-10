@@ -279,11 +279,13 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         try:
             final_states = self.evaluate_backward(input_order, extra_outcomes,
                                                   inputs, kwargs)
+            return self._finalize_evaluation(final_states, kwargs)
         except UnsupportedOrderError:
             try:
                 final_states = self.evaluate_forward(input_order,
                                                      extra_outcomes, inputs,
                                                      kwargs)
+                return self._finalize_evaluation(final_states, kwargs)
             except UnsupportedOrderError:
                 raise ConflictingOrderError(
                     'Neither ascending nor descending order is compatable with the evaluation. '
@@ -291,6 +293,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                     f'Preferred input order was {input_order.name} with reason {input_order_reason.name}.'
                 )
 
+    def _finalize_evaluation(self, final_states: Mapping[Any, int],
+                             kwargs: Mapping[str, Hashable]) -> 'icepool.Die':
         final_outcomes = []
         final_weights = []
         for state, weight in final_states.items():
