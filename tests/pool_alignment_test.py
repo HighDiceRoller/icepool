@@ -6,7 +6,7 @@ from icepool import d4, d6, d8, d10, d12, MultisetEvaluator, Pool
 
 class OutcomeCountEvaluator(MultisetEvaluator):
 
-    def next_state(self, state, outcome, *pools):
+    def next_state(self, state, order, outcome, *pools):
         return (state or 0) + 1
 
 
@@ -15,7 +15,7 @@ outcome_count = OutcomeCountEvaluator()
 
 class OutcomeRangeEvaluator(MultisetEvaluator):
 
-    def next_state(self, state, outcome, *pools):
+    def next_state(self, state, order, outcome, *pools):
         return (state or 0) + 1
 
     extra_outcomes = MultisetEvaluator.consecutive

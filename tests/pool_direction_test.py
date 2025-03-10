@@ -2,19 +2,23 @@ import icepool
 import icepool.evaluator
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool
+from icepool import d4, d6, d8, d10, d12, Pool, Order, UnsupportedOrderError
 import icepool.evaluator.multiset_evaluator
 
 
 class LastOutcomeAscending(icepool.MultisetEvaluator):
 
-    def next_state_ascending(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
+        if order != Order.Ascending:
+            raise UnsupportedOrderError()
         return outcome
 
 
 class LastOutcomeDescending(icepool.MultisetEvaluator):
 
-    def next_state_descending(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
+        if order != Order.Descending:
+            raise UnsupportedOrderError()
         return outcome
 
 
@@ -28,7 +32,7 @@ def test_order_descending():
 
 class LastOutcome(icepool.MultisetEvaluator):
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         return outcome
 
 

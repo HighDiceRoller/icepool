@@ -120,18 +120,18 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     """Holds values that are constant within a single evaluation, along with a cache."""
 
     ascending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
-    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state_ascending_function."""
+    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order."""
     descending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
-    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
+    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order."""
 
     @abstractmethod
     def initial_state(self, order: Order, outcomes: Sequence[T], /, **kwargs):
-        """
+        """The initial evaluation state.
         TODO: Should this get cardinalities?
 
         Args:
-            order: The order in which next_state will see outcomes.
-            outcomes: All outcomes that will be seen by next_state in sorted order.
+            order: The order in which `next_state` will see outcomes.
+            outcomes: All outcomes that will be seen by `next_state` in sorted order.
             kwargs: Any keyword arguments that were passed to `evaluate()`.
 
         Raises:
@@ -139,19 +139,29 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         """
 
     @abstractmethod
-    def next_state_ascending(self, state: Hashable, outcome: T, /,
-                             *counts) -> Hashable:
-        """The next_state function to use when going in ascending order.
-        
-        This method may be set to None in subclasses.
-        """
+    def next_state(self, state: Hashable, order: Order, outcome: T, /,
+                   *counts):
+        """State transition function.
 
-    @abstractmethod
-    def next_state_descending(self, state: Hashable, outcome: T, /,
-                              *counts) -> Hashable:
-        """The next_state function to use when going in descending order.
-        
-        This method may be set to None in subclasses.
+        This should produce a state given the previous state, an outcome,
+        and the count of that outcome produced by each multiset input.
+
+        Args:
+            state: A hashable object indicating the state before rolling the
+                current outcome. If this is the first outcome being considered,
+                `state` will be `None`.
+            order: The order in which outcomes are seen.
+            outcome: The current outcome.
+            *counts: One value (usually an `int`) for each input indicating how
+                many of the current outcome were produced.
+
+        Returns:
+            A hashable object indicating the next state.
+            The special value `icepool.Reroll` can be used to immediately remove
+            the state from consideration, effectively performing a full reroll.
+
+        Raises:
+            UnsupportedOrderError if the given order is not supported.
         """
 
     @abstractmethod
@@ -188,13 +198,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         # input order.
         if input_order > 0:
             cache = self.descending_cache
-            next_state_function = self.next_state_descending
         else:
             cache = self.ascending_cache
-            next_state_function = self.next_state_ascending
-
-        if next_state_function is None:
-            raise UnsupportedOrderError()
 
         cache_key = (all_outcomes, inputs, initial_state)
         if cache_key in cache:
@@ -213,7 +218,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                 prev = self.evaluate_backward(initial_state, input_order,
                                               prev_all_outcomes, prev_inputs)
                 for prev_state, prev_weight in prev.items():
-                    state = next_state_function(prev_state, outcome, *counts)
+                    state = self.next_state(prev_state, -input_order, outcome,
+                                            *counts)
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
 
@@ -242,13 +248,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         """
         if input_order > 0:
             cache = self.ascending_cache
-            next_state_function = self.next_state_ascending
         else:
             cache = self.descending_cache
-            next_state_function = self.next_state_descending
-
-        if next_state_function is None:
-            raise UnsupportedOrderError()
 
         cache_key = (all_outcomes, inputs, initial_state)
         if cache_key in cache:
@@ -264,8 +265,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             for p in itertools.product(*iterators):
                 next_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                next_state = next_state_function(initial_state, outcome,
-                                                 *counts)
+                next_state = self.next_state(initial_state, input_order,
+                                             outcome, *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self.evaluate_forward(next_state, input_order,
                                                        next_all_outcomes,

@@ -17,7 +17,7 @@ class ArgsortEvaluator(MultisetEvaluator[Any, tuple[tuple[int, ...], ...]]):
         self._order = order
         self._limit = limit
 
-    def next_state(self, state, _, *counts):
+    def next_state(self, state, order, outcome, *counts):
         """Implementation."""
         if state is None:
             state = ()

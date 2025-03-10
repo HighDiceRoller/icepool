@@ -27,7 +27,7 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
     def default_outcome() -> bool:
         """The final outcome if both left and right have no outcomes."""
 
-    def next_state(self, state, outcome, left, right):
+    def next_state(self, state, order, outcome, left, right):
         """Implementation."""
         has_any, has_all = state or (False, True)
         this_any, this_all = self.any_all(left, right)

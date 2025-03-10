@@ -17,7 +17,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
     If no outcomes have positive count, the result is the min outcome with a count of 0.
     """
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         count = max(count, 0)
 
@@ -56,7 +56,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         """
         self._filter = filter
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         state = state or ()
         if self._filter == 'all' or count >= self._filter:
@@ -81,7 +81,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
 class LargestCountEvaluator(MultisetEvaluator[Any, int]):
     """The largest count of any outcome."""
 
-    def next_state(self, state, _, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         return max(state or count, count)
 
@@ -93,7 +93,7 @@ largest_count_evaluator: Final = LargestCountEvaluator()
 class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     """The largest count of any outcome, along with that outcome."""
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         return max(state or (count, outcome), (count, outcome))
 
@@ -114,7 +114,7 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
         """
         self._empty_divisor = empty_divisor
 
-    def next_state(self, state, _, left, right):
+    def next_state(self, state, order, outcome, left, right):
         if right == 0:
             return state
         current = left // right
@@ -137,8 +137,7 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
 class LargestStraightEvaluator(MultisetEvaluator[int, int]):
     """The size of the largest straight."""
 
-    def next_state(self, state, _, count):
-        """Implementation."""
+    def next_state(self, state, order, outcome, count):
         best_run, run = state or (0, 0)
         if count >= 1:
             run += 1
@@ -148,7 +147,6 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
 
     def final_outcome(  # type: ignore
             self, final_state) -> int:
-        """Implementation."""
         if final_state is None:
             return 0
         return final_state[0]
@@ -183,37 +181,26 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
         else:
             raise ValueError("priority must be 'low' or 'high'.")
 
-    def next_state_ascending(self, state, outcome, count):
-        best_run, best_outcome, run = state or (0, outcome, 0)
-        if count >= 1:
-            run += 1
+    def initial_state(self, order, outcomes, /, **kwargs):
+        if order > 0:
+            return 0, outcomes[-1], 0
         else:
-            run = 0
-        if self._prioritize_highest:
-            if run >= best_run:
-                return run, outcome, run
-            else:
-                return best_run, best_outcome, run
-        else:
-            if run > best_run:
-                return run, outcome - run + 1, run
-            else:
-                return best_run, best_outcome, run
+            return 0, outcomes[0], 0
 
-    def next_state_descending(self, state, outcome, count):
-        best_run, best_outcome, run = state or (0, outcome, 0)
+    def next_state(self, state, order, outcome, count):
+        best_run, best_outcome, run = state
         if count >= 1:
             run += 1
         else:
             run = 0
-        if self._prioritize_highest:
-            if run > best_run:
-                return run, outcome + run - 1, run
+        if self._prioritize_highest == (order > 0):
+            if run >= best_run:
+                return run, outcome, run
             else:
                 return best_run, best_outcome, run
         else:
-            if run >= best_run:
-                return run, outcome, run
+            if run > best_run:
+                return run, outcome - (run - 1) * order.value, run
             else:
                 return best_run, best_outcome, run
 
@@ -241,7 +228,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
     elements are preferentially assigned to the longer straight.
     """
 
-    def next_state(self, state, _, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         current_runs, ended_runs = state or ((), ())
         if count < len(current_runs):
@@ -288,7 +275,7 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
         """
         self._reducer = reducer
 
-    def next_state(self, state, _, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         current_run_length, current_run_score, ended_runs = state or (None,
                                                                       None, ())

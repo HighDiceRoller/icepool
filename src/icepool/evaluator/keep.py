@@ -26,15 +26,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
                 remaining = -index
         return None, remaining
 
-    def next_state_ascending(self, state, outcome, count):
-        result, remaining = state
-
-        remaining = max(remaining - max(count, 0), 0)
-        if remaining == 0 and result is None:
-            result = outcome
-        return result, remaining
-
-    def next_state_descending(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         result, remaining = state
 
         remaining = max(remaining - max(count, 0), 0)

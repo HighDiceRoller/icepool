@@ -16,11 +16,27 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
-    def initial_state(self, order, outcomes, /, **kwargs):
-        # TODO: docstring
+    def initial_state(self, order: Order, outcomes: Sequence[T], /,
+                      **kwargs: Hashable):
+        """Optional method to produce an initial evaluation state.
+
+        If not override, the initial state is `None`.
+
+        TODO: Should this get cardinalities?
+
+        Args:
+            order: The order in which `next_state` will see outcomes.
+            outcomes: All outcomes that will be seen by `next_state` in sorted order.
+            kwargs: Any keyword arguments that were passed to `evaluate()`.
+
+        Raises:
+            UnsupportedOrderError if the given order is not supported.
+        """
         return None
 
-    def next_state(self, state: Hashable, outcome: T, /, *counts) -> Hashable:
+    @abstractmethod
+    def next_state(self, state: Hashable, order: Order, outcome: T, /,
+                   *counts) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -35,28 +51,12 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         * Rename `state` or `outcome` in a subclass.
         * Replace `*counts` with a fixed set of parameters.
 
-        `**kwargs` are non-multiset arguments that were provided to
-        `evaluate()`.
-        You may replace `**kwargs` with a fixed set of keyword parameters;
-        `final_state()` should take the same set of keyword parameters.
-
         Make sure to handle the base case where `state is None`.
 
         States must be hashable. At current, they do not have to be orderable.
         However, this may change in the future, and if they are not totally
         orderable, you must override `final_outcome` to create totally orderable
         final outcomes.
-
-        By default, this method may receive outcomes in any order. You can
-        adjust this as follows:
-        
-        * If you want to guarantee ascending or descending order, you can 
-          implement `next_state_ascending()` or `next_state_descending()` 
-          instead. You can implement both if you want the implementation to
-          depend on order.
-        * You can raise an `UnsupportedOrderError` if you don't want to 
-          support the current order. In this case, the opposite order will then 
-          be attempted (if it hasn't already been attempted).
 
         The behavior of returning a `Die` from `next_state` is currently
         undefined.
@@ -65,9 +65,11 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             state: A hashable object indicating the state before rolling the
                 current outcome. If this is the first outcome being considered,
                 `state` will be `None`.
+            order: The order in which outcomes are seen. You can raise an 
+                `UnsupportedOrderError` if you don't want to support the current 
+                order. In this case, the opposite order will then be attempted
+                (if it hasn't already been attempted).
             outcome: The current outcome.
-                `next_state` will see all rolled outcomes in monotonic order;
-                either ascending or descending depending on `order()`.
                 If there are multiple inputs, the set of outcomes is at 
                 least the union of the outcomes of the invididual inputs. 
                 You can use `extra_outcomes()` to add extra outcomes.
@@ -79,27 +81,6 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             The special value `icepool.Reroll` can be used to immediately remove
             the state from consideration, effectively performing a full reroll.
         """
-        raise NotImplementedError()
-
-    def next_state_ascending(self, state: Hashable, outcome: T, /,
-                             *counts) -> Hashable:
-        """As next_state() but handles outcomes in ascending order only.
-        
-        You can implement both `next_state_ascending()` and 
-        `next_state_descending()` if you want to handle both outcome orders
-        with a separate implementation for each.
-        """
-        raise NotImplementedError()
-
-    def next_state_descending(self, state: Hashable, outcome: T, /,
-                              *counts) -> Hashable:
-        """As next_state() but handles outcomes in descending order only.
-        
-        You can implement both `next_state_ascending()` and 
-        `next_state_descending()` if you want to handle both outcome orders
-        with a separate implementation for each.
-        """
-        raise NotImplementedError()
 
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
         """Optional method to specify extra outcomes that should be seen as inputs to `next_state()`.
@@ -146,41 +127,6 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         # If not overriden, the final_state should have type U_co.
         return cast(U_co, final_state)
 
-    def _get_next_state_method(
-            self, method_name: str) -> Callable[..., Hashable] | None:
-        """Returns the next_state method by name, or `None` if not implemented."""
-        try:
-            method = getattr(self, method_name)
-            if method is None:
-                return None
-            method_func = getattr(method, '__func__', method)
-        except AttributeError:
-            return None
-        if method_func is getattr(MultisetEvaluator, method_name):
-            return None
-        return method
-
-    def next_state_method(self, order: Order,
-                          /) -> Callable[..., Hashable] | None:
-        """Returns the bound next_state* method for the given order, or `None` if that order is not supported.
-        
-        `next_state_ascending` and `next_state_descending` are prioritized over
-        `next_state`.
-        """
-        if order > 0:
-            return self._get_next_state_method(
-                'next_state_ascending') or self._get_next_state_method(
-                    'next_state')
-        elif order < 0:
-            return self._get_next_state_method(
-                'next_state_descending') or self._get_next_state_method(
-                    'next_state')
-        else:
-            return self._get_next_state_method(
-                'next_state_ascending') or self._get_next_state_method(
-                    'next_state_descending') or self._get_next_state_method(
-                        'next_state')
-
     def consecutive(self, outcomes: Sequence[int]) -> Collection[int]:
         """Example implementation of `extra_outcomes()` that produces consecutive `int` outcomes.
 
@@ -208,10 +154,9 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
     ):
-        yield MultisetEvaluatorDungeon(
-            self, self.initial_state, self.next_state_method(Order.Ascending),
-            self.next_state_method(Order.Descending), self.extra_outcomes,
-            self.final_outcome, kwargs), (), 1
+        yield MultisetEvaluatorDungeon(self, self.initial_state,
+                                       self.next_state, self.extra_outcomes,
+                                       self.final_outcome, kwargs), (), 1
 
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
@@ -220,21 +165,17 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
 
     # These are filled in by the constructor.
     initial_state = None  # type: ignore
-    next_state_ascending = None  # type: ignore
-    next_state_descending = None  # type: ignore
+    next_state = None  # type: ignore
     extra_outcomes = None  # type: ignore
     final_outcome = None  # type: ignore
 
     def __init__(self, preparer: MultisetEvaluator,
                  initial_state: Callable[..., Hashable],
-                 next_state_ascending: Callable[..., Hashable] | None,
-                 next_state_descending: Callable[..., Hashable] | None,
-                 extra_outcomes: Callable, final_outcome: Callable,
-                 kwargs: Mapping[str, Hashable]):
+                 next_state: Callable[..., Hashable], extra_outcomes: Callable,
+                 final_outcome: Callable, kwargs: Mapping[str, Hashable]):
         self.preparer = preparer
         self.initial_state = initial_state  # type: ignore
-        self.next_state_ascending = next_state_ascending  # type: ignore
-        self.next_state_descending = next_state_descending  # type: ignore
+        self.next_state = next_state  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore
         self.final_outcome = final_outcome  # type: ignore
         self.kwargs = kwargs

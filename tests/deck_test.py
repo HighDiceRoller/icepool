@@ -11,13 +11,13 @@ best_run_evaluator = LargestStraightEvaluator()
 
 class TrivialEvaluator(MultisetEvaluator):
 
-    def next_state(self, state, outcome, *counts):
+    def next_state(self, state, order, outcome, *counts):
         return 0
 
 
 class SumTupleEvaluator(MultisetEvaluator):
 
-    def next_state(self, state, outcome, counts):
+    def next_state(self, state, order, outcome, counts):
         if state is None:
             return tuple(0 for x in counts)
         else:

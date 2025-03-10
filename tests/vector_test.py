@@ -90,7 +90,7 @@ def test_one_hot():
 
     class OneHotEvaluator(icepool.MultisetEvaluator):
 
-        def next_state(self, state, _, count):
+        def next_state(self, state, order, outcome, count):
             if state is None:
                 state = ()
             return state + (count, )

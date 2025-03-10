@@ -1,13 +1,13 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool, Vector, Order
+from icepool import d4, d6, d8, d10, d12, Pool, Vector, Order, UnsupportedOrderError
 from icepool.evaluator.multiset_function import multiset_function
 
 
 class SumRerollIfAnyOnes(icepool.MultisetEvaluator):
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         if outcome == 1 and count > 0:
             return icepool.Reroll
         elif state is None:
@@ -137,19 +137,23 @@ def test_runs_skip():
 
 class SumFixedOrderAuto(icepool.MultisetEvaluator):
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         return (state or 0) + outcome * count
 
 
 class SumFixedOrderAscending(icepool.MultisetEvaluator):
 
-    def next_state_ascending(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
+        if order != Order.Ascending:
+            raise UnsupportedOrderError()
         return (state or 0) + outcome * count
 
 
 class SumFixedOrderDescending(icepool.MultisetEvaluator):
 
-    def next_state_descending(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
+        if order != Order.Descending:
+            raise UnsupportedOrderError()
         return (state or 0) + outcome * count
 
 

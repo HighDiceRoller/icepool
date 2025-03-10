@@ -20,7 +20,7 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
     Outcomes with negative count will be treated as 0 count.
     """
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         return (state or ()) + (outcome, ) * count
 
@@ -62,7 +62,7 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
 
             self._map = map_func
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         outcome = self._map(outcome)
         if state is None:
@@ -86,7 +86,7 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
     `unique` etc.
     """
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         return (state or 0) + count
 
@@ -103,7 +103,7 @@ count_evaluator: Final = CountEvaluator()
 class AnyEvaluator(MultisetEvaluator[Any, bool]):
     """Returns `True` iff at least one count is positive."""
 
-    def next_state(self, state, outcome, count):
+    def next_state(self, state, order, outcome, count):
         """Implementation."""
         return state or (count > 0)
 
