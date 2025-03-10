@@ -23,7 +23,7 @@ class Alignment(MultisetExpressionBase[T, None]):
     _children = ()
 
     def __init__(self, outcomes: Collection[T]):
-        self._outcomes = tuple(sorted(outcomes))
+        self._outcomes = tuple(sorted(set(outcomes)))
 
     @property
     def _variable_type(self):

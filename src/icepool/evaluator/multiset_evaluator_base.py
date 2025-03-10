@@ -106,9 +106,9 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
                 prod_weight = math.prod(sub_weights) * dungeon_weight
                 outcomes = icepool.sorted_union(
                     *(expression.outcomes() for expression in sub_inputs))
-                extra_outcomes = icepool.Alignment(
-                    dungeon.extra_outcomes(outcomes))
-                sub_result = dungeon.evaluate(extra_outcomes,
+                all_outcomes = icepool.Alignment(
+                    set(dungeon.extra_outcomes(outcomes)) | set(outcomes))
+                sub_result = dungeon.evaluate(all_outcomes,
                                               body_inputs + sub_inputs, kwargs)
                 final_data[sub_result] += prod_weight
 
@@ -121,9 +121,9 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     """Holds values that are constant within a single evaluation, along with a cache."""
 
     ascending_cache: 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
-    """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_ascending_function."""
+    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state_ascending_function."""
     descending_cache: 'MutableMapping[tuple[Alignment, tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
-    """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
+    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
 
     @abstractmethod
     def initial_state(self, order: Order, outcomes: Sequence[T], /, **kwargs):
@@ -166,7 +166,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         """Generates a final outcome from a final state."""
 
     def evaluate_backward(
-        self, input_order: Order, extra_outcomes: 'Alignment[T]',
+        self, input_order: Order, all_outcomes: 'Alignment[T]',
         initial_state: Hashable,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
     ) -> Mapping[Any, int]:
@@ -176,8 +176,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
 
         Arguments:
             order: The order in which to send outcomes to `next_state()`.
-            extra_outcomes: As `extra_outcomes()`. Elements will be popped off this
-                during recursion.
+            all_outcomes: All outcomes that will be seen. Elements will be
+                popped of this.
             inputs: One or more `MultisetExpression`s to evaluate. Elements
                 will be popped off this during recursion.
 
@@ -197,22 +197,22 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         if next_state_function is None:
             raise UnsupportedOrderError()
 
-        cache_key = (extra_outcomes, inputs, initial_state)
+        cache_key = (all_outcomes, inputs, initial_state)
         if cache_key in cache:
             return cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
         if all(not input.outcomes()
-               for input in inputs) and not extra_outcomes.outcomes():
+               for input in inputs) and not all_outcomes.outcomes():
             result = {initial_state: 1}
         else:
-            outcome, prev_extra_outcomes, iterators = MultisetDungeon._pop_inputs(
-                input_order, extra_outcomes, inputs)
+            outcome, prev_all_outcomes, iterators = MultisetDungeon._pop_inputs(
+                input_order, all_outcomes, inputs)
             for p in itertools.product(*iterators):
                 prev_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self.evaluate_backward(input_order, prev_extra_outcomes,
+                prev = self.evaluate_backward(input_order, prev_all_outcomes,
                                               initial_state, prev_inputs)
                 for prev_state, prev_weight in prev.items():
                     state = next_state_function(prev_state, outcome, *counts)
@@ -223,7 +223,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         return result
 
     def evaluate_forward(
-        self, input_order: Order, extra_outcomes: 'Alignment[T]',
+        self, input_order: Order, all_outcomes: 'Alignment[T]',
         initial_state: Hashable,
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
@@ -233,8 +233,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
 
         Arguments:
             order: The order in which to send outcomes to `next_state()`.
-            extra_outcomes: As `extra_outcomes()`. Elements will be popped off this
-                during recursion.
+            all_outcomes: All outcomes that will be seen. Elements will be
+                popped off this.
             inputs: One or more `MultisetExpression`s to evaluate. Elements
                 will be popped off this during recursion.
 
@@ -252,18 +252,18 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         if next_state_function is None:
             raise UnsupportedOrderError()
 
-        cache_key = (extra_outcomes, inputs, initial_state)
+        cache_key = (all_outcomes, inputs, initial_state)
         if cache_key in cache:
             return cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
         if all(not input.outcomes()
-               for input in inputs) and not extra_outcomes.outcomes():
+               for input in inputs) and not all_outcomes.outcomes():
             result = {initial_state: 1}
         else:
-            outcome, next_extra_outcomes, iterators = MultisetDungeon._pop_inputs(
-                input_order, extra_outcomes, inputs)
+            outcome, next_all_outcomes, iterators = MultisetDungeon._pop_inputs(
+                input_order, all_outcomes, inputs)
             for p in itertools.product(*iterators):
                 next_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
@@ -271,7 +271,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                                                  *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self.evaluate_forward(input_order,
-                                                       next_extra_outcomes,
+                                                       next_all_outcomes,
                                                        next_state, next_inputs)
                     for final_state, weight in final_dist.items():
                         result[final_state] += weight * prod_weight
@@ -279,7 +279,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         cache[cache_key] = result
         return result
 
-    def evaluate(self, extra_outcomes: 'Alignment[T]',
+    def evaluate(self, all_outcomes: 'Alignment[T]',
                  inputs: 'tuple[icepool.MultisetExpression[T], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
@@ -290,18 +290,17 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
 
         try:
             initial_state = self.initial_state(-input_order,
-                                               extra_outcomes.outcomes(),
+                                               all_outcomes.outcomes(),
                                                **kwargs)
-            final_states = self.evaluate_backward(input_order, extra_outcomes,
+            final_states = self.evaluate_backward(input_order, all_outcomes,
                                                   initial_state, inputs)
             return self._finalize_evaluation(final_states, kwargs)
         except UnsupportedOrderError:
             try:
                 initial_state = self.initial_state(input_order,
-                                                   extra_outcomes.outcomes(),
+                                                   all_outcomes.outcomes(),
                                                    **kwargs)
-                final_states = self.evaluate_forward(input_order,
-                                                     extra_outcomes,
+                final_states = self.evaluate_forward(input_order, all_outcomes,
                                                      initial_state, inputs)
                 return self._finalize_evaluation(final_states, kwargs)
             except UnsupportedOrderError:
@@ -331,7 +330,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
 
     @staticmethod
     def _pop_inputs(
-        order: Order, extra_outcomes: 'Alignment[T]',
+        order: Order, all_outcomes: 'Alignment[T]',
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
     ) -> 'tuple[T, Alignment[T], tuple[Iterator[tuple[MultisetExpressionBase, Any, int]], ...]]':
         """Pops a single outcome from the inputs.
@@ -339,7 +338,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         Args:
             order: The order in which to pop. Descending order pops from the top
             and ascending from the bottom.
-            extra_outcomes: Any extra outcomes to use.
+            all_outcomes: All outcomes that will be seen.
             inputs: The inputs to pop from.
 
         Returns:
@@ -347,24 +346,15 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             * The remaining extra outcomes.
             * A tuple of iterators over the resulting inputs, counts, and weights.
         """
-        extra_outcomes_and_inputs = (extra_outcomes, ) + inputs
         if order < 0:
-            outcome = max(input.max_outcome()
-                          for input in extra_outcomes_and_inputs
-                          if input.outcomes())
+            outcome = all_outcomes.max_outcome()
+            next_all_outcomes, _, _ = next(all_outcomes._generate_max(outcome))
 
-            next_extra_outcomes, _, _ = next(
-                extra_outcomes._generate_max(outcome))
-
-            return outcome, next_extra_outcomes, tuple(
+            return outcome, next_all_outcomes, tuple(
                 input._generate_max(outcome) for input in inputs)
         else:
-            outcome = min(input.min_outcome()
-                          for input in extra_outcomes_and_inputs
-                          if input.outcomes())
+            outcome = all_outcomes.min_outcome()
+            next_all_outcomes, _, _ = next(all_outcomes._generate_min(outcome))
 
-            next_extra_outcomes, _, _ = next(
-                extra_outcomes._generate_min(outcome))
-
-            return outcome, next_extra_outcomes, tuple(
+            return outcome, next_all_outcomes, tuple(
                 input._generate_min(outcome) for input in inputs)
