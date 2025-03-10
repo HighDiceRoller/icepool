@@ -67,6 +67,23 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
         """
 
     @abstractmethod
+    def _detach(
+        self,
+        body_inputs: 'list[MultisetExpressionBase]' = []
+    ) -> 'MultisetExpressionBase[T, Q]':
+        """Removes body subexpressions, replacing them with body variables.
+
+        Args:
+            body_inputs: The list of body inputs, which will be appended to.
+
+        Returns:
+            A copy of this expression with any subexpressions not containing
+            parameter variables replaced with body variables. 
+            The `index` of each variable is equal to the position of the
+            expression they replaced in `body_inputs`.
+        """
+
+    @abstractmethod
     def _generate_min(self: C, min_outcome: T) -> Iterator[tuple[C, Q, int]]:
         """Pops the min outcome from this expression if it matches the argument.
 
@@ -104,23 +121,6 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
 
         Raises:
             MultisetVariableError if this is called on an expression with parameters.
-        """
-
-    @abstractmethod
-    def _detach(
-        self,
-        body_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase[T, Q]':
-        """Removes body subexpressions, replacing them with body variables.
-
-        Args:
-            body_inputs: The list of body inputs, which will be appended to.
-
-        Returns:
-            A copy of this expression with any subexpressions not containing
-            parameter variables replaced with body variables. 
-            The `index` of each variable is equal to the position of the
-            expression they replaced in `body_inputs`.
         """
 
     @abstractmethod
