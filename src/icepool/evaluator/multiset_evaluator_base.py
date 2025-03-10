@@ -165,8 +165,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         """Generates a final outcome from a final state."""
 
     def evaluate_backward(
-        self, input_order: Order, all_outcomes: tuple[T, ...],
-        initial_state: Hashable,
+        self, initial_state: Hashable, input_order: Order,
+        all_outcomes: tuple[T, ...],
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating so that next_state sees outcomes in backwards order.
@@ -210,8 +210,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             for p in itertools.product(*iterators):
                 prev_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self.evaluate_backward(input_order, prev_all_outcomes,
-                                              initial_state, prev_inputs)
+                prev = self.evaluate_backward(initial_state, input_order,
+                                              prev_all_outcomes, prev_inputs)
                 for prev_state, prev_weight in prev.items():
                     state = next_state_function(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
@@ -221,8 +221,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         return result
 
     def evaluate_forward(
-        self, input_order: Order, all_outcomes: tuple[T, ...],
-        initial_state: Hashable,
+        self, initial_state: Hashable, input_order: Order,
+        all_outcomes: tuple[T, ...],
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order.
@@ -267,9 +267,9 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                 next_state = next_state_function(initial_state, outcome,
                                                  *counts)
                 if next_state is not icepool.Reroll:
-                    final_dist = self.evaluate_forward(input_order,
+                    final_dist = self.evaluate_forward(next_state, input_order,
                                                        next_all_outcomes,
-                                                       next_state, next_inputs)
+                                                       next_inputs)
                     for final_state, weight in final_dist.items():
                         result[final_state] += weight * prod_weight
 
@@ -288,15 +288,16 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         try:
             initial_state = self.initial_state(-input_order, all_outcomes,
                                                **kwargs)
-            final_states = self.evaluate_backward(input_order, all_outcomes,
-                                                  initial_state, inputs)
+            final_states = self.evaluate_backward(initial_state, input_order,
+                                                  all_outcomes, inputs)
             return self._finalize_evaluation(final_states, kwargs)
         except UnsupportedOrderError:
             try:
                 initial_state = self.initial_state(input_order, all_outcomes,
                                                    **kwargs)
-                final_states = self.evaluate_forward(input_order, all_outcomes,
-                                                     initial_state, inputs)
+                final_states = self.evaluate_forward(initial_state,
+                                                     input_order, all_outcomes,
+                                                     inputs)
                 return self._finalize_evaluation(final_states, kwargs)
             except UnsupportedOrderError:
                 raise ConflictingOrderError(
