@@ -191,6 +191,8 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
         self.body_inputs_len = body_inputs_len
         self.inner_expressions = inner_expressions
         self.inner_dungeon = inner_dungeon
+        # TODO: can we avoid storing inner_kwargs?
+        # Would this require delaying inner dungeon creation further?
         self.inner_kwargs = inner_kwargs
         self.ascending_cache = {}
         self.descending_cache = {}

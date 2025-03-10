@@ -243,6 +243,7 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
 
     @cached_property
     def _hash_key(self) -> Hashable:
+        # TODO: do we need to include kwargs as part of the key?
         return (MultisetEvaluatorDungeon, self.preparer,
                 tuple(sorted(self.kwargs.items())))
 
