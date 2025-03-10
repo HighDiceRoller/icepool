@@ -1016,7 +1016,7 @@ change.</li>
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.generator.deal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Deal</span>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.generator.multi_deal</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiDeal</span>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetVariableError</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_expression_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetVariableError</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_expression</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetExpression</span><span class="p">,</span> <span class="n">implicit_convert_to_expression</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.multiset_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">multiset_function</span>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_variable</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetVariable</span>
@@ -11743,7 +11743,7 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">MultisetExpression</span><wbr>(<span class="base">icepool.expression.base.MultisetExpressionBase[~T, int]</span>, <span class="base">icepool.expand.Expandable[tuple[~T, ...]]</span>):
+    <span class="name">MultisetExpression</span><wbr>(<span class="base">icepool.expression.multiset_expression_base.MultisetExpressionBase[~T, int]</span>, <span class="base">icepool.expand.Expandable[tuple[~T, ...]]</span>):
 
                 <label class="view-source-button" for="MultisetExpression-view-source"><span>View Source</span></label>
 
