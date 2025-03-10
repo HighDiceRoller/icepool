@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expand import Expandable
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice

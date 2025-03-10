@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_expression import MultisetExpression
 
 import itertools

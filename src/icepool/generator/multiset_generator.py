@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 import icepool.generator
 from icepool.collection.counts import Counts
 from icepool.expression.multiset_expression import MultisetExpression

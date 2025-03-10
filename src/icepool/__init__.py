@@ -136,7 +136,7 @@ from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 from icepool.generator.multi_deal import MultiDeal
 
-from icepool.expression.base import MultisetVariableError
+from icepool.expression.multiset_expression_base import MultisetVariableError
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
 from icepool.evaluator.multiset_function import multiset_function
 from icepool.expression.multiset_variable import MultisetVariable

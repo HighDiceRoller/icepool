@@ -15,7 +15,7 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
-    from icepool.expression.base import MultisetExpressionBase
+    from icepool.expression.multiset_expression_base import MultisetExpressionBase
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool.generator.alignment import Alignment
     from icepool import MultisetExpression

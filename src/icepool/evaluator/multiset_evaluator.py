@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from functools import cached_property
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.order import Order
 
 from icepool.typing import Q, T, U_co

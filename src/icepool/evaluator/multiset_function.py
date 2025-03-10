@@ -4,7 +4,7 @@ import itertools
 import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetEvaluatorBase
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_variable import MultisetVariable
 from icepool.expression.multiset_tuple_variable import MultisetTupleVariable
 

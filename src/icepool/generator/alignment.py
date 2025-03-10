@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.expression.base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason
 
