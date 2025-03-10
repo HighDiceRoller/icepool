@@ -26,10 +26,6 @@ def test_order_descending():
     assert LastOutcomeDescending().evaluate(d6.pool(1)).probability(1) == 1
 
 
-fake_dungeon = icepool.evaluator.multiset_evaluator.MultisetEvaluatorDungeon(
-    None, lambda: None, lambda: None, lambda: None, lambda: None, {})
-
-
 class LastOutcome(icepool.MultisetEvaluator):
 
     def next_state(self, state, outcome, count):

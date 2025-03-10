@@ -14,42 +14,35 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
     Negative incoming counts are treated as zero counts.
     """
 
-    def next_state_ascending(self, state, outcome, count, /, *, index):
-        """Implementation."""
-        if state is None:
-            result = None
-            if index is None:
-                remaining = 1
-            elif index < 0:
-                raise UnsupportedOrderError()
-            else:
-                remaining = index + 1
+    def initial_state(self, order, outcomes, *, index):
+        if index is None:
+            remaining = 1
+        elif (order > 0) != (index >= 0):
+            raise UnsupportedOrderError()
         else:
-            result, remaining = state
+            if index >= 0:
+                remaining = index + 1
+            else:
+                remaining = -index
+        return None, remaining
+
+    def next_state_ascending(self, state, outcome, count):
+        result, remaining = state
+
         remaining = max(remaining - max(count, 0), 0)
         if remaining == 0 and result is None:
             result = outcome
         return result, remaining
 
-    def next_state_descending(self, state, outcome, count, /, *, index):
-        """Implementation."""
-        if state is None:
-            result = None
-            if index is None:
-                remaining = 1
-            elif index > 0:
-                raise UnsupportedOrderError()
-            else:
-                remaining = -index
-        else:
-            result, remaining = state
+    def next_state_descending(self, state, outcome, count):
+        result, remaining = state
+
         remaining = max(remaining - max(count, 0), 0)
         if remaining == 0 and result is None:
             result = outcome
         return result, remaining
 
     def final_outcome(self, final_state, /, *, index):
-        """Implementation."""
         if final_state is None:
             raise IndexError('No outcomes were seen.')
         result, remaining = final_state

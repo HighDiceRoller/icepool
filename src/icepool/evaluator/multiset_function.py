@@ -200,13 +200,12 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
         if self.inner_dungeon.next_state_descending is None:
             self.next_state_descending = None
 
-    def next_state_ascending(self, state, outcome, /, *counts,
-                             **kwargs) -> Hashable:
-        if state is None:
-            inner_expressions = self.inner_expressions
-            inner_state = None
-        else:
-            inner_expressions, inner_state = state
+    def initial_state(self, order, outcomes, /, **kwargs):
+        return self.inner_expressions, self.inner_dungeon.initial_state(
+            order, outcomes, **self.inner_kwargs)
+
+    def next_state_ascending(self, state, outcome, /, *counts) -> Hashable:
+        inner_expressions, inner_state = state
         nested_slice, body_slice, param_slice = self._count_slices
         nested_counts = counts[nested_slice]
         body_counts = counts[body_slice]
@@ -217,18 +216,12 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
                                                 param_counts)
               for inner_expression in inner_expressions))
         inner_state = self.inner_dungeon.next_state_ascending(
-            inner_state, outcome, *nested_counts, *inner_counts,
-            **self.inner_kwargs)
+            inner_state, outcome, *nested_counts, *inner_counts)
 
         return inner_expressions, inner_state
 
-    def next_state_descending(self, state, outcome, /, *counts,
-                              **kwargs) -> Hashable:
-        if state is None:
-            inner_expressions = self.inner_expressions
-            inner_state = None
-        else:
-            inner_expressions, inner_state = state
+    def next_state_descending(self, state, outcome, /, *counts) -> Hashable:
+        inner_expressions, inner_state = state
         nested_slice, body_slice, param_slice = self._count_slices
         nested_counts = counts[nested_slice]
         body_counts = counts[body_slice]
@@ -239,8 +232,7 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
                                                 param_counts)
               for inner_expression in inner_expressions))
         inner_state = self.inner_dungeon.next_state_descending(
-            inner_state, outcome, *nested_counts, *inner_counts,
-            **self.inner_kwargs)
+            inner_state, outcome, *nested_counts, *inner_counts)
 
         return inner_expressions, inner_state
 
@@ -323,13 +315,17 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
             if inner_dungeon.next_state_descending is None:
                 self.next_state_descending = None
 
-    def next_state_ascending(self, state, outcome, /, *counts,
-                             **kwargs) -> Hashable:
-        if state is None:
-            all_inner_expressions = self.all_inner_expressions
-            all_inner_states = (None, ) * len(self.all_inner_dungeon)
-        else:
-            all_inner_expressions, all_inner_states = state
+    def initial_state(self, order, outcomes, /, **kwargs):
+        all_inner_expressions = self.all_inner_expressions
+        all_inner_states = tuple(
+            inner_dungeon.initial_state(order, outcomes, **inner_kwargs)
+            for inner_dungeon, inner_kwargs in zip(self.all_inner_dungeon,
+                                                   self.all_inner_kwargs))
+
+        return all_inner_expressions, all_inner_states
+
+    def next_state_ascending(self, state, outcome, /, *counts) -> Hashable:
+        all_inner_expressions, all_inner_states = state
 
         next_all_inner_expressions = []
         next_all_inner_states = []
@@ -337,10 +333,10 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
         nested_body_slices, body_slices, param_slice = self._count_slices
         param_counts = counts[param_slice]
 
-        for (inner_expressions, inner_state, nested_body_slice,
-             body_slice, inner_dungeon, inner_kwargs) in zip(
-                 all_inner_expressions, all_inner_states, nested_body_slices,
-                 body_slices, self.all_inner_dungeon, self.all_inner_kwargs):
+        for (inner_expressions, inner_state, nested_body_slice, body_slice,
+             inner_dungeon) in zip(all_inner_expressions, all_inner_states,
+                                   nested_body_slices, body_slices,
+                                   self.all_inner_dungeon):
             nested_counts = counts[nested_body_slice]
             body_counts = counts[body_slice]
 
@@ -349,20 +345,14 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
                                                     param_counts)
                   for inner_expression in inner_expressions))
             inner_state = inner_dungeon.next_state_ascending(
-                inner_state, outcome, *nested_counts, *inner_counts,
-                **inner_kwargs)
+                inner_state, outcome, *nested_counts, *inner_counts)
             next_all_inner_expressions.append(inner_expressions)
             next_all_inner_states.append(inner_state)
 
         return tuple(next_all_inner_expressions), tuple(next_all_inner_states)
 
-    def next_state_descending(self, state, outcome, /, *counts,
-                              **kwargs) -> Hashable:
-        if state is None:
-            all_inner_expressions = self.all_inner_expressions
-            all_inner_states = (None, ) * len(self.all_inner_dungeon)
-        else:
-            all_inner_expressions, all_inner_states = state
+    def next_state_descending(self, state, outcome, /, *counts) -> Hashable:
+        all_inner_expressions, all_inner_states = state
 
         next_all_inner_expressions = []
         next_all_inner_states = []
@@ -370,10 +360,10 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
         nested_body_slices, body_slices, param_slice = self._count_slices
         param_counts = counts[param_slice]
 
-        for (inner_expressions, inner_state, nested_body_slice,
-             body_slice, inner_dungeon, inner_kwargs) in zip(
-                 all_inner_expressions, all_inner_states, nested_body_slices,
-                 body_slices, self.all_inner_dungeon, self.all_inner_kwargs):
+        for (inner_expressions, inner_state, nested_body_slice, body_slice,
+             inner_dungeon) in zip(all_inner_expressions, all_inner_states,
+                                   nested_body_slices, body_slices,
+                                   self.all_inner_dungeon):
             nested_counts = counts[nested_body_slice]
             body_counts = counts[body_slice]
 
@@ -382,8 +372,7 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
                                                     param_counts)
                   for inner_expression in inner_expressions))
             inner_state = inner_dungeon.next_state_descending(
-                inner_state, outcome, *nested_counts, *inner_counts,
-                **inner_kwargs)
+                inner_state, outcome, *nested_counts, *inner_counts)
             next_all_inner_expressions.append(inner_expressions)
             next_all_inner_states.append(inner_state)
 

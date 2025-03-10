@@ -196,7 +196,7 @@ def test_joint_evaluator_order_ascending():
     assert result.equals(expected)
 
 
-def test_joint_evaluator_order_desccending():
+def test_joint_evaluator_order_descending():
 
     @multiset_function
     def joint_evaluation(x):

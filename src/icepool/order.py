@@ -48,6 +48,9 @@ class Order(enum.IntEnum):
                 result = order
         return result
 
+    def __neg__(self) -> 'Order':
+        return Order(-self.value)
+
 
 class OrderReason(enum.IntEnum):
     """Greater values represent higher priorities, which strictly override lower priorities."""

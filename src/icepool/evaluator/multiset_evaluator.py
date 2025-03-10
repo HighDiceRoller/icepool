@@ -1,10 +1,12 @@
 __docformat__ = 'google'
 
-from functools import cached_property
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.order import Order
+
+from abc import abstractmethod
+from functools import cached_property
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
@@ -14,8 +16,11 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
-    def next_state(self, state: Hashable, outcome: T, /, *counts,
-                   **kwargs: Hashable) -> Hashable:
+    def initial_state(self, order, outcomes, /, **kwargs):
+        # TODO: docstring
+        return None
+
+    def next_state(self, state: Hashable, outcome: T, /, *counts) -> Hashable:
         """State transition function.
 
         This should produce a state given the previous state, an outcome,
@@ -76,8 +81,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
-    def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,
-                             **kwargs: Hashable) -> Hashable:
+    def next_state_ascending(self, state: Hashable, outcome: T, /,
+                             *counts) -> Hashable:
         """As next_state() but handles outcomes in ascending order only.
         
         You can implement both `next_state_ascending()` and 
@@ -86,8 +91,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         raise NotImplementedError()
 
-    def next_state_descending(self, state: Hashable, outcome: T, /, *counts,
-                              **kwargs: Hashable) -> Hashable:
+    def next_state_descending(self, state: Hashable, outcome: T, /,
+                              *counts) -> Hashable:
         """As next_state() but handles outcomes in descending order only.
         
         You can implement both `next_state_ascending()` and 
@@ -204,7 +209,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         kwargs: Mapping[str, Hashable],
     ):
         yield MultisetEvaluatorDungeon(
-            self, self.next_state_method(Order.Ascending),
+            self, self.initial_state, self.next_state_method(Order.Ascending),
             self.next_state_method(Order.Descending), self.extra_outcomes,
             self.final_outcome, kwargs), (), 1
 
@@ -214,17 +219,20 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
     body_inputs_len = 0
 
     # These are filled in by the constructor.
+    initial_state = None  # type: ignore
     next_state_ascending = None  # type: ignore
     next_state_descending = None  # type: ignore
     extra_outcomes = None  # type: ignore
     final_outcome = None  # type: ignore
 
     def __init__(self, preparer: MultisetEvaluator,
+                 initial_state: Callable[..., Hashable],
                  next_state_ascending: Callable[..., Hashable] | None,
                  next_state_descending: Callable[..., Hashable] | None,
                  extra_outcomes: Callable, final_outcome: Callable,
                  kwargs: Mapping[str, Hashable]):
         self.preparer = preparer
+        self.initial_state = initial_state  # type: ignore
         self.next_state_ascending = next_state_ascending  # type: ignore
         self.next_state_descending = next_state_descending  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore

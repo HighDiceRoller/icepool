@@ -11,8 +11,8 @@ import math
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
-                    Mapping, MutableMapping, Sequence, TypeAlias, cast,
-                    TYPE_CHECKING, overload)
+                    Literal, Mapping, MutableMapping, Sequence, TypeAlias,
+                    cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression_base import MultisetExpressionBase
@@ -126,16 +126,30 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     """Maps (extra_outcomes, inputs, initial_state) -> final_state -> int for next_state_descending_function."""
 
     @abstractmethod
-    def next_state_ascending(self, state: Hashable, outcome: T, /, *counts,
-                             **kwargs: Hashable) -> Hashable:
+    def initial_state(self, order: Order, outcomes: Sequence[T], /, **kwargs):
+        """
+        TODO: Should this get cardinalities?
+
+        Args:
+            order: The order in which next_state will see outcomes.
+            outcomes: All outcomes that will be seen by next_state in sorted order.
+            kwargs: Any keyword arguments that were passed to `evaluate()`.
+
+        Raises:
+            UnsupportedOrderError if the given order is not supported.
+        """
+
+    @abstractmethod
+    def next_state_ascending(self, state: Hashable, outcome: T, /,
+                             *counts) -> Hashable:
         """The next_state function to use when going in ascending order.
         
         This method may be set to None in subclasses.
         """
 
     @abstractmethod
-    def next_state_descending(self, state: Hashable, outcome: T, /, *counts,
-                              **kwargs: Hashable) -> Hashable:
+    def next_state_descending(self, state: Hashable, outcome: T, /,
+                              *counts) -> Hashable:
         """The next_state function to use when going in descending order.
         
         This method may be set to None in subclasses.
@@ -151,10 +165,11 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
-    def evaluate_backward(self, input_order: Order,
-                          extra_outcomes: 'Alignment[T]',
-                          inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
-                          kwargs: Mapping[str, Hashable]) -> Mapping[Any, int]:
+    def evaluate_backward(
+        self, input_order: Order, extra_outcomes: 'Alignment[T]',
+        initial_state: Hashable,
+        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
+    ) -> Mapping[Any, int]:
         """Internal algorithm for iterating so that next_state sees outcomes in backwards order.
 
         All intermediate return values are cached in the instance.
@@ -182,7 +197,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         if next_state_function is None:
             raise UnsupportedOrderError()
 
-        cache_key = (extra_outcomes, inputs, None)
+        cache_key = (extra_outcomes, inputs, initial_state)
         if cache_key in cache:
             return cache[cache_key]
 
@@ -190,7 +205,7 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
 
         if all(not input.outcomes()
                for input in inputs) and not extra_outcomes.outcomes():
-            result = {None: 1}
+            result = {initial_state: 1}
         else:
             outcome, prev_extra_outcomes, iterators = MultisetDungeon._pop_inputs(
                 input_order, extra_outcomes, inputs)
@@ -198,22 +213,20 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                 prev_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
                 prev = self.evaluate_backward(input_order, prev_extra_outcomes,
-                                              prev_inputs, kwargs)
+                                              initial_state, prev_inputs)
                 for prev_state, prev_weight in prev.items():
-                    state = next_state_function(prev_state, outcome, *counts,
-                                                **kwargs)
+                    state = next_state_function(prev_state, outcome, *counts)
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
 
         cache[cache_key] = result
         return result
 
-    def evaluate_forward(self,
-                         input_order: Order,
-                         extra_outcomes: 'Alignment[T]',
-                         inputs: 'tuple[icepool.MultisetExpression[T], ...]',
-                         kwargs: Mapping[str, Hashable],
-                         initial_state: Hashable = None) -> Mapping[Any, int]:
+    def evaluate_forward(
+        self, input_order: Order, extra_outcomes: 'Alignment[T]',
+        initial_state: Hashable,
+        inputs: 'tuple[icepool.MultisetExpression[T], ...]'
+    ) -> Mapping[Any, int]:
         """Internal algorithm for iterating in the less-preferred order.
 
         All intermediate return values are cached in the instance.
@@ -255,12 +268,11 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                 next_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
                 next_state = next_state_function(initial_state, outcome,
-                                                 *counts, **kwargs)
+                                                 *counts)
                 if next_state is not icepool.Reroll:
                     final_dist = self.evaluate_forward(input_order,
                                                        next_extra_outcomes,
-                                                       next_inputs, kwargs,
-                                                       next_state)
+                                                       next_state, next_inputs)
                     for final_state, weight in final_dist.items():
                         result[final_state] += weight * prod_weight
 
@@ -277,14 +289,20 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             *(input.order_preference() for input in inputs))
 
         try:
+            initial_state = self.initial_state(-input_order,
+                                               extra_outcomes.outcomes(),
+                                               **kwargs)
             final_states = self.evaluate_backward(input_order, extra_outcomes,
-                                                  inputs, kwargs)
+                                                  initial_state, inputs)
             return self._finalize_evaluation(final_states, kwargs)
         except UnsupportedOrderError:
             try:
+                initial_state = self.initial_state(input_order,
+                                                   extra_outcomes.outcomes(),
+                                                   **kwargs)
                 final_states = self.evaluate_forward(input_order,
-                                                     extra_outcomes, inputs,
-                                                     kwargs)
+                                                     extra_outcomes,
+                                                     initial_state, inputs)
                 return self._finalize_evaluation(final_states, kwargs)
             except UnsupportedOrderError:
                 raise ConflictingOrderError(
@@ -293,8 +311,9 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
                     f'Preferred input order was {input_order.name} with reason {input_order_reason.name}.'
                 )
 
-    def _finalize_evaluation(self, final_states: Mapping[Any, int],
-                             kwargs: Mapping[str, Hashable]) -> 'icepool.Die':
+    def _finalize_evaluation(
+            self, final_states: Mapping[Any, int],
+            kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         final_outcomes = []
         final_weights = []
         for state, weight in final_states.items():
