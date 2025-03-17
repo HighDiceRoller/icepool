@@ -149,15 +149,17 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    __hash__: Callable[[], int] | None = None  # type: ignore
-    """Subclasses may optionally be hashable; if so, intermediate calculations will be persistently cached."""
+    next_state_key: Callable[[], Hashable] | None = None  # type: ignore
+    """Subclasses may optionally provide a next_state_key method; if so, intermediate calculations will be persistently cached."""
 
     def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
     ):
-        transition = MultisetEvaluatorTransition(self, self.next_state)
+        transition: MultisetEvaluatorTransition[
+            T] = MultisetEvaluatorTransition(self.next_state,
+                                             self.next_state_key)
         auxiliary: MultisetEvaluatorAuxiliary[
             T, U_co] = MultisetEvaluatorAuxiliary(self.initial_state,
                                                   self.extra_outcomes,
@@ -170,18 +172,29 @@ class MultisetEvaluatorTransition(MultisetTransition[T]):
     body_inputs_len = 0
 
     # These are filled in by the constructor.
-    initial_state = None  # type: ignore
     next_state = None  # type: ignore
-    extra_outcomes = None  # type: ignore
-    final_outcome = None  # type: ignore
 
-    def __init__(self, preparer: MultisetEvaluator[T, Any],
-                 next_state: Callable[..., Hashable]):
-        self.__eq__ = preparer.__eq__  # type: ignore
-        self.__hash__ = preparer.__hash__  # type: ignore
+    def __init__(self, next_state: Callable[..., Hashable],
+                 next_state_key: Callable[[], Hashable] | None):
         self.next_state = next_state  # type: ignore
+        self.next_state_key = next_state_key
         self.ascending_cache = {}
         self.descending_cache = {}
+
+        if next_state_key is None:
+            self.__hash__ = None  # type: ignore
+
+    def __eq__(self, other):
+        if not isinstance(other, MultisetEvaluatorTransition):
+            return False
+        if self is other:
+            return True
+        if self.next_state_key is not None and other.next_state_key is not None:
+            return self.next_state_key() == other.next_state_key()
+        return False
+
+    def __hash__(self):
+        return hash(self.next_state_key())
 
 
 class MultisetEvaluatorAuxiliary(MultisetAuxiliary[T, U_co]):
