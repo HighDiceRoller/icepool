@@ -97,10 +97,11 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
                 # TODO: initialize body_inputs inside prepare
 
                 # replace dungeon with cached version if available
-                if dungeon in self._cache:
-                    dungeon = self._cache[dungeon]
-                else:
-                    self._cache[dungeon] = dungeon
+                if dungeon.__hash__ is not None:
+                    if dungeon in self._cache:
+                        dungeon = self._cache[dungeon]
+                    else:
+                        self._cache[dungeon] = dungeon
 
                 prod_weight = math.prod(sub_weights) * dungeon_weight
                 outcomes = icepool.sorted_union(
