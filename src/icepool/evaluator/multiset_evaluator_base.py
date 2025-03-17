@@ -117,27 +117,13 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
 
-class MultisetDungeon(Generic[T, U_co], Hashable):
-    """Holds values that are constant within a single evaluation, along with a cache."""
+class MultisetNextState(Generic[T]):
+    """Holds an evaluation's next_state function and caches."""
 
-    ascending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
+    ascending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[Hashable, int]]'
     """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order."""
-    descending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[U_co, int]]'
+    descending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[Hashable, int]]'
     """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order."""
-
-    @abstractmethod
-    def initial_state(self, order: Order, outcomes: Sequence[T], /, **kwargs):
-        """The initial evaluation state.
-        TODO: Should this get cardinalities?
-
-        Args:
-            order: The order in which `next_state` will see outcomes.
-            outcomes: All outcomes that will be seen by `next_state` in sorted order.
-            kwargs: Any keyword arguments that were passed to `evaluate()`.
-
-        Raises:
-            UnsupportedOrderError if the given order is not supported.
-        """
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T, /,
@@ -165,15 +151,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             UnsupportedOrderError if the given order is not supported.
         """
 
-    @abstractmethod
-    def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
-        """Extra outcomes that should be seen."""
-
-    @abstractmethod
-    def final_outcome(
-            self, final_state: Hashable, /, **kwargs: Hashable
-    ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
-        """Generates a final outcome from a final state."""
+    __hash__ = None  # type: ignore
+    """Subclasses may optionally be hashable; if so, the result of the evaluation will be persistently cached."""
 
     def evaluate_backward(
         self, initial_state: Hashable, input_order: Order,
@@ -278,7 +257,8 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
         cache[cache_key] = result
         return result
 
-    def evaluate(self, all_outcomes: 'tuple[T, ...]',
+    def evaluate(self, context: 'MultisetAuxiliary[T, U_co]',
+                 all_outcomes: 'tuple[T, ...]',
                  inputs: 'tuple[icepool.MultisetExpression[T], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
@@ -288,43 +268,25 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
             *(input.order_preference() for input in inputs))
 
         try:
-            initial_state = self.initial_state(-input_order, all_outcomes,
-                                               **kwargs)
+            initial_state = context.initial_state(-input_order, all_outcomes,
+                                                  **kwargs)
             final_states = self.evaluate_backward(initial_state, input_order,
                                                   all_outcomes, inputs)
-            return self._finalize_evaluation(final_states, kwargs)
+            return context.finalize_evaluation(final_states, kwargs)
         except UnsupportedOrderError:
             try:
-                initial_state = self.initial_state(input_order, all_outcomes,
-                                                   **kwargs)
+                initial_state = context.initial_state(input_order,
+                                                      all_outcomes, **kwargs)
                 final_states = self.evaluate_forward(initial_state,
                                                      input_order, all_outcomes,
                                                      inputs)
-                return self._finalize_evaluation(final_states, kwargs)
+                return context.finalize_evaluation(final_states, kwargs)
             except UnsupportedOrderError:
                 raise ConflictingOrderError(
                     'Neither ascending nor descending order is compatable with the evaluation. '
                     +
                     f'Preferred input order was {input_order.name} with reason {input_order_reason.name}.'
                 )
-
-    def _finalize_evaluation(
-            self, final_states: Mapping[Any, int],
-            kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
-        final_outcomes = []
-        final_weights = []
-        for state, weight in final_states.items():
-            outcome = self.final_outcome(state, **kwargs)
-            if outcome is None:
-                raise TypeError(
-                    "None is not a valid final outcome.\n"
-                    "This may have been a result of not supplying any input with an outcome."
-                )
-            if outcome is not icepool.Reroll:
-                final_outcomes.append(outcome)
-                final_weights.append(weight)
-
-        return icepool.Die(final_outcomes, final_weights)
 
     @staticmethod
     def _pop_inputs(
@@ -356,3 +318,52 @@ class MultisetDungeon(Generic[T, U_co], Hashable):
 
             return outcome, next_all_outcomes, tuple(
                 input._generate_min(outcome) for input in inputs)
+
+
+class MultisetAuxiliary(Generic[T, U_co]):
+
+    @abstractmethod
+    def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
+        """Extra outcomes that should be seen.
+        
+        Args:
+            outcomes: The union of the outcomes of the input expressions.
+        """
+
+    @abstractmethod
+    def initial_state(self, order: Order, outcomes: Sequence[T], /, **kwargs):
+        """The initial evaluation state.
+        TODO: Should this get cardinalities?
+
+        Args:
+            order: The order in which `next_state` will see outcomes.
+            outcomes: All outcomes that will be seen by `next_state` in sorted order.
+            kwargs: Any keyword arguments that were passed to `evaluate()`.
+
+        Raises:
+            UnsupportedOrderError if the given order is not supported.
+        """
+
+    @abstractmethod
+    def final_outcome(
+            self, final_state: Hashable, /, **kwargs: Hashable
+    ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+        """Generates a final outcome from a final state."""
+
+    def finalize_evaluation(
+            self, final_states: Mapping[Any, int],
+            kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
+        final_outcomes = []
+        final_weights = []
+        for state, weight in final_states.items():
+            outcome = self.final_outcome(state, **kwargs)
+            if outcome is None:
+                raise TypeError(
+                    "None is not a valid final outcome.\n"
+                    "This may have been a result of not supplying any input with an outcome."
+                )
+            if outcome is not icepool.Reroll:
+                final_outcomes.append(outcome)
+                final_weights.append(weight)
+
+        return icepool.Die(final_outcomes, final_weights)
