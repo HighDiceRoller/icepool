@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import itertools
 import math
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetEvaluatorBase
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetTransition, MultisetAuxiliary
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_variable import MultisetVariable
 from icepool.expression.multiset_tuple_variable import MultisetTupleVariable
@@ -122,14 +122,16 @@ class MultisetFunctionRawResult(Generic[T, U_co]):
         self
     ) -> Iterator[tuple[tuple[MultisetExpressionBase, ...], tuple[
             MultisetExpressionBase, ...], tuple[MultisetExpressionBase, ...],
-                        MultisetDungeon, Mapping[str, Hashable], int]]:
+                        MultisetTransition, MultisetAuxiliary, Mapping[
+                            str, Hashable], int]]:
         body_inputs: 'list[MultisetExpressionBase]' = []
         inner_expressions = tuple(
             input._detach(body_inputs) for input in self.inner_inputs)
-        for inner_dungeon, nested_body_inputs, weight in self.evaluator._prepare(
+        for inner_transition, inner_auxiliary, nested_body_inputs, weight in self.evaluator._prepare(
                 inner_expressions, self.inner_kwargs):
             yield (nested_body_inputs, tuple(body_inputs), inner_expressions,
-                   inner_dungeon, self.inner_kwargs, weight)
+                   inner_transition, inner_auxiliary, self.inner_kwargs,
+                   weight)
 
 
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
@@ -170,40 +172,34 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 def prepare_multiset_function(
     raw_result: 'MultisetFunctionRawResult[T, U_co]'
-) -> 'Iterator[tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...], int]]':
-    for (nested_body_inputs, body_inputs, inner_expressions, inner_dungeon,
-         inner_kwargs, weight) in raw_result.iter_infos():
-        yield MultisetFunctionDungeon(
-            len(nested_body_inputs), len(body_inputs), inner_expressions,
-            inner_dungeon,
-            inner_kwargs), nested_body_inputs + body_inputs, weight
+) -> 'Iterator[tuple[MultisetTransition, MultisetAuxiliary, tuple[MultisetExpressionBase, ...], int]]':
+    for (nested_body_inputs, body_inputs, inner_expressions, inner_transition,
+         inner_auxiliary, inner_kwargs, weight) in raw_result.iter_infos():
+        transition = MultisetFunctionTransition(len(nested_body_inputs),
+                                                len(body_inputs),
+                                                inner_transition)
+        auxiliary = MultisetFunctionAuxiliary(inner_expressions,
+                                              inner_auxiliary, inner_kwargs)
+        yield transition, auxiliary, nested_body_inputs + body_inputs, weight
 
 
-class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
+class MultisetFunctionTransition(MultisetTransition[T]):
 
     def __init__(self, nested_body_inputs_len: int, body_inputs_len: int,
-                 inner_expressions: tuple[MultisetExpressionBase[T, Any], ...],
-                 inner_dungeon: MultisetDungeon[T, U_co],
-                 inner_kwargs: Mapping[str, Hashable]):
-        # TODO: do we actually need these lengths?
-        # Though this question might be obviated by expression._prepare().
-        self.nested_body_inputs_len = nested_body_inputs_len
-        self.body_inputs_len = body_inputs_len
-        self.inner_expressions = inner_expressions
-        self.inner_dungeon = inner_dungeon
-        # TODO: can we avoid storing inner_kwargs?
-        # Would this require delaying inner dungeon creation further?
-        self.inner_kwargs = inner_kwargs
+                 inner_transition: MultisetTransition[T]):
+        self.inner_transition = inner_transition
         self.ascending_cache = {}
         self.descending_cache = {}
 
-    def initial_state(self, order, outcomes, /, **kwargs):
-        return self.inner_expressions, self.inner_dungeon.initial_state(
-            order, outcomes, **self.inner_kwargs)
+        nested_slice = slice(0, nested_body_inputs_len)
+        body_slice = slice(nested_slice.stop,
+                           nested_slice.stop + body_inputs_len)
+        param_slice = slice(body_slice.stop, None)
+        self.count_slices = nested_slice, body_slice, param_slice
 
     def next_state(self, state, order, outcome, /, *counts):
         inner_expressions, inner_state = state
-        nested_slice, body_slice, param_slice = self._count_slices
+        nested_slice, body_slice, param_slice = self.count_slices
         nested_counts = counts[nested_slice]
         body_counts = counts[body_slice]
         param_counts = counts[param_slice]
@@ -212,93 +208,89 @@ class MultisetFunctionDungeon(MultisetDungeon[T, U_co]):
             *(inner_expression._apply_variables(outcome, body_counts,
                                                 param_counts)
               for inner_expression in inner_expressions))
-        inner_state = self.inner_dungeon.next_state(inner_state, order,
-                                                    outcome, *nested_counts,
-                                                    *inner_counts)
+        inner_state = self.inner_transition.next_state(inner_state, order,
+                                                       outcome, *nested_counts,
+                                                       *inner_counts)
 
         return inner_expressions, inner_state
 
+    # TODO: __hash__?
+
+
+class MultisetFunctionAuxiliary(MultisetAuxiliary[T, U_co]):
+
+    def __init__(self, inner_expressions: tuple[MultisetExpressionBase[T, Any],
+                                                ...],
+                 inner_auxiliary: MultisetAuxiliary[T, U_co],
+                 inner_kwargs: Mapping[str, Hashable]):
+        self.inner_expressions = inner_expressions
+        self.inner_auxiliary = inner_auxiliary
+        self.inner_kwargs = inner_kwargs
+
+    def initial_state(self, order, outcomes, /, **kwargs):
+        return self.inner_expressions, self.inner_auxiliary.initial_state(
+            order, outcomes, **self.inner_kwargs)
+
     def extra_outcomes(self, outcomes):
-        return self.inner_dungeon.extra_outcomes(outcomes)
+        return self.inner_auxiliary.extra_outcomes(outcomes)
 
     def final_outcome(self, final_state, **kwargs):
         if final_state is None:
-            return self.inner_dungeon.final_outcome(None, **self.inner_kwargs)
+            return self.inner_auxiliary.final_outcome(None,
+                                                      **self.inner_kwargs)
         else:
             _, inner_state = final_state
-        return self.inner_dungeon.final_outcome(inner_state,
-                                                **self.inner_kwargs)
-
-    @cached_property
-    def _count_slices(self) -> 'tuple[slice, slice, slice]':
-        nested_slice = slice(0, self.nested_body_inputs_len)
-        body_slice = slice(nested_slice.stop,
-                           nested_slice.stop + self.body_inputs_len)
-        param_slice = slice(body_slice.stop, None)
-        return nested_slice, body_slice, param_slice
-
-    @cached_property
-    def _hash_key(self) -> Hashable:
-        return (MultisetFunctionDungeon, self.inner_expressions,
-                self.inner_dungeon, tuple(sorted(self.inner_kwargs.items())))
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._hash_key)
-
-    def __hash__(self) -> int:
-        return self._hash
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, MultisetFunctionDungeon):
-            return False
-        return self._hash_key == other._hash_key
+        return self.inner_auxiliary.final_outcome(inner_state,
+                                                  **self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
     raw_result: 'tuple[MultisetFunctionRawResult[T, U_co], ...]'
-) -> 'Iterator[tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...], int]]':
+) -> 'Iterator[tuple[MultisetTransition, MultisetAuxiliary, tuple[MultisetExpressionBase, ...], int]]':
     for t in itertools.product(*(raw.iter_infos() for raw in raw_result)):
         (all_nested_body_inputs, all_body_inputs, all_inner_expressions,
-         all_inner_dungeon, all_inner_kwargs, all_weight) = zip(*t)
+         all_inner_transition, all_inner_auxiliary, all_inner_kwargs,
+         all_weight) = zip(*t)
         all_nested_body_inputs_len = tuple(
             len(x) for x in all_nested_body_inputs)
         all_body_inputs_len = tuple(len(x) for x in all_body_inputs)
         all_combined_body_inputs = (
             *itertools.chain.from_iterable(all_nested_body_inputs),
             *itertools.chain.from_iterable(all_body_inputs))
-        yield MultisetFunctionJointDungeon(
+        transition = MultisetFunctionJointTransition(
             all_nested_body_inputs_len, all_body_inputs_len,
-            all_inner_expressions, all_inner_dungeon,
-            all_inner_kwargs), all_combined_body_inputs, math.prod(all_weight)
+            all_inner_transition)
+        auxiliary = MultisetFunctionJointAuxiliary(all_inner_expressions,
+                                                   all_inner_auxiliary,
+                                                   all_inner_kwargs)
+        yield transition, auxiliary, all_combined_body_inputs, math.prod(
+            all_weight)
 
 
-class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
+class MultisetFunctionJointTransition(MultisetTransition[T]):
 
-    def __init__(
-            self, all_nested_body_inputs_len: tuple[int, ...],
-            all_body_inputs_len: tuple[int, ...],
-            all_inner_expressions: tuple[tuple[MultisetExpressionBase[T, Any],
-                                               ...], ...],
-            all_inner_dungeon: tuple[MultisetDungeon[T, U_co], ...],
-            all_inner_kwargs: tuple[Mapping[str, Hashable], ...]):
-        self.all_nested_body_inputs_len = all_nested_body_inputs_len
-        self.all_body_inputs_len = all_body_inputs_len
-        self.all_inner_expressions = all_inner_expressions
-        self.all_inner_dungeon = all_inner_dungeon
-        self.all_inner_kwargs = all_inner_kwargs
-
+    def __init__(self, all_nested_body_inputs_len: tuple[int, ...],
+                 all_body_inputs_len: tuple[int, ...],
+                 all_inner_transition: tuple[MultisetTransition[T]]):
+        self.all_inner_transition = all_inner_transition
         self.ascending_cache = {}
         self.descending_cache = {}
 
-    def initial_state(self, order, outcomes, /, **kwargs):
-        all_inner_expressions = self.all_inner_expressions
-        all_inner_states = tuple(
-            inner_dungeon.initial_state(order, outcomes, **inner_kwargs)
-            for inner_dungeon, inner_kwargs in zip(self.all_inner_dungeon,
-                                                   self.all_inner_kwargs))
+        pos = 0
+        nested_body_slices = []
+        body_slices = []
+        for nested_len in all_nested_body_inputs_len:
+            nested_body_slice = slice(pos, pos + nested_len)
+            pos += nested_len
+            nested_body_slices.append(nested_body_slice)
+        for body_len in all_body_inputs_len:
+            body_slice = slice(pos, pos + body_len)
+            pos += body_len
+            body_slices.append(body_slice)
 
-        return all_inner_expressions, all_inner_states
+        param_slice = slice(pos, None)
+        self.count_slices = tuple(nested_body_slices), tuple(
+            body_slices), param_slice
 
     def next_state(self, state, order, outcome, /, *counts):
         all_inner_expressions, all_inner_states = state
@@ -306,13 +298,13 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
         next_all_inner_expressions = []
         next_all_inner_states = []
 
-        nested_body_slices, body_slices, param_slice = self._count_slices
+        nested_body_slices, body_slices, param_slice = self.count_slices
         param_counts = counts[param_slice]
 
         for (inner_expressions, inner_state, nested_body_slice, body_slice,
-             inner_dungeon) in zip(all_inner_expressions, all_inner_states,
-                                   nested_body_slices, body_slices,
-                                   self.all_inner_dungeon):
+             inner_transition) in zip(all_inner_expressions, all_inner_states,
+                                      nested_body_slices, body_slices,
+                                      self.all_inner_transition):
             nested_counts = counts[nested_body_slice]
             body_counts = counts[body_slice]
 
@@ -320,70 +312,57 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T, U_co]):
                 *(inner_expression._apply_variables(outcome, body_counts,
                                                     param_counts)
                   for inner_expression in inner_expressions))
-            inner_state = inner_dungeon.next_state(inner_state, order, outcome,
-                                                   *nested_counts,
-                                                   *inner_counts)
+            inner_state = inner_transition.next_state(inner_state, order,
+                                                      outcome, *nested_counts,
+                                                      *inner_counts)
             next_all_inner_expressions.append(inner_expressions)
             next_all_inner_states.append(inner_state)
 
         return tuple(next_all_inner_expressions), tuple(next_all_inner_states)
 
+    # TODO: hash?
+
+
+class MultisetFunctionJointAuxiliary(MultisetAuxiliary[T, U_co]):
+
+    def __init__(
+            self,
+            all_inner_expressions: tuple[tuple[MultisetExpressionBase[T, Any],
+                                               ...], ...],
+            all_inner_auxiliary: tuple[MultisetAuxiliary[T, U_co], ...],
+            all_inner_kwargs: tuple[Mapping[str, Hashable], ...]):
+        self.all_inner_expressions = all_inner_expressions
+        self.all_inner_auxiliary = all_inner_auxiliary
+        self.all_inner_kwargs = all_inner_kwargs
+
+    def initial_state(self, order, outcomes, /, **kwargs):
+        all_inner_expressions = self.all_inner_expressions
+        all_inner_states = tuple(
+            inner_auxiliary.initial_state(order, outcomes, **inner_kwargs)
+            for inner_auxiliary, inner_kwargs in zip(self.all_inner_auxiliary,
+                                                     self.all_inner_kwargs))
+
+        return all_inner_expressions, all_inner_states
+
     def extra_outcomes(self, outcomes):
         return icepool.sorted_union(
-            *(inner_dungeon.extra_outcomes(outcomes)
-              for inner_dungeon in self.all_inner_dungeon))
+            *(inner_auxiliary.extra_outcomes(outcomes)
+              for inner_auxiliary in self.all_inner_auxiliary))
 
     def final_outcome(self, final_state, **kwargs):
         if final_state is None:
             result = tuple(
-                inner_dungeon.final_outcome(None, **inner_kwargs)
-                for inner_dungeon, inner_kwargs in zip(self.all_inner_dungeon,
-                                                       self.all_inner_kwargs))
+                inner_auxiliary.final_outcome(None, **inner_kwargs)
+                for inner_auxiliary, inner_kwargs in zip(
+                    self.all_inner_auxiliary, self.all_inner_kwargs))
         else:
             result = tuple(
-                inner_dungeon.final_outcome(inner_final_state, **inner_kwargs)
-                for inner_dungeon, inner_final_state, inner_kwargs, in zip(
-                    self.all_inner_dungeon, final_state[1],
+                inner_auxiliary.final_outcome(inner_final_state, **
+                                              inner_kwargs)
+                for inner_auxiliary, inner_final_state, inner_kwargs, in zip(
+                    self.all_inner_auxiliary, final_state[1],
                     self.all_inner_kwargs))
         if icepool.Reroll in result:
             return icepool.Reroll
         else:
             return result
-
-    @cached_property
-    def _count_slices(
-            self) -> tuple[tuple[slice, ...], tuple[slice, ...], slice]:
-        pos = 0
-        nested_body_slices = []
-        body_slices = []
-        for nested_len in self.all_nested_body_inputs_len:
-            nested_body_slice = slice(pos, pos + nested_len)
-            pos += nested_len
-            nested_body_slices.append(nested_body_slice)
-        for body_len in self.all_body_inputs_len:
-            body_slice = slice(pos, pos + body_len)
-            pos += body_len
-            body_slices.append(body_slice)
-
-        param_slice = slice(pos, None)
-        return tuple(nested_body_slices), tuple(body_slices), param_slice
-
-    @cached_property
-    def _hash_key(self) -> Hashable:
-        return (MultisetFunctionJointDungeon, self.all_inner_expressions,
-                self.all_inner_dungeon,
-                tuple(
-                    tuple(sorted(inner_kwargs.items()))
-                    for inner_kwargs in self.all_inner_kwargs))
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._hash_key)
-
-    def __hash__(self) -> int:
-        return self._hash
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, MultisetFunctionJointDungeon):
-            return False
-        return self._hash_key == other._hash_key

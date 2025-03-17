@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetTransition, MultisetAuxiliary
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.order import Order
 
@@ -149,17 +149,23 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
+    __hash__: Callable[[], int] | None = None  # type: ignore
+    """Subclasses may optionally be hashable; if so, intermediate calculations will be persistently cached."""
+
     def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
     ):
-        yield MultisetEvaluatorDungeon(self, self.initial_state,
-                                       self.next_state, self.extra_outcomes,
-                                       self.final_outcome, kwargs), (), 1
+        transition = MultisetEvaluatorTransition(self, self.next_state)
+        auxiliary: MultisetEvaluatorAuxiliary[
+            T, U_co] = MultisetEvaluatorAuxiliary(self.initial_state,
+                                                  self.extra_outcomes,
+                                                  self.final_outcome)
+        yield transition, auxiliary, (), 1
 
 
-class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
+class MultisetEvaluatorTransition(MultisetTransition[T]):
 
     body_inputs_len = 0
 
@@ -169,34 +175,23 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T, U_co]):
     extra_outcomes = None  # type: ignore
     final_outcome = None  # type: ignore
 
-    def __init__(self, preparer: MultisetEvaluator,
-                 initial_state: Callable[..., Hashable],
-                 next_state: Callable[..., Hashable], extra_outcomes: Callable,
-                 final_outcome: Callable, kwargs: Mapping[str, Hashable]):
-        self.preparer = preparer
-        self.initial_state = initial_state  # type: ignore
+    def __init__(self, preparer: MultisetEvaluator[T, Any],
+                 next_state: Callable[..., Hashable]):
+        self.__eq__ = preparer.__eq__  # type: ignore
+        self.__hash__ = preparer.__hash__  # type: ignore
         self.next_state = next_state  # type: ignore
-        self.extra_outcomes = extra_outcomes  # type: ignore
-        self.final_outcome = final_outcome  # type: ignore
-        self.kwargs = kwargs
         self.ascending_cache = {}
         self.descending_cache = {}
 
-    @cached_property
-    def _hash_key(self) -> Hashable:
-        # TODO: do we need to include kwargs as part of the key?
-        # TODO: how can we have better cache key for the preparer?
-        return (MultisetEvaluatorDungeon, self.preparer,
-                tuple(sorted(self.kwargs.items())))
 
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._hash_key)
+class MultisetEvaluatorAuxiliary(MultisetAuxiliary[T, U_co]):
+    # These are filled in by the constructor.
+    initial_state = None  # type: ignore
+    extra_outcomes = None  # type: ignore
+    final_outcome = None  # type: ignore
 
-    def __hash__(self) -> int:
-        return self._hash
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, MultisetEvaluatorDungeon):
-            return False
-        return self._hash_key == other._hash_key
+    def __init__(self, initial_state: Callable[..., Hashable],
+                 extra_outcomes: Callable, final_outcome: Callable):
+        self.initial_state = initial_state  # type: ignore
+        self.extra_outcomes = extra_outcomes  # type: ignore
+        self.final_outcome = final_outcome  # type: ignore

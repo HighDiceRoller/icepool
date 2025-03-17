@@ -22,26 +22,26 @@ if TYPE_CHECKING:
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
-    _cache: 'MutableMapping[MultisetDungeon, MultisetDungeon] | None' = None
+    _cache: 'MutableMapping[MultisetTransition, MultisetTransition] | None' = None
 
     @abstractmethod
     def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'Iterator[tuple[MultisetDungeon, tuple[MultisetExpressionBase, ...], int]]':
+    ) -> 'Iterator[tuple[MultisetTransition, MultisetAuxiliary, tuple[MultisetExpressionBase, ...], int]]':
         """Prepares an evaluation.
 
         Args:
             inputs: This is just for the benefit of `@multiset_function`
                 so it can know whether the arguments are single multisets or
                 multiset tuples.
-            kwargs: Used as part of the dungeon's cache key.
+            kwargs: Used as part of the transition's cache key.
                 `@multiset_function` also determines how to forward these to
                 the inner evaluators.
 
         Yields:
-            dungeon, body_inputs, weight
+            transition, auxiliary, body_inputs, weight
         """
 
     def evaluate(
@@ -92,24 +92,25 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         for p in itertools.product(*(expression._prepare()
                                      for expression in inputs)):
             sub_inputs, sub_weights = zip(*p)
-            for dungeon, body_inputs, dungeon_weight in self._prepare(
+            for transition, auxiliary, body_inputs, evaluator_weight in self._prepare(
                     sub_inputs, kwargs):
                 # TODO: initialize body_inputs inside prepare
 
-                # replace dungeon with cached version if available
-                if dungeon.__hash__ is not None:
-                    if dungeon in self._cache:
-                        dungeon = self._cache[dungeon]
+                # replace transition with cached version if available
+                if transition.__hash__ is not None:
+                    if transition in self._cache:
+                        transition = self._cache[transition]
                     else:
-                        self._cache[dungeon] = dungeon
+                        self._cache[transition] = transition
 
-                prod_weight = math.prod(sub_weights) * dungeon_weight
+                prod_weight = math.prod(sub_weights) * evaluator_weight
                 outcomes = icepool.sorted_union(
                     *(expression.outcomes() for expression in sub_inputs))
-                extra_outcomes = dungeon.extra_outcomes(outcomes)
+                extra_outcomes = auxiliary.extra_outcomes(outcomes)
                 all_outcomes = icepool.sorted_union(extra_outcomes, outcomes)
-                sub_result = dungeon.evaluate(all_outcomes,
-                                              body_inputs + sub_inputs, kwargs)
+                sub_result = transition.evaluate(auxiliary, all_outcomes,
+                                                 body_inputs + sub_inputs,
+                                                 kwargs)
                 final_data[sub_result] += prod_weight
 
         return icepool.Die(final_data)
@@ -117,7 +118,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
 
-class MultisetNextState(Generic[T]):
+class MultisetTransition(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
     ascending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[Hashable, int]]'
@@ -151,8 +152,8 @@ class MultisetNextState(Generic[T]):
             UnsupportedOrderError if the given order is not supported.
         """
 
-    __hash__ = None  # type: ignore
-    """Subclasses may optionally be hashable; if so, the result of the evaluation will be persistently cached."""
+    __hash__: Callable[[], int] | None = None  # type: ignore
+    """Subclasses may optionally be hashable; if so, intermediate calculations will be persistently cached."""
 
     def evaluate_backward(
         self, initial_state: Hashable, input_order: Order,
@@ -190,7 +191,7 @@ class MultisetNextState(Generic[T]):
         if all(not input.outcomes() for input in inputs) and not all_outcomes:
             result = {initial_state: 1}
         else:
-            outcome, prev_all_outcomes, iterators = MultisetDungeon._pop_inputs(
+            outcome, prev_all_outcomes, iterators = pop_inputs(
                 input_order, all_outcomes, inputs)
             for p in itertools.product(*iterators):
                 prev_inputs, counts, weights = zip(*p)
@@ -240,7 +241,7 @@ class MultisetNextState(Generic[T]):
         if all(not input.outcomes() for input in inputs) and not all_outcomes:
             result = {initial_state: 1}
         else:
-            outcome, next_all_outcomes, iterators = MultisetDungeon._pop_inputs(
+            outcome, next_all_outcomes, iterators = pop_inputs(
                 input_order, all_outcomes, inputs)
             for p in itertools.product(*iterators):
                 next_inputs, counts, weights = zip(*p)
@@ -287,37 +288,6 @@ class MultisetNextState(Generic[T]):
                     +
                     f'Preferred input order was {input_order.name} with reason {input_order_reason.name}.'
                 )
-
-    @staticmethod
-    def _pop_inputs(
-        order: Order, all_outcomes: tuple[T, ...],
-        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
-    ) -> 'tuple[T, tuple[T, ...], tuple[Iterator[tuple[MultisetExpressionBase, Any, int]], ...]]':
-        """Pops a single outcome from the inputs.
-
-        Args:
-            order: The order in which to pop. Descending order pops from the top
-            and ascending from the bottom.
-            all_outcomes: All outcomes that will be seen.
-            inputs: The inputs to pop from.
-
-        Returns:
-            * The popped outcome.
-            * The remaining extra outcomes.
-            * A tuple of iterators over the resulting inputs, counts, and weights.
-        """
-        if order < 0:
-            outcome = all_outcomes[-1]
-            next_all_outcomes = all_outcomes[:-1]
-
-            return outcome, next_all_outcomes, tuple(
-                input._generate_max(outcome) for input in inputs)
-        else:
-            outcome = all_outcomes[0]
-            next_all_outcomes = all_outcomes[1:]
-
-            return outcome, next_all_outcomes, tuple(
-                input._generate_min(outcome) for input in inputs)
 
 
 class MultisetAuxiliary(Generic[T, U_co]):
@@ -367,3 +337,34 @@ class MultisetAuxiliary(Generic[T, U_co]):
                 final_weights.append(weight)
 
         return icepool.Die(final_outcomes, final_weights)
+
+
+def pop_inputs(
+    order: Order, all_outcomes: tuple[T, ...],
+    inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
+) -> 'tuple[T, tuple[T, ...], tuple[Iterator[tuple[MultisetExpressionBase, Any, int]], ...]]':
+    """Pops a single outcome from the inputs.
+
+    Args:
+        order: The order in which to pop. Descending order pops from the top
+        and ascending from the bottom.
+        all_outcomes: All outcomes that will be seen.
+        inputs: The inputs to pop from.
+
+    Returns:
+        * The popped outcome.
+        * The remaining extra outcomes.
+        * A tuple of iterators over the resulting inputs, counts, and weights.
+    """
+    if order < 0:
+        outcome = all_outcomes[-1]
+        next_all_outcomes = all_outcomes[:-1]
+
+        return outcome, next_all_outcomes, tuple(
+            input._generate_max(outcome) for input in inputs)
+    else:
+        outcome = all_outcomes[0]
+        next_all_outcomes = all_outcomes[1:]
+
+        return outcome, next_all_outcomes, tuple(
+            input._generate_min(outcome) for input in inputs)
