@@ -149,8 +149,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    next_state_key: Callable[[], Hashable] | None = None  # type: ignore
-    """Subclasses may optionally provide a next_state_key method; if so, intermediate calculations will be persistently cached."""
+    dungeon_key: Callable[[], Hashable] | None = None  # type: ignore
+    """Subclasses may optionally provide this method; if so, intermediate calculations will be persistently cached."""
 
     def _prepare(
         self,
@@ -158,7 +158,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         kwargs: Mapping[str, Hashable],
     ):
         dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
-            self.next_state, self.next_state_key)
+            self.next_state, self.dungeon_key)
         quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
             self.initial_state, self.extra_outcomes, self.final_outcome)
         yield dungeon, quest, (), 1
@@ -172,13 +172,13 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
     next_state = None  # type: ignore
 
     def __init__(self, next_state: Callable[..., Hashable],
-                 next_state_key: Callable[[], Hashable] | None):
+                 dungeon_key: Callable[[], Hashable] | None):
         self.next_state = next_state  # type: ignore
-        self.next_state_key = next_state_key
+        self.dungeon_key = dungeon_key
         self.ascending_cache = {}
         self.descending_cache = {}
 
-        if next_state_key is None:
+        if dungeon_key is None:
             self.__hash__ = None  # type: ignore
 
     def __eq__(self, other):
@@ -186,12 +186,12 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
             return False
         if self is other:
             return True
-        if self.next_state_key is not None and other.next_state_key is not None:
-            return self.next_state_key() == other.next_state_key()
+        if self.dungeon_key is not None and other.dungeon_key is not None:
+            return self.dungeon_key() == other.dungeon_key()
         return False
 
     def __hash__(self):
-        return hash(self.next_state_key())
+        return hash(self.dungeon_key())
 
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
