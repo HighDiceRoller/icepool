@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetTransition, MultisetAuxiliary
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.order import Order
 
@@ -157,17 +157,14 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
     ):
-        transition: MultisetEvaluatorTransition[
-            T] = MultisetEvaluatorTransition(self.next_state,
-                                             self.next_state_key)
-        auxiliary: MultisetEvaluatorAuxiliary[
-            T, U_co] = MultisetEvaluatorAuxiliary(self.initial_state,
-                                                  self.extra_outcomes,
-                                                  self.final_outcome)
-        yield transition, auxiliary, (), 1
+        dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
+            self.next_state, self.next_state_key)
+        quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
+            self.initial_state, self.extra_outcomes, self.final_outcome)
+        yield dungeon, quest, (), 1
 
 
-class MultisetEvaluatorTransition(MultisetTransition[T]):
+class MultisetEvaluatorDungeon(MultisetDungeon[T]):
 
     body_inputs_len = 0
 
@@ -185,7 +182,7 @@ class MultisetEvaluatorTransition(MultisetTransition[T]):
             self.__hash__ = None  # type: ignore
 
     def __eq__(self, other):
-        if not isinstance(other, MultisetEvaluatorTransition):
+        if not isinstance(other, MultisetEvaluatorDungeon):
             return False
         if self is other:
             return True
@@ -197,7 +194,7 @@ class MultisetEvaluatorTransition(MultisetTransition[T]):
         return hash(self.next_state_key())
 
 
-class MultisetEvaluatorAuxiliary(MultisetAuxiliary[T, U_co]):
+class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
     # These are filled in by the constructor.
     initial_state = None  # type: ignore
     extra_outcomes = None  # type: ignore

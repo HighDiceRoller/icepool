@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import itertools
 import math
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetTransition, MultisetAuxiliary
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_variable import MultisetVariable
 from icepool.expression.multiset_tuple_variable import MultisetTupleVariable
@@ -122,16 +122,15 @@ class MultisetFunctionRawResult(Generic[T, U_co]):
         self
     ) -> Iterator[tuple[tuple[MultisetExpressionBase, ...], tuple[
             MultisetExpressionBase, ...], tuple[MultisetExpressionBase, ...],
-                        MultisetTransition, MultisetAuxiliary, Mapping[
+                        MultisetDungeon, MultisetQuest, Mapping[
                             str, Hashable], int]]:
         body_inputs: 'list[MultisetExpressionBase]' = []
         inner_expressions = tuple(
             input._detach(body_inputs) for input in self.inner_inputs)
-        for inner_transition, inner_auxiliary, nested_body_inputs, weight in self.evaluator._prepare(
+        for inner_dungeon, inner_quest, nested_body_inputs, weight in self.evaluator._prepare(
                 inner_expressions, self.inner_kwargs):
             yield (nested_body_inputs, tuple(body_inputs), inner_expressions,
-                   inner_transition, inner_auxiliary, self.inner_kwargs,
-                   weight)
+                   inner_dungeon, inner_quest, self.inner_kwargs, weight)
 
 
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
@@ -172,22 +171,21 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 def prepare_multiset_function(
     raw_result: 'MultisetFunctionRawResult[T, U_co]'
-) -> 'Iterator[tuple[MultisetTransition, MultisetAuxiliary, tuple[MultisetExpressionBase, ...], int]]':
-    for (nested_body_inputs, body_inputs, inner_expressions, inner_transition,
-         inner_auxiliary, inner_kwargs, weight) in raw_result.iter_infos():
-        transition = MultisetFunctionTransition(len(nested_body_inputs),
-                                                len(body_inputs),
-                                                inner_transition)
-        auxiliary = MultisetFunctionAuxiliary(inner_expressions,
-                                              inner_auxiliary, inner_kwargs)
-        yield transition, auxiliary, nested_body_inputs + body_inputs, weight
+) -> 'Iterator[tuple[MultisetDungeon, MultisetQuest, tuple[MultisetExpressionBase, ...], int]]':
+    for (nested_body_inputs, body_inputs, inner_expressions, inner_dungeon,
+         inner_quest, inner_kwargs, weight) in raw_result.iter_infos():
+        dungeon = MultisetFunctionDungeon(len(nested_body_inputs),
+                                          len(body_inputs), inner_dungeon)
+        quest = MultisetFunctionQuest(inner_expressions, inner_quest,
+                                      inner_kwargs)
+        yield dungeon, quest, nested_body_inputs + body_inputs, weight
 
 
-class MultisetFunctionTransition(MultisetTransition[T]):
+class MultisetFunctionDungeon(MultisetDungeon[T]):
 
     def __init__(self, nested_body_inputs_len: int, body_inputs_len: int,
-                 inner_transition: MultisetTransition[T]):
-        self.inner_transition = inner_transition
+                 inner_dungeon: MultisetDungeon[T]):
+        self.inner_dungeon = inner_dungeon
         self.ascending_cache = {}
         self.descending_cache = {}
 
@@ -208,48 +206,46 @@ class MultisetFunctionTransition(MultisetTransition[T]):
             *(inner_expression._apply_variables(outcome, body_counts,
                                                 param_counts)
               for inner_expression in inner_expressions))
-        inner_state = self.inner_transition.next_state(inner_state, order,
-                                                       outcome, *nested_counts,
-                                                       *inner_counts)
+        inner_state = self.inner_dungeon.next_state(inner_state, order,
+                                                    outcome, *nested_counts,
+                                                    *inner_counts)
 
         return inner_expressions, inner_state
 
-    # TODO: __hash__?
+    # TODO: __hash__? must involve inner expressions if so
 
 
-class MultisetFunctionAuxiliary(MultisetAuxiliary[T, U_co]):
+class MultisetFunctionQuest(MultisetQuest[T, U_co]):
 
     def __init__(self, inner_expressions: tuple[MultisetExpressionBase[T, Any],
                                                 ...],
-                 inner_auxiliary: MultisetAuxiliary[T, U_co],
+                 inner_quest: MultisetQuest[T, U_co],
                  inner_kwargs: Mapping[str, Hashable]):
         self.inner_expressions = inner_expressions
-        self.inner_auxiliary = inner_auxiliary
+        self.inner_quest = inner_quest
         self.inner_kwargs = inner_kwargs
 
     def initial_state(self, order, outcomes, /, **kwargs):
-        return self.inner_expressions, self.inner_auxiliary.initial_state(
+        return self.inner_expressions, self.inner_quest.initial_state(
             order, outcomes, **self.inner_kwargs)
 
     def extra_outcomes(self, outcomes):
-        return self.inner_auxiliary.extra_outcomes(outcomes)
+        return self.inner_quest.extra_outcomes(outcomes)
 
     def final_outcome(self, final_state, **kwargs):
         if final_state is None:
-            return self.inner_auxiliary.final_outcome(None,
-                                                      **self.inner_kwargs)
+            return self.inner_quest.final_outcome(None, **self.inner_kwargs)
         else:
             _, inner_state = final_state
-        return self.inner_auxiliary.final_outcome(inner_state,
-                                                  **self.inner_kwargs)
+        return self.inner_quest.final_outcome(inner_state, **self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
     raw_result: 'tuple[MultisetFunctionRawResult[T, U_co], ...]'
-) -> 'Iterator[tuple[MultisetTransition, MultisetAuxiliary, tuple[MultisetExpressionBase, ...], int]]':
+) -> 'Iterator[tuple[MultisetDungeon, MultisetQuest, tuple[MultisetExpressionBase, ...], int]]':
     for t in itertools.product(*(raw.iter_infos() for raw in raw_result)):
         (all_nested_body_inputs, all_body_inputs, all_inner_expressions,
-         all_inner_transition, all_inner_auxiliary, all_inner_kwargs,
+         all_inner_dungeon, all_inner_quest, all_inner_kwargs,
          all_weight) = zip(*t)
         all_nested_body_inputs_len = tuple(
             len(x) for x in all_nested_body_inputs)
@@ -257,22 +253,20 @@ def prepare_multiset_joint_function(
         all_combined_body_inputs = (
             *itertools.chain.from_iterable(all_nested_body_inputs),
             *itertools.chain.from_iterable(all_body_inputs))
-        transition = MultisetFunctionJointTransition(
-            all_nested_body_inputs_len, all_body_inputs_len,
-            all_inner_transition)
-        auxiliary = MultisetFunctionJointAuxiliary(all_inner_expressions,
-                                                   all_inner_auxiliary,
-                                                   all_inner_kwargs)
-        yield transition, auxiliary, all_combined_body_inputs, math.prod(
-            all_weight)
+        dungeon = MultisetFunctionJointDungeon(all_nested_body_inputs_len,
+                                               all_body_inputs_len,
+                                               all_inner_dungeon)
+        quest = MultisetFunctionJointQuest(all_inner_expressions,
+                                           all_inner_quest, all_inner_kwargs)
+        yield dungeon, quest, all_combined_body_inputs, math.prod(all_weight)
 
 
-class MultisetFunctionJointTransition(MultisetTransition[T]):
+class MultisetFunctionJointDungeon(MultisetDungeon[T]):
 
     def __init__(self, all_nested_body_inputs_len: tuple[int, ...],
                  all_body_inputs_len: tuple[int, ...],
-                 all_inner_transition: tuple[MultisetTransition[T]]):
-        self.all_inner_transition = all_inner_transition
+                 all_inner_dungeon: tuple[MultisetDungeon[T]]):
+        self.all_inner_dungeon = all_inner_dungeon
         self.ascending_cache = {}
         self.descending_cache = {}
 
@@ -302,9 +296,9 @@ class MultisetFunctionJointTransition(MultisetTransition[T]):
         param_counts = counts[param_slice]
 
         for (inner_expressions, inner_state, nested_body_slice, body_slice,
-             inner_transition) in zip(all_inner_expressions, all_inner_states,
-                                      nested_body_slices, body_slices,
-                                      self.all_inner_transition):
+             inner_dungeon) in zip(all_inner_expressions, all_inner_states,
+                                   nested_body_slices, body_slices,
+                                   self.all_inner_dungeon):
             nested_counts = counts[nested_body_slice]
             body_counts = counts[body_slice]
 
@@ -312,55 +306,53 @@ class MultisetFunctionJointTransition(MultisetTransition[T]):
                 *(inner_expression._apply_variables(outcome, body_counts,
                                                     param_counts)
                   for inner_expression in inner_expressions))
-            inner_state = inner_transition.next_state(inner_state, order,
-                                                      outcome, *nested_counts,
-                                                      *inner_counts)
+            inner_state = inner_dungeon.next_state(inner_state, order, outcome,
+                                                   *nested_counts,
+                                                   *inner_counts)
             next_all_inner_expressions.append(inner_expressions)
             next_all_inner_states.append(inner_state)
 
         return tuple(next_all_inner_expressions), tuple(next_all_inner_states)
 
-    # TODO: hash?
+    # TODO: hash? must involve inner expressions if so
 
 
-class MultisetFunctionJointAuxiliary(MultisetAuxiliary[T, U_co]):
+class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):
 
     def __init__(
             self,
             all_inner_expressions: tuple[tuple[MultisetExpressionBase[T, Any],
                                                ...], ...],
-            all_inner_auxiliary: tuple[MultisetAuxiliary[T, U_co], ...],
+            all_inner_quest: tuple[MultisetQuest[T, U_co], ...],
             all_inner_kwargs: tuple[Mapping[str, Hashable], ...]):
         self.all_inner_expressions = all_inner_expressions
-        self.all_inner_auxiliary = all_inner_auxiliary
+        self.all_inner_quest = all_inner_quest
         self.all_inner_kwargs = all_inner_kwargs
 
     def initial_state(self, order, outcomes, /, **kwargs):
         all_inner_expressions = self.all_inner_expressions
         all_inner_states = tuple(
-            inner_auxiliary.initial_state(order, outcomes, **inner_kwargs)
-            for inner_auxiliary, inner_kwargs in zip(self.all_inner_auxiliary,
-                                                     self.all_inner_kwargs))
+            inner_quest.initial_state(order, outcomes, **inner_kwargs)
+            for inner_quest, inner_kwargs in zip(self.all_inner_quest,
+                                                 self.all_inner_kwargs))
 
         return all_inner_expressions, all_inner_states
 
     def extra_outcomes(self, outcomes):
-        return icepool.sorted_union(
-            *(inner_auxiliary.extra_outcomes(outcomes)
-              for inner_auxiliary in self.all_inner_auxiliary))
+        return icepool.sorted_union(*(inner_quest.extra_outcomes(outcomes)
+                                      for inner_quest in self.all_inner_quest))
 
     def final_outcome(self, final_state, **kwargs):
         if final_state is None:
             result = tuple(
-                inner_auxiliary.final_outcome(None, **inner_kwargs)
-                for inner_auxiliary, inner_kwargs in zip(
-                    self.all_inner_auxiliary, self.all_inner_kwargs))
+                inner_quest.final_outcome(None, **inner_kwargs)
+                for inner_quest, inner_kwargs in zip(self.all_inner_quest,
+                                                     self.all_inner_kwargs))
         else:
             result = tuple(
-                inner_auxiliary.final_outcome(inner_final_state, **
-                                              inner_kwargs)
-                for inner_auxiliary, inner_final_state, inner_kwargs, in zip(
-                    self.all_inner_auxiliary, final_state[1],
+                inner_quest.final_outcome(inner_final_state, **inner_kwargs)
+                for inner_quest, inner_final_state, inner_kwargs, in zip(
+                    self.all_inner_quest, final_state[1],
                     self.all_inner_kwargs))
         if icepool.Reroll in result:
             return icepool.Reroll

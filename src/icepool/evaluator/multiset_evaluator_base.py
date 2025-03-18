@@ -22,26 +22,26 @@ if TYPE_CHECKING:
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
-    _cache: 'MutableMapping[MultisetTransition, MultisetTransition] | None' = None
+    _cache: 'MutableMapping[MultisetDungeon, MultisetDungeon] | None' = None
 
     @abstractmethod
     def _prepare(
         self,
         inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'Iterator[tuple[MultisetTransition, MultisetAuxiliary, tuple[MultisetExpressionBase, ...], int]]':
+    ) -> 'Iterator[tuple[MultisetDungeon, MultisetQuest, tuple[MultisetExpressionBase, ...], int]]':
         """Prepares an evaluation.
 
         Args:
             inputs: This is just for the benefit of `@multiset_function`
                 so it can know whether the arguments are single multisets or
                 multiset tuples.
-            kwargs: Used as part of the transition's cache key.
+            kwargs: Used as part of the dungeon's cache key.
                 `@multiset_function` also determines how to forward these to
                 the inner evaluators.
 
         Yields:
-            transition, auxiliary, body_inputs, weight
+            dungeon, quest, body_inputs, weight
         """
 
     def evaluate(
@@ -92,25 +92,24 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         for p in itertools.product(*(expression._prepare()
                                      for expression in inputs)):
             sub_inputs, sub_weights = zip(*p)
-            for transition, auxiliary, body_inputs, evaluator_weight in self._prepare(
+            for dungeon, quest, body_inputs, evaluator_weight in self._prepare(
                     sub_inputs, kwargs):
                 # TODO: initialize body_inputs inside prepare
 
-                # replace transition with cached version if available
-                if transition.__hash__ is not None:
-                    if transition in self._cache:
-                        transition = self._cache[transition]
+                # replace dungeon with cached version if available
+                if dungeon.__hash__ is not None:
+                    if dungeon in self._cache:
+                        dungeon = self._cache[dungeon]
                     else:
-                        self._cache[transition] = transition
+                        self._cache[dungeon] = dungeon
 
                 prod_weight = math.prod(sub_weights) * evaluator_weight
                 outcomes = icepool.sorted_union(
                     *(expression.outcomes() for expression in sub_inputs))
-                extra_outcomes = auxiliary.extra_outcomes(outcomes)
+                extra_outcomes = quest.extra_outcomes(outcomes)
                 all_outcomes = icepool.sorted_union(extra_outcomes, outcomes)
-                sub_result = transition.evaluate(auxiliary, all_outcomes,
-                                                 body_inputs + sub_inputs,
-                                                 kwargs)
+                sub_result = dungeon.evaluate(quest, all_outcomes,
+                                              body_inputs + sub_inputs, kwargs)
                 final_data[sub_result] += prod_weight
 
         return icepool.Die(final_data)
@@ -118,7 +117,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
 
-class MultisetTransition(Generic[T]):
+class MultisetDungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
     ascending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[Hashable, int]]'
@@ -258,7 +257,7 @@ class MultisetTransition(Generic[T]):
         cache[cache_key] = result
         return result
 
-    def evaluate(self, context: 'MultisetAuxiliary[T, U_co]',
+    def evaluate(self, context: 'MultisetQuest[T, U_co]',
                  all_outcomes: 'tuple[T, ...]',
                  inputs: 'tuple[icepool.MultisetExpression[T], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
@@ -290,7 +289,7 @@ class MultisetTransition(Generic[T]):
                 )
 
 
-class MultisetAuxiliary(Generic[T, U_co]):
+class MultisetQuest(Generic[T, U_co]):
 
     @abstractmethod
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
