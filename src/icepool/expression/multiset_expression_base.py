@@ -14,167 +14,105 @@ import random
 from icepool.typing import Q, T, U, ImplicitConversionError, T
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
-                    Hashable, Iterator, Literal, Mapping, Sequence, Type,
-                    TypeAlias, TypeVar, cast, overload)
+                    Hashable, Iterable, Iterator, Literal, Mapping,
+                    MutableSequence, Sequence, Type, TypeAlias, TypeVar, cast,
+                    overload)
 
 from abc import ABC, abstractmethod
-
-
-class MultisetVariableError(TypeError):
-    """Indicates a multiset variable was misused."""
-
-
-class MultisetVariableBase(ABC, Hashable):
-
-    def __init__(self,
-                 is_parameter: bool,
-                 index: int,
-                 name: str | None = None):
-        self._is_parameter = is_parameter
-        self._index = index
-        if name is None:
-            if is_parameter:
-                self._name = f'mvf[{index}]'
-            else:
-                self._name = f'mvb[{index}]'
-        else:
-            self._name = name
-
-
-C = TypeVar('C', bound='MultisetExpressionBase')
-"""Type variable representing a subclass of `MultisetExpressionBase`."""
 
 
 class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]'
     """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 
+    @abstractmethod
+    def _prepare(
+        self
+    ) -> Iterator[tuple['Sequence[MultisetDungeonlet[T, Any]]',
+                        'Sequence[MultisetQuestlet[T]]',
+                        'Sequence[MultisetSource[T, Any]]', int]]:
+        """Prepare for evaluation.
+
+        Yields:
+            * A flattened tuple of dungeonlets.
+            * A flattened tuple of questlets of the same length.
+            * A tuple of freed sources.
+            * The weight of this result.
+        """
+
+
+class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
+    child_indexes: 'tuple[int, ...]'
+    """The relative (therefore negative) indexes of this node's children."""
+
+    @abstractmethod
+    def next_state(self, state: Hashable, order: Order, outcome: T,
+                   node_counts: MutableSequence, free_counts: Iterator,
+                   param_counts: Sequence) -> Hashable:
+        """Advances the state of this dungeonlet.
+        
+        Args:
+            state: The local state.
+            order: The order in which outcomes are seen by this method.
+            outcome: The current outcome.
+            node_counts: The counts of all nodes earlier in traversal order.
+                The count produced by the current node will be appended to this.
+            free_counts: The counts produced by free variables.
+                This is an iterator which will be progressively consumed.
+            param_counts: The counts produced by params.
+
+        Returns:
+            The next local state. Furthermore, the count produced by this
+            node is appended to `node_counts`.
+
+        Raises:
+            UnsupportedOrderError if the order is not supported.
+        """
+
     @property
     @abstractmethod
-    def _variable_type(self) -> 'Type[MultisetVariableBase]':
-        """Returns the corresponding multiset variable type."""
-        ...
+    def hash_key(self):
+        """A hash key for this node. This should include child_indexes."""
 
-    @abstractmethod
-    def _prepare(self) -> Iterator[tuple['MultisetExpressionBase[T, Q]', int]]:
-        """Initialize the expression before any outcomes are emitted.
+    def __eq__(self, other):
+        if not isinstance(other, MultisetDungeonlet):
+            return False
+        return self.hash_key == other.hash_key
 
-        Yields:
-            * Each possible initial expression.
-            * The weight for selecting that initial expression.
-        
-        Unitary expressions can just yield `(self, 1)` and return.
-        """
+    def __hash__(self):
+        return hash(self.hash_key)
 
-    @abstractmethod
-    def _detach(
-        self,
-        body_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpressionBase[T, Q]':
-        """Removes body subexpressions, replacing them with body variables.
 
-        Args:
-            body_inputs: The list of body inputs, which will be appended to.
-
-        Returns:
-            A copy of this expression with any subexpressions not containing
-            parameter variables replaced with body variables. 
-            The `index` of each variable is equal to the position of the
-            expression they replaced in `body_inputs`.
-        """
-
-    @abstractmethod
-    def _generate_min(self: C, min_outcome: T) -> Iterator[tuple[C, Q, int]]:
-        """Pops the min outcome from this expression if it matches the argument.
-
-        Yields:
-            * Ax expression with the min outcome popped.
-            * A tuple of counts for the min outcome.
-            * The weight for this many of the min outcome appearing.
-
-            If the argument does not match the min outcome, or this expression
-            has no outcomes, only a single tuple is yielded:
-
-            * `self`
-            * Zero count.
-            * weight = 1.
-
-        Raises:
-            MultisetVariableError if this is called on an expression with parameters.
-        """
-
-    @abstractmethod
-    def _generate_max(self: C, max_outcome: T) -> Iterator[tuple[C, Q, int]]:
-        """Pops the max outcome from this expression if it matches the argument.
-
-        Yields:
-            * An expression with the max outcome popped.
-            * A tuple of counts for the max outcome.
-            * The weight for this many of the max outcome appearing.
-
-            If the argument does not match the max outcome, or this expression
-            has no outcomes, only a single tuple is yielded:
-
-            * `self`
-            * A tuple of zeros.
-            * weight = 1.
-
-        Raises:
-            MultisetVariableError if this is called on an expression with parameters.
-        """
-
-    @abstractmethod
-    def _apply_variables(
-        self, outcome: T, body_counts: tuple[int, ...],
-        param_counts: tuple[int,
-                            ...]) -> 'tuple[MultisetExpressionBase[T, Q], Q]':
-        """Advances the state of this expression given counts emitted from variables and returns a count.
-        
-        Args:
-            outcome: The current outcome being processed.
-            body_counts: The counts emitted by body expressions.
-            param_counts: The counts emitted by arguments to the
-                `@mulitset_function`.
-
-        Returns:
-            An expression representing the next state and the count produced by
-            this expression.
-        """
+class MultisetSource(Generic[T, Q], Hashable):
 
     @abstractmethod
     def outcomes(self) -> Sequence[T]:
         """The possible outcomes that could be generated, in ascending order."""
 
     @abstractmethod
-    def _is_resolvable(self) -> bool:
-        """`True` iff the generator is capable of producing an overall outcome.
+    def pop(self, order: Order,
+            outcome: T) -> Iterator[tuple['MultisetSource', Q, int]]:
+        """
+        Args:
+            order: The order in which the pop occurs.
+            outcome: The outcome to pop.
+        
+        Yields:
+            * This source with the outcome popped.
+            * The count of that outcome.
+            * The weight for this many of the outcome appearing.
 
-        For example, a dice `Pool` will return `False` if it contains any dice
-        with no outcomes.
+            If the argument does not match the outcome for the given order,
+            the result is:
+
+            * `self`
+            * Zero count.
+            * weight = 1.
         """
 
     @abstractmethod
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        """Any ordering that is preferred or required by this expression node."""
-
-    @abstractmethod
-    def has_parameters(self) -> bool:
-        """Whether this expression contains any parameters to a @multiset_function."""
-
-    @property
-    @abstractmethod
-    def _local_hash_key(self) -> Hashable:
-        """A hash key that logically identifies this object among MultisetExpressions.
-
-        Does not include the hash for children.
-
-        Used to implement `equals()` and `__hash__()`
-        """
-
-    @property
-    def _can_keep(self) -> bool:
-        """Whether the expression supports enhanced keep operations."""
-        return False
+    def order_preference(self) -> tuple[Order, OrderReason]:
+        """The preferred order of this source and a reason why the order is preferred."""
 
     def min_outcome(self) -> T:
         return self.outcomes()[0]
@@ -182,40 +120,20 @@ class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
     def max_outcome(self) -> T:
         return self.outcomes()[-1]
 
-    @cached_property
-    def _hash_key(self) -> Hashable:
-        """A hash key that logically identifies this object among MultisetExpressions.
 
-        Used to implement `equals()` and `__hash__()`
+class MultisetQuestlet(Generic[T]):
+
+    def initial_state(self, order: Order, outcomes: Sequence[T], /,
+                      **kwargs) -> Hashable:
+        """Optional: the initial state of this node.
+        TODO: Should this get cardinalities?
+
+        Args:
+            order: The order in which `next_state` will see outcomes.
+            outcomes: All outcomes that will be seen by `next_state` in ascending order.
+            kwargs: Any keyword arguments that were passed to `evaluate()`.
+
+        Raises:
+            UnsupportedOrderError if the given order is not supported.
         """
-        return (self._local_hash_key,
-                tuple(child._hash_key for child in self._children))
-
-    def equals(self, other) -> bool:
-        """Whether this expression is logically equal to another object."""
-        if not isinstance(other, MultisetExpressionBase):
-            return False
-        return self._hash_key == other._hash_key
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self._hash_key)
-
-    def __hash__(self) -> int:
-        return self._hash
-
-    def __eq__(self, other, /) -> bool:
-        return self.equals(other)
-
-    def __ne__(self, other, /) -> bool:
-        return not self.equals(other)
-
-    def _iter_nodes(self) -> 'Iterator[MultisetExpressionBase]':
-        """Iterates over the nodes in this expression in post-order (leaves first)."""
-        for child in self._children:
-            yield from child._iter_nodes()
-        yield self
-
-    def order_preference(self) -> tuple[Order, OrderReason]:
-        return merge_order_preferences(*(node.local_order_preference()
-                                         for node in self._iter_nodes()))
+        return None

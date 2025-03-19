@@ -36,11 +36,11 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
         self,
         body_inputs: 'list[MultisetExpressionBase]' = []
     ) -> 'MultisetTupleExpression':
-        result = icepool.MultisetTupleVariable(False, len(body_inputs))
+        result = icepool.MultisetTupleParam(False, len(body_inputs))
         body_inputs.append(self)
         return result
 
     def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
                          param_counts: tuple[int, ...]):
-        raise icepool.MultisetVariableError(
+        raise icepool.MultisetParamError(
             '_detach should have been called before _apply_variables.')

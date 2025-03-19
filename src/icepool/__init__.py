@@ -135,12 +135,12 @@ from icepool.population.deck import Deck
 from icepool.generator.deal import Deal
 from icepool.generator.multi_deal import MultiDeal
 
-from icepool.expression.multiset_expression_base import MultisetVariableError
+from icepool.expression.multiset_expression_base import MultisetParamError
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
 from icepool.evaluator.multiset_function import multiset_function
-from icepool.expression.multiset_variable import MultisetVariable
+from icepool.expression.multiset_param import MultisetParam
 from icepool.expression.multiset_mixture import MultisetMixture
-from icepool.expression.multiset_tuple_variable import MultisetTupleVariable
+from icepool.expression.multiset_tuple_param import MultisetTupleParam
 
 from icepool.population.format import format_probability_inverse
 

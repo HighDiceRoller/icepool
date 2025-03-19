@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expand import Expandable
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetQuestletBase, MultisetSource
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
@@ -132,37 +132,15 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
     @property
     def _variable_type(self) -> type:
-        return icepool.MultisetVariable
+        return icepool.MultisetParam
 
     # Abstract overrides with more specific signatures.
     @abstractmethod
-    def _prepare(self) -> Iterator[tuple['MultisetExpression[T]', int]]:
-        ...
-
-    @abstractmethod
-    def _generate_min(
-            self, min_outcome: T
-    ) -> Iterator[tuple['MultisetExpression[T]', int, int]]:
-        ...
-
-    @abstractmethod
-    def _generate_max(
-            self, max_outcome: T
-    ) -> Iterator[tuple['MultisetExpression[T]', int, int]]:
-        ...
-
-    @abstractmethod
-    def _detach(
-        self,
-        body_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetExpression[T]':
-        ...
-
-    @abstractmethod
-    def _apply_variables(
-            self, outcome: T, body_counts: tuple[int, ...],
-            param_counts: tuple[int,
-                                ...]) -> 'tuple[MultisetExpression[T], int]':
+    def _prepare(
+        self
+    ) -> Iterator[tuple['MultisetExpressionDungeonlet[T]',
+                        'MultisetQuestletBase[T]', tuple[
+                            'MultisetSource[T, Any]', ...], int]]:
         ...
 
     @property

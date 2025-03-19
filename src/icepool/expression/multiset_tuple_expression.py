@@ -58,7 +58,7 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
 
     @property
     def _variable_type(self) -> type:
-        return icepool.MultisetTupleVariable
+        return icepool.MultisetTupleParam
 
     def __getitem__(self, index: int, /) -> 'icepool.MultisetExpression[T]':
         return MultisetTupleSubscript(self, index=index)
@@ -105,7 +105,7 @@ class MultisetTupleSubscript(MultisetExpression[T]):
             child = self._children[0]._detach(body_inputs)
             return MultisetTupleSubscript(child, index=self._index)
         else:
-            result = icepool.MultisetVariable(False, len(body_inputs))
+            result = icepool.MultisetParam(False, len(body_inputs))
             body_inputs.append(self)
             return result
 

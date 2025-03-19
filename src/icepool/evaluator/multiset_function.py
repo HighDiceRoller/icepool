@@ -5,8 +5,7 @@ import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
-from icepool.expression.multiset_variable import MultisetVariable
-from icepool.expression.multiset_tuple_variable import MultisetTupleVariable
+from icepool.expression.multiset_param import MultisetParam, MultisetTupleParam
 
 import inspect
 from functools import cached_property, update_wrapper
@@ -15,7 +14,7 @@ from icepool.order import Order
 from icepool.typing import Q, T, U_co
 from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, NamedTuple, Sequence, TypeAlias, overload
 
-MV: TypeAlias = MultisetVariable | MultisetTupleVariable
+MV: TypeAlias = MultisetParam | MultisetTupleParam
 
 
 @overload

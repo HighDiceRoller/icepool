@@ -1,14 +1,15 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetQuestlet
 from icepool.expression.multiset_expression import MultisetExpression
 
 import itertools
 import math
 
-from icepool.typing import T
-from typing import Iterator, Sequence
+from icepool.order import Order
+from icepool.typing import T, Q
+from typing import Callable, Collection, Hashable, Iterator, Sequence
 
 from abc import abstractmethod
 
@@ -18,86 +19,72 @@ class MultisetOperator(MultisetExpression[T]):
     _children: 'tuple[MultisetExpression[T], ...]'
 
     @abstractmethod
-    def _copy(
-        self, new_children: 'tuple[MultisetExpression[T], ...]'
-    ) -> 'MultisetOperator[T]':
-        """Creates a copy of self with the given children.
-        
-        I considered using `copy.copy` but this doesn't play well with
-        incidental members such as in `@cached_property`.
-        """
+    def _next_state(self, state: Hashable, order: Order, outcome: T,
+                    counts: tuple):
+        """TODO: docstring"""
 
+    @property
     @abstractmethod
-    def _transform_next(
-            self, new_children: 'tuple[MultisetExpression[T], ...]',
-            outcome: T,
-            counts: 'tuple[int, ...]') -> 'tuple[MultisetOperator[T], int]':
-        """Produce the next state of this expression.
+    def _dungeonlet_key(self) -> Hashable:
+        """Used to identify dungeonlets. Only has to cover this node."""
+
+    def _initial_state(self, order: Order, outcomes: Sequence[T], /,
+                       **kwargs) -> Hashable:
+        """Optional: the initial state of this node.
+        TODO: Should this get cardinalities?
 
         Args:
-            new_children: The children of the result are to be set to this.
-            outcome: The outcome being processed.
-            counts: One count per child.
-
-        Returns:
-            An expression representing the next state and the count produced by
-            this expression.
+            order: The order in which `next_state` will see outcomes.
+            outcomes: All outcomes that will be seen by `next_state` in ascending order.
+            kwargs: Any keyword arguments that were passed to `evaluate()`.
 
         Raises:
-            MultisetVariableError if this is called on an expression
-            with parameters.
+            UnsupportedOrderError if the given order is not supported.
         """
-
-    def outcomes(self) -> Sequence[T]:
-        return icepool.sorted_union(*(child.outcomes()
-                                      for child in self._children))
-
-    def _is_resolvable(self) -> bool:
-        return all(child._is_resolvable() for child in self._children)
+        return None
 
     def _prepare(self):
         for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
-            new_children, weights = zip(*t)
-            next_self = self._copy(new_children)
-            yield next_self, math.prod(weights)
 
-    def _generate_min(
-            self,
-            min_outcome: T) -> Iterator[tuple['MultisetOperator', int, int]]:
-        for t in itertools.product(*(child._generate_min(min_outcome)
-                                     for child in self._children)):
-            new_children, counts, weights = zip(*t)
-            next_self, count = self._transform_next(new_children, min_outcome,
-                                                    counts)
-            yield next_self, count, math.prod(weights)
+            dungeonlets = []
+            questlets = []
+            free_sources = []
+            weight = 1
+            positions = []
+            for child_dungeonlets, child_questlets, child_free_sources, child_weight in t:
+                dungeonlets.extend(child_dungeonlets)
+                questlets.extend(child_questlets)
+                free_sources.extend(child_free_sources)
+                weight *= child_weight
+                positions.append(len(dungeonlets))
 
-    def _generate_max(
-            self,
-            max_outcome: T) -> Iterator[tuple['MultisetOperator', int, int]]:
-        for t in itertools.product(*(child._generate_max(max_outcome)
-                                     for child in self._children)):
-            new_children, counts, weights = zip(*t)
-            next_self, count = self._transform_next(new_children, max_outcome,
-                                                    counts)
-            yield next_self, count, math.prod(weights)
+            child_indexes = tuple(p - positions[-1] - 1 for p in positions)
+            dungeonlet = MultisetOperatorDungeonlet(self._next_state,
+                                                    self._dungeonlet_key,
+                                                    child_indexes)
+            questlet = MultisetOperatorQuestlet(self._extra_outcomes,
+                                                self._initial_state)
+            dungeonlets.append(dungeonlet)
+            questlets.append(questlet)
 
-    def has_parameters(self) -> bool:
-        return any(child.has_parameters() for child in self._children)
+            yield dungeonlets, questlets, free_sources, weight
 
-    def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
-        if self.has_parameters():
-            detached_children = tuple(
-                child._detach(body_inputs) for child in self._children)
-            return self._copy(detached_children)
-        else:
-            result = icepool.MultisetVariable(False, len(body_inputs))
-            body_inputs.append(self)
-            return result
 
-    def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
-                         param_counts: tuple[int, ...]):
-        new_children, counts = zip(
-            *(child._apply_variables(outcome, body_counts, param_counts)
-              for child in self._children))
-        return self._transform_next(new_children, outcome, counts)
+class MultisetOperatorDungeonlet(MultisetDungeonlet[T, Q]):
+    # Will be filled in by the constructor.
+    next_state = None  # type: ignore
+
+    def __init__(self, next_state: Callable, hash_key: Hashable,
+                 child_indexes: tuple[int, ...]):
+        self.next_state = next_state  # type: ignore
+        self.hash_key = hash_key  # type: ignore
+        self.child_indexes = child_indexes
+
+
+class MultisetOperatorQuestlet(MultisetQuestlet[T]):
+    # Will be filled in by the constructor.
+    initial_state = None  # type: ignore
+
+    def __init__(self, extra_outcomes: Callable, initial_state: Callable):
+        self.initial_state = initial_state  # type: ignore
