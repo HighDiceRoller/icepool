@@ -1126,15 +1126,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
             /) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
         try:
-
-            def truth_value_callback() -> bool:
-                if not isinstance(other, MultisetExpression):
-                    return False
-                return self._hash_key == other._hash_key
-
-            return self._compare(other,
-                                 icepool.evaluator.IsEqualSetEvaluator,
-                                 truth_value_callback=truth_value_callback)
+            return self._compare(other, icepool.evaluator.IsEqualSetEvaluator)
         except TypeError:
             return NotImplemented
 
@@ -1143,21 +1135,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
             /) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
         try:
-
-            def truth_value_callback() -> bool:
-                if not isinstance(other, MultisetExpression):
-                    return False
-                return self._hash_key != other._hash_key
-
             return self._compare(other,
-                                 icepool.evaluator.IsNotEqualSetEvaluator,
-                                 truth_value_callback=truth_value_callback)
+                                 icepool.evaluator.IsNotEqualSetEvaluator)
         except TypeError:
             return NotImplemented
-
-    # We need to define this again since we have an override for __eq__.
-    def __hash__(self) -> int:
-        return self._hash
 
     def isdisjoint(
             self,
