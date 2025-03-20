@@ -31,21 +31,14 @@ class MultisetMapCounts(MultisetOperator[T]):
         self._children = children
         self._function = function
 
-    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
-        return MultisetMapCounts(*new_children, function=self._function)
-
-    def _transform_next(self,
-                        new_children: 'tuple[MultisetExpression[T], ...]',
-                        outcome: T, counts: 'tuple[int, ...]'):
-        count = self._function(outcome, *counts)
-        return MultisetMapCounts(*new_children, function=self._function), count
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return Order.Any, OrderReason.NoPreference
+    def _next_state(self, state, order, outcome, child_counts, free_counts,
+                    param_counts):
+        count = self._function(outcome, *child_counts)
+        return None, count
 
     @property
-    def _local_hash_key(self) -> Hashable:
-        return MultisetMapCounts, self._function
+    def _dungeonlet_key(self):
+        return type(self), self._function
 
 
 class MultisetCountOperator(MultisetOperator[T]):
@@ -59,20 +52,13 @@ class MultisetCountOperator(MultisetOperator[T]):
     def operator(self, count: int) -> int:
         """Operation to apply to the counts."""
 
-    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
-        return type(self)(*new_children, constant=self._constant)
-
-    def _transform_next(self,
-                        new_children: 'tuple[MultisetExpression[T], ...]',
-                        outcome: T, counts: 'tuple[int, ...]'):
-        count = self.operator(counts[0])
-        return type(self)(*new_children, constant=self._constant), count
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return Order.Any, OrderReason.NoPreference
+    def _next_state(self, state, order, outcome, child_counts, free_counts,
+                    param_counts):
+        count = self.operator(child_counts[0])
+        return None, count
 
     @property
-    def _local_hash_key(self) -> Hashable:
+    def _dungeonlet_key(self):
         return type(self), self._constant
 
 
@@ -139,28 +125,17 @@ class MultisetKeepCounts(MultisetOperator[T]):
         self._comparison = comparison
         self._op = operators[comparison]
 
-    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
-        return MultisetKeepCounts(*new_children,
-                                  comparison=self._comparison,
-                                  constant=self._constant)
-
-    def _transform_next(self,
-                        new_children: 'tuple[MultisetExpression[T], ...]',
-                        outcome: T, counts: 'tuple[int, ...]'):
-        if self._op(counts[0], self._constant):
-            count = counts[0]
+    def _next_state(self, state, order, outcome, child_counts, free_counts,
+                    param_counts):
+        if self._op(child_counts[0], self._constant):
+            count = child_counts[0]
         else:
             count = 0
-        return MultisetKeepCounts(*new_children,
-                                  comparison=self._comparison,
-                                  constant=self._constant), count
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return Order.Any, OrderReason.NoPreference
+        return None, count
 
     @property
-    def _local_hash_key(self) -> Hashable:
-        return MultisetKeepCounts, self._comparison, self._constant
+    def _dungeonlet_key(self):
+        return type(self), self._comparison, self._constant
 
     def __str__(self) -> str:
         return f"{self._children[0]}.keep_counts('{self._comparison}', {self._constant})"

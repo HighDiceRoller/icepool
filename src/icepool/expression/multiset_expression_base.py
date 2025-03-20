@@ -21,7 +21,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
 from abc import ABC, abstractmethod
 
 
-class MultisetExpressionBase(ABC, Generic[T, Q], Hashable):
+class MultisetExpressionBase(ABC, Generic[T, Q]):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]'
     """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 
@@ -47,23 +47,22 @@ class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
-                   node_counts: MutableSequence, free_counts: Iterator,
-                   param_counts: Sequence) -> Hashable:
+                   child_counts: MutableSequence, free_counts: Iterator,
+                   param_counts: Sequence) -> tuple[Hashable, int]:
         """Advances the state of this dungeonlet.
         
         Args:
             state: The local state.
             order: The order in which outcomes are seen by this method.
             outcome: The current outcome.
-            node_counts: The counts of all nodes earlier in traversal order.
-                The count produced by the current node will be appended to this.
-            free_counts: The counts produced by free variables.
-                This is an iterator which will be progressively consumed.
+            child_counts: The counts of the child nodes.
+            free_counts: The counts produced by freed sources.
+                This is an iterator which will be progressively consumed by
+                free variables.
             param_counts: The counts produced by params.
 
         Returns:
-            The next local state. Furthermore, the count produced by this
-            node is appended to `node_counts`.
+            The next local state and the count produced by this node.
 
         Raises:
             UnsupportedOrderError if the order is not supported.
@@ -81,6 +80,15 @@ class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
 
     def __hash__(self):
         return hash(self.hash_key)
+
+
+class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
+    """A dungeonlet representing a source that has been freed."""
+    child_indexes = ()
+
+    def next_state(self, state, order, outcome, child_counts, free_counts,
+                   param_counts):
+        return None, next(free_counts)
 
 
 class MultisetSource(Generic[T, Q], Hashable):

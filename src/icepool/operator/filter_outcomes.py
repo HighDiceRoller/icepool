@@ -50,28 +50,17 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
 
             self._func = function
 
-    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
-        return MultisetFilterOutcomes(*new_children,
-                                      target=self._func,
-                                      invert=self._invert)
-
-    def _transform_next(self,
-                        new_children: 'tuple[MultisetExpression[T], ...]',
-                        outcome: T, counts: 'tuple[int, ...]'):
+    def _next_state(self, state, order, outcome, child_counts, free_counts,
+                    param_counts):
         if bool(self._func(outcome)) != self._invert:
-            count = counts[0]
+            count = child_counts[0]
         else:
             count = 0
-        return MultisetFilterOutcomes(*new_children,
-                                      target=self._func,
-                                      invert=self._invert), count
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return Order.Any, OrderReason.NoPreference
+        return None, count
 
     @property
-    def _local_hash_key(self) -> Hashable:
-        return MultisetFilterOutcomes, self._func, self._invert
+    def _dungeonlet_key(self):
+        return type(self), self._func, self._invert
 
     def __str__(self) -> str:
         if self._invert:
@@ -106,26 +95,18 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
         self._children = (source, target)
         self._invert = invert
 
-    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
-        return MultisetFilterOutcomesBinary(*new_children, invert=self._invert)
-
-    def _transform_next(self,
-                        new_children: 'tuple[MultisetExpression[T], ...]',
-                        outcome: T, counts: 'tuple[int, ...]'):
-        source_count, target_count = counts
+    def _next_state(self, state, order, outcome, child_counts, free_counts,
+                    param_counts):
+        source_count, target_count = child_counts
         if (target_count > 0) != self._invert:
             count = source_count
         else:
             count = 0
-        return MultisetFilterOutcomesBinary(*new_children,
-                                            invert=self._invert), count
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return Order.Any, OrderReason.NoPreference
+        return None, count
 
     @property
-    def _local_hash_key(self) -> Hashable:
-        return MultisetFilterOutcomesBinary, self._invert
+    def _dungeonlet_key(self):
+        return type(self), self._invert
 
     def __str__(self) -> str:
         if self._invert:

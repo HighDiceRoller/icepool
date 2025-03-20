@@ -45,10 +45,9 @@ class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
     def __init__(self, index: int):
         self.index = index
 
-    def next_state(self, state, order, outcome, node_counts, free_counts,
+    def next_state(self, state, order, outcome, child_counts, free_counts,
                    param_counts):
-        node_counts.append(param_counts[self.index])
-        return None
+        return None, param_counts[self.index]
 
     @property
     def hash_key(self):

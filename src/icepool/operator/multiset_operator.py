@@ -2,14 +2,14 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetQuestlet
-from icepool.expression.multiset_expression import MultisetExpression
+from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
 
 import itertools
 import math
 
 from icepool.order import Order
 from icepool.typing import T, Q
-from typing import Callable, Collection, Hashable, Iterator, Sequence
+from typing import Callable, Collection, Hashable, Iterator, MutableSequence, Sequence
 
 from abc import abstractmethod
 
@@ -20,13 +20,31 @@ class MultisetOperator(MultisetExpression[T]):
 
     @abstractmethod
     def _next_state(self, state: Hashable, order: Order, outcome: T,
-                    counts: tuple):
-        """TODO: docstring"""
+                    child_counts: MutableSequence, free_counts: Iterator,
+                    param_counts: Sequence) -> tuple[Hashable, int]:
+        """Advances the state of the dungeonlet.
+        
+        Args:
+            state: The local state.
+            order: The order in which outcomes are seen by this method.
+            outcome: The current outcome.
+            child_counts: The counts of the child nodes.
+            free_counts: The counts produced by freed sources.
+                This is an iterator which will be progressively consumed by
+                free variables.
+            param_counts: The counts produced by params.
+
+        Returns:
+            The next local state and the count produced by this node.
+
+        Raises:
+            UnsupportedOrderError if the order is not supported.
+        """
 
     @property
     @abstractmethod
     def _dungeonlet_key(self) -> Hashable:
-        """Used to identify dungeonlets. Only has to cover this node."""
+        """Used to identify dungeonlets. Only has to cover this node and does not need to include child_indexes."""
 
     def _initial_state(self, order: Order, outcomes: Sequence[T], /,
                        **kwargs) -> Hashable:
@@ -71,14 +89,14 @@ class MultisetOperator(MultisetExpression[T]):
             yield dungeonlets, questlets, free_sources, weight
 
 
-class MultisetOperatorDungeonlet(MultisetDungeonlet[T, Q]):
+class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
     # Will be filled in by the constructor.
     next_state = None  # type: ignore
 
     def __init__(self, next_state: Callable, hash_key: Hashable,
                  child_indexes: tuple[int, ...]):
         self.next_state = next_state  # type: ignore
-        self.hash_key = hash_key  # type: ignore
+        self.hash_key = (hash_key, child_indexes)  # type: ignore
         self.child_indexes = child_indexes
 
 
