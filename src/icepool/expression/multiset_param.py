@@ -51,7 +51,7 @@ class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
 
     @property
     def hash_key(self):
-        return (type(self), self.index)
+        return MultisetParamDungeonlet, self.index
 
 
 class MultisetParamQuestlet(MultisetQuestlet[T]):

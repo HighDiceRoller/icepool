@@ -11,7 +11,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, ImplicitConversionError, T
+from icepool.typing import Q, T, U, HasHashKey, ImplicitConversionError, T
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
                     Hashable, Iterable, Iterator, Literal, Mapping,
@@ -43,7 +43,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
         """
 
 
-class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
+class MultisetDungeonlet(ABC, Generic[T, Q], HasHashKey):
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
@@ -67,11 +67,6 @@ class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
         Raises:
             UnsupportedOrderError if the order is not supported.
         """
-
-    @property
-    @abstractmethod
-    def hash_key(self):
-        """A hash key for this node."""
 
     def __eq__(self, other):
         if not isinstance(other, MultisetDungeonlet):

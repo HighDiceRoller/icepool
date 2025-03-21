@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from abc import ABC, abstractmethod
 import enum
 import inspect
 
@@ -47,6 +48,28 @@ class Outcome(Hashable, Protocol[T_contra]):
 
     def __lt__(self, other: T_contra) -> bool:
         ...
+
+
+class HasHashKey(ABC, Hashable):
+
+    @property
+    @abstractmethod
+    def hash_key(self) -> Hashable:
+        """A hash key for this object. This should include a type."""
+
+    def equals(self, other) -> bool:
+        if self is other:
+            return True
+        if hasattr(other, 'hash_key'):
+            return self.hash_key == other.hash_key
+        return False
+
+    def __eq__(self, other) -> bool:
+        # This may be overwritten in cases where == has a double meaning.
+        return self.equals(other)
+
+    def __hash__(self) -> int:
+        return hash(self.hash_key)
 
 
 class ImplicitConversionError(TypeError):

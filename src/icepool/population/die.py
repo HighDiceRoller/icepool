@@ -9,7 +9,7 @@ import icepool.population.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
 from icepool.population.keep import lowest_slice, highest_slice, canonical_slice
-from icepool.typing import U, ImplicitConversionError, Outcome, T_co, infer_star
+from icepool.typing import U, HasHashKey, ImplicitConversionError, Outcome, T_co, infer_star
 
 import bisect
 from collections import defaultdict
@@ -41,7 +41,7 @@ def implicit_convert_to_die(
     return Die([outcome])
 
 
-class Die(Population[T_co]):
+class Die(Population[T_co], HasHashKey):
     """Sampling with replacement. Quantities represent weights.
 
     Dice are immutable. Methods do not modify the `Die` in-place;
@@ -1482,14 +1482,7 @@ class Die(Population[T_co]):
         Apart from being hashable and totally orderable, this is not guaranteed
         to be in any particular format or have any other properties.
         """
-        return tuple(self.items())
-
-    @cached_property
-    def _hash(self) -> int:
-        return hash(self.hash_key)
-
-    def __hash__(self) -> int:
-        return self._hash
+        return Die, tuple(self.items())
 
     def equals(self, other, *, simplify: bool = False) -> bool:
         """`True` iff both dice have the same outcomes and quantities.
@@ -1512,6 +1505,9 @@ class Die(Population[T_co]):
             simplify: If `True`, the dice will be simplified before comparing.
                 Otherwise, e.g. a 2:2 coin is not `equals()` to a 1:1 coin.
         """
+        if self is other:
+            return True
+
         if not isinstance(other, Die):
             return False
 

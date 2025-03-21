@@ -7,8 +7,10 @@ import operator
 
 from typing import Any, Callable, Final, Mapping, Sequence
 
+from icepool.typing import HasHashKey
 
-class AgainExpression():
+
+class AgainExpression(HasHashKey):
     """An expression indicating that the die should be rolled again, usually with some operation applied.
 
     See the `Again` symbol for the full documentation.
@@ -230,7 +232,7 @@ class AgainExpression():
 
     @cached_property
     def hash_key(self) -> tuple:
-        return (self._func, self._args)
+        return AgainExpression, self._func, self._args
 
     def __hash__(self) -> int:
         return hash(self.hash_key)
