@@ -55,10 +55,6 @@ class KeepGenerator(MultisetGenerator[T]):
         """Whether any element of the keep tuple is negative."""
         return any(x < 0 for x in self._keep_tuple)
 
-    @property
-    def _can_keep(self) -> bool:
-        return True
-
     @overload
     def keep(
             self,
