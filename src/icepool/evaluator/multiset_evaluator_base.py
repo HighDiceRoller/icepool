@@ -120,10 +120,20 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 class MultisetDungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
-    ascending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[Hashable, int]]'
-    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order."""
-    descending_cache: 'MutableMapping[tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable], Mapping[Hashable, int]]'
-    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order."""
+    ascending_cache: MutableMapping[
+        'tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable]',
+        Mapping[Hashable, int]]
+    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order.
+    
+    Initialized in evaluate().
+    """
+    descending_cache: MutableMapping[
+        'tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable]',
+        Mapping[Hashable, int]]
+    """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order.
+    
+    Initialized in evaluate().
+    """
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T, /,
@@ -262,6 +272,10 @@ class MultisetDungeon(Generic[T]):
                  inputs: 'tuple[icepool.MultisetExpression[T], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
+
+        if not hasattr(self, 'ascending_cache'):
+            self.ascending_cache = {}
+            self.descending_cache = {}
 
         input_order, input_order_reason = merge_order_preferences(
             (Order.Descending, OrderReason.Default),

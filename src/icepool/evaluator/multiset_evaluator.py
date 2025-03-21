@@ -166,8 +166,6 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T]):
 
-    body_inputs_len = 0
-
     # These are filled in by the constructor.
     next_state = None  # type: ignore
 
@@ -175,8 +173,6 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
                  dungeon_key: Callable[[], Hashable] | None):
         self.next_state = next_state  # type: ignore
         self.dungeon_key = dungeon_key
-        self.ascending_cache = {}
-        self.descending_cache = {}
 
         if dungeon_key is None:
             self.__hash__ = None  # type: ignore

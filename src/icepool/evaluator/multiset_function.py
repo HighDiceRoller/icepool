@@ -185,8 +185,6 @@ class MultisetFunctionDungeon(MultisetDungeon[T]):
     def __init__(self, nested_body_inputs_len: int, body_inputs_len: int,
                  inner_dungeon: MultisetDungeon[T]):
         self.inner_dungeon = inner_dungeon
-        self.ascending_cache = {}
-        self.descending_cache = {}
 
         nested_slice = slice(0, nested_body_inputs_len)
         body_slice = slice(nested_slice.stop,
@@ -266,8 +264,6 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T]):
                  all_body_inputs_len: tuple[int, ...],
                  all_inner_dungeon: tuple[MultisetDungeon[T]]):
         self.all_inner_dungeon = all_inner_dungeon
-        self.ascending_cache = {}
-        self.descending_cache = {}
 
         pos = 0
         nested_body_slices = []
