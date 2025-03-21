@@ -138,9 +138,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     @abstractmethod
     def _prepare(
         self
-    ) -> Iterator[tuple['Sequence[MultisetExpressionDungeonlet[T]]',
-                        'Sequence[MultisetQuestlet[T]]',
-                        'Sequence[MultisetSource[T, Any]]', int]]:
+    ) -> Iterator[
+            tuple['Sequence[MultisetExpressionDungeonlet[T]]',
+                  'Sequence[tuple[int, ...]]', 'Sequence[MultisetQuestlet[T]]',
+                  'Sequence[MultisetSource[T, Any]]', int]]:
         ...
 
     @property

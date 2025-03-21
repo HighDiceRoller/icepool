@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSource
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
 from icepool.typing import Outcome, Q, T
@@ -23,24 +23,10 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
 
     _children = ()
 
-    def has_parameters(self) -> bool:
-        return False
-
-    # Overridden to switch body generators with variables.
-
-    @property
-    def _body_inputs(self) -> 'tuple[MultisetTupleGenerator, ...]':
-        return (self, )
-
-    def _detach(
-        self,
-        body_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetTupleExpression':
-        result = icepool.MultisetTupleParam(False, len(body_inputs))
-        body_inputs.append(self)
-        return result
-
-    def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
-                         param_counts: tuple[int, ...]):
-        raise icepool.MultisetParamError(
-            '_detach should have been called before _apply_variables.')
+    def _prepare(self):
+        dungeonlets = [MultisetFreeVariable()]
+        broods = [()]
+        questlets = [MultisetQuestlet()]
+        sources = [self]  # inherit from MultisetSource?
+        weight = 1
+        return dungeonlets, broods, questlets, sources, weight

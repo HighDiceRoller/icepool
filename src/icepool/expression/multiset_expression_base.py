@@ -35,10 +35,10 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
         """Prepare for evaluation.
 
         Yields:
-            * A flattened tuple of dungeonlets.
-            * A flattened tuple of broods (tuples of relative child indexes).
-            * A flattened tuple of questlets of the same length.
-            * A tuple of freed sources.
+            * A flattened sequence of dungeonlets.
+            * A flattened sequence of broods (tuples of relative child indexes).
+            * A flattened sequence of questlets of the same length.
+            * A sequence of freed sources.
             * The weight of this result.
         """
 
