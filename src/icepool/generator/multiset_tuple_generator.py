@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSource
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
 from icepool.typing import Outcome, Q, T

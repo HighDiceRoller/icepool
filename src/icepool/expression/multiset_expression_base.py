@@ -22,8 +22,6 @@ from abc import ABC, abstractmethod
 
 
 class MultisetExpressionBase(ABC, Generic[T, Q]):
-    _children: 'tuple[MultisetExpressionBase[T, Any], ...]'
-    """A tuple of child expressions. These are assumed to the positional arguments of the constructor."""
 
     @abstractmethod
     def _prepare(
@@ -31,7 +29,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
     ) -> Iterator[
             tuple['Sequence[MultisetDungeonlet[T, Any]]',
                   'Sequence[tuple[int, ...]]', 'Sequence[MultisetQuestlet[T]]',
-                  'Sequence[MultisetSource[T, Any]]', int]]:
+                  'Sequence[MultisetSourceBase[T, Any]]', int]]:
         """Prepare for evaluation.
 
         Yields:
@@ -43,12 +41,12 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
         """
 
 
-class MultisetDungeonlet(ABC, Generic[T, Q], HasHashKey):
+class MultisetDungeonlet(Generic[T, Q], HasHashKey):
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
                    child_counts: MutableSequence, free_counts: Iterator,
-                   param_counts: Sequence) -> tuple[Hashable, int]:
+                   param_counts: Sequence) -> tuple[Hashable, Q]:
         """Advances the state of this dungeonlet.
         
         Args:
@@ -84,15 +82,15 @@ class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
         return None, next(free_counts)
 
 
-class MultisetSource(Generic[T, Q], Hashable):
+class MultisetSourceBase(Generic[T, Q], HasHashKey):
 
     @abstractmethod
-    def outcomes(self) -> Sequence[T]:
+    def outcomes(self) -> tuple[T, ...]:
         """The possible outcomes that could be generated, in ascending order."""
 
     @abstractmethod
     def pop(self, order: Order,
-            outcome: T) -> Iterator[tuple['MultisetSource', Q, int]]:
+            outcome: T) -> Iterator[tuple['MultisetSourceBase', Q, int]]:
         """
         Args:
             order: The order in which the pop occurs.

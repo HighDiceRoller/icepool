@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.generator.multiset_generator import MultisetSource
 import icepool.order
 from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
@@ -16,7 +17,6 @@ class Deal(KeepGenerator[T]):
     """Represents an unordered deal of a single hand from a `Deck`."""
 
     _deck: 'icepool.Deck[T]'
-    _hand_size: int
 
     def __init__(self, deck: 'icepool.Deck[T]', hand_size: int) -> None:
         """Constructor.
@@ -40,32 +40,29 @@ class Deal(KeepGenerator[T]):
                 'The number of cards dealt cannot exceed the size of the deck.'
             )
         self._deck = deck
-        self._hand_size = hand_size
         self._keep_tuple = (1, ) * hand_size
 
     @classmethod
-    def _new_raw(cls, deck: 'icepool.Deck[T]', hand_size: int,
+    def _new_raw(cls, deck: 'icepool.Deck[T]',
                  keep_tuple: tuple[int, ...]) -> 'Deal[T]':
         self = super(Deal, cls).__new__(cls)
         self._deck = deck
-        self._hand_size = hand_size
         self._keep_tuple = keep_tuple
         return self
 
+    def _make_source(self):
+        return DealSource(self._deck, self._keep_tuple)
+
     def _set_keep_tuple(self, keep_tuple: tuple[int, ...]) -> 'Deal[T]':
-        return Deal._new_raw(self._deck, self._hand_size, keep_tuple)
+        return Deal._new_raw(self._deck, keep_tuple)
 
     def deck(self) -> 'icepool.Deck[T]':
         """The `Deck` the cards are dealt from."""
         return self._deck
 
-    def hand_sizes(self) -> tuple[int, ...]:
+    def hand_size(self) -> int:
         """The number of cards dealt to each hand as a tuple."""
-        return (self._hand_size, )
-
-    def total_cards_dealt(self) -> int:
-        """The total number of cards dealt."""
-        return self._hand_size
+        return len(self._keep_tuple)
 
     def outcomes(self) -> CountsKeysView[T]:
         """The outcomes of the `Deck` in ascending order.
@@ -79,26 +76,63 @@ class Deal(KeepGenerator[T]):
         return len(self.outcomes()) > 0
 
     def denominator(self) -> int:
-        return icepool.math.comb(self.deck().size(), self._hand_size)
+        return icepool.math.comb(self.deck().size(), self.hand_size())
 
-    def _prepare(self):
-        yield self, 1
+    def __repr__(self) -> str:
+        return type(
+            self
+        ).__qualname__ + f'({repr(self.deck())}, hand_size={self.hand_size()})'
 
-    def _generate_min(self, min_outcome) -> Iterator[tuple['Deal', int, int]]:
-        if not self.outcomes() or min_outcome != self.min_outcome():
+    def __str__(self) -> str:
+        return type(
+            self
+        ).__qualname__ + f' of hand_size={self.hand_size()} from deck:\n' + str(
+            self.deck())
+
+
+class DealSource(MultisetSource[T]):
+    deck: 'icepool.Deck[T]'
+    keep_tuple: tuple[int, ...]
+
+    def __init__(self, deck, keep_tuple):
+        self.deck = deck
+        self.keep_tuple = keep_tuple
+
+    def outcomes(self):
+        return self.deck.outcomes()
+
+    def pop(self, order: Order, outcome: T):
+        if order > 0:
+            pop_outcome = self.outcomes()[0]
+            popped_deck, deck_count = self.deck._pop_min()
+            pop_from_keep_tuple = pop_min_from_keep_tuple
+        else:
+            pop_outcome = self.outcomes()[-1]
+            popped_deck, deck_count = self.deck._pop_max()
+            pop_from_keep_tuple = pop_max_from_keep_tuple
+
+        if not self.outcomes() or outcome != pop_outcome:
             yield self, 0, 1
             return
 
-        popped_deck, deck_count = self.deck()._pop_min()
+        if order > 0:
+            popped_deck, deck_count = self.deck._pop_min()
+            pop_from_keep_tuple = pop_min_from_keep_tuple
+        else:
+            popped_deck, deck_count = self.deck._pop_max()
 
-        min_count = max(0, deck_count + self._hand_size - self.deck().size())
-        max_count = min(deck_count, self._hand_size)
+            pop_from_keep_tuple = pop_max_from_keep_tuple
+
+        min_count = max(0,
+                        deck_count + len(self.keep_tuple) - self.deck.size())
+        max_count = min(deck_count, len(self.keep_tuple))
         skip_weight = None
+
+        popped_deal: DealSource[T]
         for count in range(min_count, max_count + 1):
-            popped_keep_tuple, result_count = pop_min_from_keep_tuple(
-                self.keep_tuple(), count)
-            popped_deal = Deal._new_raw(popped_deck, self._hand_size - count,
-                                        popped_keep_tuple)
+            popped_keep_tuple, result_count = pop_from_keep_tuple(
+                self.keep_tuple, count)
+            popped_deal = DealSource(popped_deck, popped_keep_tuple)
             weight = icepool.math.comb(deck_count, count)
             if not any(popped_keep_tuple):
                 # Dump all dice in exchange for the denominator.
@@ -108,38 +142,11 @@ class Deal(KeepGenerator[T]):
             yield popped_deal, result_count, weight
 
         if skip_weight is not None:
-            popped_deal = Deal._new_raw(popped_deck, 0, ())
-            yield popped_deal, sum(self.keep_tuple()), skip_weight
+            popped_deal = DealSource(popped_deck, ())
+            yield popped_deal, sum(self.keep_tuple), skip_weight
 
-    def _generate_max(self, max_outcome) -> Iterator[tuple['Deal', int, int]]:
-        if not self.outcomes() or max_outcome != self.max_outcome():
-            yield self, 0, 1
-            return
-
-        popped_deck, deck_count = self.deck()._pop_max()
-
-        min_count = max(0, deck_count + self._hand_size - self.deck().size())
-        max_count = min(deck_count, self._hand_size)
-        skip_weight = None
-        for count in range(min_count, max_count + 1):
-            popped_keep_tuple, result_count = pop_max_from_keep_tuple(
-                self.keep_tuple(), count)
-            popped_deal = Deal._new_raw(popped_deck, self._hand_size - count,
-                                        popped_keep_tuple)
-            weight = icepool.math.comb(deck_count, count)
-            if not any(popped_keep_tuple):
-                # Dump all dice in exchange for the denominator.
-                skip_weight = (skip_weight
-                               or 0) + weight * popped_deal.denominator()
-                continue
-            yield popped_deal, result_count, weight
-
-        if skip_weight is not None:
-            popped_deal = Deal._new_raw(popped_deck, 0, ())
-            yield popped_deal, sum(self.keep_tuple()), skip_weight
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())
+    def order_preference(self) -> tuple[Order, OrderReason]:
+        lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple)
         if lo_skip > hi_skip:
             return Order.Descending, OrderReason.KeepSkip
         if hi_skip > lo_skip:
@@ -147,13 +154,8 @@ class Deal(KeepGenerator[T]):
 
         return Order.Any, OrderReason.NoPreference
 
-    def __repr__(self) -> str:
-        return type(
-            self
-        ).__qualname__ + f'({repr(self.deck())}, hand_size={self._hand_size})'
+    def hash_key(self):
+        return DealSource, self.deck, self.keep_tuple
 
-    def __str__(self) -> str:
-        return type(
-            self
-        ).__qualname__ + f' of hand_size={self._hand_size} from deck:\n' + str(
-            self.deck())
+    def denominator(self) -> int:
+        return icepool.math.comb(self.deck.size(), len(self.keep_tuple))

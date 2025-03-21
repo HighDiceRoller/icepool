@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.expression.multiset_expression
+from icepool.generator.multiset_generator import MultisetSource
 import icepool.math
 import icepool.creation_args
 import icepool.order
@@ -15,7 +16,7 @@ from collections import defaultdict
 from functools import cache, cached_property, reduce
 
 from icepool.typing import T
-from typing import TYPE_CHECKING, Any, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
+from typing import TYPE_CHECKING, Any, Callable, Collection, Iterator, Mapping, MutableMapping, Sequence, cast
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression
@@ -34,7 +35,7 @@ class Pool(KeepGenerator[T]):
     first pool one-for-one".
     """
 
-    _dice: tuple[tuple['icepool.Die[T]', int]]
+    _dice: tuple[tuple['icepool.Die[T]', int], ...]
     _outcomes: tuple[T, ...]
 
     def __new__(
@@ -98,10 +99,10 @@ class Pool(KeepGenerator[T]):
         return cls._new_from_mapping(dice_counts, outcomes, keep_tuple)
 
     @classmethod
-    @cache
-    def _new_raw(cls, dice: tuple[tuple['icepool.Die[T]', int]],
-                 outcomes: tuple[T], keep_tuple: tuple[int, ...]) -> 'Pool[T]':
-        """All pool creation ends up here. This method is cached.
+    def _new_raw(cls, dice: tuple[tuple['icepool.Die[T]', int], ...],
+                 outcomes: tuple[T, ...], keep_tuple: tuple[int,
+                                                            ...]) -> 'Pool[T]':
+        """Create using a keep_tuple directly.
 
         Args:
             dice: A tuple of (die, count) pairs.
@@ -115,13 +116,13 @@ class Pool(KeepGenerator[T]):
 
     @classmethod
     def clear_cache(cls):
-        """Clears the global pool cache."""
-        Pool._new_raw.cache_clear()
+        """Clears the global PoolSource cache."""
+        PoolSource._new_raw.cache_clear()
 
     @classmethod
     def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T]', int],
                           outcomes: tuple[T, ...],
-                          keep_tuple: Sequence[int]) -> 'Pool[T]':
+                          keep_tuple: tuple[int, ...]) -> 'Pool[T]':
         """Creates a new pool.
 
         Args:
@@ -131,6 +132,9 @@ class Pool(KeepGenerator[T]):
         dice = tuple(sorted(dice_counts.items(),
                             key=lambda kv: kv[0].hash_key))
         return Pool._new_raw(dice, outcomes, keep_tuple)
+
+    def _make_source(self):
+        return PoolSource(self._dice, self._outcomes, self._keep_tuple)
 
     @cached_property
     def _raw_size(self) -> int:
@@ -166,125 +170,6 @@ class Pool(KeepGenerator[T]):
         """The union of possible outcomes among all dice in this pool in ascending order."""
         return self._outcomes
 
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        can_truncate_min, can_truncate_max = icepool.order.can_truncate(
-            self.unique_dice())
-        if can_truncate_min and not can_truncate_max:
-            return Order.Ascending, OrderReason.PoolComposition
-        if can_truncate_max and not can_truncate_min:
-            return Order.Descending, OrderReason.PoolComposition
-
-        lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple())
-        if lo_skip > hi_skip:
-            return Order.Descending, OrderReason.KeepSkip
-        if hi_skip > lo_skip:
-            return Order.Ascending, OrderReason.KeepSkip
-
-        return Order.Any, OrderReason.NoPreference
-
-    def min_outcome(self) -> T:
-        """The min outcome among all dice in this pool."""
-        return self._outcomes[0]
-
-    def max_outcome(self) -> T:
-        """The max outcome among all dice in this pool."""
-        return self._outcomes[-1]
-
-    def _prepare(self):
-        yield self, 1
-
-    def _generate_min(self, min_outcome) -> Iterator[tuple['Pool', int, int]]:
-        """Pops the given outcome from this pool, if it is the min outcome.
-
-        Yields:
-            popped_pool: The pool after the min outcome is popped.
-            count: The number of dice that rolled the min outcome, after
-                accounting for keep_tuple.
-            weight: The weight of this incremental result.
-        """
-        if not self.outcomes():
-            yield self, 0, 1
-            return
-        if min_outcome != self.min_outcome():
-            yield self, 0, 1
-            return
-        generators = [
-            iter_die_pop_min(die, die_count, min_outcome)
-            for die, die_count in self._dice
-        ]
-        skip_weight = None
-        for pop in itertools.product(*generators):
-            total_hits = 0
-            result_weight = 1
-            next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
-            for popped_die, misses, hits, weight in pop:
-                if not popped_die.is_empty() and misses > 0:
-                    next_dice_counts[popped_die] += misses
-                total_hits += hits
-                result_weight *= weight
-            popped_keep_tuple, result_count = pop_min_from_keep_tuple(
-                self.keep_tuple(), total_hits)
-            popped_pool = Pool._new_from_mapping(next_dice_counts,
-                                                 self._outcomes[1:],
-                                                 popped_keep_tuple)
-            if not any(popped_keep_tuple):
-                # Dump all dice in exchange for the denominator.
-                skip_weight = (skip_weight or
-                               0) + result_weight * popped_pool.denominator()
-                continue
-
-            yield popped_pool, result_count, result_weight
-
-        if skip_weight is not None:
-            popped_pool = Pool._new_raw((), self._outcomes[1:], ())
-            yield popped_pool, sum(self.keep_tuple()), skip_weight
-
-    def _generate_max(self, max_outcome) -> Iterator[tuple['Pool', int, int]]:
-        """Pops the given outcome from this pool, if it is the max outcome.
-
-        Yields:
-            popped_pool: The pool after the max outcome is popped.
-            count: The number of dice that rolled the max outcome, after
-                accounting for keep_tuple.
-            weight: The weight of this incremental result.
-        """
-        if not self.outcomes():
-            yield self, 0, 1
-            return
-        if max_outcome != self.max_outcome():
-            yield self, 0, 1
-            return
-        generators = [
-            iter_die_pop_max(die, die_count, max_outcome)
-            for die, die_count in self._dice
-        ]
-        skip_weight = None
-        for pop in itertools.product(*generators):
-            total_hits = 0
-            result_weight = 1
-            next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
-            for popped_die, misses, hits, weight in pop:
-                if not popped_die.is_empty() and misses > 0:
-                    next_dice_counts[popped_die] += misses
-                total_hits += hits
-                result_weight *= weight
-            popped_keep_tuple, result_count = pop_max_from_keep_tuple(
-                self.keep_tuple(), total_hits)
-            popped_pool = Pool._new_from_mapping(next_dice_counts,
-                                                 self._outcomes[:-1],
-                                                 popped_keep_tuple)
-            if not any(popped_keep_tuple):
-                # Dump all dice in exchange for the denominator.
-                skip_weight = (skip_weight or
-                               0) + result_weight * popped_pool.denominator()
-                continue
-
-            yield popped_pool, result_count, result_weight
-
-        if skip_weight is not None:
-            popped_pool = Pool._new_raw((), self._outcomes[:-1], ())
-            yield popped_pool, sum(self.keep_tuple()), skip_weight
-
     def _set_keep_tuple(self, keep_tuple: tuple[int,
                                                 ...]) -> 'KeepGenerator[T]':
         return Pool._new_raw(self._dice, self._outcomes, keep_tuple)
@@ -318,6 +203,136 @@ class Pool(KeepGenerator[T]):
             f'Pool of {self.raw_size()} dice with keep_tuple={self.keep_tuple()}\n'
             + ''.join(f'  {repr(die)} : {count},\n'
                       for die, count in self._dice))
+
+
+class PoolSource(MultisetSource[T]):
+    dice: tuple[tuple['icepool.Die[T]', int]]
+    _outcomes: tuple[T, ...]
+    keep_tuple: tuple[int, ...]
+
+    def __init__(self, dice: tuple[tuple['icepool.Die[T]', int]],
+                 outcomes: tuple[T, ...], keep_tuple: tuple[int, ...]):
+        self.dice = dice
+        self._outcomes = outcomes
+        self.keep_tuple = keep_tuple
+
+    @classmethod
+    @cache
+    def _new_raw(cls, dice: tuple[tuple['icepool.Die[T]',
+                                        int]], outcomes: tuple[T],
+                 keep_tuple: tuple[int, ...]) -> 'PoolSource[T]':
+        """All pool creation ends up here. This method is cached.
+
+        Args:
+            dice: A tuple of (die, count) pairs.
+            keep_tuple: A tuple of how many times to count each die.
+        """
+        self = super(PoolSource, cls).__new__(cls)
+        self.dice = dice
+        self._outcomes = outcomes
+        self.keep_tuple = keep_tuple
+        return self
+
+    @classmethod
+    def _new_from_mapping(cls, dice_counts: Mapping['icepool.Die[T]', int],
+                          outcomes: tuple[T, ...],
+                          keep_tuple: Sequence[int]) -> 'PoolSource[T]':
+        """Creates a new pool.
+
+        Args:
+            dice_counts: A map from dice to rolls.
+            keep_tuple: A tuple with length equal to the number of dice.
+        """
+        dice = tuple(sorted(dice_counts.items(),
+                            key=lambda kv: kv[0].hash_key))
+        return PoolSource._new_raw(dice, outcomes, keep_tuple)
+
+    def outcomes(self):
+        return self._outcomes
+
+    def pop(self, order: Order, outcome: T):
+        iter_die_pop: Callable
+        if order > 0:
+            pop_outcome = self._outcomes[0]
+            iter_die_pop = iter_die_pop_min
+            pop_from_keep_tuple = pop_min_from_keep_tuple
+            next_outcomes = self._outcomes[1:]
+        else:
+            pop_outcome = self._outcomes[-1]
+            iter_die_pop = iter_die_pop_max
+            pop_from_keep_tuple = pop_max_from_keep_tuple
+            next_outcomes = self._outcomes[:-1]
+
+        if not self._outcomes:
+            yield self, 0, 1
+            return
+        if outcome != pop_outcome:
+            yield self, 0, 1
+            return
+        generators = [
+            iter_die_pop(die, die_count, outcome)
+            for die, die_count in self.dice
+        ]
+        skip_weight = None
+        for pop in itertools.product(*generators):
+            total_hits = 0
+            result_weight = 1
+            next_dice_counts: MutableMapping[Any, int] = defaultdict(int)
+            for popped_die, misses, hits, weight in pop:
+                if not popped_die.is_empty() and misses > 0:
+                    next_dice_counts[popped_die] += misses
+                total_hits += hits
+                result_weight *= weight
+            popped_keep_tuple, result_count = pop_from_keep_tuple(
+                self.keep_tuple, total_hits)
+            popped_pool = PoolSource._new_from_mapping(next_dice_counts,
+                                                       next_outcomes,
+                                                       popped_keep_tuple)
+            if not any(popped_keep_tuple):
+                # Dump all dice in exchange for the denominator.
+                skip_weight = (skip_weight or
+                               0) + result_weight * popped_pool.denominator()
+                continue
+
+            yield popped_pool, result_count, result_weight
+
+        if skip_weight is not None:
+            popped_pool = PoolSource._new_raw((), next_outcomes, ())
+            yield popped_pool, sum(self.keep_tuple), skip_weight
+
+    def order_preference(self) -> tuple[Order, OrderReason]:
+        can_truncate_min, can_truncate_max = icepool.order.can_truncate(
+            self.unique_dice())
+        if can_truncate_min and not can_truncate_max:
+            return Order.Ascending, OrderReason.PoolComposition
+        if can_truncate_max and not can_truncate_min:
+            return Order.Descending, OrderReason.PoolComposition
+
+        lo_skip, hi_skip = icepool.order.lo_hi_skip(self.keep_tuple)
+        if lo_skip > hi_skip:
+            return Order.Descending, OrderReason.KeepSkip
+        if hi_skip > lo_skip:
+            return Order.Ascending, OrderReason.KeepSkip
+
+        return Order.Any, OrderReason.NoPreference
+
+    @cached_property
+    def _denominator(self) -> int:
+        return math.prod(die.denominator()**count for die, count in self.dice)
+
+    def denominator(self) -> int:
+        return self._denominator
+
+    @cached_property
+    def _unique_dice(self) -> Collection['icepool.Die[T]']:
+        return set(die for die, _ in self.dice)
+
+    def unique_dice(self) -> Collection['icepool.Die[T]']:
+        """The collection of unique dice in this pool."""
+        return self._unique_dice
+
+    def hash_key(self):
+        return PoolSource, self.dice, self.keep_tuple
 
 
 def standard_pool(
