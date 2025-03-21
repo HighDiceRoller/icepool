@@ -205,7 +205,7 @@ class AgainExpression():
     def __eq__(self, other) -> 'AgainExpression':  # type: ignore
         if not isinstance(other, AgainExpression):
             return AgainExpression(operator.eq, self, other, truth_value=False)
-        truth_value = self._hash_key == other._hash_key
+        truth_value = self.hash_key == other.hash_key
         return AgainExpression(operator.eq,
                                self,
                                other,
@@ -215,7 +215,7 @@ class AgainExpression():
     def __ne__(self, other) -> 'AgainExpression':  # type: ignore
         if not isinstance(other, AgainExpression):
             return AgainExpression(operator.ne, self, other, truth_value=True)
-        truth_value = self._hash_key != other._hash_key
+        truth_value = self.hash_key != other.hash_key
         return AgainExpression(operator.ne,
                                self,
                                other,
@@ -229,11 +229,11 @@ class AgainExpression():
         return self._truth_value
 
     @cached_property
-    def _hash_key(self) -> tuple:
+    def hash_key(self) -> tuple:
         return (self._func, self._args)
 
     def __hash__(self) -> int:
-        return hash(self._hash_key)
+        return hash(self.hash_key)
 
 
 def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:

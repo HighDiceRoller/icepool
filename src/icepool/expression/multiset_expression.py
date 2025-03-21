@@ -130,10 +130,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    @property
-    def _variable_type(self) -> type:
-        return icepool.MultisetParam
-
     # Abstract overrides with more specific signatures.
     @abstractmethod
     def _prepare(

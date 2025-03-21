@@ -145,10 +145,6 @@ class MultisetKeep(MultisetOperator[T]):
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return self._keep_order, OrderReason.Mandatory
 
-    @property
-    def _local_hash_key(self) -> Hashable:
-        return self._keep_order, self._keep_tuple, self._drop
-
     def __str__(self) -> str:
         child = self._children[0]
         if self._drop:

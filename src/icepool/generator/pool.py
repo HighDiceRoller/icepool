@@ -128,8 +128,8 @@ class Pool(KeepGenerator[T]):
             dice_counts: A map from dice to rolls.
             keep_tuple: A tuple with length equal to the number of dice.
         """
-        dice = tuple(
-            sorted(dice_counts.items(), key=lambda kv: kv[0]._hash_key))
+        dice = tuple(sorted(dice_counts.items(),
+                            key=lambda kv: kv[0].hash_key))
         return Pool._new_raw(dice, outcomes, keep_tuple)
 
     @cached_property
@@ -318,10 +318,6 @@ class Pool(KeepGenerator[T]):
             f'Pool of {self.raw_size()} dice with keep_tuple={self.keep_tuple()}\n'
             + ''.join(f'  {repr(die)} : {count},\n'
                       for die, count in self._dice))
-
-    @cached_property
-    def _local_hash_key(self) -> tuple:
-        return Pool, self._dice, self._outcomes, self._keep_tuple
 
 
 def standard_pool(

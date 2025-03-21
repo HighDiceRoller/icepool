@@ -1476,7 +1476,7 @@ class Die(Population[T_co]):
             'in which case you should use `tupleize()` or `vectorize().')
 
     @cached_property
-    def _hash_key(self) -> tuple:
+    def hash_key(self) -> tuple:
         """A tuple that uniquely (as `equals()`) identifies this die.
 
         Apart from being hashable and totally orderable, this is not guaranteed
@@ -1486,7 +1486,7 @@ class Die(Population[T_co]):
 
     @cached_property
     def _hash(self) -> int:
-        return hash(self._hash_key)
+        return hash(self.hash_key)
 
     def __hash__(self) -> int:
         return self._hash
@@ -1516,9 +1516,9 @@ class Die(Population[T_co]):
             return False
 
         if simplify:
-            return self.simplify()._hash_key == other.simplify()._hash_key
+            return self.simplify().hash_key == other.simplify().hash_key
         else:
-            return self._hash_key == other._hash_key
+            return self.hash_key == other.hash_key
 
     # Strings.
 

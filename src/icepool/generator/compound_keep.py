@@ -64,12 +64,6 @@ class CompoundKeepGenerator(KeepGenerator[T]):
                                                 ...]) -> 'KeepGenerator[T]':
         return CompoundKeepGenerator(self._inner_generators, keep_tuple)
 
-    @property
-    def _local_hash_key(self) -> Hashable:
-        return CompoundKeepGenerator, tuple(
-            inner._hash_key
-            for inner in self._inner_generators), self._keep_tuple
-
     def __str__(self) -> str:
         return ('CompoundKeep([' +
                 ', '.join(str(inner) for inner in self._inner_generators) +

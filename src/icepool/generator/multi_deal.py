@@ -139,10 +139,6 @@ class MultiDeal(MultisetTupleGenerator[T]):
     def local_order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
-    @cached_property
-    def _local_hash_key(self) -> Hashable:
-        return MultiDeal, self.deck(), self.hand_sizes()
-
     def __repr__(self) -> str:
         return type(
             self

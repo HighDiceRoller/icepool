@@ -56,10 +56,6 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
     ) -> 'tuple[MultisetTupleExpression[T], tuple[int, ...]]':
         ...
 
-    @property
-    def _variable_type(self) -> type:
-        return icepool.MultisetTupleParam
-
     def __getitem__(self, index: int, /) -> 'icepool.MultisetExpression[T]':
         return MultisetTupleSubscript(self, index=index)
 
@@ -118,7 +114,3 @@ class MultisetTupleSubscript(MultisetExpression[T]):
 
     def local_order_preference(self):
         return self._children[0].local_order_preference()
-
-    @property
-    def _local_hash_key(self) -> Hashable:
-        return type(self)

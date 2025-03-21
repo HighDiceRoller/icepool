@@ -80,11 +80,6 @@ class MultisetMixture(MultisetExpression[T]):
             'MultisetMixture should have decayed to another generator type by this point.'
         )
 
-    @property
-    def _local_hash_key(self) -> Hashable:
-        # This is not intended to be cached directly, so we are a little loose here.
-        return MultisetMixture, tuple(self._inner_expressions.items())
-
     # Forwarding if inners are all KeepGenerators.
 
     @property

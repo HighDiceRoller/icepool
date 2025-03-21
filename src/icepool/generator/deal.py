@@ -147,10 +147,6 @@ class Deal(KeepGenerator[T]):
 
         return Order.Any, OrderReason.NoPreference
 
-    @cached_property
-    def _local_hash_key(self) -> Hashable:
-        return Deal, self.deck(), self._hand_size, self._keep_tuple
-
     def __repr__(self) -> str:
         return type(
             self
