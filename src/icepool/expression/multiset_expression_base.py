@@ -28,13 +28,15 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
     @abstractmethod
     def _prepare(
         self
-    ) -> Iterator[tuple['Sequence[MultisetDungeonlet[T, Any]]',
-                        'Sequence[MultisetQuestlet[T]]',
-                        'Sequence[MultisetSource[T, Any]]', int]]:
+    ) -> Iterator[
+            tuple['Sequence[MultisetDungeonlet[T, Any]]',
+                  'Sequence[tuple[int, ...]]', 'Sequence[MultisetQuestlet[T]]',
+                  'Sequence[MultisetSource[T, Any]]', int]]:
         """Prepare for evaluation.
 
         Yields:
             * A flattened tuple of dungeonlets.
+            * A flattened tuple of broods (tuples of relative child indexes).
             * A flattened tuple of questlets of the same length.
             * A tuple of freed sources.
             * The weight of this result.
@@ -42,8 +44,6 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
 
 
 class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
-    child_indexes: 'tuple[int, ...]'
-    """The relative (therefore negative) indexes of this node's children."""
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
@@ -71,7 +71,7 @@ class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
     @property
     @abstractmethod
     def hash_key(self):
-        """A hash key for this node. This should include child_indexes."""
+        """A hash key for this node."""
 
     def __eq__(self, other):
         if not isinstance(other, MultisetDungeonlet):
@@ -83,8 +83,6 @@ class MultisetDungeonlet(ABC, Generic[T, Q], Hashable):
 
 
 class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
-    """A dungeonlet representing a source that has been freed."""
-    child_indexes = ()
 
     def next_state(self, state, order, outcome, child_counts, free_counts,
                    param_counts):

@@ -44,7 +44,7 @@ class MultisetOperator(MultisetExpression[T]):
     @property
     @abstractmethod
     def _dungeonlet_key(self) -> Hashable:
-        """Used to identify dungeonlets. Only has to cover this node and does not need to include child_indexes."""
+        """Used to identify dungeonlets."""
 
     def _initial_state(self, order: Order, outcomes: Sequence[T], /,
                        **kwargs) -> Hashable:
@@ -66,38 +66,38 @@ class MultisetOperator(MultisetExpression[T]):
                                      for child in self._children)):
 
             dungeonlets = []
+            broods = []
             questlets = []
             free_sources = []
             weight = 1
             positions = []
-            for child_dungeonlets, child_questlets, child_free_sources, child_weight in t:
+            for child_dungeonlets, child_broods, child_questlets, child_free_sources, child_weight in t:
                 dungeonlets.extend(child_dungeonlets)
+                broods.extend(child_broods)
                 questlets.extend(child_questlets)
                 free_sources.extend(child_free_sources)
                 weight *= child_weight
                 positions.append(len(dungeonlets))
 
-            child_indexes = tuple(p - positions[-1] - 1 for p in positions)
+            brood = tuple(p - positions[-1] - 1 for p in positions)
             dungeonlet = MultisetOperatorDungeonlet(self._next_state,
-                                                    self._dungeonlet_key,
-                                                    child_indexes)
+                                                    self._dungeonlet_key)
             questlet = MultisetOperatorQuestlet(self._extra_outcomes,
                                                 self._initial_state)
             dungeonlets.append(dungeonlet)
+            broods.append(brood)
             questlets.append(questlet)
 
-            yield dungeonlets, questlets, free_sources, weight
+            yield dungeonlets, broods, questlets, free_sources, weight
 
 
 class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
     # Will be filled in by the constructor.
     next_state = None  # type: ignore
 
-    def __init__(self, next_state: Callable, hash_key: Hashable,
-                 child_indexes: tuple[int, ...]):
+    def __init__(self, next_state: Callable, hash_key: Hashable):
         self.next_state = next_state  # type: ignore
-        self.hash_key = (hash_key, child_indexes)  # type: ignore
-        self.child_indexes = child_indexes
+        self.hash_key = hash_key  # type: ignore
 
 
 class MultisetOperatorQuestlet(MultisetQuestlet[T]):
