@@ -144,9 +144,6 @@ class Pool(KeepGenerator[T]):
         """The number of dice in this pool before the keep_tuple is applied."""
         return self._raw_size
 
-    def _is_resolvable(self) -> bool:
-        return all(not die.is_empty() for die, _ in self._dice)
-
     @cached_property
     def _denominator(self) -> int:
         return math.prod(die.denominator()**count for die, count in self._dice)

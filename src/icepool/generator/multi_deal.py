@@ -78,9 +78,6 @@ class MultiDeal(MultisetTupleGenerator[T]):
         """
         return self.deck().outcomes()
 
-    def _is_resolvable(self) -> bool:
-        return len(self.outcomes()) > 0
-
     @cached_property
     def _denomiator(self) -> int:
         d_total = icepool.math.comb(self.deck().size(),

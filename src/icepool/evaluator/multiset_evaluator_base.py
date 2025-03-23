@@ -82,9 +82,6 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
         # Otherwise, we perform the evaluation.
 
-        if not all(expression._is_resolvable() for expression in inputs):
-            return icepool.Die([])
-
         if self._cache is None:
             self._cache = {}
 

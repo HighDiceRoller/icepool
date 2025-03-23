@@ -72,9 +72,6 @@ class Deal(KeepGenerator[T]):
         """
         return self.deck().outcomes()
 
-    def _is_resolvable(self) -> bool:
-        return len(self.outcomes()) > 0
-
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self.hand_size())
 

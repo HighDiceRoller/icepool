@@ -70,9 +70,6 @@ class MultisetTupleSubscript(MultisetExpression[T]):
     def outcomes(self) -> Sequence[T]:
         return self._children[0].outcomes()
 
-    def _is_resolvable(self) -> bool:
-        return self._children[0]._is_resolvable()
-
     def _prepare(self):
         for child, weight in self._children[0]._prepare():
             yield MultisetTupleSubscript(child, index=self._index), weight

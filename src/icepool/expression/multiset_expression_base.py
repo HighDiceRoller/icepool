@@ -22,6 +22,7 @@ from abc import ABC, abstractmethod
 
 
 class MultisetExpressionBase(ABC, Generic[T, Q]):
+    """Abstract methods are protected so as to not be distracting."""
 
     @abstractmethod
     def _prepare(
