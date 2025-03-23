@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
+
 from icepool.order import ConflictingOrderError, Order, OrderReason, UnsupportedOrderError, merge_order_preferences
 
 from abc import ABC, abstractmethod
@@ -11,11 +12,12 @@ import math
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
-                    Literal, Mapping, MutableMapping, Sequence, TypeAlias,
-                    cast, TYPE_CHECKING, overload)
+                    Literal, Mapping, MutableMapping, Sequence, Type,
+                    TypeAlias, cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression_base import MultisetExpressionBase
+    from icepool.expression.multiset_param import MultisetParamBase
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool import MultisetExpression
 
@@ -27,18 +29,16 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     @abstractmethod
     def _prepare(
         self,
-        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
+        param_types: 'Sequence[Type[MultisetParamBase]]',
         kwargs: Mapping[str, Hashable],
     ) -> 'Iterator[tuple[MultisetDungeon, MultisetQuest, tuple[MultisetExpressionBase, ...], int]]':
         """Prepares an evaluation.
 
         Args:
-            inputs: This is just for the benefit of `@multiset_function`
-                so it can know whether the arguments are single multisets or
-                multiset tuples.
-            kwargs: Used as part of the dungeon's cache key.
-                `@multiset_function` also determines how to forward these to
-                the inner evaluators.
+            param_types: The param types of the inputs. Used to determine the
+                body expressions of `@multiset_function`.
+            kwargs: `@multiset_function` determines how to forward these to
+                the inner quests.
 
         Yields:
             dungeon, quest, body_inputs, weight

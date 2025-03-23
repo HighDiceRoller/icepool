@@ -158,7 +158,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         kwargs: Mapping[str, Hashable],
     ):
         multiset_variables = [
-            expression._variable_type(True, i, self._positional_names[i])
+            expression._param_type(True, i, self._positional_names[i])
             for i, expression in enumerate(inputs)
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)

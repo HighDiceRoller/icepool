@@ -20,6 +20,9 @@ from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
 
 from abc import ABC, abstractmethod
 
+if TYPE_CHECKING:
+    from icepool.expression.multiset_param import MultisetParamBase
+
 
 class MultisetExpressionBase(ABC, Generic[T, Q]):
     """Abstract methods are protected so as to not be distracting."""
@@ -45,6 +48,11 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
     @abstractmethod
     def _has_param(self) -> bool:
         """Whether this expression tree contains any param."""
+
+    @property
+    @abstractmethod
+    def _param_type(self) -> Type[MultisetParamBase]:
+        """The type of param corresponding to the output of this expression."""
 
     @property
     @abstractmethod
