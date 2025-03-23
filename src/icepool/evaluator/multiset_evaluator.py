@@ -1,8 +1,9 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetEvaluatorPreparation, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_param import MultisetParamBase
 from icepool.order import Order
 
 from abc import abstractmethod
@@ -10,7 +11,7 @@ from functools import cached_property
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
-                    Mapping, MutableMapping, Sequence, TypeAlias, cast,
+                    Mapping, MutableMapping, Sequence, Type, TypeAlias, cast,
                     TYPE_CHECKING, overload)
 
 
@@ -154,14 +155,14 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def _prepare(
         self,
-        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
+        param_types: 'Sequence[Type[MultisetParamBase]]',
         kwargs: Mapping[str, Hashable],
-    ):
+    ) -> 'Iterator[MultisetEvaluatorPreparation[T, U_co]]':
         dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
             self.next_state, self.dungeon_key)
         quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
             self.initial_state, self.extra_outcomes, self.final_outcome)
-        yield dungeon, quest, (), 1
+        yield MultisetEvaluatorPreparation(dungeon, quest, (), 1)
 
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T]):

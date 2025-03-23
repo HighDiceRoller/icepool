@@ -137,7 +137,7 @@ from icepool.generator.multi_deal import MultiDeal
 
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
 from icepool.evaluator.multiset_function import multiset_function
-from icepool.expression.multiset_param import MultisetParam
+from icepool.expression.multiset_param import MultisetParam, MultisetTupleParam
 from icepool.expression.multiset_mixture import MultisetMixture
 
 from icepool.population.format import format_probability_inverse

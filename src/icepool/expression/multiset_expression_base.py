@@ -15,8 +15,8 @@ from icepool.typing import Q, T, U, HasHashKey, ImplicitConversionError, T
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
                     Hashable, Iterable, Iterator, Literal, Mapping,
-                    MutableSequence, Sequence, Type, TypeAlias, TypeVar, cast,
-                    overload)
+                    MutableSequence, NamedTuple, Sequence, Type, TypeAlias,
+                    TypeVar, cast, overload)
 
 from abc import ABC, abstractmethod
 
@@ -24,24 +24,23 @@ if TYPE_CHECKING:
     from icepool.expression.multiset_param import MultisetParamBase
 
 
+class MultisetExpressionPreparation(Generic[T], NamedTuple):
+    dungeonlets: 'Sequence[MultisetDungeonlet[T, Any]]'
+    broods: 'Sequence[tuple[int, ...]]'
+    questlets: 'Sequence[MultisetQuestlet[T]]'
+    sources: 'Sequence[MultisetSourceBase[T, Any]]'
+    weight: int
+
+
 class MultisetExpressionBase(ABC, Generic[T, Q]):
     """Abstract methods are protected so as to not be distracting."""
 
     @abstractmethod
-    def _prepare(
-        self
-    ) -> Iterator[
-            tuple['Sequence[MultisetDungeonlet[T, Any]]',
-                  'Sequence[tuple[int, ...]]', 'Sequence[MultisetQuestlet[T]]',
-                  'Sequence[MultisetSourceBase[T, Any]]', int]]:
+    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
         """Prepare for evaluation.
 
         Yields:
-            * A flattened sequence of dungeonlets.
-            * A flattened sequence of broods (tuples of relative child indexes).
-            * A flattened sequence of questlets of the same length.
-            * A sequence of freed sources.
-            * The weight of this result.
+            A `MultisetExpressionPreparation`.
         """
 
     @property

@@ -12,14 +12,21 @@ import math
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
-                    Literal, Mapping, MutableMapping, Sequence, Type,
-                    TypeAlias, cast, TYPE_CHECKING, overload)
+                    Literal, Mapping, MutableMapping, NamedTuple, Sequence,
+                    Type, TypeAlias, cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression_base import MultisetExpressionBase
     from icepool.expression.multiset_param import MultisetParamBase
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool import MultisetExpression
+
+
+class MultisetEvaluatorPreparation(Generic[T, U_co], NamedTuple):
+    dungeon: 'MultisetDungeon[T]'
+    quest: 'MultisetQuest[T, U_co]'
+    body_expressions: Sequence[MultisetExpressionBase[T, Any]]
+    weight: int
 
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
@@ -31,7 +38,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         self,
         param_types: 'Sequence[Type[MultisetParamBase]]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'Iterator[tuple[MultisetDungeon, MultisetQuest, tuple[MultisetExpressionBase, ...], int]]':
+    ) -> 'Iterator[MultisetEvaluatorPreparation[T, U_co]]':
         """Prepares an evaluation.
 
         Args:
@@ -41,7 +48,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
                 the inner quests.
 
         Yields:
-            dungeon, quest, body_inputs, weight
+            A `MultisetEvaluatorPreparation`.
         """
 
     def evaluate(

@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+from icepool.expression.multiset_expression_base import MultisetExpressionPreparation
 from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator
 
 import icepool
@@ -90,7 +91,7 @@ class MultiDeal(MultisetTupleGenerator[T]):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _prepare(self):
+    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
         yield self, 1
 
     def _generate_common(

@@ -130,15 +130,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    # Abstract overrides with more specific signatures.
-    @abstractmethod
-    def _prepare(
-        self
-    ) -> Iterator[
-            tuple['Sequence[MultisetExpressionDungeonlet[T]]',
-                  'Sequence[tuple[int, ...]]', 'Sequence[MultisetQuestlet[T]]',
-                  'Sequence[MultisetSourceBase[T, Any]]', int]]:
-        ...
+    @property
+    def _param_type(self):
+        return icepool.MultisetParam
 
     @property
     def _items_for_cartesian_product(

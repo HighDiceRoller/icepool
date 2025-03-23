@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetExpressionPreparation
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
@@ -24,37 +24,9 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
 
     Currently the only operation is to subscript to produce a single multiset."""
 
-    # Abstract overrides with more specific signatures.
-    @abstractmethod
-    def _prepare(self) -> Iterator[tuple['MultisetTupleExpression[T]', int]]:
-        ...
-
-    @abstractmethod
-    def _generate_min(
-        self, min_outcome: T
-    ) -> Iterator[tuple['MultisetTupleExpression[T]', tuple[int, ...], int]]:
-        ...
-
-    @abstractmethod
-    def _generate_max(
-        self, max_outcome: T
-    ) -> Iterator[tuple['MultisetTupleExpression[T]', tuple[int, ...], int]]:
-        ...
-
-    @abstractmethod
-    def _detach(
-        self,
-        body_inputs: 'list[MultisetExpressionBase]' = []
-    ) -> 'MultisetTupleExpression[T]':
-        ...
-
-    @abstractmethod
-    def _apply_variables(
-        self, outcome: T, body_counts: tuple[int,
-                                             ...], param_counts: tuple[int,
-                                                                       ...]
-    ) -> 'tuple[MultisetTupleExpression[T], tuple[int, ...]]':
-        ...
+    @property
+    def _param_type(self):
+        return icepool.MultisetTupleParam
 
     def __getitem__(self, index: int, /) -> 'icepool.MultisetExpression[T]':
         return MultisetTupleSubscript(self, index=index)
@@ -70,7 +42,7 @@ class MultisetTupleSubscript(MultisetExpression[T]):
     def outcomes(self) -> Sequence[T]:
         return self._children[0].outcomes()
 
-    def _prepare(self):
+    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
         for child, weight in self._children[0]._prepare():
             yield MultisetTupleSubscript(child, index=self._index), weight
 

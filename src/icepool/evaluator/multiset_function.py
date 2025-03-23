@@ -3,16 +3,16 @@ __docformat__ = 'google'
 import itertools
 import math
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetEvaluatorPreparation, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
-from icepool.expression.multiset_param import MultisetParam, MultisetTupleParam
+from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
 
 import inspect
 from functools import cached_property, update_wrapper
 
 from icepool.order import Order
 from icepool.typing import Q, T, U_co
-from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, NamedTuple, Sequence, TypeAlias, overload
+from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, NamedTuple, Sequence, Type, TypeAlias, overload
 
 MV: TypeAlias = MultisetParam | MultisetTupleParam
 
@@ -154,12 +154,12 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def _prepare(
         self,
-        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]',
+        param_types: 'Sequence[Type[MultisetParamBase]]',
         kwargs: Mapping[str, Hashable],
-    ):
+    ) -> 'Iterator[MultisetEvaluatorPreparation[T, U_co]]':
         multiset_variables = [
-            expression._param_type(True, i, self._positional_names[i])
-            for i, expression in enumerate(inputs)
+            param_type(i, self._positional_names[i])
+            for i, param_type in enumerate(param_types)
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
         if isinstance(raw_result, MultisetFunctionRawResult):

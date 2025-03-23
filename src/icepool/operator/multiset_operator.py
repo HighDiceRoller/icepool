@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetQuestlet
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetExpressionPreparation, MultisetQuestlet
 from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
 
 import itertools
@@ -61,7 +61,7 @@ class MultisetOperator(MultisetExpression[T]):
         """
         return None
 
-    def _prepare(self):
+    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
         for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
 
@@ -88,7 +88,8 @@ class MultisetOperator(MultisetExpression[T]):
             broods.append(brood)
             questlets.append(questlet)
 
-            yield dungeonlets, broods, questlets, free_sources, weight
+            yield MultisetExpressionPreparation(dungeonlets, broods, questlets,
+                                                free_sources, weight)
 
 
 class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):

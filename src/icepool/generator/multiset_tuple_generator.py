@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetExpressionPreparation, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
 from icepool.typing import Outcome, Q, T
@@ -23,10 +23,11 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
 
     _children = ()
 
-    def _prepare(self):
+    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
         dungeonlets = [MultisetFreeVariable()]
         broods = [()]
         questlets = [MultisetQuestlet()]
         sources = [self]  # inherit from MultisetSource?
         weight = 1
-        return dungeonlets, broods, questlets, sources, weight
+        yield MultisetExpressionPreparation(dungeonlets, broods, questlets,
+                                            sources, weight)

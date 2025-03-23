@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetExpressionPreparation
 from icepool.expression.multiset_expression import MultisetArityError, MultisetExpression
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.order import Order, OrderReason, merge_order_preferences
@@ -14,7 +14,7 @@ from functools import cached_property
 
 from icepool.typing import T, U
 from types import EllipsisType
-from typing import TYPE_CHECKING, Callable, Hashable, Literal, Mapping, MutableMapping, Sequence, overload
+from typing import TYPE_CHECKING, Callable, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, overload
 
 
 class MultisetMixture(MultisetExpression[T]):
@@ -37,8 +37,14 @@ class MultisetMixture(MultisetExpression[T]):
             for inner in inners:
                 self._inner_expressions[inner] += 1
 
-    def _prepare(self):
-        yield from self._inner_expressions.items()
+    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
+        for inner, weight in self._inner_expressions.items():
+            for result in inner._prepare():
+                yield MultisetExpressionPreparation(result.dungeonlets,
+                                                    result.broods,
+                                                    result.questlets,
+                                                    result.sources,
+                                                    result.weight * weight)
 
     def _has_param(self):
         return any(inner._has_param() for inner in self._inner_expressions)
