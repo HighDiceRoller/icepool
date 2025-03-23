@@ -66,7 +66,7 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
             return state
 
     def final_outcome(  # type: ignore
-            self, final_state) -> tuple:
+            self, final_state, order, outcomes) -> tuple:
         """Implementation."""
         if final_state is None:
             return ()
@@ -123,7 +123,7 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
         else:
             return min(state, current)
 
-    def final_outcome(self, final_state):
+    def final_outcome(self, final_state, order, outcomes):
         if final_state is None:
             if self._empty_divisor is None:
                 raise ZeroDivisionError(
@@ -146,7 +146,7 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
         return max(best_run, run), run
 
     def final_outcome(  # type: ignore
-            self, final_state) -> int:
+            self, final_state, order, outcomes) -> int:
         if final_state is None:
             return 0
         return final_state[0]
@@ -205,7 +205,7 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
                 return best_run, best_outcome, run
 
     def final_outcome(  # type: ignore
-            self, final_state) -> tuple[int, int]:
+            self, final_state, order, outcomes) -> tuple[int, int]:
         best_run, best_outcome, run = final_state
         return best_run, best_outcome
 
@@ -243,7 +243,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         return next_current_runs, next_ended_runs
 
     def final_outcome(  # type: ignore
-            self, final_state) -> tuple[int, ...]:
+            self, final_state, order, outcomes) -> tuple[int, ...]:
         """Implementation."""
         current_runs, ended_runs = final_state or ((), ())
         return tuple(sorted(current_runs + ended_runs, reverse=True))
@@ -296,7 +296,7 @@ class AllStraightsReduceCountsEvaluator(MultisetEvaluator[int,
         return current_run_length, current_run_score, ended_runs
 
     def final_outcome(  # type: ignore
-            self, final_state) -> tuple[tuple[int, int], ...]:
+            self, final_state, order, outcomes) -> tuple[tuple[int, int], ...]:
         """Implementation."""
         current_run_length, current_run_score, ended_runs = final_state or (
             None, None, ())

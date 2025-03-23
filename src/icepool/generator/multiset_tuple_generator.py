@@ -24,10 +24,10 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
     _children = ()
 
     def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
-        dungeonlets = [MultisetFreeVariable()]
-        broods = [()]
-        questlets = [MultisetQuestlet()]
-        sources = [self]  # inherit from MultisetSource?
+        dungeonlets = (MultisetFreeVariable(), )
+        broods = ((), )
+        questlets = (MultisetQuestlet(), )
+        sources = (self, )  # inherit from MultisetSource?
         weight = 1
         yield MultisetExpressionPreparation(dungeonlets, broods, questlets,
                                             sources, weight)

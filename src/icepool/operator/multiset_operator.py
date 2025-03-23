@@ -87,8 +87,10 @@ class MultisetOperator(MultisetExpression[T]):
             broods.append(brood)
             questlets.append(questlet)
 
-            yield MultisetExpressionPreparation(dungeonlets, broods, questlets,
-                                                free_sources, weight)
+            yield MultisetExpressionPreparation(tuple(dungeonlets),
+                                                tuple(broods),
+                                                tuple(questlets),
+                                                tuple(free_sources), weight)
 
 
 class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):

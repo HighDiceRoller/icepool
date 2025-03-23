@@ -50,10 +50,10 @@ class MultisetGenerator(MultisetExpression[T]):
         """Create a source from this generator."""
 
     def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
-        dungeonlets = [MultisetFreeVariable()]
-        broods = [()]
-        questlets = [MultisetQuestlet()]
-        sources = [self._make_source()]  # inherit from MultisetSource?
+        dungeonlets = (MultisetFreeVariable(), )
+        broods = ((), )
+        questlets = (MultisetQuestlet(), )
+        sources = (self._make_source(), )
         weight = 1
         yield MultisetExpressionPreparation(dungeonlets, broods, questlets,
                                             sources, weight)

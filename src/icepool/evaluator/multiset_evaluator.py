@@ -101,7 +101,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         return ()
 
     def final_outcome(
-            self, final_state: Hashable, /, **kwargs: Hashable
+            self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
+            /, **kwargs: Hashable
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Optional method to generate a final output outcome from a final state.
 

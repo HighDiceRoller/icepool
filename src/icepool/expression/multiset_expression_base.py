@@ -25,10 +25,10 @@ if TYPE_CHECKING:
 
 
 class MultisetExpressionPreparation(Generic[T], NamedTuple):
-    dungeonlets: 'Sequence[MultisetDungeonlet[T, Any]]'
-    broods: 'Sequence[tuple[int, ...]]'
+    dungeonlets: 'tuple[MultisetDungeonlet[T, Any], ...]'
+    broods: 'tuple[tuple[int, ...], ...]'
     questlets: 'Sequence[MultisetQuestlet[T]]'
-    sources: 'Sequence[MultisetSourceBase[T, Any]]'
+    sources: 'tuple[MultisetSourceBase[T, Any], ...]'
     weight: int
 
 
@@ -140,15 +140,13 @@ class MultisetSourceBase(Generic[T, Q], HasHashKey):
 
 class MultisetQuestlet(Generic[T]):
 
-    def initial_state(self, order: Order, outcomes: Sequence[T], /,
-                      **kwargs) -> Hashable:
+    def initial_state(self, order: Order, outcomes: Sequence[T]) -> Hashable:
         """Optional: the initial state of this node.
         TODO: Should this get cardinalities?
 
         Args:
             order: The order in which `next_state` will see outcomes.
             outcomes: All outcomes that will be seen by `next_state` in ascending order.
-            kwargs: Any keyword arguments that were passed to `evaluate()`.
 
         Raises:
             UnsupportedOrderError if the given order is not supported.

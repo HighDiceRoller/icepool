@@ -229,7 +229,7 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
     def extra_outcomes(self, outcomes):
         return self.inner_quest.extra_outcomes(outcomes)
 
-    def final_outcome(self, final_state, **kwargs):
+    def final_outcome(self, final_state, order, outcomes, **kwargs):
         if final_state is None:
             return self.inner_quest.final_outcome(None, **self.inner_kwargs)
         else:
@@ -337,7 +337,7 @@ class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):
         return icepool.sorted_union(*(inner_quest.extra_outcomes(outcomes)
                                       for inner_quest in self.all_inner_quest))
 
-    def final_outcome(self, final_state, **kwargs):
+    def final_outcome(self, final_state, order, outcomes, **kwargs):
         if final_state is None:
             result = tuple(
                 inner_quest.final_outcome(None, **inner_kwargs)

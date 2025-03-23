@@ -29,8 +29,8 @@ class MultisetParamBase(Generic[T]):
     def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
         dungeonlet = MultisetParamDungeonlet(self._index)
         questlet = MultisetParamQuestlet()
-        yield MultisetExpressionPreparation([dungeonlet], [], [questlet], [],
-                                            1)
+        yield MultisetExpressionPreparation((dungeonlet, ), (), (questlet, ),
+                                            (), 1)
 
     @property
     def _has_param(self):

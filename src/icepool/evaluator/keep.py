@@ -34,7 +34,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
             result = outcome
         return result, remaining
 
-    def final_outcome(self, final_state, /, *, index):
+    def final_outcome(self, final_state, order, outcomes, /, *, index):
         if final_state is None:
             raise IndexError('No outcomes were seen.')
         result, remaining = final_state

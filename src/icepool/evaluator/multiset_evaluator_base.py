@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
+from icepool.function import sorted_union
 from icepool.order import ConflictingOrderError, Order, OrderReason, UnsupportedOrderError, merge_order_preferences
 
 from abc import ABC, abstractmethod
@@ -16,7 +17,7 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     Type, TypeAlias, cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
-    from icepool.expression.multiset_expression_base import MultisetExpressionBase
+    from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetExpressionPreparation, MultisetSourceBase
     from icepool.expression.multiset_param import MultisetParamBase
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool import MultisetExpression
@@ -103,9 +104,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
                 (all_dungeonlets, all_broods, all_questlets, all_sources,
                  all_weights) = zip(*preps)
 
-                # TODO: body expressions
-
-                # Replace dungeon with cached version if available
+                # Replace dungeon with cached version if available.
                 if dungeon.__hash__ is not None:
                     cache_key = (all_dungeonlets, all_broods, dungeon)
                     if cache_key in self._cache:
@@ -113,7 +112,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
                     else:
                         self._cache[cache_key] = dungeon
 
-                result = dungeon.evaluate(dungeon, quest, preps, kwargs)
+                result = dungeon.evaluate(preps, quest, kwargs)
                 net_weight = eval_weight * math.prod(all_weights)
                 final_data[result] += net_weight
 
@@ -125,16 +124,12 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 class MultisetDungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
-    ascending_cache: MutableMapping[
-        'tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable]',
-        Mapping[Hashable, int]]
+    ascending_cache: MutableMapping[Any, Mapping[Hashable, int]]
     """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
-    descending_cache: MutableMapping[
-        'tuple[tuple[T, ...], tuple[MultisetExpressionBase[T, Any], ...], Hashable]',
-        Mapping[Hashable, int]]
+    descending_cache: MutableMapping[Any, Mapping[Hashable, int]]
     """Maps (all_outcomes, inputs, initial_state) -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
@@ -169,11 +164,73 @@ class MultisetDungeon(Generic[T]):
     __hash__: Callable[[], int] | None = None  # type: ignore
     """Subclasses may optionally be hashable; if so, intermediate calculations will be persistently cached."""
 
+    def evaluate(self, preps: 'tuple[MultisetExpressionPreparation[T], ...]',
+                 quest: 'MultisetQuest[T, U_co]',
+                 kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
+        """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
+
+        if not hasattr(self, 'ascending_cache'):
+            self.ascending_cache = {}
+            self.descending_cache = {}
+
+        pop_order, pop_order_reason = merge_order_preferences(
+            (Order.Descending, OrderReason.Default),
+            *itertools.chain.from_iterable((source.order_preference()
+                                            for source in prep.sources)
+                                           for prep in preps))
+
+        all_outcomes = self.all_outcomes(quest, preps)
+
+        try:
+            all_sources, all_exp_state, eval_state = self.initial_state(
+                quest, preps, -pop_order, all_outcomes, kwargs)
+            final_states = self.evaluate_backward(pop_order, all_outcomes,
+                                                  all_sources, all_exp_state,
+                                                  eval_state)
+            return quest.finalize_evaluation(final_states, kwargs)
+        except UnsupportedOrderError:
+            try:
+                all_sources, all_exp_state, eval_state = self.initial_state(
+                    quest, preps, pop_order, all_outcomes, kwargs)
+                final_states = self.evaluate_forward(pop_order, all_outcomes,
+                                                     all_sources,
+                                                     all_exp_state, eval_state)
+                return quest.finalize_evaluation(final_states, kwargs)
+            except UnsupportedOrderError:
+                raise ConflictingOrderError(
+                    'Neither ascending nor descending order is compatable with the evaluation. '
+                    +
+                    f'Preferred input order was {pop_order.name} with reason {pop_order_reason.name}.'
+                )
+
+    def all_outcomes(
+        self, quest: 'MultisetQuest[T, U_co]',
+        preps: 'tuple[MultisetExpressionPreparation[T], ...]'
+    ) -> tuple[T, ...]:
+        source_outcomes = sorted_union(*itertools.chain.from_iterable(
+            (source.outcomes() for source in prep.sources) for prep in preps))
+        extra_outcomes = quest.extra_outcomes(source_outcomes)
+        return sorted_union(source_outcomes, extra_outcomes)
+
+    def initial_state(
+        self, quest: 'MultisetQuest[T, U_co]',
+        preps: 'tuple[MultisetExpressionPreparation[T], ...]', order: Order,
+        outcomes: tuple[T, ...], kwargs: Mapping[str, Hashable]
+    ) -> tuple['tuple[tuple[MultisetSourceBase[T, Any], ...], ...]',
+               'tuple[tuple[Hashable, ...], ...]', Hashable]:
+        all_sources = tuple(prep.sources for prep in preps)
+        all_exp_state = tuple(
+            tuple(
+                questlet.initial_state(order, outcomes)
+                for questlet in prep.questlets) for prep in preps)
+        eval_state = quest.initial_state(order, outcomes, **kwargs)
+        return all_sources, all_exp_state, eval_state
+
     def evaluate_backward(
-        self, initial_state: Hashable, input_order: Order,
-        all_outcomes: tuple[T, ...],
-        inputs: 'tuple[MultisetExpressionBase[T, Q], ...]'
-    ) -> Mapping[Any, int]:
+            self, pop_order: Order, all_outcomes: tuple[T, ...],
+            all_sources: 'tuple[tuple[MultisetSourceBase[T, Any], ...], ...]',
+            all_exp_state: 'tuple[tuple[Hashable, ...], ...]',
+            eval_state: Hashable) -> Mapping[Any, int]:
         """Internal algorithm for iterating so that next_state sees outcomes in backwards order.
 
         All intermediate return values are cached in the instance.
@@ -190,30 +247,30 @@ class MultisetDungeon(Generic[T]):
                 over states.
         """
         # Since this is the backward evaluation, these are opposite of the
-        # input order.
-        if input_order > 0:
+        # pop order.
+        if pop_order > 0:
             cache = self.descending_cache
         else:
             cache = self.ascending_cache
 
-        cache_key = (all_outcomes, inputs, initial_state)
+        cache_key = (all_outcomes, all_sources, all_exp_state, eval_state)
         if cache_key in cache:
             return cache[cache_key]
 
         result: MutableMapping[Any, int] = defaultdict(int)
 
-        if all(not input.outcomes() for input in inputs) and not all_outcomes:
-            result = {initial_state: 1}
+        if not all_outcomes:
+            result = {eval_state: 1}
         else:
             outcome, prev_all_outcomes, iterators = pop_inputs(
-                input_order, all_outcomes, inputs)
+                pop_order, all_outcomes, inputs)
             for p in itertools.product(*iterators):
                 prev_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                prev = self.evaluate_backward(initial_state, input_order,
+                prev = self.evaluate_backward(initial_state, pop_order,
                                               prev_all_outcomes, prev_inputs)
                 for prev_state, prev_weight in prev.items():
-                    state = self.next_state(prev_state, -input_order, outcome,
+                    state = self.next_state(prev_state, -pop_order, outcome,
                                             *counts)
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * prod_weight
@@ -222,7 +279,7 @@ class MultisetDungeon(Generic[T]):
         return result
 
     def evaluate_forward(
-        self, initial_state: Hashable, input_order: Order,
+        self, initial_state: Hashable, pop_order: Order,
         all_outcomes: tuple[T, ...],
         inputs: 'tuple[icepool.MultisetExpression[T], ...]'
     ) -> Mapping[Any, int]:
@@ -241,7 +298,7 @@ class MultisetDungeon(Generic[T]):
             A dict `{ state : weight }` describing the probability distribution
                 over states.
         """
-        if input_order > 0:
+        if pop_order > 0:
             cache = self.ascending_cache
         else:
             cache = self.descending_cache
@@ -256,14 +313,14 @@ class MultisetDungeon(Generic[T]):
             result = {initial_state: 1}
         else:
             outcome, next_all_outcomes, iterators = pop_inputs(
-                input_order, all_outcomes, inputs)
+                pop_order, all_outcomes, inputs)
             for p in itertools.product(*iterators):
                 next_inputs, counts, weights = zip(*p)
                 prod_weight = math.prod(weights)
-                next_state = self.next_state(initial_state, input_order,
-                                             outcome, *counts)
+                next_state = self.next_state(initial_state, pop_order, outcome,
+                                             *counts)
                 if next_state is not icepool.Reroll:
-                    final_dist = self.evaluate_forward(next_state, input_order,
+                    final_dist = self.evaluate_forward(next_state, pop_order,
                                                        next_all_outcomes,
                                                        next_inputs)
                     for final_state, weight in final_dist.items():
@@ -271,41 +328,6 @@ class MultisetDungeon(Generic[T]):
 
         cache[cache_key] = result
         return result
-
-    def evaluate(self, dungeon: 'MultisetDungeon[T]',
-                 quest: 'MultisetQuest[T, U_co]',
-                 preps: 'tuple[icepool.MultisetExpression[T], ...]',
-                 kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
-        """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
-
-        if not hasattr(self, 'ascending_cache'):
-            self.ascending_cache = {}
-            self.descending_cache = {}
-
-        input_order, input_order_reason = merge_order_preferences(
-            (Order.Descending, OrderReason.Default),
-            *(input.order_preference() for input in inputs))
-
-        try:
-            initial_state = context.initial_state(-input_order, all_outcomes,
-                                                  **kwargs)
-            final_states = self.evaluate_backward(initial_state, input_order,
-                                                  all_outcomes, inputs)
-            return context.finalize_evaluation(final_states, kwargs)
-        except UnsupportedOrderError:
-            try:
-                initial_state = context.initial_state(input_order,
-                                                      all_outcomes, **kwargs)
-                final_states = self.evaluate_forward(initial_state,
-                                                     input_order, all_outcomes,
-                                                     inputs)
-                return context.finalize_evaluation(final_states, kwargs)
-            except UnsupportedOrderError:
-                raise ConflictingOrderError(
-                    'Neither ascending nor descending order is compatable with the evaluation. '
-                    +
-                    f'Preferred input order was {input_order.name} with reason {input_order_reason.name}.'
-                )
 
 
 class MultisetQuest(Generic[T, U_co]):
@@ -334,17 +356,19 @@ class MultisetQuest(Generic[T, U_co]):
 
     @abstractmethod
     def final_outcome(
-            self, final_state: Hashable, /, **kwargs: Hashable
+            self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
+            /, **kwargs: Hashable
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
     def finalize_evaluation(
-            self, final_states: Mapping[Any, int],
+            self, final_states: Mapping[Any, int], order: Order,
+            outcomes: tuple[T, ...],
             kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         final_outcomes = []
         final_weights = []
         for state, weight in final_states.items():
-            outcome = self.final_outcome(state, **kwargs)
+            outcome = self.final_outcome(state, order, outcomes, **kwargs)
             if outcome is None:
                 raise TypeError(
                     "None is not a valid final outcome.\n"
