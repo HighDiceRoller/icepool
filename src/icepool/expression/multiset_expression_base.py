@@ -40,6 +40,16 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
             * The weight of this result.
         """
 
+    @property
+    @abstractmethod
+    def _has_param(self) -> bool:
+        """Whether this expression tree contains any param."""
+
+    @property
+    @abstractmethod
+    def _can_keep(self) -> bool:
+        """Whether this expression supports enhanced keep operations."""
+
 
 class MultisetDungeonlet(Generic[T, Q], HasHashKey):
 

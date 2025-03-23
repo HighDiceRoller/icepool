@@ -31,6 +31,10 @@ class MultisetParamBase(Generic[T]):
         questlet = MultisetParamQuestlet()
         yield [dungeonlet], [questlet], [], 1
 
+    @property
+    def _has_param(self):
+        return True
+
 
 class MultisetParam(MultisetExpression[T], MultisetParamBase[T]):
     """A multiset param with a count of a single `int`."""

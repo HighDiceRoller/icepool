@@ -76,7 +76,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
         # In this case we are inside a @multiset_function.
-        if any(input.has_parameters() for input in inputs):
+        if any(input._has_param() for input in inputs):
             from icepool.evaluator.multiset_function import MultisetFunctionRawResult
             return MultisetFunctionRawResult(self, inputs, kwargs)
 
