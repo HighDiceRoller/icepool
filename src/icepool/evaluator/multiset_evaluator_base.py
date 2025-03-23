@@ -31,7 +31,7 @@ class MultisetEvaluatorPreparation(Generic[T, U_co], NamedTuple):
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
-    _cache: 'MutableMapping[MultisetDungeon, MultisetDungeon] | None' = None
+    _cache: 'MutableMapping[Any, MultisetDungeon] | None' = None
 
     @abstractmethod
     def _prepare(
@@ -79,13 +79,13 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         """
 
         # Convert arguments to expressions.
-        inputs = tuple(
+        input_exps = tuple(
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
         # In this case we are inside a @multiset_function.
-        if any(input._has_param() for input in inputs):
+        if any(exp._has_param() for exp in input_exps):
             from icepool.evaluator.multiset_function import MultisetFunctionRawResult
-            return MultisetFunctionRawResult(self, inputs, kwargs)
+            return MultisetFunctionRawResult(self, input_exps, kwargs)
 
         # Otherwise, we perform the evaluation.
 
@@ -93,28 +93,29 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             self._cache = {}
 
         final_data: 'MutableMapping[icepool.Die[U_co], int]' = defaultdict(int)
-        for p in itertools.product(*(expression._prepare()
-                                     for expression in inputs)):
-            sub_inputs, sub_weights = zip(*p)
-            for dungeon, quest, body_inputs, evaluator_weight in self._prepare(
-                    sub_inputs, kwargs):
-                # TODO: initialize body_inputs inside prepare
 
-                # replace dungeon with cached version if available
+        param_types = [exp._param_type for exp in input_exps]
+        for dungeon, quest, body_exps, eval_weight in self._prepare(
+                param_types, kwargs):
+            for preps in itertools.product(
+                    *(exp._prepare() for exp in input_exps),
+                    *(exp._prepare() for exp in body_exps)):
+                (all_dungeonlets, all_broods, all_questlets, all_sources,
+                 all_weights) = zip(*preps)
+
+                # TODO: body expressions
+
+                # Replace dungeon with cached version if available
                 if dungeon.__hash__ is not None:
-                    if dungeon in self._cache:
-                        dungeon = self._cache[dungeon]
+                    cache_key = (all_dungeonlets, all_broods, dungeon)
+                    if cache_key in self._cache:
+                        dungeon = self._cache[cache_key]
                     else:
-                        self._cache[dungeon] = dungeon
+                        self._cache[cache_key] = dungeon
 
-                prod_weight = math.prod(sub_weights) * evaluator_weight
-                outcomes = icepool.sorted_union(
-                    *(expression.outcomes() for expression in sub_inputs))
-                extra_outcomes = quest.extra_outcomes(outcomes)
-                all_outcomes = icepool.sorted_union(extra_outcomes, outcomes)
-                sub_result = dungeon.evaluate(quest, all_outcomes,
-                                              body_inputs + sub_inputs, kwargs)
-                final_data[sub_result] += prod_weight
+                result = dungeon.evaluate(dungeon, quest, preps, kwargs)
+                net_weight = eval_weight * math.prod(all_weights)
+                final_data[result] += net_weight
 
         return icepool.Die(final_data)
 
@@ -271,9 +272,9 @@ class MultisetDungeon(Generic[T]):
         cache[cache_key] = result
         return result
 
-    def evaluate(self, context: 'MultisetQuest[T, U_co]',
-                 all_outcomes: 'tuple[T, ...]',
-                 inputs: 'tuple[icepool.MultisetExpression[T], ...]',
+    def evaluate(self, dungeon: 'MultisetDungeon[T]',
+                 quest: 'MultisetQuest[T, U_co]',
+                 preps: 'tuple[icepool.MultisetExpression[T], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
 

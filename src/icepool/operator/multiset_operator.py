@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetExpressionPreparation, MultisetQuestlet
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetExpressionPreparation, MultisetQuestlet, MultisetSourceBase
 from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
 
 import itertools
@@ -9,7 +9,7 @@ import math
 
 from icepool.order import Order
 from icepool.typing import T, Q
-from typing import Callable, Collection, Hashable, Iterator, MutableSequence, Sequence
+from typing import Any, Callable, Collection, Hashable, Iterator, MutableSequence, Sequence
 
 from abc import abstractmethod
 
@@ -65,12 +65,12 @@ class MultisetOperator(MultisetExpression[T]):
         for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
 
-            dungeonlets = []
-            broods = []
-            questlets = []
-            free_sources = []
+            dungeonlets: MutableSequence[MultisetDungeonlet[T, Any]] = []
+            broods: MutableSequence[tuple[int, ...]] = []
+            questlets: MutableSequence[MultisetQuestlet[T]] = []
+            free_sources: MutableSequence[MultisetSourceBase[T, Any]] = []
             weight = 1
-            positions = []
+            positions: MutableSequence[int] = []
             for child_dungeonlets, child_broods, child_questlets, child_free_sources, child_weight in t:
                 dungeonlets.extend(child_dungeonlets)
                 broods.extend(child_broods)
@@ -82,8 +82,7 @@ class MultisetOperator(MultisetExpression[T]):
             brood = tuple(p - positions[-1] - 1 for p in positions)
             dungeonlet = MultisetOperatorDungeonlet(self._next_state,
                                                     self._dungeonlet_key)
-            questlet = MultisetOperatorQuestlet(self._extra_outcomes,
-                                                self._initial_state)
+            questlet = MultisetOperatorQuestlet(self._initial_state)
             dungeonlets.append(dungeonlet)
             broods.append(brood)
             questlets.append(questlet)
@@ -95,15 +94,16 @@ class MultisetOperator(MultisetExpression[T]):
 class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
     # Will be filled in by the constructor.
     next_state = None  # type: ignore
+    hash_key: Hashable
 
     def __init__(self, next_state: Callable, hash_key: Hashable):
         self.next_state = next_state  # type: ignore
-        self.hash_key = hash_key  # type: ignore
+        self.hash_key = hash_key
 
 
 class MultisetOperatorQuestlet(MultisetQuestlet[T]):
     # Will be filled in by the constructor.
     initial_state = None  # type: ignore
 
-    def __init__(self, extra_outcomes: Callable, initial_state: Callable):
+    def __init__(self, initial_state: Callable):
         self.initial_state = initial_state  # type: ignore

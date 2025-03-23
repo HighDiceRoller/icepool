@@ -35,51 +35,8 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
 class MultisetTupleSubscript(MultisetExpression[T]):
     _children: 'tuple[MultisetTupleExpression[T]]'
 
+    _can_keep = False
+
     def __init__(self, child: MultisetTupleExpression, /, *, index: int):
         self._index = index
         self._children = (child, )
-
-    def outcomes(self) -> Sequence[T]:
-        return self._children[0].outcomes()
-
-    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
-        for child, weight in self._children[0]._prepare():
-            yield MultisetTupleSubscript(child, index=self._index), weight
-
-    def _generate_min(
-        self, min_outcome: T
-    ) -> Iterator[tuple['MultisetTupleSubscript[T]', int, int]]:
-        for child, counts, weight in self._children[0]._generate_min(
-                min_outcome):
-            yield MultisetTupleSubscript(
-                child, index=self._index), counts[self._index], weight
-
-    def _generate_max(
-        self, min_outcome: T
-    ) -> Iterator[tuple['MultisetTupleSubscript[T]', int, int]]:
-        for child, counts, weight in self._children[0]._generate_max(
-                min_outcome):
-            yield MultisetTupleSubscript(
-                child, index=self._index), counts[self._index], weight
-
-    def has_parameters(self) -> bool:
-        return self._children[0].has_parameters()
-
-    def _detach(self, body_inputs: 'list[MultisetExpressionBase]' = []):
-        if self.has_parameters():
-            child = self._children[0]._detach(body_inputs)
-            return MultisetTupleSubscript(child, index=self._index)
-        else:
-            result = icepool.MultisetParam(False, len(body_inputs))
-            body_inputs.append(self)
-            return result
-
-    def _apply_variables(self, outcome: T, body_counts: tuple[int, ...],
-                         param_counts: tuple[int, ...]):
-        child, counts = self._children[0]._apply_variables(
-            outcome, body_counts, param_counts)
-        return MultisetTupleSubscript(child,
-                                      index=self._index), counts[self._index]
-
-    def local_order_preference(self):
-        return self._children[0].local_order_preference()
