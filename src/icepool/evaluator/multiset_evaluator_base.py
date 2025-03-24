@@ -77,7 +77,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
         # In this case we are inside a @multiset_function.
-        if any(exp._has_param() for exp in input_exps):
+        if any(exp._has_param for exp in input_exps):
             from icepool.evaluator.multiset_function import MultisetFunctionRawResult
             return MultisetFunctionRawResult(self, input_exps, kwargs)
 
@@ -160,7 +160,7 @@ class MultisetDungeon(Generic[T]):
     """
 
     def evaluate(self, quest: 'MultisetQuest[T, U_co]',
-                 sources: 'tuple[MultisetSourceBase, ...]',
+                 sources: 'tuple[MultisetSourceBase[T, Any], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
 
@@ -172,8 +172,8 @@ class MultisetDungeon(Generic[T]):
             (Order.Descending, OrderReason.Default),
             *(source.order_preference() for source in sources))
 
-        source_outcomes = sorted_union(*itertools.chain.from_iterable(
-            source.outcomes() for source in sources))
+        source_outcomes = sorted_union(*(source.outcomes()
+                                         for source in sources))
         extra_outcomes = quest.extra_outcomes(source_outcomes)
         all_outcomes = sorted_union(source_outcomes, extra_outcomes)
 
@@ -369,8 +369,8 @@ class MultisetRoom(Generic[T], NamedTuple):
             outcome = self.outcomes[0]
             outcomes = self.outcomes[1:]
 
-        for t in itertools.product(*(itertools.product(
-                *(source.pop(order, outcome) for source in self.sources)))):
+        for t in itertools.product(*(source.pop(order, outcome)
+                                     for source in self.sources)):
             sources, source_counts, weights = zip(*t)
             weight = math.prod(weights)
             yield outcome, source_counts, outcomes, sources, weight
@@ -423,7 +423,8 @@ class MultisetQuest(Generic[T, U_co]):
             kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         final_outcomes = []
         final_weights = []
-        for state, weight in final_states.items():
+        # Drop the dungeonlet states.
+        for (_, state), weight in final_states.items():
             outcome = self.final_outcome(state, order, outcomes, **kwargs)
             if outcome is None:
                 raise TypeError(

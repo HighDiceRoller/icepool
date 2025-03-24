@@ -43,8 +43,9 @@ class MultisetMixture(MultisetExpression[T]):
             ):
                 yield dungeonlets, questlets, sources, inner_weight * weight
 
+    @property
     def _has_param(self):
-        return any(inner._has_param() for inner in self._inner_expressions)
+        return any(inner._has_param for inner in self._inner_expressions)
 
     # Forwarding if inners are all KeepGenerators.
 
