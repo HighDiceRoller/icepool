@@ -1,6 +1,7 @@
 __docformat__ = 'google'
 
-from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator
+from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetQuestlet, MultisetSourceBase
+from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator, MultisetTupleSource
 
 import icepool
 from icepool.collection.counts import CountsKeysView
@@ -13,7 +14,7 @@ import math
 
 from icepool.typing import T
 
-from typing import Any, Hashable, Iterable, Iterator, cast
+from typing import Any, Hashable, Iterable, Iterator, Sequence, cast
 
 
 class MultiDeal(MultisetTupleGenerator[T]):
@@ -90,51 +91,11 @@ class MultiDeal(MultisetTupleGenerator[T]):
     def denominator(self) -> int:
         return self._denomiator
 
-    def _prepare(
-        self
-    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
-                        'tuple[MultisetSourceBase[T, Any], ...]', int]]:
-        yield self, 1
+    def _make_source(self) -> 'MultisetTupleSource[T]':
+        return MultiDealSource(self._deck, self._hand_sizes)
 
-    def _generate_common(
-            self, popped_deck: 'icepool.Deck[T]', deck_count: int
-    ) -> Iterator[tuple['MultiDeal', tuple[int, ...], int]]:
-        """Common implementation for _generate_min and _generate_max."""
-        min_count = max(
-            0, deck_count + self.total_cards_dealt() - self.deck().size())
-        max_count = min(deck_count, self.total_cards_dealt())
-        for count_total in range(min_count, max_count + 1):
-            weight_total = icepool.math.comb(deck_count, count_total)
-            # The "deck" is the hand sizes.
-            for counts, weight_split in iter_hypergeom(self.hand_sizes(),
-                                                       count_total):
-                popped_deal = MultiDeal._new_raw(
-                    popped_deck,
-                    tuple(h - c for h, c in zip(self.hand_sizes(), counts)))
-                weight = weight_total * weight_split
-                yield popped_deal, counts, weight
-
-    def _generate_min(
-            self,
-            min_outcome) -> Iterator[tuple['MultiDeal', tuple[int, ...], int]]:
-        if not self.outcomes() or min_outcome != self.min_outcome():
-            yield self, (0, ), 1
-            return
-
-        popped_deck, deck_count = self.deck()._pop_min()
-
-        yield from self._generate_common(popped_deck, deck_count)
-
-    def _generate_max(
-            self,
-            max_outcome) -> Iterator[tuple['MultiDeal', tuple[int, ...], int]]:
-        if not self.outcomes() or max_outcome != self.max_outcome():
-            yield self, (0, ), 1
-            return
-
-        popped_deck, deck_count = self.deck()._pop_max()
-
-        yield from self._generate_common(popped_deck, deck_count)
+    def hash_key(self) -> Hashable:
+        return MultiDeal, self._deck, self._hand_sizes
 
     def __repr__(self) -> str:
         return type(
@@ -146,3 +107,62 @@ class MultiDeal(MultisetTupleGenerator[T]):
             self
         ).__qualname__ + f' of hand_sizes={self.hand_sizes()} from deck:\n' + str(
             self.deck())
+
+
+class MultiDealSource(MultisetTupleSource[T]):
+
+    def __init__(self, deck: 'icepool.Deck[T]', hand_sizes: tuple[int, ...]):
+        self.deck = deck
+        self.hand_sizes = hand_sizes
+
+    def outcomes(self):
+        return self.deck.outcomes()
+
+    def pop(self, order: Order, outcome: T):
+        if not self.outcomes():
+            yield self, 0, 1
+            return
+
+        if order > 0:
+            pop_outcome = self.outcomes()[0]
+            popped_deck, deck_count = self.deck._pop_min()
+        else:
+            pop_outcome = self.outcomes()[-1]
+            popped_deck, deck_count = self.deck._pop_max()
+
+        if pop_outcome != outcome:
+            yield self, 0, 1
+            return
+
+        yield from self.generate_common(popped_deck, deck_count)
+
+    def generate_common(
+        self, popped_deck: 'icepool.Deck[T]', deck_count: int
+    ) -> Iterator[tuple['MultiDealSource', tuple[int, ...], int]]:
+        """Common implementation for _generate_min and _generate_max."""
+        min_count = max(
+            0, deck_count + self.total_cards_dealt() - self.deck.size())
+        max_count = min(deck_count, self.total_cards_dealt())
+        for count_total in range(min_count, max_count + 1):
+            weight_total = icepool.math.comb(deck_count, count_total)
+            # The "deck" is the hand sizes.
+            for counts, weight_split in iter_hypergeom(self.hand_sizes,
+                                                       count_total):
+                popped_source = MultiDealSource(
+                    popped_deck,
+                    tuple(h - c for h, c in zip(self.hand_sizes, counts)))
+                weight = weight_total * weight_split
+                yield popped_source, counts, weight
+
+    def order_preference(self) -> tuple[Order, OrderReason]:
+        return Order.Any, OrderReason.NoPreference
+
+    def hash_key(self):
+        return MultiDealSource, self.deck, self.hand_sizes
+
+    def total_cards_dealt(self) -> int:
+        """The total number of cards dealt."""
+        return sum(self.hand_sizes)
+
+    def is_resolvable(self) -> bool:
+        return len(self.outcomes()) != 0

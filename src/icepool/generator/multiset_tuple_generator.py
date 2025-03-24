@@ -26,8 +26,16 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
     _children = ()
 
     @abstractmethod
-    def _make_source(self) -> 'MultisetSource':
+    def _make_source(self) -> 'MultisetTupleSource[T]':
         """Create a source from this generator."""
+
+    @property
+    def _has_param(self) -> bool:
+        return False
+
+    @property
+    def _static_keepable(self) -> bool:
+        return False
 
     def _prepare(
         self
@@ -39,3 +47,7 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
         sources = (self._make_source(), )
         weight = 1
         yield dungeonlets, questlets, sources, weight
+
+
+class MultisetTupleSource(MultisetSourceBase[T, tuple[int, ...]]):
+    """A source that produces a tuple of `int` counts."""

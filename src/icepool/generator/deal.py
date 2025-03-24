@@ -91,10 +91,8 @@ class Deal(KeepGenerator[T]):
 
 
 class DealSource(MultisetSource[T]):
-    deck: 'icepool.Deck[T]'
-    keep_tuple: tuple[int, ...]
 
-    def __init__(self, deck, keep_tuple):
+    def __init__(self, deck: 'icepool.Deck[T]', keep_tuple: tuple[int, ...]):
         self.deck = deck
         self.keep_tuple = keep_tuple
 
