@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetExpressionPreparation, MultisetQuestlet
+from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetQuestlet
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 from icepool.order import Order, OrderReason
 from icepool.expression.multiset_expression import MultisetExpression
@@ -26,11 +26,13 @@ class MultisetParamBase(Generic[T]):
     def __str__(self) -> str:
         return self._name
 
-    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
+    def _prepare(
+        self
+    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+                        'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlet = MultisetParamDungeonlet(self._index)
         questlet = MultisetParamQuestlet()
-        yield MultisetExpressionPreparation((dungeonlet, ), (), (questlet, ),
-                                            (), 1)
+        yield (dungeonlet, ), (), (questlet, ), (), 1
 
     @property
     def _has_param(self):

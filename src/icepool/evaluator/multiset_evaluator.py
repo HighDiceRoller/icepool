@@ -1,18 +1,23 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetEvaluatorPreparation, MultisetQuest
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_param import MultisetParamBase
 from icepool.order import Order
 
 from abc import abstractmethod
 from functools import cached_property
+import itertools
+import math
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     Mapping, MutableMapping, Sequence, Type, TypeAlias, cast,
                     TYPE_CHECKING, overload)
+
+if TYPE_CHECKING:
+    from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, MultisetDungeonlet, MultisetQuestlet
 
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
@@ -156,14 +161,20 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def _prepare(
         self,
-        param_types: 'Sequence[Type[MultisetParamBase]]',
+        input_exps: tuple[MultisetExpressionBase[T, Any], ...],
         kwargs: Mapping[str, Hashable],
-    ) -> 'Iterator[MultisetEvaluatorPreparation[T, U_co]]':
-        dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
-            self.next_state, self.dungeon_key)
-        quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
-            self.initial_state, self.extra_outcomes, self.final_outcome)
-        yield MultisetEvaluatorPreparation(dungeon, quest, (), 1)
+    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+                        'tuple[MultisetSourceBase[T, Any], ...]', int]]:
+        for t in itertools.product(*(exp._prepare() for exp in input_exps)):
+            dungeonlet_flats, questlet_flats, sources, weights = zip(*t)
+            dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
+                self.next_state, self.dungeon_key, dungeonlet_flats)
+            quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
+                self.initial_state, self.extra_outcomes, self.final_outcome,
+                questlet_flats)
+            sources = tuple(itertools.chain.from_iterable(sources))
+            weight = math.prod(weights)
+            yield dungeon, quest, sources, weight
 
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T]):
@@ -171,10 +182,14 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
     # These are filled in by the constructor.
     next_state = None  # type: ignore
 
-    def __init__(self, next_state: Callable[..., Hashable],
-                 dungeon_key: Callable[[], Hashable] | None):
+    def __init__(
+        self, next_state: Callable[..., Hashable],
+        dungeon_key: Callable[[], Hashable] | None,
+        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
+    ):
         self.next_state = next_state  # type: ignore
         self.dungeon_key = dungeon_key
+        self.dungeonlet_flats = dungeonlet_flats
 
         if dungeon_key is None:
             self.__hash__ = None  # type: ignore
@@ -189,7 +204,7 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
         return False
 
     def __hash__(self):
-        return hash(self.dungeon_key())
+        return hash((self.dungeonlet_flats, self.dungeon_key()))
 
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
@@ -199,7 +214,9 @@ class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
     final_outcome = None  # type: ignore
 
     def __init__(self, initial_state: Callable[..., Hashable],
-                 extra_outcomes: Callable, final_outcome: Callable):
+                 extra_outcomes: Callable, final_outcome: Callable,
+                 questlet_flats: Sequence[Sequence[MultisetQuestlet[T]]]):
         self.initial_state = initial_state  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore
         self.final_outcome = final_outcome  # type: ignore
+        self.questlet_flats = questlet_flats

@@ -24,23 +24,19 @@ if TYPE_CHECKING:
     from icepool.expression.multiset_param import MultisetParamBase
 
 
-class MultisetExpressionPreparation(Generic[T], NamedTuple):
-    dungeonlets: 'tuple[MultisetDungeonlet[T, Any], ...]'
-    broods: 'tuple[tuple[int, ...], ...]'
-    questlets: 'Sequence[MultisetQuestlet[T]]'
-    sources: 'tuple[MultisetSourceBase[T, Any], ...]'
-    weight: int
-
-
 class MultisetExpressionBase(ABC, Generic[T, Q]):
     """Abstract methods are protected so as to not be distracting."""
 
     @abstractmethod
-    def _prepare(self) -> Iterator[MultisetExpressionPreparation[T]]:
+    def _prepare(
+        self
+    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
+                        'Sequence[MultisetQuestlet[T]]',
+                        'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         """Prepare for evaluation.
 
         Yields:
-            A `MultisetExpressionPreparation`.
+            dungeonlet_flat, questlet_flat, sources, weight
         """
 
     @property
@@ -60,10 +56,11 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
 
 
 class MultisetDungeonlet(Generic[T, Q], HasHashKey):
+    child_indexes: tuple[int, ...]
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
-                   child_counts: MutableSequence, free_counts: Iterator,
+                   child_counts: MutableSequence, source_counts: Iterator,
                    param_counts: Sequence) -> tuple[Hashable, Q]:
         """Advances the state of this dungeonlet.
         
@@ -72,7 +69,7 @@ class MultisetDungeonlet(Generic[T, Q], HasHashKey):
             order: The order in which outcomes are seen by this method.
             outcome: The current outcome.
             child_counts: The counts of the child nodes.
-            free_counts: The counts produced by freed sources.
+            source_counts: The counts produced by sources.
                 This is an iterator which will be progressively consumed by
                 free variables.
             param_counts: The counts produced by params.
@@ -94,6 +91,7 @@ class MultisetDungeonlet(Generic[T, Q], HasHashKey):
 
 
 class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
+    child_indexes = ()
 
     def next_state(self, state, order, outcome, child_counts, free_counts,
                    param_counts):

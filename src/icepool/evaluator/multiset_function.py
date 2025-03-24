@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import itertools
 import math
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetEvaluatorPreparation, MultisetQuest
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
 
@@ -156,7 +156,8 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         self,
         param_types: 'Sequence[Type[MultisetParamBase]]',
         kwargs: Mapping[str, Hashable],
-    ) -> 'Iterator[MultisetEvaluatorPreparation[T, U_co]]':
+    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+                        'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         multiset_variables = [
             param_type(i, self._positional_names[i])
             for i, param_type in enumerate(param_types)
