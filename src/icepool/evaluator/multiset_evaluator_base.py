@@ -168,6 +168,9 @@ class MultisetDungeon(Generic[T]):
             self.ascending_cache = {}
             self.descending_cache = {}
 
+        if not all(source.is_resolvable() for source in sources):
+            return icepool.Die([])
+
         pop_order, pop_order_reason = merge_order_preferences(
             (Order.Descending, OrderReason.Default),
             *(source.order_preference() for source in sources))
@@ -291,9 +294,9 @@ class MultisetDungeon(Generic[T]):
             for outcome, source_counts, next_outcomes, next_sources, weight in room.pop(
                     pop_order):
                 next_statelet_flats, counts = self.next_statelet_flats(
-                    room.initial_statelet_flats, -pop_order, outcome,
+                    room.initial_statelet_flats, pop_order, outcome,
                     source_counts)
-                next_state = self.next_state(room.initial_state, -pop_order,
+                next_state = self.next_state(room.initial_state, pop_order,
                                              outcome, *counts)
                 if next_state is not icepool.Reroll:
                     next_room = MultisetRoom(next_outcomes, next_sources,

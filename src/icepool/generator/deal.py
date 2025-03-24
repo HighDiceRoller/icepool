@@ -102,6 +102,10 @@ class DealSource(MultisetSource[T]):
         return self.deck.outcomes()
 
     def pop(self, order: Order, outcome: T):
+        if not self.outcomes():
+            yield self, 0, 1
+            return
+
         if order > 0:
             pop_outcome = self.outcomes()[0]
             popped_deck, deck_count = self.deck._pop_min()
@@ -111,7 +115,7 @@ class DealSource(MultisetSource[T]):
             popped_deck, deck_count = self.deck._pop_max()
             pop_from_keep_tuple = pop_max_from_keep_tuple
 
-        if not self.outcomes() or outcome != pop_outcome:
+        if outcome != pop_outcome:
             yield self, 0, 1
             return
 
@@ -159,3 +163,6 @@ class DealSource(MultisetSource[T]):
 
     def denominator(self) -> int:
         return icepool.math.comb(self.deck.size(), len(self.keep_tuple))
+
+    def is_resolvable(self) -> bool:
+        return len(self.outcomes()) != 0

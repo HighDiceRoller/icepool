@@ -252,6 +252,10 @@ class PoolSource(MultisetSource[T]):
         return self._outcomes
 
     def pop(self, order: Order, outcome: T):
+        if not self._outcomes:
+            yield self, 0, 1
+            return
+
         iter_die_pop: Callable
         if order > 0:
             pop_outcome = self._outcomes[0]
@@ -264,9 +268,6 @@ class PoolSource(MultisetSource[T]):
             pop_from_keep_tuple = pop_max_from_keep_tuple
             next_outcomes = self._outcomes[:-1]
 
-        if not self._outcomes:
-            yield self, 0, 1
-            return
         if outcome != pop_outcome:
             yield self, 0, 1
             return
@@ -323,6 +324,9 @@ class PoolSource(MultisetSource[T]):
 
     def denominator(self) -> int:
         return self._denominator
+
+    def is_resolvable(self) -> bool:
+        return all(len(die) for die, _ in self.dice)
 
     @cached_property
     def _unique_dice(self) -> Collection['icepool.Die[T]']:

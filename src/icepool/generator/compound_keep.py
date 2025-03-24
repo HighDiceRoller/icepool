@@ -70,6 +70,9 @@ class CompoundKeepSource(MultisetSource[T]):
         return merge_order_preferences(*(inner.order_preference()
                                          for inner in self.inner_sources))
 
+    def is_resolvable(self) -> bool:
+        return all(inner.is_resolvable() for inner in self.inner_sources)
+
     @property
     def hash_key(self):
         return CompoundKeepSource, self.inner_sources, self.keep_tuple

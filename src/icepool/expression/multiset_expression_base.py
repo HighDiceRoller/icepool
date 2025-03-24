@@ -133,6 +133,10 @@ class MultisetSourceBase(Generic[T, Q], HasHashKey):
     def order_preference(self) -> tuple[Order, OrderReason]:
         """The preferred order of this source and a reason why the order is preferred."""
 
+    @abstractmethod
+    def is_resolvable(self) -> bool:
+        """Whether this source contains any probability."""
+
     def min_outcome(self) -> T:
         return self.outcomes()[0]
 
