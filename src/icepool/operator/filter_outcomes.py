@@ -59,7 +59,7 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
         return None, count
 
     @property
-    def _dungeonlet_key(self):
+    def _expression_key(self):
         return type(self), self._func, self._invert
 
     def __str__(self) -> str:
@@ -105,7 +105,7 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
         return None, count
 
     @property
-    def _dungeonlet_key(self):
+    def _expression_key(self):
         return type(self), self._invert
 
     def __str__(self) -> str:

@@ -44,7 +44,7 @@ class MultisetBinaryOperator(MultisetOperator[T]):
         return None, count
 
     @property
-    def _dungeonlet_key(self):
+    def _expression_key(self):
         return type(self)
 
     def __str__(self) -> str:

@@ -37,7 +37,7 @@ class MultisetMapCounts(MultisetOperator[T]):
         return None, count
 
     @property
-    def _dungeonlet_key(self):
+    def _expression_key(self):
         return type(self), self._function
 
 
@@ -58,7 +58,7 @@ class MultisetCountOperator(MultisetOperator[T]):
         return None, count
 
     @property
-    def _dungeonlet_key(self):
+    def _expression_key(self):
         return type(self), self._constant
 
 
@@ -134,7 +134,7 @@ class MultisetKeepCounts(MultisetOperator[T]):
         return None, count
 
     @property
-    def _dungeonlet_key(self):
+    def _expression_key(self):
         return type(self), self._comparison, self._constant
 
     def __str__(self) -> str:

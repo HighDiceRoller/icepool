@@ -4,7 +4,7 @@ import icepool
 
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order, OrderReason
+from icepool.order import Order, OrderReason, UnsupportedOrderError
 
 import operator
 from abc import abstractmethod
@@ -18,141 +18,108 @@ from icepool.typing import T
 class MultisetKeep(MultisetOperator[T]):
     """An expression to keep some of the lowest or highest elements of a multiset."""
 
-    _keep_order: Order
-    _keep_tuple: tuple[int, ...]
-    """The left side is always the end regardless of order."""
-    _drop: int | None
-    """If set, this is a slice [a:] or [:-b], and _keep_tuple is unused."""
-
-    # May return child unmodified.
-    def __new__(  # type: ignore
-            cls, child: MultisetExpression[T], /, *, index: slice
-        | Sequence[int | EllipsisType]) -> MultisetExpression[T]:
-        self = super(MultisetKeep, cls).__new__(cls)
+    def __init__(  # type: ignore
+        self, child: MultisetExpression[T], /, *,
+        index: 'slice | Sequence[int | EllipsisType]'
+    ) -> MultisetExpression[T]:
         self._children = (child, )
-        if isinstance(index, slice):
-            if index.step is not None:
+        self._index = index
+
+    def _initial_state(self, order, outcomes) -> tuple[tuple[int, ...], bool]:
+        """
+        
+        Returns:
+            * A keep_tuple that pops from the left regardless of order.
+            * Whether items are kept after running out of the keep_tuple
+        """
+        if isinstance(self._index, slice):
+            if self._index.step is not None:
                 raise ValueError('step is not supported.')
-            start, stop = index.start, index.stop
+            start, stop = self._index.start, self._index.stop
             if start is None:
                 if stop is None:
-                    # [:] returns child as-is.
-                    return child
+                    return (), True
                 else:
                     if stop >= 0:
                         # [:+b] keeps from the bottom.
-                        self._keep_order = Order.Ascending
-                        self._keep_tuple = (1, ) * stop
-                        self._drop = None
+                        if order != Order.Ascending:
+                            raise UnsupportedOrderError()
+                        return (1, ) * stop, False
                     else:
                         # [:-b] drops from the top.
-                        self._keep_order = Order.Descending
-                        self._keep_tuple = ()
-                        self._drop = -stop
+                        if order != Order.Descending:
+                            raise UnsupportedOrderError()
+                        return (0, ) * -stop, True
             else:
                 # start is not None.
                 if stop is None:
                     if start < 0:
                         # [-a:] keeps from the top.
-                        self._keep_order = Order.Descending
-                        self._keep_tuple = (1, ) * -start
-                        self._drop = None
+                        if order != Order.Descending:
+                            raise UnsupportedOrderError()
+                        return (1, ) * -start, False
                     else:
                         # [a:] drops from the bottom.
-                        self._keep_order = Order.Ascending
-                        self._keep_tuple = ()
-                        self._drop = start
+                        if order != Order.Ascending:
+                            raise UnsupportedOrderError()
+                        return (0, ) * start, True
                 else:
                     # Both are provided.
                     if start >= 0 and stop >= 0:
                         # [a:b]
-                        self._keep_order = Order.Ascending
-                        self._keep_tuple = (0, ) * start + (1, ) * (stop -
-                                                                    start)
-                        self._drop = None
+                        if order != Order.Ascending:
+                            raise UnsupportedOrderError()
+                        return (0, ) * start + (1, ) * (stop - start), False
                     elif start < 0 and stop < 0:
                         # [-a:-b]
-                        self._keep_order = Order.Descending
-                        self._keep_tuple = (0, ) * -stop + (1, ) * (stop -
-                                                                    start)
-                        self._drop = None
+                        if order != Order.Descending:
+                            raise UnsupportedOrderError()
+                        return (0, ) * -stop + (1, ) * (stop - start), False
                     else:
                         raise ValueError(
                             'If both start and stop are provided, they must be both negative or both non-negative.'
                         )
-        elif isinstance(index, Sequence):
-            if index[0] == ...:
-                self._keep_order = Order.Descending
+        elif isinstance(self._index, Sequence):
+            if self._index[0] == ...:
+                if order != Order.Descending:
+                    raise UnsupportedOrderError()
                 # Type verified below.
-                self._keep_tuple = tuple(reversed(index[1:]))  # type: ignore
-                self._drop = None
-            elif index[-1] == ...:
-                self._keep_order = Order.Ascending
+                result = tuple(reversed(self._index[1:]))
+            elif self._index[-1] == ...:
+                if order != Order.Ascending:
+                    raise UnsupportedOrderError()
                 # Type verified below.
-                self._keep_tuple = tuple(index[:-1])  # type: ignore
-                self._drop = None
+                result = tuple(self._index[:-1])
             else:
                 raise ValueError(
                     'If a sequence is provided, either the first or last element (but not both) must be an Ellipsis (...)'
                 )
-            if ... in self._keep_tuple:
+            if ... in result:
                 raise ValueError(
                     'If a sequence is provided, either the first or last element (but not both) must be an Ellipsis (...)'
                 )
+            return result, False  # type: ignore
         else:
-            raise TypeError(f'Invalid type {type(index)} for index.')
-        return self
+            raise TypeError(f'Invalid type {type(self._index)} for index.')
 
-    @classmethod
-    def _new_raw(cls, child: MultisetExpression[T], /, *, keep_order: Order,
-                 keep_tuple: tuple[int, ...], drop: int | None):
-        self = super(MultisetKeep, cls).__new__(cls)
-        self._children = (child, )
-        self._keep_order = keep_order
-        self._keep_tuple = keep_tuple
-        self._drop = drop
-        return self
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
+                    param_counts):
+        keep_tuple, keep_overrun = state
+        child_count = max(child_counts[0], 0)
+        count = sum(keep_tuple[:child_count])
+        if keep_overrun:
+            count += max(child_count - len(keep_tuple), 0)
+        keep_tuple = keep_tuple[child_count:]
+        return (keep_tuple, keep_overrun), count
 
-    def _copy(self, new_children: 'tuple[MultisetExpression[T], ...]'):
-        return MultisetKeep._new_raw(new_children[0],
-                                     keep_order=self._keep_order,
-                                     keep_tuple=self._keep_tuple,
-                                     drop=self._drop)
+    @property
+    def _expression_key(self):
+        return MultisetKeep, self._index
 
-    def _transform_next(self,
-                        new_children: 'tuple[MultisetExpression[T], ...]',
-                        outcome: T, counts: 'tuple[int, ...]'):
-        child_count = max(counts[0], 0)
-
-        if self._drop is None:
-            # Use keep_tuple.
-            count = sum(self._keep_tuple[:child_count])
-            next_keep_tuple = self._keep_tuple[child_count:]
-            return MultisetKeep._new_raw(new_children[0],
-                                         keep_order=self._keep_order,
-                                         keep_tuple=next_keep_tuple,
-                                         drop=None), count
-        else:
-            # Use drop.
-            dropped = min(self._drop, child_count)
-            count = child_count - dropped
-            next_drop = self._drop - dropped
-            return MultisetKeep._new_raw(new_children[0],
-                                         keep_order=self._keep_order,
-                                         keep_tuple=(),
-                                         drop=next_drop), count
+    @property
+    def _dungeonlet_key(self):
+        return MultisetKeep
 
     def __str__(self) -> str:
         child = self._children[0]
-        if self._drop:
-            if self._keep_order == Order.Ascending:
-                return f'{child}[{self._drop}:]'
-            else:
-                return f'{child}[:-{self._drop}]'
-        else:
-            index_string = ', '.join(str(x) for x in self._keep_tuple)
-            if self._keep_order == Order.Ascending:
-                index_string = index_string + ', ...'
-            else:
-                index_string = '..., ' + index_string
-            return f'{child}[{index_string}]'
+        return f'{child}[{self._index}]'

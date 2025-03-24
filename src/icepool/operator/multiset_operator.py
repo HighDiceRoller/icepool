@@ -43,26 +43,22 @@ class MultisetOperator(MultisetExpression[T]):
 
     @property
     @abstractmethod
+    def _expression_key(self) -> Hashable:
+        """Used to identify this expression node."""
+
+    @property
     def _dungeonlet_key(self) -> Hashable:
-        """Used to identify dungeonlets."""
+        """Used to identify dungeonlets.
 
-    @property
-    def hash_key(self):
-        return self._dungeonlet_key, tuple(child.hash_key
-                                           for child in self._children)
+        This can exclude parts of _expression_key that don't affect next_state
+        directly.
+        
+        Defaults to _expression_key.
+        """
+        return self._expression_key
 
-    @property
-    def _static_keepable(self) -> bool:
-        return False
-
-    @property
-    def _has_param(self) -> bool:
-        return any(child._has_param for child in self._children)
-
-    def _initial_state(self, order: Order, outcomes: Sequence[T], /,
-                       **kwargs) -> Hashable:
+    def _initial_state(self, order: Order, outcomes: Sequence[T]) -> Hashable:
         """Optional: the initial state of this node.
-        TODO: Should this get cardinalities?
 
         Args:
             order: The order in which `next_state` will see outcomes.
@@ -73,6 +69,19 @@ class MultisetOperator(MultisetExpression[T]):
             UnsupportedOrderError if the given order is not supported.
         """
         return None
+
+    @property
+    def hash_key(self):
+        return self._expression_key, tuple(child.hash_key
+                                           for child in self._children)
+
+    @property
+    def _static_keepable(self) -> bool:
+        return False
+
+    @property
+    def _has_param(self) -> bool:
+        return any(child._has_param for child in self._children)
 
     def _prepare(
         self
