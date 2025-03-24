@@ -31,7 +31,7 @@ class MultisetExpressionBase(Generic[T, Q], HasHashKey):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'Sequence[MultisetQuestlet[T]]',
+                        'tuple[MultisetQuestlet[T], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         """Prepare for evaluation.
 

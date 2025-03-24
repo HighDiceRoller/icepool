@@ -86,13 +86,13 @@ class MultisetOperator(MultisetExpression[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'Sequence[MultisetQuestlet[T]]',
+                        'tuple[MultisetQuestlet[T], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
 
             dungeonlets: MutableSequence[MultisetDungeonlet[T, Any]] = []
-            questlets: MutableSequence[MultisetQuestlet[T]] = []
+            questlets: Mutabletuple[MultisetQuestlet[T], ...] = []
             sources: MutableSequence[MultisetSourceBase[T, Any]] = []
             weight = 1
             positions: MutableSequence[int] = []

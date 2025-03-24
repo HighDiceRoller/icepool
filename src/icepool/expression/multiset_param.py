@@ -30,7 +30,7 @@ class MultisetParamBase(Generic[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'Sequence[MultisetQuestlet[T]]',
+                        'tuple[MultisetQuestlet[T], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlet = MultisetParamDungeonlet[T](self._index)
         questlet = MultisetParamQuestlet[T]()
@@ -40,16 +40,24 @@ class MultisetParamBase(Generic[T]):
     def _has_param(self):
         return True
 
+    @property
+    def _static_keepable(self):
+        return False
 
-class MultisetParam(MultisetExpression[T], MultisetParamBase[T]):
+    def hash_key(self):
+        return type(self), self._index
+
+
+class MultisetParam(MultisetParamBase[T], MultisetExpression[T]):
     """A multiset param with a count of a single `int`."""
 
 
-class MultisetTupleParam(MultisetTupleExpression[T], MultisetParamBase[T]):
+class MultisetTupleParam(MultisetParamBase[T], MultisetTupleExpression[T]):
     """A multiset param with a count of a tuple of `int`s."""
 
 
 class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
+    child_indexes = ()
 
     def __init__(self, index: int):
         self.index = index

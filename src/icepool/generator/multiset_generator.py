@@ -57,7 +57,7 @@ class MultisetGenerator(MultisetExpression[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'Sequence[MultisetQuestlet[T]]',
+                        'tuple[MultisetQuestlet[T], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlets = (MultisetFreeVariable[T, int](), )
         questlets = (MultisetQuestlet[T](), )

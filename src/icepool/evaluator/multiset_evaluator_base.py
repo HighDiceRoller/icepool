@@ -380,7 +380,7 @@ class MultisetRoom(Generic[T], NamedTuple):
 
 
 class MultisetQuest(Generic[T, U_co]):
-    questlet_flats: 'Sequence[Sequence[MultisetQuestlet[T]]]'
+    questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]'
 
     @abstractmethod
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
