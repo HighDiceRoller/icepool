@@ -56,7 +56,7 @@ class KeepGenerator(MultisetGenerator[T]):
         return any(x < 0 for x in self._keep_tuple)
 
     @property
-    def _can_keep(self) -> bool:
+    def _static_keepable(self) -> bool:
         return True
 
     @overload

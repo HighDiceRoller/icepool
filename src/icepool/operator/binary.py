@@ -38,7 +38,7 @@ class MultisetBinaryOperator(MultisetOperator[T]):
     def symbol() -> str:
         """A symbol representing this operation."""
 
-    def _next_state(self, state, order, outcome, child_counts, free_counts,
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
                     param_counts):
         count = reduce(self.merge_counts, child_counts)
         return None, count

@@ -49,8 +49,8 @@ class MultisetMixture(MultisetExpression[T]):
     # Forwarding if inners are all KeepGenerators.
 
     @property
-    def _can_keep(self) -> bool:
-        return all(inner._can_keep for inner in self._inner_expressions)
+    def _static_keepable(self) -> bool:
+        return all(inner._static_keepable for inner in self._inner_expressions)
 
     def _unary_operation(self, op: Callable) -> 'MultisetMixture[T]':
         data: MutableMapping = defaultdict(int)
@@ -71,7 +71,7 @@ class MultisetMixture(MultisetExpression[T]):
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
     ) -> 'MultisetExpression[T] | icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
-        if self._can_keep:
+        if self._static_keepable:
             result = self._unary_operation(lambda inner: inner.keep(index))
             if isinstance(index, int):
                 return icepool.evaluator.keep_evaluator.evaluate(result,
@@ -82,7 +82,7 @@ class MultisetMixture(MultisetExpression[T]):
             return super().keep(index)
 
     def multiply_counts(self, constant: int, /) -> 'MultisetExpression[T]':
-        if self._can_keep:
+        if self._static_keepable:
             return self._unary_operation(
                 lambda inner: inner.multiply_counts(constant))
         else:

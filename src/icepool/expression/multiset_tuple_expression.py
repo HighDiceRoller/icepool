@@ -35,8 +35,6 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
 class MultisetTupleSubscript(MultisetExpression[T]):
     _children: 'tuple[MultisetTupleExpression[T]]'
 
-    _can_keep = False
-
     def __init__(self, child: MultisetTupleExpression, /, *, index: int):
         self._index = index
         self._children = (child, )

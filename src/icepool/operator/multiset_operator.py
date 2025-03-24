@@ -20,7 +20,7 @@ class MultisetOperator(MultisetExpression[T]):
 
     @abstractmethod
     def _next_state(self, state: Hashable, order: Order, outcome: T,
-                    child_counts: MutableSequence, free_counts: Iterator,
+                    child_counts: MutableSequence, source_counts: Iterator,
                     param_counts: Sequence) -> tuple[Hashable, int]:
         """Advances the state of the dungeonlet.
         
@@ -29,7 +29,7 @@ class MultisetOperator(MultisetExpression[T]):
             order: The order in which outcomes are seen by this method.
             outcome: The current outcome.
             child_counts: The counts of the child nodes.
-            free_counts: The counts produced by freed sources.
+            source_counts: The counts produced by freed sources.
                 This is an iterator which will be progressively consumed by
                 free variables.
             param_counts: The counts produced by params.
@@ -45,6 +45,14 @@ class MultisetOperator(MultisetExpression[T]):
     @abstractmethod
     def _dungeonlet_key(self) -> Hashable:
         """Used to identify dungeonlets."""
+
+    @property
+    def _static_keepable(self) -> bool:
+        return False
+
+    @property
+    def _has_param(self) -> bool:
+        return any(child._has_param for child in self._children)
 
     def _initial_state(self, order: Order, outcomes: Sequence[T], /,
                        **kwargs) -> Hashable:

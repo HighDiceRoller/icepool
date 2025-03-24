@@ -3,10 +3,12 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
+from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetQuest
+from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
-from icepool.typing import Outcome, Q, T
+from icepool.generator.multiset_generator import MultisetSource
+from icepool.typing import Outcome, Q, T, U_co
 
 from abc import ABC, abstractmethod
 from functools import cached_property
@@ -23,12 +25,17 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
 
     _children = ()
 
+    @abstractmethod
+    def _make_source(self) -> 'MultisetSource':
+        """Create a source from this generator."""
+
     def _prepare(
         self
-    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
+                        'Sequence[MultisetQuestlet[T]]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
-        dungeonlets = (MultisetFreeVariable(), )
-        questlets = (MultisetQuestlet(), )
-        sources = (self, )  # inherit from MultisetSource?
+        dungeonlets = (MultisetFreeVariable[T, tuple[int, ...]](), )
+        questlets = (MultisetQuestlet[T](), )
+        sources = (self._make_source(), )
         weight = 1
         yield dungeonlets, questlets, sources, weight

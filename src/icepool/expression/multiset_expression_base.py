@@ -51,8 +51,8 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
 
     @property
     @abstractmethod
-    def _can_keep(self) -> bool:
-        """Whether this expression supports enhanced keep operations."""
+    def _static_keepable(self) -> bool:
+        """Whether this expression supports keep operations via static analysis."""
 
 
 class MultisetDungeonlet(Generic[T, Q], HasHashKey):
@@ -93,9 +93,13 @@ class MultisetDungeonlet(Generic[T, Q], HasHashKey):
 class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
     child_indexes = ()
 
-    def next_state(self, state, order, outcome, child_counts, free_counts,
+    def next_state(self, state, order, outcome, child_counts, source_counts,
                    param_counts):
-        return None, next(free_counts)
+        return None, next(source_counts)
+
+    @property
+    def hash_key(self):
+        return MultisetFreeVariable
 
 
 class MultisetSourceBase(Generic[T, Q], HasHashKey):

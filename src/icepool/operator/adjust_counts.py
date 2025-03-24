@@ -31,7 +31,7 @@ class MultisetMapCounts(MultisetOperator[T]):
         self._children = children
         self._function = function
 
-    def _next_state(self, state, order, outcome, child_counts, free_counts,
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
                     param_counts):
         count = self._function(outcome, *child_counts)
         return None, count
@@ -52,7 +52,7 @@ class MultisetCountOperator(MultisetOperator[T]):
     def operator(self, count: int) -> int:
         """Operation to apply to the counts."""
 
-    def _next_state(self, state, order, outcome, child_counts, free_counts,
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
                     param_counts):
         count = self.operator(child_counts[0])
         return None, count
@@ -125,7 +125,7 @@ class MultisetKeepCounts(MultisetOperator[T]):
         self._comparison = comparison
         self._op = operators[comparison]
 
-    def _next_state(self, state, order, outcome, child_counts, free_counts,
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
                     param_counts):
         if self._op(child_counts[0], self._constant):
             count = child_counts[0]
