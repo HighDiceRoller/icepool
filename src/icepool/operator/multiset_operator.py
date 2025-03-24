@@ -47,6 +47,11 @@ class MultisetOperator(MultisetExpression[T]):
         """Used to identify dungeonlets."""
 
     @property
+    def hash_key(self):
+        return self._dungeonlet_key, tuple(child.hash_key
+                                           for child in self._children)
+
+    @property
     def _static_keepable(self) -> bool:
         return False
 

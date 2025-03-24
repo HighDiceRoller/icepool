@@ -72,9 +72,6 @@ class MultisetSortMatch(MultisetOperator[T]):
                                  right_first=self._right_first,
                                  left_lead=next_left_lead), count
 
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return self._order, OrderReason.Mandatory
-
 
 class MultisetMaximumMatch(MultisetOperator[T]):
 
@@ -120,6 +117,3 @@ class MultisetMaximumMatch(MultisetOperator[T]):
                                     match_equal=self._match_equal,
                                     keep=self._keep,
                                     prev_matchable=next_prev_matchable), count
-
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return self._order, OrderReason.Mandatory

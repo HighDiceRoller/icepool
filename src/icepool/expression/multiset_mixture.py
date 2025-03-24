@@ -88,6 +88,10 @@ class MultisetMixture(MultisetExpression[T]):
         else:
             return super().multiply_counts(constant)
 
+    @property
+    def hash_key(self):
+        return MultisetMixture, tuple(self._inner_expressions.items())
+
     def __str__(self) -> str:
         return 'MultisetMixture({\n' + ',\n'.join(
             f'{k}: {v}' for k, v in self._inner_expressions.items()) + '})'

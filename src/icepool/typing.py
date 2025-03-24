@@ -50,7 +50,7 @@ class Outcome(Hashable, Protocol[T_contra]):
         ...
 
 
-class HasHashKey(ABC, Hashable):
+class HasHashKey(ABC):
 
     @property
     @abstractmethod

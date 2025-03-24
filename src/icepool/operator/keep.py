@@ -142,9 +142,6 @@ class MultisetKeep(MultisetOperator[T]):
                                          keep_tuple=(),
                                          drop=next_drop), count
 
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return self._keep_order, OrderReason.Mandatory
-
     def __str__(self) -> str:
         child = self._children[0]
         if self._drop:

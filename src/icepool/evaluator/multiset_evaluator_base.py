@@ -31,7 +31,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     @abstractmethod
     def _prepare(
         self,
-        input_exps: tuple[MultisetExpressionBase[T, Any], ...],
+        input_exps: 'tuple[MultisetExpressionBase[T, Any], ...]',
         kwargs: Mapping[str, Hashable],
     ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
@@ -110,18 +110,18 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 class MultisetDungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
-    dungeonlet_flats: tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]
+    dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
     """Dungeonlets resulting from the arguments to the evaluation.
     
     This should be part of the dungeon's hash (if the dungeon implements hashing).
     """
 
-    ascending_cache: MutableMapping[Any, Mapping[Hashable, int]]
+    ascending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
     """Maps (room, initial_statelets, initial_state) -> (final_statelets, final_state) -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
-    descending_cache: MutableMapping[Any, Mapping[Hashable, int]]
+    descending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
     """Maps (room, initial_statelets, initial_state) -> (final_statelets, final_state) -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
@@ -338,7 +338,7 @@ class MultisetDungeon(Generic[T]):
 
 class MultisetRoom(Generic[T], NamedTuple):
     outcomes: tuple[T, ...]
-    sources: tuple[MultisetSourceBase[T, Any], ...]
+    sources: 'tuple[MultisetSourceBase[T, Any], ...]'
     initial_statelet_flats: tuple[tuple[Hashable, ...], ...]
     initial_state: Hashable
 
@@ -377,7 +377,7 @@ class MultisetRoom(Generic[T], NamedTuple):
 
 
 class MultisetQuest(Generic[T, U_co]):
-    questlet_flats: Sequence[Sequence[MultisetQuestlet[T]]]
+    questlet_flats: 'Sequence[Sequence[MultisetQuestlet[T]]]'
 
     @abstractmethod
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:

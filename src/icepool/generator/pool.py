@@ -195,6 +195,10 @@ class Pool(KeepGenerator[T]):
                 return Pool._new_from_mapping(dice, outcomes, keep_tuple)
         return KeepGenerator.additive_union(*args)
 
+    @property
+    def hash_key(self):
+        return Pool, self._dice, self._keep_tuple
+
     def __str__(self) -> str:
         return (
             f'Pool of {self.raw_size()} dice with keep_tuple={self.keep_tuple()}\n'

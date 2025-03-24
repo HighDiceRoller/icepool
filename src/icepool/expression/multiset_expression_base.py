@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from icepool.expression.multiset_param import MultisetParamBase
 
 
-class MultisetExpressionBase(ABC, Generic[T, Q]):
+class MultisetExpressionBase(Generic[T, Q], HasHashKey):
     """Abstract methods are protected so as to not be distracting."""
 
     @abstractmethod
@@ -46,7 +46,7 @@ class MultisetExpressionBase(ABC, Generic[T, Q]):
 
     @property
     @abstractmethod
-    def _param_type(self) -> Type[MultisetParamBase]:
+    def _param_type(self) -> 'Type[MultisetParamBase]':
         """The type of param corresponding to the output of this expression."""
 
     @property

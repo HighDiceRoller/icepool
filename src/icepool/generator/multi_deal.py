@@ -136,9 +136,6 @@ class MultiDeal(MultisetTupleGenerator[T]):
 
         yield from self._generate_common(popped_deck, deck_count)
 
-    def local_order_preference(self) -> tuple[Order, OrderReason]:
-        return Order.Any, OrderReason.NoPreference
-
     def __repr__(self) -> str:
         return type(
             self

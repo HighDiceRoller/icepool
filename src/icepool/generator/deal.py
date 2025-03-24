@@ -75,6 +75,9 @@ class Deal(KeepGenerator[T]):
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self.hand_size())
 
+    def hash_key(self):
+        return Deal, self._deck, self._keep_tuple
+
     def __repr__(self) -> str:
         return type(
             self

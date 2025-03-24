@@ -29,6 +29,10 @@ class CompoundKeepGenerator(KeepGenerator[T]):
                                                 ...]) -> 'KeepGenerator[T]':
         return CompoundKeepGenerator(self._inner_generators, keep_tuple)
 
+    @property
+    def hash_key(self):
+        return CompoundKeepGenerator, self._inner_generators, self._keep_tuple
+
     def __str__(self) -> str:
         return ('CompoundKeep([' +
                 ', '.join(str(inner) for inner in self._inner_generators) +
@@ -66,5 +70,6 @@ class CompoundKeepSource(MultisetSource[T]):
         return merge_order_preferences(*(inner.order_preference()
                                          for inner in self.inner_sources))
 
+    @property
     def hash_key(self):
         return CompoundKeepSource, self.inner_sources, self.keep_tuple

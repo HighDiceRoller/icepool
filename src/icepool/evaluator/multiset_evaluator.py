@@ -215,7 +215,7 @@ class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
 
     def __init__(self, initial_state: Callable[..., Hashable],
                  extra_outcomes: Callable, final_outcome: Callable,
-                 questlet_flats: Sequence[Sequence[MultisetQuestlet[T]]]):
+                 questlet_flats: 'Sequence[Sequence[MultisetQuestlet[T]]]'):
         self.initial_state = initial_state  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore
         self.final_outcome = final_outcome  # type: ignore

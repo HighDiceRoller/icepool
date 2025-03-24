@@ -1484,6 +1484,8 @@ class Die(Population[T_co], HasHashKey):
         """
         return Die, tuple(self.items())
 
+    __hash__ = HasHashKey.__hash__
+
     def equals(self, other, *, simplify: bool = False) -> bool:
         """`True` iff both dice have the same outcomes and quantities.
 

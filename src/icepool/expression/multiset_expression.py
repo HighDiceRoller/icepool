@@ -13,7 +13,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, ImplicitConversionError
+from icepool.typing import Q, T, U, HasHashKey, ImplicitConversionError
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Iterator,
                     Literal, Mapping, Sequence, Type, cast, overload)
@@ -1117,7 +1117,13 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
             /) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
         try:
-            return self._compare(other, icepool.evaluator.IsEqualSetEvaluator)
+
+            def truth_value_callback() -> bool:
+                return self.equals(other)
+
+            return self._compare(other,
+                                 icepool.evaluator.IsEqualSetEvaluator,
+                                 truth_value_callback=truth_value_callback)
         except TypeError:
             return NotImplemented
 
@@ -1126,8 +1132,13 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
             /) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
         try:
+
+            def truth_value_callback() -> bool:
+                return not self.equals(other)
+
             return self._compare(other,
-                                 icepool.evaluator.IsNotEqualSetEvaluator)
+                                 icepool.evaluator.IsNotEqualSetEvaluator,
+                                 truth_value_callback=truth_value_callback)
         except TypeError:
             return NotImplemented
 
@@ -1143,6 +1154,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Negative incoming counts are treated as zero counts.
         """
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
+
+    # We need to reiterate this since we override __eq__.
+    __hash__ = HasHashKey.__hash__
 
 
 class MultisetExpressionDungeonlet(MultisetDungeonlet[T, int]):

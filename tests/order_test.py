@@ -57,59 +57,59 @@ def test_order_conflict_override():
 
 def test_pool_single_type():
     pool = icepool.Pool([d6, d6, d6])
-    assert pool.local_order_preference() == (Order.Any,
-                                             OrderReason.NoPreference)
+    assert pool._make_source().order_preference() == (Order.Any,
+                                                      OrderReason.NoPreference)
 
 
 def test_pool_standard():
     pool = icepool.Pool([d8, d12, d6])
-    assert pool.local_order_preference() == (Order.Descending,
-                                             OrderReason.PoolComposition)
+    assert pool._make_source().order_preference() == (
+        Order.Descending, OrderReason.PoolComposition)
 
 
 def test_pool_standard_negative():
     pool = icepool.Pool([-d8, -d12, -d6])
-    assert pool.local_order_preference() == (Order.Ascending,
-                                             OrderReason.PoolComposition)
+    assert pool._make_source().order_preference() == (
+        Order.Ascending, OrderReason.PoolComposition)
 
 
 def test_pool_non_truncate():
     pool = icepool.Pool([-d8, d12, -d6])
-    assert pool.local_order_preference() == (Order.Any,
-                                             OrderReason.NoPreference)
+    assert pool._make_source().order_preference() == (Order.Any,
+                                                      OrderReason.NoPreference)
 
 
 def test_pool_skip_min():
     pool = icepool.Pool([d6, d6, d6])[0, 1, 1]
-    assert pool.local_order_preference() == (Order.Descending,
-                                             OrderReason.KeepSkip)
+    assert pool._make_source().order_preference() == (Order.Descending,
+                                                      OrderReason.KeepSkip)
 
 
 def test_pool_skip_max():
     pool = icepool.Pool([d6, d6, d6])[1, 1, 0]
-    assert pool.local_order_preference() == (Order.Ascending,
-                                             OrderReason.KeepSkip)
+    assert pool._make_source().order_preference() == (Order.Ascending,
+                                                      OrderReason.KeepSkip)
 
 
 def test_pool_skip_min_but_truncate():
     pool = icepool.Pool([-d6, -d6, -d8])[0, 1, 1]
-    assert pool.local_order_preference() == (Order.Ascending,
-                                             OrderReason.PoolComposition)
+    assert pool._make_source().order_preference() == (
+        Order.Ascending, OrderReason.PoolComposition)
 
 
 def test_pool_skip_max_but_truncate():
     pool = icepool.Pool([d6, d6, d8])[1, 1, 0]
-    assert pool.local_order_preference() == (Order.Descending,
-                                             OrderReason.PoolComposition)
+    assert pool._make_source().order_preference() == (
+        Order.Descending, OrderReason.PoolComposition)
 
 
 def test_deck_skip_min():
     deck = icepool.Deck(range(10)).deal(4)[..., 1, 1]
-    assert deck.local_order_preference() == (Order.Descending,
-                                             OrderReason.KeepSkip)
+    assert deck._make_source().order_preference() == (Order.Descending,
+                                                      OrderReason.KeepSkip)
 
 
 def test_deck_skip_max():
     deck = icepool.Deck(range(10)).deal(4)[1, 1, ...]
-    assert deck.local_order_preference() == (Order.Ascending,
-                                             OrderReason.KeepSkip)
+    assert deck._make_source().order_preference() == (Order.Ascending,
+                                                      OrderReason.KeepSkip)
