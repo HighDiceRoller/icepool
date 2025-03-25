@@ -223,8 +223,11 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
             next_flats.append(tuple(next_statelets))
             param_counts.append(countlets[-1])
 
-        return tuple(next_flats), self.next_state_main(state_main, order,
-                                                       outcome, *param_counts)
+        next_state_main = self.next_state_main(state_main, order, outcome,
+                                               *param_counts)
+        if next_state_main is icepool.Reroll:
+            return icepool.Reroll
+        return tuple(next_flats), next_state_main
 
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
