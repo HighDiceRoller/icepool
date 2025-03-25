@@ -123,7 +123,8 @@ class MultisetDungeon(Generic[T]):
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
-                   source_counts: Sequence) -> Hashable:
+                   source_counts: Iterator,
+                   param_counts: Sequence) -> Hashable:
         """State transition function.
         
         Args:
@@ -229,7 +230,7 @@ class MultisetDungeon(Generic[T]):
 
                 for prev_state, prev_weight in prev.items():
                     state = self.next_state(prev_state, -pop_order, outcome,
-                                            source_counts)
+                                            iter(source_counts), ())
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * weight
 
@@ -269,7 +270,7 @@ class MultisetDungeon(Generic[T]):
             for outcome, source_counts, next_outcomes, next_sources, weight in room.pop(
                     pop_order):
                 next_state = self.next_state(room.initial_state, pop_order,
-                                             outcome, source_counts)
+                                             outcome, iter(source_counts), ())
                 if next_state is not icepool.Reroll:
                     next_room = MultisetRoom(next_outcomes, next_sources,
                                              next_state)
@@ -281,6 +282,33 @@ class MultisetDungeon(Generic[T]):
 
         cache[room] = result
         return result
+
+    @staticmethod
+    def next_statelet_flats_and_counts(
+        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]',
+        statelet_flats: 'tuple[tuple[Hashable, ...]]', order: Order,
+        outcome: T, source_counts: Iterator, param_counts: Sequence
+    ) -> 'tuple[tuple[tuple[Hashable, ...], ...], tuple]':
+        """Helper function to advance dungeonlet_flats.
+        
+        Returns:
+            next_statelet_flats, output_counts
+        """
+        next_flats = []
+        output_counts: MutableSequence = []
+        for dungeonlets, statelets in zip(dungeonlet_flats, statelet_flats):
+            next_statelets = []
+            countlets: MutableSequence = []
+            for dungeonlet, statelet in zip(dungeonlets, statelets):
+                child_counts = [countlets[i] for i in dungeonlet.child_indexes]
+                next_statelet, countlet = dungeonlet.next_state(
+                    statelet, order, outcome, child_counts, source_counts,
+                    param_counts)
+                next_statelets.append(next_statelet)
+                countlets.append(countlet)
+            next_flats.append(tuple(next_statelets))
+            output_counts.append(countlets[-1])
+        return tuple(next_flats), tuple(output_counts)
 
 
 class MultisetRoom(Generic[T], NamedTuple):

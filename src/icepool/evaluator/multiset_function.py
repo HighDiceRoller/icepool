@@ -107,14 +107,14 @@ def multiset_function(wrapped: Callable[
 class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
     """A result of running an evaluator with `@multiset_function` parameters."""
     evaluator: MultisetEvaluatorBase[T, U_co]
-    inner_exps: tuple[MultisetExpressionBase[T, Any], ...]
+    body_exps: tuple[MultisetExpressionBase[T, Any], ...]
     inner_kwargs: Mapping[str, Hashable]
 
     def prepare_inner(
         self
     ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
-        yield from self.evaluator._prepare(self.inner_exps, self.inner_kwargs)
+        yield from self.evaluator._prepare(self.body_exps, self.inner_kwargs)
 
 
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
@@ -179,21 +179,26 @@ class MultisetFunctionDungeon(MultisetDungeon[T]):
 
     def __init__(
         self,
-        outer_dungeonlet_flats:
-        'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]',
+        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]',
         inner_dungeon: MultisetDungeon[T],
     ):
-        self.dungeonlet_flats = outer_dungeonlet_flats + inner_dungeon.dungeonlet_flats
+        self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeon = inner_dungeon
 
-    # does next_statelet_flats also need to be overriden?
-    def next_state(self, state, order, outcome, /, *param_counts):
-        inner_statelet_flats, inner_state = state
-        inner_statelet_flats = self.inner_dungeon.next_statelet_flats(
-            inner_statelet_flats, order, outcome, source_counts)
-        inner_state = self.inner_dungeon.next_state(state, order, outcome,
-                                                    *counts)
-        return inner_statelet_flats, inner_state
+    def next_state(self, state, order: Order, outcome: T,
+                   source_counts: Iterator,
+                   param_counts: Sequence) -> Hashable:
+        statelet_flats, inner_state = state
+
+        next_statelet_flats, param_counts = self.next_statelet_flats_and_counts(
+            self.dungeonlet_flats, statelet_flats, order, outcome,
+            source_counts, param_counts)
+
+        next_state_main = self.inner_dungeon.next_state(
+            inner_state, order, outcome, source_counts, param_counts)
+        if next_state_main is icepool.Reroll:
+            return icepool.Reroll
+        return tuple(next_statelet_flats), next_state_main
 
     # TODO: __hash__?
 
@@ -202,28 +207,32 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
 
     def __init__(
         self,
-        outer_questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]',
+        questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]',
         inner_quest: MultisetQuest[T, U_co],
         inner_kwargs: Mapping[str, Hashable],
     ):
-        self.questlet_flats = outer_questlet_flats + inner_quest.questlet_flats
+        self.questlet_flats = questlet_flats + inner_quest.questlet_flats
         self.inner_quest = inner_quest
         self.inner_kwargs = inner_kwargs
 
     def extra_outcomes(self, outcomes):
         return self.inner_quest.extra_outcomes(outcomes)
 
-    def initial_state(self, order, outcomes, /, **kwargs):
-        inner_statelet_flats = self.inner_quest.initial_statelet_flats(
-            order, outcomes)
+    def initial_state(self, order, outcomes, kwargs):
+        # The kwargs have already been bound to inner_kwargs.
+        statelet_flats = tuple(
+            tuple(
+                questlet.initial_state(order, outcomes) for questlet in flat)
+            for flat in self.questlet_flats)
         inner_state = self.inner_quest.initial_state(order, outcomes,
-                                                     **self.inner_kwargs)
-        return inner_statelet_flats, inner_state
+                                                     self.inner_kwargs)
+        return statelet_flats, inner_state
 
-    def final_outcome(self, final_state, order, outcomes, **kwargs):
-        inner_statelet_flats, inner_state = final_state
+    def final_outcome(self, final_state, order, outcomes, kwargs):
+        # The kwargs have already been bound to inner_kwargs.
+        statelet_flats, inner_state = final_state
         return self.inner_quest.final_outcome(inner_state, order, outcomes,
-                                              **self.inner_kwargs)
+                                              self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(

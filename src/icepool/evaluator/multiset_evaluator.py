@@ -203,31 +203,19 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
     def __hash__(self):
         return hash((self.dungeonlet_flats, self.dungeon_key()))
 
-    def next_state(self, state, order, outcome, source_counts) -> Hashable:
+    def next_state(self, state, order, outcome, source_counts,
+                   param_counts) -> Hashable:
         statelet_flats, state_main = state
 
-        source_count_iter = iter(source_counts)
-        next_flats = []
-        param_counts: MutableSequence = []
-        for dungeonlets, statelets in zip(self.dungeonlet_flats,
-                                          statelet_flats):
-            next_statelets = []
-            countlets: MutableSequence = []
-            for dungeonlet, statelet in zip(dungeonlets, statelets):
-                child_counts = [countlets[i] for i in dungeonlet.child_indexes]
-                next_statelet, countlet = dungeonlet.next_state(
-                    statelet, order, outcome, child_counts, source_count_iter,
-                    param_counts)
-                next_statelets.append(next_statelet)
-                countlets.append(countlet)
-            next_flats.append(tuple(next_statelets))
-            param_counts.append(countlets[-1])
+        next_statelet_flats, input_counts = self.next_statelet_flats_and_counts(
+            self.dungeonlet_flats, statelet_flats, order, outcome,
+            source_counts, param_counts)
 
         next_state_main = self.next_state_main(state_main, order, outcome,
-                                               *param_counts)
+                                               *input_counts)
         if next_state_main is icepool.Reroll:
             return icepool.Reroll
-        return tuple(next_flats), next_state_main
+        return tuple(next_statelet_flats), next_state_main
 
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
@@ -246,8 +234,8 @@ class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
     def initial_state(self, order, outcomes, kwargs):
         statelet_flats = tuple(
             tuple(
-                questlet.initial_state(order, outcomes) for questlet in tree)
-            for tree in self.questlet_flats)
+                questlet.initial_state(order, outcomes) for questlet in flat)
+            for flat in self.questlet_flats)
         state_main = self.initial_state_eval(order, outcomes, **kwargs)
         return statelet_flats, state_main
 
