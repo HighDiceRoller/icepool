@@ -111,12 +111,12 @@ class MultisetDungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
     ascending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
-    """Maps (room, initial_statelets, initial_state) -> (final_statelets, final_state) -> int for next_state seeing outcomes in ascending order.
+    """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
     descending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
-    """Maps (room, initial_statelets, initial_state) -> (final_statelets, final_state) -> int for next_state seeing outcomes in ascending order.
+    """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
@@ -275,10 +275,8 @@ class MultisetDungeon(Generic[T]):
                     next_room = MultisetRoom(next_outcomes, next_sources,
                                              next_state)
                     final = self.evaluate_forward(pop_order, next_room)
-                    for (final_statelet_flats,
-                         final_state), final_weight in final.items():
-                        result[(final_statelet_flats,
-                                final_state)] += weight * final_weight
+                    for final_state, final_weight in final.items():
+                        result[final_state] += weight * final_weight
 
         cache[room] = result
         return result
