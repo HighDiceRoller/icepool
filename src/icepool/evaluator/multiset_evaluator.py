@@ -13,8 +13,8 @@ import math
 
 from icepool.typing import Q, T, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
-                    Mapping, MutableMapping, Sequence, Type, TypeAlias, cast,
-                    TYPE_CHECKING, overload)
+                    Mapping, MutableMapping, MutableSequence, Sequence, Type,
+                    TypeAlias, cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, MultisetDungeonlet, MultisetQuestlet
@@ -179,15 +179,12 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 class MultisetEvaluatorDungeon(MultisetDungeon[T]):
 
-    # These are filled in by the constructor.
-    next_state = None  # type: ignore
-
     def __init__(
-        self, next_state: Callable[..., Hashable],
+        self, next_state_main: Callable[..., Hashable],
         dungeon_key: Callable[[], Hashable] | None,
         dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
     ):
-        self.next_state = next_state  # type: ignore
+        self.next_state_main = next_state_main
         self.dungeon_key = dungeon_key
         self.dungeonlet_flats = dungeonlet_flats
 
@@ -206,18 +203,51 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
     def __hash__(self):
         return hash((self.dungeonlet_flats, self.dungeon_key()))
 
+    def next_state(self, state, order, outcome, source_counts) -> Hashable:
+        statelet_flats, state_main = state
+
+        source_count_iter = iter(source_counts)
+        next_flats = []
+        param_counts: MutableSequence = []
+        for dungeonlets, statelets in zip(self.dungeonlet_flats,
+                                          statelet_flats):
+            next_statelets = []
+            countlets: MutableSequence = []
+            for dungeonlet, statelet in zip(dungeonlets, statelets):
+                child_counts = [countlets[i] for i in dungeonlet.child_indexes]
+                next_statelet, countlet = dungeonlet.next_state(
+                    statelet, order, outcome, child_counts, source_count_iter,
+                    param_counts)
+                next_statelets.append(next_statelet)
+                countlets.append(countlet)
+            next_flats.append(tuple(next_statelets))
+            param_counts.append(countlets[-1])
+
+        return tuple(next_flats), self.next_state_main(state_main, order,
+                                                       outcome, *param_counts)
+
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
     # These are filled in by the constructor.
-    initial_state = None  # type: ignore
     extra_outcomes = None  # type: ignore
-    final_outcome = None  # type: ignore
 
     def __init__(
-            self, initial_state: Callable[..., Hashable],
-            extra_outcomes: Callable, final_outcome: Callable,
+            self, initial_state_eval: Callable[..., Hashable],
+            extra_outcomes: Callable, final_outcome_eval: Callable,
             questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]'):
-        self.initial_state = initial_state  # type: ignore
+        self.initial_state_eval = initial_state_eval  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore
-        self.final_outcome = final_outcome  # type: ignore
+        self.final_outcome_eval = final_outcome_eval  # type: ignore
         self.questlet_flats = questlet_flats
+
+    def initial_state(self, order, outcomes, kwargs):
+        statelet_flats = tuple(
+            tuple(
+                questlet.initial_state(order, outcomes) for questlet in tree)
+            for tree in self.questlet_flats)
+        state_main = self.initial_state_eval(order, outcomes, **kwargs)
+        return statelet_flats, state_main
+
+    def final_outcome(self, final_state, order, outcomes, kwargs):
+        _, state_main = final_state
+        return self.final_outcome_eval(state_main, order, outcomes, **kwargs)

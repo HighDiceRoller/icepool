@@ -186,9 +186,14 @@ class MultisetFunctionDungeon(MultisetDungeon[T]):
         self.dungeonlet_flats = outer_dungeonlet_flats + inner_dungeon.dungeonlet_flats
         self.inner_dungeon = inner_dungeon
 
-    def next_state(self, state, order, outcome, /, *counts):
-        # how do we send the param counts?
-        return self.inner_dungeon.next_state(state, order, outcome, *counts)
+    # does next_statelet_flats also need to be overriden?
+    def next_state(self, state, order, outcome, /, *param_counts):
+        inner_statelet_flats, inner_state = state
+        inner_statelet_flats = self.inner_dungeon.next_statelet_flats(
+            inner_statelet_flats, order, outcome, source_counts)
+        inner_state = self.inner_dungeon.next_state(state, order, outcome,
+                                                    *counts)
+        return inner_statelet_flats, inner_state
 
     # TODO: __hash__?
 
@@ -209,11 +214,16 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
         return self.inner_quest.extra_outcomes(outcomes)
 
     def initial_state(self, order, outcomes, /, **kwargs):
-        return self.inner_quest.initial_state(order, outcomes,
-                                              **self.inner_kwargs)
+        inner_statelet_flats = self.inner_quest.initial_statelet_flats(
+            order, outcomes)
+        inner_state = self.inner_quest.initial_state(order, outcomes,
+                                                     **self.inner_kwargs)
+        return inner_statelet_flats, inner_state
 
     def final_outcome(self, final_state, order, outcomes, **kwargs):
-        return self.inner_quest.final_outcome(final_state, **self.inner_kwargs)
+        inner_statelet_flats, inner_state = final_state
+        return self.inner_quest.final_outcome(inner_state, order, outcomes,
+                                              **self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
