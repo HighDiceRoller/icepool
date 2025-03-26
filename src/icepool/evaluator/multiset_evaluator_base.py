@@ -127,16 +127,18 @@ class MultisetDungeon(Generic[T]):
     def next_state_main(self, state: Hashable, order: Order, outcome: T,
                         source_counts: Iterator,
                         param_counts: Sequence) -> Hashable:
-        """State transition function.
+        """Main state transition function.
         
         Args:
-            state: The state of the dungeon, including that advanced by
-                dungeonlets.
+            state: The state of the dungeon.
             order: The order in which outcomes are seen.
             outcome: The current outcome.
             source_counts: The counts produced by sources. This is an iterator
                 that will be consumed in order.
             param_counts: The counts produced by parameters at this level.
+
+        Returns:
+            The next state, or icepool.Reroll to drop this branch of evaluation.
         """
 
     __hash__: Callable[[], int] | None = None  # type: ignore
@@ -174,11 +176,20 @@ class MultisetDungeon(Generic[T]):
                                              all_outcomes, kwargs)
         except UnsupportedOrderError:
             try:
-                room = self.initial_room(quest, sources, pop_order,
-                                         all_outcomes, kwargs)
-                final_states = self.evaluate_forward(pop_order, room)
-                return quest.finalize_evaluation(final_states, pop_order,
-                                                 all_outcomes, kwargs)
+                if pop_order_reason is OrderReason.Default:
+                    # Flip the pop order.
+                    room = self.initial_room(quest, sources, pop_order,
+                                             all_outcomes, kwargs)
+                    final_states = self.evaluate_backward(-pop_order, room)
+                    return quest.finalize_evaluation(final_states, pop_order,
+                                                     all_outcomes, kwargs)
+                else:
+                    # Use the alternate algorithm.
+                    room = self.initial_room(quest, sources, pop_order,
+                                             all_outcomes, kwargs)
+                    final_states = self.evaluate_forward(pop_order, room)
+                    return quest.finalize_evaluation(final_states, pop_order,
+                                                     all_outcomes, kwargs)
             except UnsupportedOrderError:
                 raise ConflictingOrderError(
                     'Neither ascending nor descending order is compatable with the evaluation. '
@@ -230,7 +241,7 @@ class MultisetDungeon(Generic[T]):
 
         if room.is_done():
             result = {
-                room.initial_statelets_flat: {
+                room.initial_statelet_flats: {
                     room.initial_state_main: 1
                 }
             }
@@ -239,7 +250,7 @@ class MultisetDungeon(Generic[T]):
             for outcome, source_counts, prev_outcomes, prev_sources, weight in room.pop(
                     pop_order):
                 prev_room = MultisetRoom(prev_outcomes, prev_sources,
-                                         room.initial_statelets_flat,
+                                         room.initial_statelet_flats,
                                          room.initial_state_main)
                 prev = self.evaluate_backward(pop_order, prev_room)
 
@@ -291,7 +302,7 @@ class MultisetDungeon(Generic[T]):
 
         if room.is_done():
             result = {
-                room.initial_statelets_flat: {
+                room.initial_statelet_flats: {
                     room.initial_state_main: 1
                 }
             }
@@ -300,7 +311,7 @@ class MultisetDungeon(Generic[T]):
                     pop_order):
                 source_counts_iter = iter(source_counts)
                 next_statelet_flats, counts = self.next_statelet_flats_and_counts(
-                    room.initial_statelets_flat, pop_order, outcome,
+                    room.initial_statelet_flats, pop_order, outcome,
                     source_counts_iter, ())
                 next_state_main = self.next_state_main(room.initial_state_main,
                                                        pop_order, outcome,
@@ -351,7 +362,7 @@ class MultisetDungeon(Generic[T]):
 class MultisetRoom(Generic[T], NamedTuple):
     outcomes: tuple[T, ...]
     sources: 'tuple[MultisetSourceBase[T, Any], ...]'
-    initial_statelets_flat: tuple[tuple[Hashable, ...], ...]
+    initial_statelet_flats: tuple[tuple[Hashable, ...], ...]
     initial_state_main: Hashable
 
     def is_done(self) -> bool:

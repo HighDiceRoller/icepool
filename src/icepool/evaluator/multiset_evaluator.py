@@ -183,7 +183,7 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
         self, next_state_eval: Callable[..., Hashable], dungeon_key: Hashable,
         dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
     ):
-        self.next_state_eval = next_state_eval  # type: ignore
+        self.next_state_eval = next_state_eval
         self.dungeon_key = dungeon_key
         self.dungeonlet_flats = dungeonlet_flats
 
