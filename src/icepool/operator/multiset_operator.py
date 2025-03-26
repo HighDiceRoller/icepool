@@ -92,7 +92,7 @@ class MultisetOperator(MultisetExpression[T]):
                                      for child in self._children)):
 
             dungeonlets: MutableSequence[MultisetDungeonlet[T, Any]] = []
-            questlets: Mutabletuple[MultisetQuestlet[T], ...] = []
+            questlets: MutableSequence[MultisetQuestlet[T]] = []
             sources: MutableSequence[MultisetSourceBase[T, Any]] = []
             weight = 1
             positions: MutableSequence[int] = []
@@ -111,7 +111,7 @@ class MultisetOperator(MultisetExpression[T]):
             dungeonlets.append(dungeonlet)
             questlets.append(questlet)
 
-            yield tuple(dungeonlets), questlets, tuple(sources), weight
+            yield tuple(dungeonlets), tuple(questlets), tuple(sources), weight
 
 
 class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
