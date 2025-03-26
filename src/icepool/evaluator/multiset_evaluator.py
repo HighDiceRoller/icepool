@@ -180,15 +180,20 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 class MultisetEvaluatorDungeon(MultisetDungeon[T]):
 
     def __init__(
-        self, next_state_main: Callable[..., Hashable], dungeon_key: Hashable,
+        self, next_state_eval: Callable[..., Hashable], dungeon_key: Hashable,
         dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
     ):
-        self.next_state_main = next_state_main
+        self.next_state_eval = next_state_eval  # type: ignore
         self.dungeon_key = dungeon_key
         self.dungeonlet_flats = dungeonlet_flats
 
         if dungeon_key is None:
             self.__hash__ = None  # type: ignore
+
+    def next_state_main(self, state, order: Order, outcome: T,
+                        source_counts: Iterator,
+                        param_counts: Sequence) -> Hashable:
+        return self.next_state_eval(state, order, outcome, *param_counts)
 
     def __eq__(self, other):
         if not isinstance(other, MultisetEvaluatorDungeon):
@@ -202,41 +207,18 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
     def __hash__(self):
         return hash((self.dungeonlet_flats, self.dungeon_key))
 
-    def next_state(self, state, order, outcome, source_counts,
-                   param_counts) -> Hashable:
-        statelet_flats, state_main = state
-
-        next_statelet_flats, input_counts = self.next_statelet_flats_and_counts(
-            statelet_flats, order, outcome, source_counts, param_counts)
-
-        next_state_main = self.next_state_main(state_main, order, outcome,
-                                               *input_counts)
-        if next_state_main is icepool.Reroll:
-            return icepool.Reroll
-        return next_statelet_flats, next_state_main
-
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
     # These are filled in by the constructor.
+    initial_state_main = None  # type: ignore
     extra_outcomes = None  # type: ignore
+    final_outcome = None  # type: ignore
 
     def __init__(
-            self, initial_state_eval: Callable[..., Hashable],
-            extra_outcomes: Callable, final_outcome_eval: Callable,
+            self, initial_state_main: Callable[..., Hashable],
+            extra_outcomes: Callable, final_outcome: Callable,
             questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]'):
-        self.initial_state_eval = initial_state_eval  # type: ignore
+        self.initial_state_main = initial_state_main  # type: ignore
         self.extra_outcomes = extra_outcomes  # type: ignore
-        self.final_outcome_eval = final_outcome_eval  # type: ignore
+        self.final_outcome = final_outcome  # type: ignore
         self.questlet_flats = questlet_flats
-
-    def initial_state(self, order, outcomes, kwargs):
-        statelet_flats = tuple(
-            tuple(
-                questlet.initial_state(order, outcomes) for questlet in flat)
-            for flat in self.questlet_flats)
-        state_main = self.initial_state_eval(order, outcomes, **kwargs)
-        return statelet_flats, state_main
-
-    def final_outcome(self, final_state, order, outcomes, kwargs):
-        _, state_main = final_state
-        return self.final_outcome_eval(state_main, order, outcomes, **kwargs)

@@ -112,21 +112,21 @@ class MultisetDungeon(Generic[T]):
 
     dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
 
-    ascending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
+    ascending_cache: 'MutableMapping[MultisetRoom[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
-    descending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
+    descending_cache: 'MutableMapping[MultisetRoom[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
 
     @abstractmethod
-    def next_state(self, state: Hashable, order: Order, outcome: T,
-                   source_counts: Iterator,
-                   param_counts: Sequence) -> Hashable:
+    def next_state_main(self, state: Hashable, order: Order, outcome: T,
+                        source_counts: Iterator,
+                        param_counts: Sequence) -> Hashable:
         """State transition function.
         
         Args:
@@ -136,6 +136,7 @@ class MultisetDungeon(Generic[T]):
             outcome: The current outcome.
             source_counts: The counts produced by sources. This is an iterator
                 that will be consumed in order.
+            param_counts: The counts produced by parameters at this level.
         """
 
     __hash__: Callable[[], int] | None = None  # type: ignore
@@ -189,11 +190,15 @@ class MultisetDungeon(Generic[T]):
                      sources: 'tuple[MultisetSourceBase, ...]', order: Order,
                      outcomes: tuple[T, ...],
                      kwargs: Mapping[str, Hashable]) -> 'MultisetRoom[T]':
-        initial_state = quest.initial_state(order, outcomes, kwargs)
-        return MultisetRoom(outcomes, sources, initial_state)
+        initial_statelets = quest.initial_statelets(order, outcomes)
+        initial_state_main = quest.initial_state_main(order, outcomes,
+                                                      **kwargs)
+        return MultisetRoom(outcomes, sources, initial_statelets,
+                            initial_state_main)
 
-    def evaluate_backward(self, pop_order: Order,
-                          room: 'MultisetRoom') -> Mapping[Any, int]:
+    def evaluate_backward(
+        self, pop_order: Order, room: 'MultisetRoom'
+    ) -> Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]:
         """Internal algorithm for iterating so that next_state sees outcomes in backwards order.
 
         All intermediate return values are cached in the instance.
@@ -219,29 +224,44 @@ class MultisetDungeon(Generic[T]):
         if room in cache:
             return cache[room]
 
-        result: MutableMapping[Any, int] = defaultdict(int)
+        result: MutableMapping[tuple[tuple[Hashable, ...], ...],
+                               MutableMapping[Hashable, int]] = defaultdict(
+                                   lambda: defaultdict(int))
 
         if room.is_done():
-            result = {room.initial_state: 1}
+            result = {
+                room.initial_statelets_flat: {
+                    room.initial_state_main: 1
+                }
+            }
         else:
             eval_order = -pop_order
             for outcome, source_counts, prev_outcomes, prev_sources, weight in room.pop(
                     pop_order):
                 prev_room = MultisetRoom(prev_outcomes, prev_sources,
-                                         room.initial_state)
+                                         room.initial_statelets_flat,
+                                         room.initial_state_main)
                 prev = self.evaluate_backward(pop_order, prev_room)
 
-                for prev_state, prev_weight in prev.items():
-                    state = self.next_state(prev_state, eval_order, outcome,
-                                            iter(source_counts), ())
-                    if state is not icepool.Reroll:
-                        result[state] += prev_weight * weight
-
+                for prev_statelet_flats, prev_main in prev.items():
+                    source_counts_iter = iter(source_counts)
+                    statelet_flats, counts = self.next_statelet_flats_and_counts(
+                        prev_statelet_flats, eval_order, outcome,
+                        source_counts_iter, ())
+                    subresult = result[statelet_flats]
+                    remaining_source_counts = tuple(source_counts_iter)
+                    for prev_state_main, prev_weight in prev_main.items():
+                        state_main = self.next_state_main(
+                            prev_state_main, eval_order, outcome,
+                            iter(remaining_source_counts), counts)
+                        if state_main is not icepool.Reroll:
+                            subresult[state_main] += prev_weight * weight
         cache[room] = result
         return result
 
-    def evaluate_forward(self, pop_order: Order,
-                         room: 'MultisetRoom') -> Mapping[Any, int]:
+    def evaluate_forward(
+        self, pop_order: Order, room: 'MultisetRoom'
+    ) -> Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]:
         """Internal algorithm for iterating in the less-preferred order.
 
         All intermediate return values are cached in the instance.
@@ -265,27 +285,44 @@ class MultisetDungeon(Generic[T]):
         if room in cache:
             return cache[room]
 
-        result: MutableMapping[Any, int] = defaultdict(int)
+        result: MutableMapping[tuple[tuple[Hashable, ...], ...],
+                               MutableMapping[Hashable, int]] = defaultdict(
+                                   lambda: defaultdict(int))
 
         if room.is_done():
-            result = {room.initial_state: 1}
+            result = {
+                room.initial_statelets_flat: {
+                    room.initial_state_main: 1
+                }
+            }
         else:
             for outcome, source_counts, next_outcomes, next_sources, weight in room.pop(
                     pop_order):
-                next_state = self.next_state(room.initial_state, pop_order,
-                                             outcome, iter(source_counts), ())
-                if next_state is not icepool.Reroll:
+                source_counts_iter = iter(source_counts)
+                next_statelet_flats, counts = self.next_statelet_flats_and_counts(
+                    room.initial_statelets_flat, pop_order, outcome,
+                    source_counts_iter, ())
+                next_state_main = self.next_state_main(room.initial_state_main,
+                                                       pop_order, outcome,
+                                                       source_counts_iter,
+                                                       counts)
+                if next_state_main is not icepool.Reroll:
                     next_room = MultisetRoom(next_outcomes, next_sources,
-                                             next_state)
+                                             next_statelet_flats,
+                                             next_state_main)
                     final = self.evaluate_forward(pop_order, next_room)
-                    for final_state, final_weight in final.items():
-                        result[final_state] += weight * final_weight
+                    for final_statelet_flats, final_main in final.items():
+                        subresult = result[final_statelet_flats]
+                        for final_state_main, final_weight in final_main.items(
+                        ):
+                            subresult[
+                                final_state_main] += weight * final_weight
 
         cache[room] = result
         return result
 
     def next_statelet_flats_and_counts(
-        self, statelet_flats: 'tuple[tuple[Hashable, ...]]', order: Order,
+        self, statelet_flats: 'tuple[tuple[Hashable, ...], ...]', order: Order,
         outcome: T, source_counts: Iterator, param_counts: Sequence
     ) -> 'tuple[tuple[tuple[Hashable, ...], ...], tuple]':
         """Helper function to advance dungeonlet_flats.
@@ -314,7 +351,8 @@ class MultisetDungeon(Generic[T]):
 class MultisetRoom(Generic[T], NamedTuple):
     outcomes: tuple[T, ...]
     sources: 'tuple[MultisetSourceBase[T, Any], ...]'
-    initial_state: Hashable
+    initial_statelets_flat: tuple[tuple[Hashable, ...], ...]
+    initial_state_main: Hashable
 
     def is_done(self) -> bool:
         return not self.outcomes
@@ -362,8 +400,8 @@ class MultisetQuest(Generic[T, U_co]):
         """
 
     @abstractmethod
-    def initial_state(self, order: Order, outcomes: Sequence[T], /,
-                      kwargs: Mapping[str, Any]) -> Hashable:
+    def initial_state_main(self, order: Order, outcomes: Sequence[T], /,
+                           **kwargs) -> Hashable:
         """The initial evaluation state.
         TODO: Should this get cardinalities?
 
@@ -378,26 +416,33 @@ class MultisetQuest(Generic[T, U_co]):
 
     @abstractmethod
     def final_outcome(
-        self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
-        kwargs: Mapping[str, Any]
-    ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+            self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
+            **kwargs) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
+    def initial_statelets(self, order: Order, outcomes: tuple[T, ...]):
+        return tuple(
+            tuple(
+                questlet.initial_state(order, outcomes) for questlet in flat)
+            for flat in self.questlet_flats)
+
     def finalize_evaluation(
-            self, final_states: Mapping[Any, int], order: Order,
+            self, final_states: Mapping[tuple[tuple[Hashable, ...], ...],
+                                        Mapping[Hashable, int]], order: Order,
             outcomes: tuple[T, ...],
             kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         final_outcomes = []
         final_weights = []
-        for state, weight in final_states.items():
-            outcome = self.final_outcome(state, order, outcomes, kwargs)
-            if outcome is None:
-                raise TypeError(
-                    "None is not a valid final outcome.\n"
-                    "This may have been a result of not supplying any input with an outcome."
-                )
-            if outcome is not icepool.Reroll:
-                final_outcomes.append(outcome)
-                final_weights.append(weight)
+        for _, main_states in final_states.items():
+            for state, weight in main_states.items():
+                outcome = self.final_outcome(state, order, outcomes, **kwargs)
+                if outcome is None:
+                    raise TypeError(
+                        "None is not a valid final outcome.\n"
+                        "This may have been a result of not supplying any input with an outcome."
+                    )
+                if outcome is not icepool.Reroll:
+                    final_outcomes.append(outcome)
+                    final_weights.append(weight)
 
         return icepool.Die(final_outcomes, final_weights)
