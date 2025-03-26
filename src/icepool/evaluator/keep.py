@@ -44,6 +44,10 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
             )
         return result
 
+    @property
+    def dungeon_key(self):
+        return (type(self), )
+
 
 keep_evaluator = KeepEvaluator()
 """Shared instance for caching."""

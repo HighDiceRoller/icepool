@@ -43,6 +43,10 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
         has_any, has_all = final_state
         return has_any and has_all
 
+    @property
+    def dungeon_key(self):
+        return (type(self), )
+
 
 class IsProperSubsetEvaluator(ComparisonEvaluator):
 

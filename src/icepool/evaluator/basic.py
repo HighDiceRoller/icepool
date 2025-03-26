@@ -38,6 +38,8 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
         reverse = order != Order.Ascending
         return tuple(sorted(final_state, reverse=reverse))
 
+    # No dungeon key, as this isn't consider worth persistently hashing.
+
 
 class SumEvaluator(MultisetEvaluator[Any, Any]):
     """Sums all outcomes."""
@@ -54,8 +56,10 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
                 return outcome
 
             self._map = map_func
+            self.dungeon_key = (SumEvaluator, )
         elif callable(map):
             self._map = map
+            self.dungeon_key = None
         else:
             map_dict = {k: v for k, v in map.items()}
 
@@ -63,6 +67,7 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
                 return map_dict[outcome]
 
             self._map = map_func
+            self.dungeon_key = None
 
     def next_state(self, state, order, outcome, count):
         """Implementation."""
@@ -97,6 +102,10 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         """Implementation."""
         return final_state or 0
 
+    @property
+    def dungeon_key(self):
+        return (type(self), )
+
 
 count_evaluator: Final = CountEvaluator()
 """Shared instance for caching."""
@@ -113,6 +122,10 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
             self, final_state, order, outcomes) -> bool:
         """Implementation."""
         return final_state or False
+
+    @property
+    def dungeon_key(self):
+        return (type(self), )
 
 
 any_evaluator: Final = AnyEvaluator()

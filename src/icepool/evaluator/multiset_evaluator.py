@@ -156,8 +156,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    dungeon_key: Callable[[], Hashable] | None = None  # type: ignore
-    """Subclasses may optionally provide this method; if so, intermediate calculations will be persistently cached."""
+    dungeon_key: Hashable = None
+    """Subclasses may optionally provide this value; if so, intermediate calculations will be persistently cached."""
 
     def _prepare(
         self,
@@ -180,8 +180,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 class MultisetEvaluatorDungeon(MultisetDungeon[T]):
 
     def __init__(
-        self, next_state_main: Callable[..., Hashable],
-        dungeon_key: Callable[[], Hashable] | None,
+        self, next_state_main: Callable[..., Hashable], dungeon_key: Hashable,
         dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
     ):
         self.next_state_main = next_state_main
@@ -197,11 +196,11 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
         if self is other:
             return True
         if self.dungeon_key is not None and other.dungeon_key is not None:
-            return self.dungeon_key() == other.dungeon_key()
+            return self.dungeon_key == other.dungeon_key
         return False
 
     def __hash__(self):
-        return hash((self.dungeonlet_flats, self.dungeon_key()))
+        return hash((self.dungeonlet_flats, self.dungeon_key))
 
     def next_state(self, state, order, outcome, source_counts,
                    param_counts) -> Hashable:

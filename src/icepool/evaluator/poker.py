@@ -36,6 +36,10 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
         """Always sees zero counts."""
         return outcomes
 
+    @property
+    def dungeon_key(self):
+        return (type(self), )
+
 
 highest_outcome_and_count_evaluator: Final = HighestOutcomeAndCountEvaluator()
 """Shared instance for caching."""
@@ -77,6 +81,10 @@ class AllCountsEvaluator(MultisetEvaluator[Any, tuple[int, ...]]):
         """Always sees zero counts."""
         return outcomes
 
+    @property
+    def dungeon_key(self):
+        return (type(self), self._filter)
+
 
 class LargestCountEvaluator(MultisetEvaluator[Any, int]):
     """The largest count of any outcome."""
@@ -84,6 +92,10 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
     def next_state(self, state, order, outcome, count):
         """Implementation."""
         return max(state or count, count)
+
+    @property
+    def dungeon_key(self):
+        return (type(self), )
 
 
 largest_count_evaluator: Final = LargestCountEvaluator()
@@ -96,6 +108,10 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
     def next_state(self, state, order, outcome, count):
         """Implementation."""
         return max(state or (count, outcome), (count, outcome))
+
+    @property
+    def dungeon_key(self):
+        return (type(self), )
 
 
 largest_count_and_outcome_evaluator: Final = LargestCountAndOutcomeEvaluator()
@@ -133,6 +149,10 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
                 return self._empty_divisor
         return final_state
 
+    @property
+    def dungeon_key(self):
+        return (type(self), self._empty_divisor)
+
 
 class LargestStraightEvaluator(MultisetEvaluator[int, int]):
     """The size of the largest straight."""
@@ -152,6 +172,10 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
         return final_state[0]
 
     extra_outcomes = MultisetEvaluator.consecutive
+
+    @property
+    def dungeon_key(self):
+        return (type(self), )
 
 
 largest_straight_evaluator: Final = LargestStraightEvaluator()
@@ -211,6 +235,10 @@ class LargestStraightAndOutcomeEvaluator(MultisetEvaluator[int, tuple[int,
 
     extra_outcomes = MultisetEvaluator.consecutive
 
+    @property
+    def dungeon_key(self):
+        return (type(self), self._prioritize_highest)
+
 
 largest_straight_and_outcome_evaluator_low: Final = LargestStraightAndOutcomeEvaluator(
     'low')
@@ -249,6 +277,10 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
         return tuple(sorted(current_runs + ended_runs, reverse=True))
 
     extra_outcomes = MultisetEvaluator.consecutive
+
+    @property
+    def dungeon_key(self):
+        return (type(self), )
 
 
 all_straights_evaluator: Final = AllStraightsEvaluator()
