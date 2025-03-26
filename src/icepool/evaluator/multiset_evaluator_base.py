@@ -110,6 +110,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 class MultisetDungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
+    dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
+
     ascending_cache: 'MutableMapping[MultisetRoom[T], Mapping[Hashable, int]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
@@ -282,10 +284,8 @@ class MultisetDungeon(Generic[T]):
         cache[room] = result
         return result
 
-    @staticmethod
     def next_statelet_flats_and_counts(
-        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]',
-        statelet_flats: 'tuple[tuple[Hashable, ...]]', order: Order,
+        self, statelet_flats: 'tuple[tuple[Hashable, ...]]', order: Order,
         outcome: T, source_counts: Iterator, param_counts: Sequence
     ) -> 'tuple[tuple[tuple[Hashable, ...], ...], tuple]':
         """Helper function to advance dungeonlet_flats.
@@ -295,7 +295,8 @@ class MultisetDungeon(Generic[T]):
         """
         next_flats = []
         output_counts: MutableSequence = []
-        for dungeonlets, statelets in zip(dungeonlet_flats, statelet_flats):
+        for dungeonlets, statelets in zip(self.dungeonlet_flats,
+                                          statelet_flats):
             next_statelets = []
             countlets: MutableSequence = []
             for dungeonlet, statelet in zip(dungeonlets, statelets):

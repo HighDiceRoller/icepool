@@ -207,8 +207,7 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
         statelet_flats, state_main = state
 
         next_statelet_flats, input_counts = self.next_statelet_flats_and_counts(
-            self.dungeonlet_flats, statelet_flats, order, outcome,
-            source_counts, param_counts)
+            statelet_flats, order, outcome, source_counts, param_counts)
 
         next_state_main = self.next_state_main(state_main, order, outcome,
                                                *input_counts)

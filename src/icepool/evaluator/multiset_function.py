@@ -191,8 +191,7 @@ class MultisetFunctionDungeon(MultisetDungeon[T]):
         statelet_flats, inner_state = state
 
         next_statelet_flats, param_counts = self.next_statelet_flats_and_counts(
-            self.dungeonlet_flats, statelet_flats, order, outcome,
-            source_counts, param_counts)
+            statelet_flats, order, outcome, source_counts, param_counts)
 
         next_inner_state = self.inner_dungeon.next_state(
             inner_state, order, outcome, source_counts, param_counts)
@@ -277,8 +276,7 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T]):
         statelet_flats, inner_states = state
 
         next_statelet_flats, param_counts = self.next_statelet_flats_and_counts(
-            self.dungeonlet_flats, statelet_flats, order, outcome,
-            source_counts, param_counts)
+            statelet_flats, order, outcome, source_counts, param_counts)
 
         next_inner_states = tuple(
             dungeon.next_state(inner_state, order, outcome, source_counts,
