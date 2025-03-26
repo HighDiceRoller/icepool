@@ -222,6 +222,7 @@ class MultisetDungeon(Generic[T]):
         if room.is_done():
             result = {room.initial_state: 1}
         else:
+            eval_order = -pop_order
             for outcome, source_counts, prev_outcomes, prev_sources, weight in room.pop(
                     pop_order):
                 prev_room = MultisetRoom(prev_outcomes, prev_sources,
@@ -229,7 +230,7 @@ class MultisetDungeon(Generic[T]):
                 prev = self.evaluate_backward(pop_order, prev_room)
 
                 for prev_state, prev_weight in prev.items():
-                    state = self.next_state(prev_state, -pop_order, outcome,
+                    state = self.next_state(prev_state, eval_order, outcome,
                                             iter(source_counts), ())
                     if state is not icepool.Reroll:
                         result[state] += prev_weight * weight

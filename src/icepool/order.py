@@ -49,7 +49,12 @@ class Order(enum.IntEnum):
         return result
 
     def __neg__(self) -> 'Order':
-        return Order(-self.value)
+        if self is Order.Ascending:
+            return Order.Descending
+        elif self is Order.Descending:
+            return Order.Ascending
+        else:
+            return Order.Any
 
 
 class OrderReason(enum.IntEnum):

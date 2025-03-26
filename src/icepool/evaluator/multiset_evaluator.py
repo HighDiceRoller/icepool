@@ -214,7 +214,7 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
                                                *input_counts)
         if next_state_main is icepool.Reroll:
             return icepool.Reroll
-        return tuple(next_statelet_flats), next_state_main
+        return next_statelet_flats, next_state_main
 
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
