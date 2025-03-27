@@ -13,7 +13,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, HasHashKey, ImplicitConversionError
+from icepool.typing import Q, T, U, MaybeHashKeyed, ImplicitConversionError
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Iterator,
                     Literal, Mapping, Sequence, Type, cast, overload)
@@ -1156,7 +1156,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
 
     # We need to reiterate this since we override __eq__.
-    __hash__ = HasHashKey.__hash__
+    __hash__ = MaybeHashKeyed.__hash__
 
 
 class MultisetExpressionDungeonlet(MultisetDungeonlet[T, int]):

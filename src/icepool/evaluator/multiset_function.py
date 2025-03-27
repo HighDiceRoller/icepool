@@ -12,7 +12,7 @@ from functools import cached_property, update_wrapper
 
 from icepool.function import sorted_union
 from icepool.order import Order
-from icepool.typing import Q, T, U_co
+from icepool.typing import Q, T, MaybeHashKeyed, U_co
 from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, Sequence, Type, TypeAlias, overload
 
 MV: TypeAlias = MultisetParam | MultisetTupleParam
@@ -175,7 +175,7 @@ def prepare_multiset_function(
             yield dungeon, quest, outer_sources + inner_sources, outer_weight * inner_weight
 
 
-class MultisetFunctionDungeon(MultisetDungeon[T]):
+class MultisetFunctionDungeon(MultisetDungeon[T], MaybeHashKeyed):
 
     def __init__(
         self,
@@ -184,6 +184,9 @@ class MultisetFunctionDungeon(MultisetDungeon[T]):
     ):
         self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeon = inner_dungeon
+
+        if self.inner_dungeon.__hash__ is None:
+            self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
                         source_counts: Iterator,
@@ -199,7 +202,11 @@ class MultisetFunctionDungeon(MultisetDungeon[T]):
             return icepool.Reroll
         return next_inner_statelet_flats, next_inner_state
 
-    # TODO: __hash__?
+    @property
+    def hash_key(self):
+        if self.__hash__ is None:
+            return None
+        return MultisetFunctionDungeon, self.dungeonlet_flats, self.inner_dungeon
 
 
 class MultisetFunctionQuest(MultisetQuest[T, U_co]):
@@ -255,7 +262,7 @@ def prepare_multiset_joint_function(
         yield dungeon, quest, sources, weight
 
 
-class MultisetFunctionJointDungeon(MultisetDungeon[T]):
+class MultisetFunctionJointDungeon(MultisetDungeon[T], MaybeHashKeyed):
 
     def __init__(
         self,
@@ -264,6 +271,9 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T]):
     ):
         self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeons = inner_dungeons
+
+        if any(dungeon.__hash__ is None for dungeon in inner_dungeons):
+            self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
                         source_counts: Iterator,
@@ -295,7 +305,11 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T]):
             return icepool.Reroll
         return next_inner_statelet_flats, next_inner_state
 
-    # TODO: __hash__?
+    @property
+    def hash_key(self):
+        if self.__hash__ is None:
+            return None
+        return MultisetFunctionJointDungeon, self.dungeonlet_flats, self.inner_dungeons
 
 
 class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):

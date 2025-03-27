@@ -9,7 +9,7 @@ import icepool.population.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
 from icepool.population.keep import lowest_slice, highest_slice, canonical_slice
-from icepool.typing import U, HasHashKey, ImplicitConversionError, Outcome, T_co, infer_star
+from icepool.typing import U, MaybeHashKeyed, ImplicitConversionError, Outcome, T_co, infer_star
 
 import bisect
 from collections import defaultdict
@@ -41,7 +41,7 @@ def implicit_convert_to_die(
     return Die([outcome])
 
 
-class Die(Population[T_co], HasHashKey):
+class Die(Population[T_co], MaybeHashKeyed):
     """Sampling with replacement. Quantities represent weights.
 
     Dice are immutable. Methods do not modify the `Die` in-place;
@@ -1484,7 +1484,7 @@ class Die(Population[T_co], HasHashKey):
         """
         return Die, tuple(self.items())
 
-    __hash__ = HasHashKey.__hash__
+    __hash__ = MaybeHashKeyed.__hash__
 
     def equals(self, other, *, simplify: bool = False) -> bool:
         """`True` iff both dice have the same outcomes and quantities.

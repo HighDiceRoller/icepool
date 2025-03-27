@@ -141,12 +141,6 @@ class MultisetDungeon(Generic[T]):
             The next state, or icepool.Reroll to drop this branch of evaluation.
         """
 
-    __hash__: Callable[[], int] | None = None  # type: ignore
-    """Subclasses may optionally be hashable; if so, intermediate calculations will be persistently cached.
-    
-    The hash should include dungeonlets.
-    """
-
     def evaluate(self, quest: 'MultisetQuest[T, U_co]',
                  sources: 'tuple[MultisetSourceBase[T, Any], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':

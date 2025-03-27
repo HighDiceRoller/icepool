@@ -7,10 +7,10 @@ import operator
 
 from typing import Any, Callable, Final, Mapping, Sequence
 
-from icepool.typing import HasHashKey
+from icepool.typing import MaybeHashKeyed
 
 
-class AgainExpression(HasHashKey):
+class AgainExpression(MaybeHashKeyed):
     """An expression indicating that the die should be rolled again, usually with some operation applied.
 
     See the `Again` symbol for the full documentation.

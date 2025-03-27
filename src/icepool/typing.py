@@ -50,17 +50,22 @@ class Outcome(Hashable, Protocol[T_contra]):
         ...
 
 
-class HasHashKey(ABC):
+class MaybeHashKeyed(ABC):
 
     @property
     @abstractmethod
     def hash_key(self) -> Hashable:
-        """A hash key for this object. This should include a type."""
+        """A hash key for this object. This should include a type.
+        
+        If None, this will not compare equal to any other object.
+        """
 
     def equals(self, other) -> bool:
         if self is other:
             return True
-        if hasattr(other, 'hash_key'):
+        if self.hash_key is None:
+            return False
+        if hasattr(other, 'hash_key') and other.hash_key is not None:
             return self.hash_key == other.hash_key
         return False
 

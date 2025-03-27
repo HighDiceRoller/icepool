@@ -6,7 +6,7 @@ import icepool.math
 import icepool.creation_args
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
-from icepool.typing import U, HasHashKey, Outcome, T_co, infer_star
+from icepool.typing import U, MaybeHashKeyed, Outcome, T_co, infer_star
 
 import functools
 import operator
@@ -16,7 +16,7 @@ from functools import cached_property
 from typing import Any, Callable, Iterable, Iterator, Mapping, MutableSequence, Sequence, Type, overload
 
 
-class Deck(Population[T_co], HasHashKey):
+class Deck(Population[T_co], MaybeHashKeyed):
     """Sampling without replacement (within a single evaluation).
 
     Quantities represent duplicates.

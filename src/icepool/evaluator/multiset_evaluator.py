@@ -11,7 +11,7 @@ from functools import cached_property
 import itertools
 import math
 
-from icepool.typing import Q, T, U_co
+from icepool.typing import Q, T, MaybeHashKeyed, U_co
 from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     Mapping, MutableMapping, MutableSequence, Sequence, Type,
                     TypeAlias, cast, TYPE_CHECKING, overload)
@@ -177,7 +177,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             yield dungeon, quest, sources, weight
 
 
-class MultisetEvaluatorDungeon(MultisetDungeon[T]):
+class MultisetEvaluatorDungeon(MultisetDungeon[T], MaybeHashKeyed):
 
     def __init__(
         self, next_state_eval: Callable[..., Hashable], dungeon_key: Hashable,
@@ -195,17 +195,11 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T]):
                         param_counts: Sequence) -> Hashable:
         return self.next_state_eval(state, order, outcome, *param_counts)
 
-    def __eq__(self, other):
-        if not isinstance(other, MultisetEvaluatorDungeon):
-            return False
-        if self is other:
-            return True
-        if self.dungeon_key is not None and other.dungeon_key is not None:
-            return self.dungeon_key == other.dungeon_key
-        return False
-
-    def __hash__(self):
-        return hash((self.dungeonlet_flats, self.dungeon_key))
+    @property
+    def hash_key(self):
+        if self.__hash__ is None:
+            return None
+        return MultisetEvaluatorDungeon, self.dungeonlet_flats, self.dungeon_key
 
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):

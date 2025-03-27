@@ -11,7 +11,7 @@ import itertools
 import operator
 import random
 
-from icepool.typing import Q, T, U, HasHashKey, ImplicitConversionError, T
+from icepool.typing import Q, T, U, MaybeHashKeyed, ImplicitConversionError, T
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Any, Callable, Collection, Generic,
                     Hashable, Iterable, Iterator, Literal, Mapping,
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from icepool.expression.multiset_param import MultisetParamBase
 
 
-class MultisetExpressionBase(Generic[T, Q], HasHashKey):
+class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
     """Abstract methods are protected so as to not be distracting."""
 
     @abstractmethod
@@ -55,7 +55,7 @@ class MultisetExpressionBase(Generic[T, Q], HasHashKey):
         """Whether this expression supports keep operations via static analysis."""
 
 
-class MultisetDungeonlet(Generic[T, Q], HasHashKey):
+class MultisetDungeonlet(Generic[T, Q], MaybeHashKeyed):
     child_indexes: tuple[int, ...]
 
     @abstractmethod
@@ -102,7 +102,7 @@ class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
         return MultisetFreeVariable
 
 
-class MultisetSourceBase(Generic[T, Q], HasHashKey):
+class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
 
     @abstractmethod
     def outcomes(self) -> tuple[T, ...]:
