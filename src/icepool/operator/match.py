@@ -82,9 +82,9 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         self._keep = keep
 
     def _initial_state(
-        self, order, outcomes, child_cardinalities: MutableSequence,
-        source_cardinalities: Iterator, param_cardinalities: Sequence
-    ) -> tuple[tuple[int, bool, bool], int | None]:
+            self, order, outcomes, child_cardinalities: MutableSequence,
+            source_cardinalities: Iterator,
+            param_cardinalities: Sequence) -> tuple[int, int | None]:
         """
         
         Returns:
@@ -92,33 +92,30 @@ class MultisetMaximumMatch(MultisetOperator[T]):
                 eligible to be matched.
         """
         if order == self._order:
-            return (0, self._match_equal, self._keep), None
+            return 0, None
         else:
-            left_cardinality, right_cardinality = child_cardinalities
-            if left_cardinality is None or right_cardinality is None or left_cardinality != right_cardinality:
-                raise UnsupportedOrderError(
-                    'Reverse order not supported unless cardinalities of both operands are inferrable to be equal.'
-                )
-            return (0, not self._match_equal, not self._keep), None
+            raise UnsupportedOrderError(
+                'Reverse order not supported unless cardinalities of both operands are inferrable to be equal.'
+            )
 
-    def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
-        prev_matchable, match_equal, keep = state
+    def _next_state(self, prev_matchable, order, outcome, child_counts,
+                    source_counts, param_counts):
         left_count, right_count = child_counts
+
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
 
-        if match_equal:
+        if self._match_equal:
             new_matches = min(prev_matchable + right_count, left_count)
         else:
             new_matches = min(prev_matchable, left_count)
         prev_matchable += right_count - new_matches
-        if keep:
+        if self._keep:
             count = new_matches
         else:
             count = left_count - new_matches
-        return (prev_matchable, match_equal, keep), count
+        return prev_matchable, count
 
     @property
     def _expression_key(self):
-        return MultisetMaximumMatch, self._order
+        return MultisetMaximumMatch, self._order, self._match_equal, self._keep

@@ -75,7 +75,7 @@ def test_sort_match_operators_ascending(op):
 
 
 @pytest.mark.parametrize('op', sort_ops)
-@pytest.mark.parametrize('left', [d6.pool(3), Pool([d4, d6, d8])])
+@pytest.mark.parametrize('left', [d6.pool(2), d6.pool(3), Pool([d4, d6, d8])])
 @pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
 def test_sort_match_operators_expand(op, left, right):
     result = left.highest(2).sort_match(op, right).expand()
@@ -141,7 +141,7 @@ def test_maximum_match(op):
 
 
 @pytest.mark.parametrize('op', maximum_ops)
-@pytest.mark.parametrize('left', [d6.pool(3), Pool([d4, d6, d8])])
+@pytest.mark.parametrize('left', [d6.pool(2), d6.pool(3), Pool([d4, d6, d8])])
 @pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
 def test_maximum_match_expand(op, left, right):
     if op in ['<=', '<']:
