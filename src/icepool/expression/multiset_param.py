@@ -30,10 +30,10 @@ class MultisetParamBase(Generic[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T], ...]',
+                        'tuple[MultisetQuestlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlet = MultisetParamDungeonlet[T](self._index)
-        questlet = MultisetParamQuestlet[T]()
+        questlet = MultisetParamQuestlet[T](self._index)
         yield (dungeonlet, ), (questlet, ), (), 1
 
     @property
@@ -71,5 +71,14 @@ class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
         return MultisetParamDungeonlet, self.index
 
 
-class MultisetParamQuestlet(MultisetQuestlet[T]):
+class MultisetParamQuestlet(MultisetQuestlet[T, Any]):
     child_indexes = ()
+
+    def __init__(self, index: int):
+        self.index = index
+
+    def initial_state(self, order: Order, outcomes: Sequence[T],
+                      child_cardinalities: MutableSequence,
+                      source_cardinalities: Iterator,
+                      param_cardinalities: Sequence):
+        return None, param_cardinalities[self.index]

@@ -63,7 +63,7 @@ class MultisetTupleSubscript(MultisetExpression[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T], ...]',
+                        'tuple[MultisetQuestlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         for dungeonlets, questlets, sources, weight in self._children[
                 0]._prepare():

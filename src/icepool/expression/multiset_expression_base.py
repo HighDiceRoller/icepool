@@ -31,7 +31,7 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T], ...]',
+                        'tuple[MultisetQuestlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         """Prepare for evaluation.
 
@@ -149,19 +149,30 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
         return self.outcomes()[-1]
 
 
-class MultisetQuestlet(Generic[T]):
+class MultisetQuestlet(Generic[T, Q]):
     child_indexes: tuple[int, ...]
     """The relative (therefore negative) indexes of this node's children."""
 
-    def initial_state(self, order: Order, outcomes: Sequence[T]) -> Hashable:
+    @abstractmethod
+    def initial_state(
+            self, order: Order, outcomes: Sequence[T],
+            child_cardinalities: MutableSequence,
+            source_cardinalities: Iterator,
+            param_cardinalities: Sequence) -> tuple[Hashable, Q | None]:
         """Optional: the initial state of this node.
-        TODO: Should this get cardinalities?
 
         Args:
             order: The order in which `next_state` will see outcomes.
             outcomes: All outcomes that will be seen by `next_state` in ascending order.
+            child_counts: The cardinalities of the child nodes.
+            source_counts: The cardinalities produced by sources.
+                This is an iterator which will be progressively consumed by
+                free variables.
+            param_counts: The cardinalities produced by params.
+
+        Returns:
+            The initial state, and the cardinality of this node.
 
         Raises:
             UnsupportedOrderError if the given order is not supported.
         """
-        return None

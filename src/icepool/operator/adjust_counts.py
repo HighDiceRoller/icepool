@@ -10,7 +10,7 @@ import operator
 from abc import abstractmethod
 from functools import cached_property, reduce
 
-from typing import Callable, Hashable, Iterable, Literal
+from typing import Callable, Hashable, Iterable, Iterator, Literal, MutableSequence, Sequence
 from icepool.typing import T
 
 
@@ -70,6 +70,16 @@ class MultisetMultiplyCounts(MultisetCountOperator):
 
     def __str__(self) -> str:
         return f'({self._children[0]} * {self._constant})'
+
+    def _initial_state(self, order, outcomes,
+                       child_cardinalities: MutableSequence,
+                       source_cardinalities: Iterator,
+                       param_cardinalities: Sequence):
+        child_cardinality = child_cardinalities[0]
+        if child_cardinality is None:
+            return None, None
+        else:
+            return None, child_cardinalities[0] * self._constant
 
 
 class MultisetFloordivCounts(MultisetCountOperator):

@@ -57,7 +57,10 @@ class MultisetOperator(MultisetExpression[T]):
         """
         return self._expression_key
 
-    def _initial_state(self, order: Order, outcomes: Sequence[T]) -> Hashable:
+    def _initial_state(self, order: Order, outcomes: Sequence[T],
+                       child_cardinalities: MutableSequence,
+                       source_cardinalities: Iterator,
+                       param_cardinalities: Sequence) -> Hashable:
         """Optional: the initial state of this node.
 
         Args:
@@ -65,10 +68,13 @@ class MultisetOperator(MultisetExpression[T]):
             outcomes: All outcomes that will be seen by `next_state` in ascending order.
             kwargs: Any keyword arguments that were passed to `evaluate()`.
 
+        Returns:
+            The initial state and the cardinality of this node.
+
         Raises:
             UnsupportedOrderError if the given order is not supported.
         """
-        return None
+        return None, None
 
     @property
     def hash_key(self):
@@ -86,13 +92,13 @@ class MultisetOperator(MultisetExpression[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T], ...]',
+                        'tuple[MultisetQuestlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
 
             dungeonlets: MutableSequence[MultisetDungeonlet[T, Any]] = []
-            questlets: MutableSequence[MultisetQuestlet[T]] = []
+            questlets: MutableSequence[MultisetQuestlet[T, Any]] = []
             sources: MutableSequence[MultisetSourceBase[T, Any]] = []
             weight = 1
             positions: MutableSequence[int] = []
@@ -130,7 +136,7 @@ class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
         return self._hash_key
 
 
-class MultisetOperatorQuestlet(MultisetQuestlet[T]):
+class MultisetOperatorQuestlet(MultisetQuestlet[T, int]):
     # Will be filled in by the constructor.
     initial_state = None  # type: ignore
 

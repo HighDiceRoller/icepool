@@ -195,9 +195,12 @@ class MultisetDungeon(Generic[T]):
                      sources: 'tuple[MultisetSourceBase, ...]', order: Order,
                      outcomes: tuple[T, ...],
                      kwargs: Mapping[str, Hashable]) -> 'MultisetRoom[T]':
-        initial_statelets = quest.initial_statelets(order, outcomes)
+        source_counts = (source.cardinality() for source in sources)
+        initial_statelets, cardinalities = quest.initial_statelets(
+            order, outcomes, source_counts, ())
         initial_state_main = quest.initial_state_main(order, outcomes,
-                                                      **kwargs)
+                                                      source_counts,
+                                                      cardinalities, kwargs)
         return MultisetRoom(outcomes, sources, initial_statelets,
                             initial_state_main)
 
@@ -394,7 +397,7 @@ class MultisetRoom(Generic[T], NamedTuple):
 
 
 class MultisetQuest(Generic[T, U_co]):
-    questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]'
+    questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]'
 
     @abstractmethod
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
@@ -405,10 +408,10 @@ class MultisetQuest(Generic[T, U_co]):
         """
 
     @abstractmethod
-    def initial_state_main(self, order: Order, outcomes: Sequence[T], /,
-                           **kwargs) -> Hashable:
+    def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
+                           source_counts: Iterator, param_counts: Sequence,
+                           kwargs: Mapping[str, Hashable]) -> Hashable:
         """The initial evaluation state.
-        TODO: Should this get cardinalities?
 
         Args:
             order: The order in which `next_state` will see outcomes.
@@ -421,15 +424,27 @@ class MultisetQuest(Generic[T, U_co]):
 
     @abstractmethod
     def final_outcome(
-            self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
-            **kwargs) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
+        self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
+        kwargs: Mapping[str, Hashable]
+    ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
-    def initial_statelets(self, order: Order, outcomes: tuple[T, ...]):
-        return tuple(
-            tuple(
-                questlet.initial_state(order, outcomes) for questlet in flat)
-            for flat in self.questlet_flats)
+    def initial_statelets(self, order: Order, outcomes: tuple[T, ...],
+                          source_counts: Iterator, param_counts: Sequence):
+        statelet_flats = []
+        output_counts: MutableSequence = []
+        for questlets in self.questlet_flats:
+            statelets = []
+            countlets: MutableSequence = []
+            for questlet in questlets:
+                child_counts = [countlets[i] for i in questlet.child_indexes]
+                next_statelet, countlet = questlet.initial_state(
+                    order, outcomes, child_counts, source_counts, param_counts)
+                statelets.append(next_statelet)
+                countlets.append(countlet)
+            statelet_flats.append(tuple(statelets))
+            output_counts.append(countlets[-1])
+        return tuple(statelet_flats), tuple(output_counts)
 
     def finalize_evaluation(
             self, final_states: Mapping[tuple[tuple[Hashable, ...], ...],
@@ -440,7 +455,7 @@ class MultisetQuest(Generic[T, U_co]):
         final_weights = []
         for _, main_states in final_states.items():
             for state, weight in main_states.items():
-                outcome = self.final_outcome(state, order, outcomes, **kwargs)
+                outcome = self.final_outcome(state, order, outcomes, kwargs)
                 if outcome is None:
                     raise TypeError(
                         "None is not a valid final outcome.\n"

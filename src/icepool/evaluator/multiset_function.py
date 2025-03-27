@@ -213,7 +213,7 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
 
     def __init__(
         self,
-        questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]',
+        questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]',
         inner_quest: MultisetQuest[T, U_co],
         inner_kwargs: Mapping[str, Hashable],
     ):
@@ -224,16 +224,21 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
     def extra_outcomes(self, outcomes):
         return self.inner_quest.extra_outcomes(outcomes)
 
-    def initial_state_main(self, order, outcomes, **kwargs):
+    def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
+                           source_counts: Iterator, param_counts: Sequence,
+                           kwargs: Mapping[str, Hashable]) -> Hashable:
         # The kwargs have already been bound to inner_kwargs.
-        return (self.inner_quest.initial_statelets(order, outcomes),
-                self.inner_quest.initial_state_main(order, outcomes,
-                                                    **self.inner_kwargs))
+        statelets, counts = self.inner_quest.initial_statelets(
+            order, outcomes, source_counts, param_counts)
+        state = self.inner_quest.initial_state_main(order, outcomes,
+                                                    source_counts, counts,
+                                                    self.inner_kwargs)
+        return statelets, state
 
-    def final_outcome(self, final_state, order, outcomes, **kwargs):
+    def final_outcome(self, final_state, order, outcomes, kwargs):
         _, final_main_state = final_state
         return self.inner_quest.final_outcome(final_main_state, order,
-                                              outcomes, **self.inner_kwargs)
+                                              outcomes, self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
@@ -316,7 +321,7 @@ class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):
 
     def __init__(
         self,
-        questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]',
+        questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]',
         inner_quests: tuple[MultisetQuest[T, U_co], ...],
         inner_kwargses: tuple[Mapping[str, Hashable], ...],
     ):
@@ -328,18 +333,32 @@ class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):
         return sorted_union(*(quest.extra_outcomes(outcomes)
                               for quest in self.inner_quests))
 
-    def initial_state_main(self, order, outcomes, **kwargs):
-        # The kwargs have already been bound to inner_kwargses.
-        return tuple(
-            (quest.initial_statelets(order, outcomes),
-             quest.initial_state_main(order, outcomes, **inner_kwargs))
-            for quest, inner_kwargs in zip(self.inner_quests,
-                                           self.inner_kwargses))
+    def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
+                           source_counts: Iterator, param_counts: Sequence,
+                           kwargs: Mapping[str, Hashable]) -> Hashable:
 
-    def final_outcome(self, final_state, order, outcomes, **kwargs):
+        return tuple(
+            self.initial_state_single(
+                inner_quest, order, outcomes, source_counts, param_counts,
+                inner_kwargs) for inner_quest, inner_kwargs in zip(
+                    self.inner_quests, self.inner_kwargses))
+
+    @staticmethod
+    def initial_state_single(inner_quest: MultisetQuest[T, Any], order: Order,
+                             outcomes: tuple[T, ...], source_counts: Iterator,
+                             param_counts: Sequence,
+                             inner_kwargs: Mapping[str, Hashable]):
+        # The kwargs have already been bound to inner_kwargs.
+        statelets, counts = inner_quest.initial_statelets(
+            order, outcomes, source_counts, param_counts)
+        state = inner_quest.initial_state_main(order, outcomes, source_counts,
+                                               counts, inner_kwargs)
+        return statelets, state
+
+    def final_outcome(self, final_state, order, outcomes, kwargs):
         # The kwargs have already been bound to inner_kwargses.
         result = tuple(
-            quest.final_outcome(inner_main_state, order, outcomes, **
+            quest.final_outcome(inner_main_state, order, outcomes,
                                 inner_kwargs)
             for quest, (_, inner_main_state), inner_kwargs in zip(
                 self.inner_quests, final_state, self.inner_kwargses))

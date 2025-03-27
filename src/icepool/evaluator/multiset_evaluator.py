@@ -204,15 +204,21 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T], MaybeHashKeyed):
 
 class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
     # These are filled in by the constructor.
-    initial_state_main = None  # type: ignore
     extra_outcomes = None  # type: ignore
-    final_outcome = None  # type: ignore
 
     def __init__(
-            self, initial_state_main: Callable[..., Hashable],
-            extra_outcomes: Callable, final_outcome: Callable,
-            questlet_flats: 'tuple[tuple[MultisetQuestlet[T], ...], ...]'):
-        self.initial_state_main = initial_state_main  # type: ignore
+            self, initial_state_eval: Callable[..., Hashable],
+            extra_outcomes: Callable, final_outcome_eval: Callable,
+            questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]'
+    ):
+        self.initial_state_eval = initial_state_eval
         self.extra_outcomes = extra_outcomes  # type: ignore
-        self.final_outcome = final_outcome  # type: ignore
+        self.final_outcome_eval = final_outcome_eval  # type: ignore
         self.questlet_flats = questlet_flats
+
+    def initial_state_main(self, order, outcomes, source_counts, param_counts,
+                           kwargs):
+        return self.initial_state_eval(order, outcomes, **kwargs)
+
+    def final_outcome(self, final_state, order, outcomes, kwargs):
+        return self.final_outcome_eval(final_state, order, outcomes, **kwargs)

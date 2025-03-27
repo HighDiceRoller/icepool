@@ -11,7 +11,7 @@ from abc import abstractmethod
 from functools import cached_property, reduce
 
 from types import EllipsisType
-from typing import Callable, Collection, Hashable, Iterable, Sequence
+from typing import Callable, Collection, Hashable, Iterable, Iterator, MutableSequence, Sequence
 from icepool.typing import T
 
 
@@ -28,16 +28,25 @@ class MultisetSortMatch(MultisetOperator[T]):
         self._left_first = left_first
         self._right_first = right_first
 
-    def _initial_state(self, order, outcomes) -> int:
+    def _initial_state(
+            self, order, outcomes, child_cardinalities: MutableSequence,
+            source_cardinalities: Iterator,
+            param_cardinalities: Sequence) -> tuple[int, int | None]:
         """
         
         Returns:
             left_lead: The number of elements by which the left operand is
                 ahead.
         """
-        if order != self._order:
-            raise UnsupportedOrderError()
-        return 0
+        if order == self._order:
+            return 0, None
+        else:
+            left_cardinality, right_cardinality = child_cardinalities
+            if left_cardinality is None or right_cardinality is None:
+                raise UnsupportedOrderError(
+                    'Reverse order not supported unless cardinalities of both operands are inferrable constants.'
+                )
+            return 0, None
 
     def _next_state(self, left_lead, order, outcome, child_counts,
                     source_counts, param_counts):
@@ -76,16 +85,25 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         self._match_equal = match_equal
         self._keep = keep
 
-    def _initial_state(self, order, outcomes):
+    def _initial_state(
+            self, order, outcomes, child_cardinalities: MutableSequence,
+            source_cardinalities: Iterator,
+            param_cardinalities: Sequence) -> tuple[int, int | None]:
         """
         
         Returns:
             prev_matchable: The number of previously-seen elements that are
                 eligible to be matched.
         """
-        if order != self._order:
-            raise UnsupportedOrderError()
-        return 0
+        if order == self._order:
+            return 0, None
+        else:
+            left_cardinality, right_cardinality = child_cardinalities
+            if left_cardinality is None or right_cardinality is None:
+                raise UnsupportedOrderError(
+                    'Reverse order not supported unless cardinalities of both operands are inferrable constants.'
+                )
+            return 0, None
 
     def _next_state(self, prev_matchable, order, outcome, child_counts,
                     source_counts, param_counts):

@@ -40,10 +40,10 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
     def _prepare(
         self
     ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T], ...]',
+                        'tuple[MultisetQuestlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlets = (MultisetFreeVariable[T, tuple[int, ...]](), )
-        questlets = (MultisetQuestlet[T](), )
+        questlets = (MultisetTupleGeneratorQuestlet[T](), )
         sources = (self._make_source(), )
         weight = 1
         yield dungeonlets, questlets, sources, weight
@@ -51,3 +51,11 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
 
 class MultisetTupleSource(MultisetSourceBase[T, tuple[int, ...]]):
     """A source that produces a tuple of `int` counts."""
+
+
+class MultisetTupleGeneratorQuestlet(MultisetQuestlet[T, tuple[int, ...]]):
+    child_indexes = ()
+
+    def initial_state(self, order, outcomes, child_cardinalities,
+                      source_cardinalities, param_cardinalities):
+        return None, next(source_cardinalities)
