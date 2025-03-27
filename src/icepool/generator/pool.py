@@ -248,6 +248,9 @@ class PoolSource(MultisetSource[T]):
                             key=lambda kv: kv[0].hash_key))
         return PoolSource._new_raw(dice, outcomes, keep_tuple)
 
+    def cardinality(self):
+        return sum(self.keep_tuple)
+
     def outcomes(self):
         return self._outcomes
 

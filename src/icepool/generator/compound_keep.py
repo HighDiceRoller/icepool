@@ -46,6 +46,9 @@ class CompoundKeepSource(MultisetSource[T]):
         self.inner_sources = inner_sources
         self.keep_tuple = keep_tuple
 
+    def cardinality(self):
+        return sum(self.keep_tuple)
+
     def outcomes(self):
         return icepool.sorted_union(*(inner.outcomes()
                                       for inner in self.inner_sources))

@@ -96,6 +96,9 @@ class DealSource(MultisetSource[T]):
         self.deck = deck
         self.keep_tuple = keep_tuple
 
+    def cardinality(self):
+        return sum(self.keep_tuple)
+
     def outcomes(self):
         return self.deck.outcomes()
 

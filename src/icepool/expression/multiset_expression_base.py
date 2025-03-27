@@ -109,6 +109,10 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
         """The possible outcomes that could be generated, in ascending order."""
 
     @abstractmethod
+    def cardinality(self) -> Q | None:
+        """The number of elements output by this source, or `None` if not constant or known."""
+
+    @abstractmethod
     def pop(self, order: Order,
             outcome: T) -> Iterator[tuple['MultisetSourceBase', Q, int]]:
         """
