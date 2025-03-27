@@ -29,50 +29,46 @@ class MultisetSortMatch(MultisetOperator[T]):
         self._right_first = right_first
 
     def _initial_state(
-            self, order, outcomes, child_cardinalities: MutableSequence,
-            source_cardinalities: Iterator,
-            param_cardinalities: Sequence) -> tuple[int, int | None]:
+        self, order, outcomes, child_cardinalities: MutableSequence,
+        source_cardinalities: Iterator, param_cardinalities: Sequence
+    ) -> tuple[tuple[int, int, int, int], int | None]:
         """
-        
-        Returns:
-            left_lead: The number of elements by which the left operand is
-                ahead.
+        State is left_lead, tie, left_first, right_first.
         """
         if order == self._order:
-            return 0, None
+            return (0, self._tie, self._left_first, self._right_first), None
         else:
             left_cardinality, right_cardinality = child_cardinalities
-            if left_cardinality is None or right_cardinality is None:
+            if left_cardinality is None or right_cardinality is None or left_cardinality != right_cardinality:
                 raise UnsupportedOrderError(
-                    'Reverse order not supported unless cardinalities of both operands are inferrable constants.'
+                    'Reverse order not supported unless cardinalities of both operands are inferrable to be equal.'
                 )
-            return 0, None
+            return (0, self._tie, self._right_first, self._left_first), None
 
-    def _next_state(self, left_lead, order, outcome, child_counts,
-                    source_counts, param_counts):
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
+                    param_counts):
+        left_lead, tie, left_first, right_first = state
         left_count, right_count = child_counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
 
         count = 0
         if left_lead >= 0:
-            count += max(min(right_count - left_lead, left_count),
-                         0) * self._tie
+            count += max(min(right_count - left_lead, left_count), 0) * tie
         elif left_lead < 0:
-            count += max(min(left_count + left_lead, right_count),
-                         0) * self._tie
-            count += min(-left_lead, left_count) * self._right_first
+            count += max(min(left_count + left_lead, right_count), 0) * tie
+            count += min(-left_lead, left_count) * right_first
 
         left_lead += left_count - right_count
 
         if left_lead > 0:
-            count += min(left_lead, left_count) * self._left_first
+            count += min(left_lead, left_count) * left_first
 
-        return left_lead, count
+        return (left_lead, tie, left_first, right_first), count
 
     @property
     def _expression_key(self):
-        return MultisetSortMatch, self._order, self._tie, self._left_first, self._right_first
+        return MultisetSortMatch, self._order
 
 
 class MultisetMaximumMatch(MultisetOperator[T]):
@@ -98,12 +94,7 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         if order == self._order:
             return 0, None
         else:
-            left_cardinality, right_cardinality = child_cardinalities
-            if left_cardinality is None or right_cardinality is None:
-                raise UnsupportedOrderError(
-                    'Reverse order not supported unless cardinalities of both operands are inferrable constants.'
-                )
-            return 0, None
+            raise UnsupportedOrderError()
 
     def _next_state(self, prev_matchable, order, outcome, child_counts,
                     source_counts, param_counts):
