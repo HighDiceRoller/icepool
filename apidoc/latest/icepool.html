@@ -1291,13 +1291,13 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">Die</span><wbr>(<span class="base"><a href="#Population">icepool.Population[+T_co]</a></span>, <span class="base"><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></span>):
+    <span class="name">Die</span><wbr>(<span class="base"><a href="#Population">icepool.Population[+T_co]</a></span>, <span class="base"><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></span>):
 
                 <label class="view-source-button" for="Die-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Die"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Die-45"><a href="#Die-45"><span class="linenos">  45</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Die</span><span class="p">(</span><span class="n">Population</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span> <span class="n">HasHashKey</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Die-45"><a href="#Die-45"><span class="linenos">  45</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Die</span><span class="p">(</span><span class="n">Population</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span> <span class="n">MaybeHashKeyed</span><span class="p">):</span>
 </span><span id="Die-46"><a href="#Die-46"><span class="linenos">  46</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampling with replacement. Quantities represent weights.</span>
 </span><span id="Die-47"><a href="#Die-47"><span class="linenos">  47</span></a>
 </span><span id="Die-48"><a href="#Die-48"><span class="linenos">  48</span></a><span class="sd">    Dice are immutable. Methods do not modify the `Die` in-place;</span>
@@ -2740,7 +2740,7 @@ are the <code>(ones, twos, threes, fours, fives, sixes)</code> rolled in 10d6.</
 </span><span id="Die-1485"><a href="#Die-1485"><span class="linenos">1485</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Die-1486"><a href="#Die-1486"><span class="linenos">1486</span></a>        <span class="k">return</span> <span class="n">Die</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
 </span><span id="Die-1487"><a href="#Die-1487"><span class="linenos">1487</span></a>
-</span><span id="Die-1488"><a href="#Die-1488"><span class="linenos">1488</span></a>    <span class="fm">__hash__</span> <span class="o">=</span> <span class="n">HasHashKey</span><span class="o">.</span><span class="fm">__hash__</span>
+</span><span id="Die-1488"><a href="#Die-1488"><span class="linenos">1488</span></a>    <span class="fm">__hash__</span> <span class="o">=</span> <span class="n">MaybeHashKeyed</span><span class="o">.</span><span class="fm">__hash__</span>
 </span><span id="Die-1489"><a href="#Die-1489"><span class="linenos">1489</span></a>
 </span><span id="Die-1490"><a href="#Die-1490"><span class="linenos">1490</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">simplify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span id="Die-1491"><a href="#Die-1491"><span class="linenos">1491</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;`True` iff both dice have the same outcomes and quantities.</span>
@@ -4744,9 +4744,9 @@ Otherwise, the rounding will be performed without
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="Die.hash_key" class="variable"><a href="icepool/typing.html#HasHashKey.hash_key">hash_key</a></dd>
-                <dd id="Die.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="Die.hash_key" class="variable"><a href="icepool/typing.html#MaybeHashKeyed.hash_key">hash_key</a></dd>
+                <dd id="Die.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>
@@ -11336,6 +11336,8 @@ first pool one-for-one".</p>
 
 
             <div class="docstring"><p>A hash key for this object. This should include a type.</p>
+
+<p>If None, this will not compare equal to any other object.</p>
 </div>
 
 
@@ -11343,8 +11345,8 @@ first pool one-for-one".</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="Pool.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="Pool.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>
@@ -11470,9 +11472,9 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="MultisetGenerator.hash_key" class="variable"><a href="icepool/typing.html#HasHashKey.hash_key">hash_key</a></dd>
-                <dd id="MultisetGenerator.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="MultisetGenerator.hash_key" class="variable"><a href="icepool/typing.html#MaybeHashKeyed.hash_key">hash_key</a></dd>
+                <dd id="MultisetGenerator.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>
@@ -12579,7 +12581,7 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 </span><span id="MultisetExpression-1157"><a href="#MultisetExpression-1157"><span class="linenos">1157</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compare</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">evaluator</span><span class="o">.</span><span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
 </span><span id="MultisetExpression-1158"><a href="#MultisetExpression-1158"><span class="linenos">1158</span></a>
 </span><span id="MultisetExpression-1159"><a href="#MultisetExpression-1159"><span class="linenos">1159</span></a>    <span class="c1"># We need to reiterate this since we override __eq__.</span>
-</span><span id="MultisetExpression-1160"><a href="#MultisetExpression-1160"><span class="linenos">1160</span></a>    <span class="fm">__hash__</span> <span class="o">=</span> <span class="n">HasHashKey</span><span class="o">.</span><span class="fm">__hash__</span>
+</span><span id="MultisetExpression-1160"><a href="#MultisetExpression-1160"><span class="linenos">1160</span></a>    <span class="fm">__hash__</span> <span class="o">=</span> <span class="n">MaybeHashKeyed</span><span class="o">.</span><span class="fm">__hash__</span>
 </span></pre></div>
 
 
@@ -14634,9 +14636,9 @@ which both multisets have positive count, and <code>True</code> if there is not.
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="MultisetExpression.hash_key" class="variable"><a href="icepool/typing.html#HasHashKey.hash_key">hash_key</a></dd>
-                <dd id="MultisetExpression.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="MultisetExpression.hash_key" class="variable"><a href="icepool/typing.html#MaybeHashKeyed.hash_key">hash_key</a></dd>
+                <dd id="MultisetExpression.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>
@@ -15375,13 +15377,13 @@ You may replace <code>**kwargs</code> with a fixed set of keyword parameters;
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">Deck</span><wbr>(<span class="base"><a href="#Population">icepool.Population[+T_co]</a></span>, <span class="base"><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></span>):
+    <span class="name">Deck</span><wbr>(<span class="base"><a href="#Population">icepool.Population[+T_co]</a></span>, <span class="base"><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></span>):
 
                 <label class="view-source-button" for="Deck-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Deck"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck-20"><a href="#Deck-20"><span class="linenos"> 20</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Deck</span><span class="p">(</span><span class="n">Population</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span> <span class="n">HasHashKey</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deck-20"><a href="#Deck-20"><span class="linenos"> 20</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Deck</span><span class="p">(</span><span class="n">Population</span><span class="p">[</span><span class="n">T_co</span><span class="p">],</span> <span class="n">MaybeHashKeyed</span><span class="p">):</span>
 </span><span id="Deck-21"><a href="#Deck-21"><span class="linenos"> 21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sampling without replacement (within a single evaluation).</span>
 </span><span id="Deck-22"><a href="#Deck-22"><span class="linenos"> 22</span></a>
 </span><span id="Deck-23"><a href="#Deck-23"><span class="linenos"> 23</span></a><span class="sd">    Quantities represent duplicates.</span>
@@ -16057,9 +16059,9 @@ order, use <code><a href="#Deck.deal">deal()</a></code> instead.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="Deck.hash_key" class="variable"><a href="icepool/typing.html#HasHashKey.hash_key">hash_key</a></dd>
-                <dd id="Deck.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="Deck.hash_key" class="variable"><a href="icepool/typing.html#MaybeHashKeyed.hash_key">hash_key</a></dd>
+                <dd id="Deck.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>
@@ -16323,6 +16325,8 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 
 
             <div class="docstring"><p>A hash key for this object. This should include a type.</p>
+
+<p>If None, this will not compare equal to any other object.</p>
 </div>
 
 
@@ -16330,8 +16334,8 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="Deal.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="Deal.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>
@@ -16639,6 +16643,8 @@ Prefer to use the name <code><a href="#MultiDeal.outcomes">outcomes</a></code>.<
 
 
             <div class="docstring"><p>A hash key for this object. This should include a type.</p>
+
+<p>If None, this will not compare equal to any other object.</p>
 </div>
 
 
@@ -16646,8 +16652,8 @@ Prefer to use the name <code><a href="#MultiDeal.outcomes">outcomes</a></code>.<
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="icepool/typing.html#HasHashKey">icepool.typing.HasHashKey</a></dt>
-                                <dd id="MultiDeal.equals" class="function"><a href="icepool/typing.html#HasHashKey.equals">equals</a></dd>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="MultiDeal.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
 
             </div>
                                 </dl>

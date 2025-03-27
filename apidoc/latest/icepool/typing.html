@@ -71,13 +71,13 @@
 
             </li>
             <li>
-                    <a class="class" href="#HasHashKey">HasHashKey</a>
+                    <a class="class" href="#MaybeHashKeyed">MaybeHashKeyed</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="variable" href="#HasHashKey.hash_key">hash_key</a>
+                                <a class="variable" href="#MaybeHashKeyed.hash_key">hash_key</a>
                         </li>
                         <li>
-                                <a class="function" href="#HasHashKey.equals">equals</a>
+                                <a class="function" href="#MaybeHashKeyed.equals">equals</a>
                         </li>
                 </ul>
 
@@ -173,73 +173,78 @@
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="o">...</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="k">class</span><span class="w"> </span><span class="nc">HasHashKey</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MaybeHashKeyed</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="nd">@property</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A hash key for this object. This should include a type.&quot;&quot;&quot;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>            <span class="k">return</span> <span class="kc">True</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;hash_key&#39;</span><span class="p">):</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="k">return</span> <span class="kc">False</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="c1"># This may be overwritten in cases where == has a double meaning.</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span><span class="p">)</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A hash key for this object. This should include a type.</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        </span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">        If None, this will not compare equal to any other object.</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>            <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;hash_key&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="c1"># This may be overwritten in cases where == has a double meaning.</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span><span class="p">)</span>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">    Returns:</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        is a variadic `*args`.</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                <span class="k">break</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">    Returns:</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">        is a variadic `*args`.</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>                <span class="k">break</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    Args:</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>        <span class="p">)</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    Args:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="p">)</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
@@ -422,37 +427,42 @@
 
 
                 </section>
-                <section id="HasHashKey">
-                            <input id="HasHashKey-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="MaybeHashKeyed">
+                            <input id="MaybeHashKeyed-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">HasHashKey</span><wbr>(<span class="base">abc.ABC</span>):
+    <span class="name">MaybeHashKeyed</span><wbr>(<span class="base">abc.ABC</span>):
 
-                <label class="view-source-button" for="HasHashKey-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="MaybeHashKeyed-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HasHashKey"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HasHashKey-54"><a href="#HasHashKey-54"><span class="linenos">54</span></a><span class="k">class</span><span class="w"> </span><span class="nc">HasHashKey</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-</span><span id="HasHashKey-55"><a href="#HasHashKey-55"><span class="linenos">55</span></a>
-</span><span id="HasHashKey-56"><a href="#HasHashKey-56"><span class="linenos">56</span></a>    <span class="nd">@property</span>
-</span><span id="HasHashKey-57"><a href="#HasHashKey-57"><span class="linenos">57</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="HasHashKey-58"><a href="#HasHashKey-58"><span class="linenos">58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="HasHashKey-59"><a href="#HasHashKey-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A hash key for this object. This should include a type.&quot;&quot;&quot;</span>
-</span><span id="HasHashKey-60"><a href="#HasHashKey-60"><span class="linenos">60</span></a>
-</span><span id="HasHashKey-61"><a href="#HasHashKey-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="HasHashKey-62"><a href="#HasHashKey-62"><span class="linenos">62</span></a>        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="HasHashKey-63"><a href="#HasHashKey-63"><span class="linenos">63</span></a>            <span class="k">return</span> <span class="kc">True</span>
-</span><span id="HasHashKey-64"><a href="#HasHashKey-64"><span class="linenos">64</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;hash_key&#39;</span><span class="p">):</span>
-</span><span id="HasHashKey-65"><a href="#HasHashKey-65"><span class="linenos">65</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span>
-</span><span id="HasHashKey-66"><a href="#HasHashKey-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="kc">False</span>
-</span><span id="HasHashKey-67"><a href="#HasHashKey-67"><span class="linenos">67</span></a>
-</span><span id="HasHashKey-68"><a href="#HasHashKey-68"><span class="linenos">68</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="HasHashKey-69"><a href="#HasHashKey-69"><span class="linenos">69</span></a>        <span class="c1"># This may be overwritten in cases where == has a double meaning.</span>
-</span><span id="HasHashKey-70"><a href="#HasHashKey-70"><span class="linenos">70</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="HasHashKey-71"><a href="#HasHashKey-71"><span class="linenos">71</span></a>
-</span><span id="HasHashKey-72"><a href="#HasHashKey-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="HasHashKey-73"><a href="#HasHashKey-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span><span class="p">)</span>
+    <a class="headerlink" href="#MaybeHashKeyed"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MaybeHashKeyed-54"><a href="#MaybeHashKeyed-54"><span class="linenos">54</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MaybeHashKeyed</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+</span><span id="MaybeHashKeyed-55"><a href="#MaybeHashKeyed-55"><span class="linenos">55</span></a>
+</span><span id="MaybeHashKeyed-56"><a href="#MaybeHashKeyed-56"><span class="linenos">56</span></a>    <span class="nd">@property</span>
+</span><span id="MaybeHashKeyed-57"><a href="#MaybeHashKeyed-57"><span class="linenos">57</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="MaybeHashKeyed-58"><a href="#MaybeHashKeyed-58"><span class="linenos">58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-59"><a href="#MaybeHashKeyed-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A hash key for this object. This should include a type.</span>
+</span><span id="MaybeHashKeyed-60"><a href="#MaybeHashKeyed-60"><span class="linenos">60</span></a><span class="sd">        </span>
+</span><span id="MaybeHashKeyed-61"><a href="#MaybeHashKeyed-61"><span class="linenos">61</span></a><span class="sd">        If None, this will not compare equal to any other object.</span>
+</span><span id="MaybeHashKeyed-62"><a href="#MaybeHashKeyed-62"><span class="linenos">62</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MaybeHashKeyed-63"><a href="#MaybeHashKeyed-63"><span class="linenos">63</span></a>
+</span><span id="MaybeHashKeyed-64"><a href="#MaybeHashKeyed-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-65"><a href="#MaybeHashKeyed-65"><span class="linenos">65</span></a>        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-66"><a href="#MaybeHashKeyed-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="kc">True</span>
+</span><span id="MaybeHashKeyed-67"><a href="#MaybeHashKeyed-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-68"><a href="#MaybeHashKeyed-68"><span class="linenos">68</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="MaybeHashKeyed-69"><a href="#MaybeHashKeyed-69"><span class="linenos">69</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;hash_key&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-70"><a href="#MaybeHashKeyed-70"><span class="linenos">70</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span>
+</span><span id="MaybeHashKeyed-71"><a href="#MaybeHashKeyed-71"><span class="linenos">71</span></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="MaybeHashKeyed-72"><a href="#MaybeHashKeyed-72"><span class="linenos">72</span></a>
+</span><span id="MaybeHashKeyed-73"><a href="#MaybeHashKeyed-73"><span class="linenos">73</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-74"><a href="#MaybeHashKeyed-74"><span class="linenos">74</span></a>        <span class="c1"># This may be overwritten in cases where == has a double meaning.</span>
+</span><span id="MaybeHashKeyed-75"><a href="#MaybeHashKeyed-75"><span class="linenos">75</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="MaybeHashKeyed-76"><a href="#MaybeHashKeyed-76"><span class="linenos">76</span></a>
+</span><span id="MaybeHashKeyed-77"><a href="#MaybeHashKeyed-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed-78"><a href="#MaybeHashKeyed-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -461,44 +471,51 @@ inheritance.</p>
 </div>
 
 
-                            <div id="HasHashKey.hash_key" class="classattr">
-                                        <input id="HasHashKey.hash_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="MaybeHashKeyed.hash_key" class="classattr">
+                                        <input id="MaybeHashKeyed.hash_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
             <span class="name">hash_key</span><span class="annotation">: Hashable</span>
 
-                <label class="view-source-button" for="HasHashKey.hash_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="MaybeHashKeyed.hash_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HasHashKey.hash_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HasHashKey.hash_key-56"><a href="#HasHashKey.hash_key-56"><span class="linenos">56</span></a>    <span class="nd">@property</span>
-</span><span id="HasHashKey.hash_key-57"><a href="#HasHashKey.hash_key-57"><span class="linenos">57</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="HasHashKey.hash_key-58"><a href="#HasHashKey.hash_key-58"><span class="linenos">58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="HasHashKey.hash_key-59"><a href="#HasHashKey.hash_key-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A hash key for this object. This should include a type.&quot;&quot;&quot;</span>
+    <a class="headerlink" href="#MaybeHashKeyed.hash_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MaybeHashKeyed.hash_key-56"><a href="#MaybeHashKeyed.hash_key-56"><span class="linenos">56</span></a>    <span class="nd">@property</span>
+</span><span id="MaybeHashKeyed.hash_key-57"><a href="#MaybeHashKeyed.hash_key-57"><span class="linenos">57</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="MaybeHashKeyed.hash_key-58"><a href="#MaybeHashKeyed.hash_key-58"><span class="linenos">58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed.hash_key-59"><a href="#MaybeHashKeyed.hash_key-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A hash key for this object. This should include a type.</span>
+</span><span id="MaybeHashKeyed.hash_key-60"><a href="#MaybeHashKeyed.hash_key-60"><span class="linenos">60</span></a><span class="sd">        </span>
+</span><span id="MaybeHashKeyed.hash_key-61"><a href="#MaybeHashKeyed.hash_key-61"><span class="linenos">61</span></a><span class="sd">        If None, this will not compare equal to any other object.</span>
+</span><span id="MaybeHashKeyed.hash_key-62"><a href="#MaybeHashKeyed.hash_key-62"><span class="linenos">62</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>A hash key for this object. This should include a type.</p>
+
+<p>If None, this will not compare equal to any other object.</p>
 </div>
 
 
                             </div>
-                            <div id="HasHashKey.equals" class="classattr">
-                                        <input id="HasHashKey.equals-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="MaybeHashKeyed.equals" class="classattr">
+                                        <input id="MaybeHashKeyed.equals-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">equals</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">other</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
 
-                <label class="view-source-button" for="HasHashKey.equals-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="MaybeHashKeyed.equals-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HasHashKey.equals"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HasHashKey.equals-61"><a href="#HasHashKey.equals-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="HasHashKey.equals-62"><a href="#HasHashKey.equals-62"><span class="linenos">62</span></a>        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
-</span><span id="HasHashKey.equals-63"><a href="#HasHashKey.equals-63"><span class="linenos">63</span></a>            <span class="k">return</span> <span class="kc">True</span>
-</span><span id="HasHashKey.equals-64"><a href="#HasHashKey.equals-64"><span class="linenos">64</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;hash_key&#39;</span><span class="p">):</span>
-</span><span id="HasHashKey.equals-65"><a href="#HasHashKey.equals-65"><span class="linenos">65</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span>
-</span><span id="HasHashKey.equals-66"><a href="#HasHashKey.equals-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="kc">False</span>
+    <a class="headerlink" href="#MaybeHashKeyed.equals"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MaybeHashKeyed.equals-64"><a href="#MaybeHashKeyed.equals-64"><span class="linenos">64</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed.equals-65"><a href="#MaybeHashKeyed.equals-65"><span class="linenos">65</span></a>        <span class="k">if</span> <span class="bp">self</span> <span class="ow">is</span> <span class="n">other</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed.equals-66"><a href="#MaybeHashKeyed.equals-66"><span class="linenos">66</span></a>            <span class="k">return</span> <span class="kc">True</span>
+</span><span id="MaybeHashKeyed.equals-67"><a href="#MaybeHashKeyed.equals-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed.equals-68"><a href="#MaybeHashKeyed.equals-68"><span class="linenos">68</span></a>            <span class="k">return</span> <span class="kc">False</span>
+</span><span id="MaybeHashKeyed.equals-69"><a href="#MaybeHashKeyed.equals-69"><span class="linenos">69</span></a>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s1">&#39;hash_key&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MaybeHashKeyed.equals-70"><a href="#MaybeHashKeyed.equals-70"><span class="linenos">70</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">hash_key</span>
+</span><span id="MaybeHashKeyed.equals-71"><a href="#MaybeHashKeyed.equals-71"><span class="linenos">71</span></a>        <span class="k">return</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -517,8 +534,8 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#ImplicitConversionError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitConversionError-76"><a href="#ImplicitConversionError-76"><span class="linenos">76</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
-</span><span id="ImplicitConversionError-77"><a href="#ImplicitConversionError-77"><span class="linenos">77</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitConversionError-81"><a href="#ImplicitConversionError-81"><span class="linenos">81</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImplicitConversionError</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+</span><span id="ImplicitConversionError-82"><a href="#ImplicitConversionError-82"><span class="linenos">82</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that an implicit conversion failed.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -538,28 +555,28 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#count_positional_parameters"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="count_positional_parameters-80"><a href="#count_positional_parameters-80"><span class="linenos"> 80</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="count_positional_parameters-81"><a href="#count_positional_parameters-81"><span class="linenos"> 81</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
-</span><span id="count_positional_parameters-82"><a href="#count_positional_parameters-82"><span class="linenos"> 82</span></a>
-</span><span id="count_positional_parameters-83"><a href="#count_positional_parameters-83"><span class="linenos"> 83</span></a><span class="sd">    Returns:</span>
-</span><span id="count_positional_parameters-84"><a href="#count_positional_parameters-84"><span class="linenos"> 84</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
-</span><span id="count_positional_parameters-85"><a href="#count_positional_parameters-85"><span class="linenos"> 85</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
-</span><span id="count_positional_parameters-86"><a href="#count_positional_parameters-86"><span class="linenos"> 86</span></a><span class="sd">        is a variadic `*args`.</span>
-</span><span id="count_positional_parameters-87"><a href="#count_positional_parameters-87"><span class="linenos"> 87</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="count_positional_parameters-88"><a href="#count_positional_parameters-88"><span class="linenos"> 88</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="count_positional_parameters-89"><a href="#count_positional_parameters-89"><span class="linenos"> 89</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="count_positional_parameters-90"><a href="#count_positional_parameters-90"><span class="linenos"> 90</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="count_positional_parameters-91"><a href="#count_positional_parameters-91"><span class="linenos"> 91</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="count_positional_parameters-92"><a href="#count_positional_parameters-92"><span class="linenos"> 92</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
-</span><span id="count_positional_parameters-93"><a href="#count_positional_parameters-93"><span class="linenos"> 93</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
-</span><span id="count_positional_parameters-94"><a href="#count_positional_parameters-94"><span class="linenos"> 94</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="count_positional_parameters-95"><a href="#count_positional_parameters-95"><span class="linenos"> 95</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-</span><span id="count_positional_parameters-96"><a href="#count_positional_parameters-96"><span class="linenos"> 96</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="count_positional_parameters-97"><a href="#count_positional_parameters-97"><span class="linenos"> 97</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="count_positional_parameters-98"><a href="#count_positional_parameters-98"><span class="linenos"> 98</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
-</span><span id="count_positional_parameters-99"><a href="#count_positional_parameters-99"><span class="linenos"> 99</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span id="count_positional_parameters-100"><a href="#count_positional_parameters-100"><span class="linenos">100</span></a>                <span class="k">break</span>
-</span><span id="count_positional_parameters-101"><a href="#count_positional_parameters-101"><span class="linenos">101</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="count_positional_parameters-85"><a href="#count_positional_parameters-85"><span class="linenos"> 85</span></a><span class="k">def</span><span class="w"> </span><span class="nf">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="count_positional_parameters-86"><a href="#count_positional_parameters-86"><span class="linenos"> 86</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Counts the number of positional parameters of the callable.</span>
+</span><span id="count_positional_parameters-87"><a href="#count_positional_parameters-87"><span class="linenos"> 87</span></a>
+</span><span id="count_positional_parameters-88"><a href="#count_positional_parameters-88"><span class="linenos"> 88</span></a><span class="sd">    Returns:</span>
+</span><span id="count_positional_parameters-89"><a href="#count_positional_parameters-89"><span class="linenos"> 89</span></a><span class="sd">        Two `int`s. The first is the number of required positional arguments;</span>
+</span><span id="count_positional_parameters-90"><a href="#count_positional_parameters-90"><span class="linenos"> 90</span></a><span class="sd">        the second is total number of positional arguments, or `None` if there</span>
+</span><span id="count_positional_parameters-91"><a href="#count_positional_parameters-91"><span class="linenos"> 91</span></a><span class="sd">        is a variadic `*args`.</span>
+</span><span id="count_positional_parameters-92"><a href="#count_positional_parameters-92"><span class="linenos"> 92</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="count_positional_parameters-93"><a href="#count_positional_parameters-93"><span class="linenos"> 93</span></a>    <span class="n">required</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="count_positional_parameters-94"><a href="#count_positional_parameters-94"><span class="linenos"> 94</span></a>    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="count_positional_parameters-95"><a href="#count_positional_parameters-95"><span class="linenos"> 95</span></a>    <span class="n">parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="count_positional_parameters-96"><a href="#count_positional_parameters-96"><span class="linenos"> 96</span></a>    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="count_positional_parameters-97"><a href="#count_positional_parameters-97"><span class="linenos"> 97</span></a>        <span class="k">match</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span><span class="p">:</span>
+</span><span id="count_positional_parameters-98"><a href="#count_positional_parameters-98"><span class="linenos"> 98</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="o">|</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">:</span>
+</span><span id="count_positional_parameters-99"><a href="#count_positional_parameters-99"><span class="linenos"> 99</span></a>                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="count_positional_parameters-100"><a href="#count_positional_parameters-100"><span class="linenos">100</span></a>                <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">default</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+</span><span id="count_positional_parameters-101"><a href="#count_positional_parameters-101"><span class="linenos">101</span></a>                    <span class="n">required</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="count_positional_parameters-102"><a href="#count_positional_parameters-102"><span class="linenos">102</span></a>            <span class="k">case</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="count_positional_parameters-103"><a href="#count_positional_parameters-103"><span class="linenos">103</span></a>                <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="kc">None</span>
+</span><span id="count_positional_parameters-104"><a href="#count_positional_parameters-104"><span class="linenos">104</span></a>            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span id="count_positional_parameters-105"><a href="#count_positional_parameters-105"><span class="linenos">105</span></a>                <span class="k">break</span>
+</span><span id="count_positional_parameters-106"><a href="#count_positional_parameters-106"><span class="linenos">106</span></a>    <span class="k">return</span> <span class="n">required</span><span class="p">,</span> <span class="n">total</span>
 </span></pre></div>
 
 
@@ -587,8 +604,8 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#InferStarError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="InferStarError-104"><a href="#InferStarError-104"><span class="linenos">104</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-</span><span id="InferStarError-105"><a href="#InferStarError-105"><span class="linenos">105</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="InferStarError-109"><a href="#InferStarError-109"><span class="linenos">109</span></a><span class="k">class</span><span class="w"> </span><span class="nc">InferStarError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+</span><span id="InferStarError-110"><a href="#InferStarError-110"><span class="linenos">110</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -608,19 +625,19 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#infer_star"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="infer_star-108"><a href="#infer_star-108"><span class="linenos">108</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="infer_star-109"><a href="#infer_star-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
-</span><span id="infer_star-110"><a href="#infer_star-110"><span class="linenos">110</span></a>
-</span><span id="infer_star-111"><a href="#infer_star-111"><span class="linenos">111</span></a><span class="sd">    Args:</span>
-</span><span id="infer_star-112"><a href="#infer_star-112"><span class="linenos">112</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
-</span><span id="infer_star-113"><a href="#infer_star-113"><span class="linenos">113</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="infer_star-114"><a href="#infer_star-114"><span class="linenos">114</span></a>    <span class="k">try</span><span class="p">:</span>
-</span><span id="infer_star-115"><a href="#infer_star-115"><span class="linenos">115</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
-</span><span id="infer_star-116"><a href="#infer_star-116"><span class="linenos">116</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span id="infer_star-117"><a href="#infer_star-117"><span class="linenos">117</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
-</span><span id="infer_star-118"><a href="#infer_star-118"><span class="linenos">118</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
-</span><span id="infer_star-119"><a href="#infer_star-119"><span class="linenos">119</span></a>        <span class="p">)</span>
-</span><span id="infer_star-120"><a href="#infer_star-120"><span class="linenos">120</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="infer_star-113"><a href="#infer_star-113"><span class="linenos">113</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="infer_star-114"><a href="#infer_star-114"><span class="linenos">114</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
+</span><span id="infer_star-115"><a href="#infer_star-115"><span class="linenos">115</span></a>
+</span><span id="infer_star-116"><a href="#infer_star-116"><span class="linenos">116</span></a><span class="sd">    Args:</span>
+</span><span id="infer_star-117"><a href="#infer_star-117"><span class="linenos">117</span></a><span class="sd">        arg_count: The number of arguments that will be provided to the function.</span>
+</span><span id="infer_star-118"><a href="#infer_star-118"><span class="linenos">118</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="infer_star-119"><a href="#infer_star-119"><span class="linenos">119</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="infer_star-120"><a href="#infer_star-120"><span class="linenos">120</span></a>        <span class="n">required_count</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">count_positional_parameters</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+</span><span id="infer_star-121"><a href="#infer_star-121"><span class="linenos">121</span></a>    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span id="infer_star-122"><a href="#infer_star-122"><span class="linenos">122</span></a>        <span class="k">raise</span> <span class="n">InferStarError</span><span class="p">(</span>
+</span><span id="infer_star-123"><a href="#infer_star-123"><span class="linenos">123</span></a>            <span class="sa">f</span><span class="s1">&#39;Could not determine the number of arguments taken by the function. You will need to specify star explicitly.&#39;</span>
+</span><span id="infer_star-124"><a href="#infer_star-124"><span class="linenos">124</span></a>        <span class="p">)</span>
+</span><span id="infer_star-125"><a href="#infer_star-125"><span class="linenos">125</span></a>    <span class="k">return</span> <span class="n">required_count</span> <span class="o">&gt;</span> <span class="n">arg_count</span>
 </span></pre></div>
 
 
