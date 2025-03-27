@@ -6,7 +6,7 @@ from icepool.generator.multiset_generator import MultisetSource
 import icepool.math
 import icepool.creation_args
 import icepool.order
-from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
+from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.order import Order, OrderReason
 
 import itertools
@@ -206,7 +206,7 @@ class Pool(KeepGenerator[T]):
                       for die, count in self._dice))
 
 
-class PoolSource(MultisetSource[T]):
+class PoolSource(KeepSource[T]):
     dice: tuple[tuple['icepool.Die[T]', int]]
     _outcomes: tuple[T, ...]
     keep_tuple: tuple[int, ...]
@@ -247,9 +247,6 @@ class PoolSource(MultisetSource[T]):
         dice = tuple(sorted(dice_counts.items(),
                             key=lambda kv: kv[0].hash_key))
         return PoolSource._new_raw(dice, outcomes, keep_tuple)
-
-    def cardinality(self):
-        return sum(self.keep_tuple)
 
     def outcomes(self):
         return self._outcomes

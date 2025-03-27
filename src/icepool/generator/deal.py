@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 from icepool.generator.multiset_generator import MultisetSource
 import icepool.order
-from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
+from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.order import Order, OrderReason
 
@@ -90,14 +90,11 @@ class Deal(KeepGenerator[T]):
             self.deck())
 
 
-class DealSource(MultisetSource[T]):
+class DealSource(KeepSource[T]):
 
     def __init__(self, deck: 'icepool.Deck[T]', keep_tuple: tuple[int, ...]):
         self.deck = deck
         self.keep_tuple = keep_tuple
-
-    def cardinality(self):
-        return sum(self.keep_tuple)
 
     def outcomes(self):
         return self.deck.outcomes()

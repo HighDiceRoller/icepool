@@ -73,16 +73,6 @@ class MultisetDifference(MultisetBinaryOperator):
     def symbol() -> str:
         return '-'
 
-    def _initial_state(self, order, outcomes,
-                       child_cardinalities: MutableSequence,
-                       source_cardinalities: Iterator,
-                       param_cardinalities: Sequence):
-        left_cardinality, right_cardinality = child_cardinalities
-        if left_cardinality is None or right_cardinality is None:
-            return None, None
-        else:
-            return None, child_cardinalities[0] - child_cardinalities[1]
-
 
 class MultisetUnion(MultisetBinaryOperator):
 

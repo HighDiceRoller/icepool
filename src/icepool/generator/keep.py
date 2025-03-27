@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.multiset_generator import MultisetGenerator
+from icepool.generator.multiset_generator import MultisetGenerator, MultisetSource
 
 import operator
 from collections import defaultdict
@@ -364,3 +364,12 @@ def compose_keep_tuples(base: tuple[int, ...], apply: tuple[int, ...]):
         result.append(sum(apply[:x]))
         apply = apply[x:]
     return tuple(result)
+
+
+class KeepSource(MultisetSource[T]):
+    keep_tuple: tuple[int, ...]
+
+    def cardinality(self):
+        if any(x < 0 for x in self.keep_tuple):
+            return None
+        return sum(self.keep_tuple)

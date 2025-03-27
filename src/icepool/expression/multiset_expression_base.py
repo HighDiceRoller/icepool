@@ -111,7 +111,11 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
 
     @abstractmethod
     def cardinality(self) -> Q | None:
-        """The number of elements output by this source, or `None` if not constant or known."""
+        """The total number of elements output by this source, if only non-negative counts are output.
+        
+        If total number of elements is not constant or unknown, or if there are
+        negative counts, the result is `None`.
+        """
 
     @abstractmethod
     def pop(self, order: Order,

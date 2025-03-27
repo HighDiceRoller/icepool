@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.keep import KeepGenerator, pop_max_from_keep_tuple, pop_min_from_keep_tuple
+from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.generator.multiset_generator import MultisetGenerator, MultisetSource
 from icepool.order import Order, OrderReason, merge_order_preferences
 
@@ -39,15 +39,12 @@ class CompoundKeepGenerator(KeepGenerator[T]):
                 '], keep_tuple=' + str(self.keep_tuple()) + ')')
 
 
-class CompoundKeepSource(MultisetSource[T]):
+class CompoundKeepSource(KeepSource[T]):
 
     def __init__(self, inner_sources: tuple[MultisetSource, ...],
                  keep_tuple: tuple[int, ...]):
         self.inner_sources = inner_sources
         self.keep_tuple = keep_tuple
-
-    def cardinality(self):
-        return sum(self.keep_tuple)
 
     def outcomes(self):
         return icepool.sorted_union(*(inner.outcomes()
