@@ -72,4 +72,4 @@ class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
 
 
 class MultisetParamQuestlet(MultisetQuestlet[T]):
-    pass
+    child_indexes = ()

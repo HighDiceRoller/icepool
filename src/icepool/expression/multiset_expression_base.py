@@ -57,6 +57,7 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
 
 class MultisetDungeonlet(Generic[T, Q], MaybeHashKeyed):
     child_indexes: tuple[int, ...]
+    """The relative (therefore negative) indexes of this node's children."""
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
@@ -149,6 +150,8 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
 
 
 class MultisetQuestlet(Generic[T]):
+    child_indexes: tuple[int, ...]
+    """The relative (therefore negative) indexes of this node's children."""
 
     def initial_state(self, order: Order, outcomes: Sequence[T]) -> Hashable:
         """Optional: the initial state of this node.

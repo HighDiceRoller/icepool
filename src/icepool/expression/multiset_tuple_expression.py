@@ -71,7 +71,8 @@ class MultisetTupleSubscript(MultisetExpression[T]):
             dungeonlet = MultisetOperatorDungeonlet[T](self._next_state,
                                                        self.hash_key,
                                                        child_indexes)
-            questlet = MultisetOperatorQuestlet[T](self._initial_state)
+            questlet = MultisetOperatorQuestlet[T](self._initial_state,
+                                                   child_indexes)
 
             yield dungeonlets + (dungeonlet, ), tuple(questlets) + (
                 questlet, ), tuple(sources), weight

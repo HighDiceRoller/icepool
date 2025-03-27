@@ -107,7 +107,8 @@ class MultisetOperator(MultisetExpression[T]):
             dungeonlet = MultisetOperatorDungeonlet[T](self._next_state,
                                                        self._dungeonlet_key,
                                                        child_indexes)
-            questlet = MultisetOperatorQuestlet[T](self._initial_state)
+            questlet = MultisetOperatorQuestlet[T](self._initial_state,
+                                                   child_indexes)
             dungeonlets.append(dungeonlet)
             questlets.append(questlet)
 
@@ -133,5 +134,7 @@ class MultisetOperatorQuestlet(MultisetQuestlet[T]):
     # Will be filled in by the constructor.
     initial_state = None  # type: ignore
 
-    def __init__(self, initial_state: Callable):
+    def __init__(self, initial_state: Callable, child_indexes: tuple[int,
+                                                                     ...]):
         self.initial_state = initial_state  # type: ignore
+        self.child_indexes = child_indexes
