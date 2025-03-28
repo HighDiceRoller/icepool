@@ -96,9 +96,7 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         if order == self._order:
             return 0, None
         else:
-            raise UnsupportedOrderError(
-                'Reverse order not supported unless cardinalities of both operands are inferrable to be equal.'
-            )
+            raise UnsupportedOrderError()
 
     def _next_state(self, prev_matchable, order, outcome, child_counts,
                     source_counts, param_counts):
