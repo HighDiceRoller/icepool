@@ -39,11 +39,13 @@ class MultisetSortMatch(MultisetOperator[T]):
             return (0, self._tie, self._left_first, self._right_first), None
         else:
             left_cardinality, right_cardinality = child_cardinalities
-            if left_cardinality is None or right_cardinality is None or left_cardinality != right_cardinality:
+            if left_cardinality is None or right_cardinality is None:
                 raise UnsupportedOrderError(
-                    'Reverse order not supported unless cardinalities of both operands are inferrable to be equal.'
+                    'Reverse order not supported unless cardinalities of both operands are inferrable.'
                 )
-            return (0, self._tie, self._right_first, self._left_first), None
+            left_lead = right_cardinality - left_cardinality
+            return (left_lead, self._tie, self._right_first,
+                    self._left_first), None
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
                     param_counts):
