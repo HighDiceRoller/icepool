@@ -14,11 +14,17 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
     Negative incoming counts are treated as zero counts.
     """
 
-    def initial_state(self, order, outcomes, size, index):
+    def initial_state(self, order, outcomes, size, *, index):
         if index is None:
             remaining = 1
         elif (order > 0) != (index >= 0):
-            raise UnsupportedOrder()
+            if size is not None:
+                if order > 0:
+                    remaining = size + index + 1
+                else:
+                    remaining = size - index
+            else:
+                raise UnsupportedOrder()
         else:
             if index >= 0:
                 remaining = index + 1

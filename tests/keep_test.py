@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool, Die, Deck
+from icepool import d4, d6, d8, d10, d12, Pool, Die, Deck, multiset_function, Order
 
 max_tuple_length = 5
 max_num_values = 5
@@ -276,3 +276,21 @@ def test_keep_negative_fallback():
         5: 8,
         6: 10
     })
+
+
+def test_keep_known_size_ascending():
+
+    @multiset_function
+    def test(x):
+        return x.force_order(Order.Ascending)[-1]
+
+    assert test(d6.pool(3)) == d6.highest(3)
+
+
+def test_keep_known_size_descending():
+
+    @multiset_function
+    def test(x):
+        return x.force_order(Order.Descending)[0]
+
+    assert test(d6.pool(3)) == d6.lowest(3)
