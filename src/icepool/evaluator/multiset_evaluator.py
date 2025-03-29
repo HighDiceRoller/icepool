@@ -22,22 +22,6 @@ if TYPE_CHECKING:
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
-    def initial_state(self, order: Order, outcomes: Sequence[T], /,
-                      *cardinalities, **kwargs: Hashable):
-        """Optional method to produce an initial evaluation state.
-
-        If not override, the initial state is `None`.
-
-        Args:
-            order: The order in which `next_state` will see outcomes.
-            outcomes: All outcomes that will be seen by `next_state` in sorted order.
-            kwargs: Any keyword arguments that were passed to `evaluate()`.
-
-        Raises:
-            UnsupportedOrder if the given order is not supported.
-        """
-        return None
-
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T, /,
                    *counts) -> Hashable:
@@ -55,20 +39,17 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         * Rename `state` or `outcome` in a subclass.
         * Replace `*counts` with a fixed set of parameters.
 
-        Make sure to handle the base case where `state is None`.
-
         States must be hashable. At current, they do not have to be orderable.
         However, this may change in the future, and if they are not totally
         orderable, you must override `final_outcome` to create totally orderable
         final outcomes.
 
-        The behavior of returning a `Die` from `next_state` is currently
-        undefined.
+        Returning a `Die` is not supported.
 
         Args:
             state: A hashable object indicating the state before rolling the
-                current outcome. If this is the first outcome being considered,
-                `state` will be `None`.
+                current outcome. If `initial_state()` is not overridden, the
+                initial state is `None`.
             order: The order in which outcomes are seen. You can raise an 
                 `UnsupportedOrder` if you don't want to support the current 
                 order. In this case, the opposite order will then be attempted
@@ -78,7 +59,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
                 least the union of the outcomes of the invididual inputs. 
                 You can use `extra_outcomes()` to add extra outcomes.
             *counts: One value (usually an `int`) for each input indicating how
-                many of the current outcome were produced.
+                many of the current outcome were produced. You may replace this
+                with a fixed series of parameters.
 
         Returns:
             A hashable object indicating the next state.
@@ -103,6 +85,29 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         return ()
 
+    def initial_state(self, order: Order, outcomes: Sequence[T], /,
+                      *cardinalities, **kwargs: Hashable):
+        """Optional method to produce an initial evaluation state.
+
+        If not overriden, the initial state is `None`. Note that this is not a
+        valid `final_outcome()`.
+
+        Args:
+            order: The order in which outcomes will be seen by `next_state()`.
+            outcomes: All outcomes that will be seen by `next_state()`.
+            cardinalities: The cardinalities of the input multisets, provided
+                that the multiset has inferrable cardinality with non-negative
+                counts. If not, the corresponding cardinality is None.
+            kwargs: Non-multiset arguments that were provided to `evaluate()`.
+                You may replace `**kwargs` with a fixed set of keyword
+                parameters; `final_outcome()` should take the same set of
+                keyword parameters.
+
+        Raises:
+            UnsupportedOrder if the given order is not supported.
+        """
+        return None
+
     def final_outcome(
             self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
             /, *cardinalities, **kwargs: Hashable
@@ -116,14 +121,17 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         Subclasses that want to handle this case should explicitly define what
         happens.
 
-        `**kwargs` are non-multiset arguments that were provided to
-        `evaluate()`.
-        You may replace `**kwargs` with a fixed set of keyword parameters;
-        `final_state()` should take the same set of keyword parameters.
-
         Args:
             final_state: A state after all outcomes have been processed.
-            kwargs: Any kwargs that were passed to the evaluation.
+            order: The order in which outcomes were seen by `next_state()`.
+            outcomes: All outcomes that were seen by `next_state()`.
+            cardinalities: The cardinalities of the input multisets, provided
+                that the multiset has inferrable cardinality with non-negative
+                counts. If not, the corresponding cardinality is None.
+            kwargs: Non-multiset arguments that were provided to `evaluate()`.
+                You may replace `**kwargs` with a fixed set of keyword
+                parameters; `initial_state()` should take the same set of
+                keyword parameters.
 
         Returns:
             A final outcome that will be used as part of constructing the result `Die`.
@@ -155,7 +163,12 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         return range(outcomes[0], outcomes[-1] + 1)
 
     dungeon_key: Hashable = None
-    """Subclasses may optionally provide this value; if so, intermediate calculations will be persistently cached."""
+    """Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.
+    
+    This should include any members used in `next_state()` but does NOT need to
+    include members that are only used in other methods, i.e. 
+    `extra_outcomes()`, `initial_state()`, `final_outcome()`.
+    """
 
     def _prepare(
         self,
