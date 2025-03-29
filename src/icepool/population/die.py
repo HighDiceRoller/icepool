@@ -308,12 +308,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         else:
             outcome_set = self._select_outcomes(which, star)
 
-        if depth == 'inf' or depth is None:
-            if depth is None:
-                warnings.warn(
-                    "depth=None is deprecated; use depth='inf' instead.",
-                    category=DeprecationWarning,
-                    stacklevel=1)
+        if depth == 'inf':
             data = {
                 outcome: quantity
                 for outcome, quantity in self.items()

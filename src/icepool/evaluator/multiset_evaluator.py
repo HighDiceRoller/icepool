@@ -28,8 +28,6 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         If not override, the initial state is `None`.
 
-        TODO: Should this get cardinalities?
-
         Args:
             order: The order in which `next_state` will see outcomes.
             outcomes: All outcomes that will be seen by `next_state` in sorted order.
