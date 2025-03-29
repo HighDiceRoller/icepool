@@ -1415,7 +1415,7 @@ undefined.</p>
 current outcome. If this is the first outcome being considered,
 <code>state</code> will be <code>None</code>.</li>
 <li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
-<code>UnsupportedOrderError</code> if you don't want to support the current 
+<code>UnsupportedOrder</code> if you don't want to support the current 
 order. In this case, the opposite order will then be attempted
 (if it hasn't already been attempted).</li>
 <li><strong>outcome:</strong>  The current outcome.
@@ -1794,7 +1794,7 @@ undefined.</p>
 current outcome. If this is the first outcome being considered,
 <code>state</code> will be <code>None</code>.</li>
 <li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
-<code>UnsupportedOrderError</code> if you don't want to support the current 
+<code>UnsupportedOrder</code> if you don't want to support the current 
 order. In this case, the opposite order will then be attempted
 (if it hasn't already been attempted).</li>
 <li><strong>outcome:</strong>  The current outcome.
@@ -2107,7 +2107,7 @@ straight.</li>
 <h6 id="raises">Raises:</h6>
 
 <ul>
-<li>UnsupportedOrderError if the given order is not supported.</li>
+<li>UnsupportedOrder if the given order is not supported.</li>
 </ul>
 </div>
 
@@ -2177,7 +2177,7 @@ undefined.</p>
 current outcome. If this is the first outcome being considered,
 <code>state</code> will be <code>None</code>.</li>
 <li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
-<code>UnsupportedOrderError</code> if you don't want to support the current 
+<code>UnsupportedOrder</code> if you don't want to support the current 
 order. In this case, the opposite order will then be attempted
 (if it hasn't already been attempted).</li>
 <li><strong>outcome:</strong>  The current outcome.
@@ -3502,7 +3502,7 @@ bool are <code>True</code>.</p>
 </span><span id="KeepEvaluator-19"><a href="#KeepEvaluator-19"><span class="linenos">19</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="KeepEvaluator-20"><a href="#KeepEvaluator-20"><span class="linenos">20</span></a>            <span class="n">remaining</span> <span class="o">=</span> <span class="mi">1</span>
 </span><span id="KeepEvaluator-21"><a href="#KeepEvaluator-21"><span class="linenos">21</span></a>        <span class="k">elif</span> <span class="p">(</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="KeepEvaluator-22"><a href="#KeepEvaluator-22"><span class="linenos">22</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrderError</span><span class="p">()</span>
+</span><span id="KeepEvaluator-22"><a href="#KeepEvaluator-22"><span class="linenos">22</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrder</span><span class="p">()</span>
 </span><span id="KeepEvaluator-23"><a href="#KeepEvaluator-23"><span class="linenos">23</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="KeepEvaluator-24"><a href="#KeepEvaluator-24"><span class="linenos">24</span></a>            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="KeepEvaluator-25"><a href="#KeepEvaluator-25"><span class="linenos">25</span></a>                <span class="n">remaining</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
@@ -3558,7 +3558,7 @@ the sorted index; otherwise, this raises <code>IndexError</code>.</p>
 </span><span id="KeepEvaluator.initial_state-19"><a href="#KeepEvaluator.initial_state-19"><span class="linenos">19</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="KeepEvaluator.initial_state-20"><a href="#KeepEvaluator.initial_state-20"><span class="linenos">20</span></a>            <span class="n">remaining</span> <span class="o">=</span> <span class="mi">1</span>
 </span><span id="KeepEvaluator.initial_state-21"><a href="#KeepEvaluator.initial_state-21"><span class="linenos">21</span></a>        <span class="k">elif</span> <span class="p">(</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
-</span><span id="KeepEvaluator.initial_state-22"><a href="#KeepEvaluator.initial_state-22"><span class="linenos">22</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrderError</span><span class="p">()</span>
+</span><span id="KeepEvaluator.initial_state-22"><a href="#KeepEvaluator.initial_state-22"><span class="linenos">22</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrder</span><span class="p">()</span>
 </span><span id="KeepEvaluator.initial_state-23"><a href="#KeepEvaluator.initial_state-23"><span class="linenos">23</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="KeepEvaluator.initial_state-24"><a href="#KeepEvaluator.initial_state-24"><span class="linenos">24</span></a>            <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="KeepEvaluator.initial_state-25"><a href="#KeepEvaluator.initial_state-25"><span class="linenos">25</span></a>                <span class="n">remaining</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
@@ -3585,7 +3585,7 @@ the sorted index; otherwise, this raises <code>IndexError</code>.</p>
 <h6 id="raises">Raises:</h6>
 
 <ul>
-<li>UnsupportedOrderError if the given order is not supported.</li>
+<li>UnsupportedOrder if the given order is not supported.</li>
 </ul>
 </div>
 
@@ -3646,7 +3646,7 @@ undefined.</p>
 current outcome. If this is the first outcome being considered,
 <code>state</code> will be <code>None</code>.</li>
 <li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
-<code>UnsupportedOrderError</code> if you don't want to support the current 
+<code>UnsupportedOrder</code> if you don't want to support the current 
 order. In this case, the opposite order will then be attempted
 (if it hasn't already been attempted).</li>
 <li><strong>outcome:</strong>  The current outcome.

@@ -705,7 +705,7 @@
 
             </li>
             <li>
-                    <a class="class" href="#UnsupportedOrderError">UnsupportedOrderError</a>
+                    <a class="class" href="#UnsupportedOrder">UnsupportedOrder</a>
                             <ul class="memberlist">
                 </ul>
 
@@ -884,7 +884,7 @@ change.</li>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Final</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Outcome</span><span class="p">,</span> <span class="n">RerollType</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.order</span><span class="w"> </span><span class="kn">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">ConflictingOrderError</span><span class="p">,</span> <span class="n">UnsupportedOrderError</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.order</span><span class="w"> </span><span class="kn">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">ConflictingOrderError</span><span class="p">,</span> <span class="n">UnsupportedOrder</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="n">Reroll</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="n">RerollType</span><span class="o">.</span><span class="n">Reroll</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">&quot;&quot;&quot;Indicates that an outcome should be rerolled (with unlimited depth).</span>
@@ -1022,11 +1022,10 @@ change.</li>
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="s1">&#39;commonize_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce&#39;</span><span class="p">,</span> <span class="s1">&#39;accumulate&#39;</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="s1">&#39;map_function&#39;</span><span class="p">,</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="s1">&#39;map_and_time&#39;</span><span class="p">,</span> <span class="s1">&#39;map_to_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;ConflictingOrderError&#39;</span><span class="p">,</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="s1">&#39;UnsupportedOrderError&#39;</span><span class="p">,</span> <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiDeal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;format_probability_inverse&#39;</span><span class="p">,</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="s1">&#39;Wallenius&#39;</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="p">]</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;ConflictingOrderError&#39;</span><span class="p">,</span> <span class="s1">&#39;UnsupportedOrder&#39;</span><span class="p">,</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiDeal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="s1">&#39;evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;format_probability_inverse&#39;</span><span class="p">,</span> <span class="s1">&#39;Wallenius&#39;</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -14671,7 +14670,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-37"><a href="#MultisetEvaluator-37"><span class="linenos"> 37</span></a><span class="sd">            kwargs: Any keyword arguments that were passed to `evaluate()`.</span>
 </span><span id="MultisetEvaluator-38"><a href="#MultisetEvaluator-38"><span class="linenos"> 38</span></a>
 </span><span id="MultisetEvaluator-39"><a href="#MultisetEvaluator-39"><span class="linenos"> 39</span></a><span class="sd">        Raises:</span>
-</span><span id="MultisetEvaluator-40"><a href="#MultisetEvaluator-40"><span class="linenos"> 40</span></a><span class="sd">            UnsupportedOrderError if the given order is not supported.</span>
+</span><span id="MultisetEvaluator-40"><a href="#MultisetEvaluator-40"><span class="linenos"> 40</span></a><span class="sd">            UnsupportedOrder if the given order is not supported.</span>
 </span><span id="MultisetEvaluator-41"><a href="#MultisetEvaluator-41"><span class="linenos"> 41</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetEvaluator-42"><a href="#MultisetEvaluator-42"><span class="linenos"> 42</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span><span id="MultisetEvaluator-43"><a href="#MultisetEvaluator-43"><span class="linenos"> 43</span></a>
@@ -14707,7 +14706,7 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-73"><a href="#MultisetEvaluator-73"><span class="linenos"> 73</span></a><span class="sd">                current outcome. If this is the first outcome being considered,</span>
 </span><span id="MultisetEvaluator-74"><a href="#MultisetEvaluator-74"><span class="linenos"> 74</span></a><span class="sd">                `state` will be `None`.</span>
 </span><span id="MultisetEvaluator-75"><a href="#MultisetEvaluator-75"><span class="linenos"> 75</span></a><span class="sd">            order: The order in which outcomes are seen. You can raise an </span>
-</span><span id="MultisetEvaluator-76"><a href="#MultisetEvaluator-76"><span class="linenos"> 76</span></a><span class="sd">                `UnsupportedOrderError` if you don&#39;t want to support the current </span>
+</span><span id="MultisetEvaluator-76"><a href="#MultisetEvaluator-76"><span class="linenos"> 76</span></a><span class="sd">                `UnsupportedOrder` if you don&#39;t want to support the current </span>
 </span><span id="MultisetEvaluator-77"><a href="#MultisetEvaluator-77"><span class="linenos"> 77</span></a><span class="sd">                order. In this case, the opposite order will then be attempted</span>
 </span><span id="MultisetEvaluator-78"><a href="#MultisetEvaluator-78"><span class="linenos"> 78</span></a><span class="sd">                (if it hasn&#39;t already been attempted).</span>
 </span><span id="MultisetEvaluator-79"><a href="#MultisetEvaluator-79"><span class="linenos"> 79</span></a><span class="sd">            outcome: The current outcome.</span>
@@ -14843,7 +14842,7 @@ inheritance.</p>
 </span><span id="MultisetEvaluator.initial_state-37"><a href="#MultisetEvaluator.initial_state-37"><span class="linenos">37</span></a><span class="sd">            kwargs: Any keyword arguments that were passed to `evaluate()`.</span>
 </span><span id="MultisetEvaluator.initial_state-38"><a href="#MultisetEvaluator.initial_state-38"><span class="linenos">38</span></a>
 </span><span id="MultisetEvaluator.initial_state-39"><a href="#MultisetEvaluator.initial_state-39"><span class="linenos">39</span></a><span class="sd">        Raises:</span>
-</span><span id="MultisetEvaluator.initial_state-40"><a href="#MultisetEvaluator.initial_state-40"><span class="linenos">40</span></a><span class="sd">            UnsupportedOrderError if the given order is not supported.</span>
+</span><span id="MultisetEvaluator.initial_state-40"><a href="#MultisetEvaluator.initial_state-40"><span class="linenos">40</span></a><span class="sd">            UnsupportedOrder if the given order is not supported.</span>
 </span><span id="MultisetEvaluator.initial_state-41"><a href="#MultisetEvaluator.initial_state-41"><span class="linenos">41</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="MultisetEvaluator.initial_state-42"><a href="#MultisetEvaluator.initial_state-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="kc">None</span>
 </span></pre></div>
@@ -14866,7 +14865,7 @@ inheritance.</p>
 <h6 id="raises">Raises:</h6>
 
 <ul>
-<li>UnsupportedOrderError if the given order is not supported.</li>
+<li>UnsupportedOrder if the given order is not supported.</li>
 </ul>
 </div>
 
@@ -14916,7 +14915,7 @@ inheritance.</p>
 </span><span id="MultisetEvaluator.next_state-73"><a href="#MultisetEvaluator.next_state-73"><span class="linenos">73</span></a><span class="sd">                current outcome. If this is the first outcome being considered,</span>
 </span><span id="MultisetEvaluator.next_state-74"><a href="#MultisetEvaluator.next_state-74"><span class="linenos">74</span></a><span class="sd">                `state` will be `None`.</span>
 </span><span id="MultisetEvaluator.next_state-75"><a href="#MultisetEvaluator.next_state-75"><span class="linenos">75</span></a><span class="sd">            order: The order in which outcomes are seen. You can raise an </span>
-</span><span id="MultisetEvaluator.next_state-76"><a href="#MultisetEvaluator.next_state-76"><span class="linenos">76</span></a><span class="sd">                `UnsupportedOrderError` if you don&#39;t want to support the current </span>
+</span><span id="MultisetEvaluator.next_state-76"><a href="#MultisetEvaluator.next_state-76"><span class="linenos">76</span></a><span class="sd">                `UnsupportedOrder` if you don&#39;t want to support the current </span>
 </span><span id="MultisetEvaluator.next_state-77"><a href="#MultisetEvaluator.next_state-77"><span class="linenos">77</span></a><span class="sd">                order. In this case, the opposite order will then be attempted</span>
 </span><span id="MultisetEvaluator.next_state-78"><a href="#MultisetEvaluator.next_state-78"><span class="linenos">78</span></a><span class="sd">                (if it hasn&#39;t already been attempted).</span>
 </span><span id="MultisetEvaluator.next_state-79"><a href="#MultisetEvaluator.next_state-79"><span class="linenos">79</span></a><span class="sd">            outcome: The current outcome.</span>
@@ -14968,7 +14967,7 @@ undefined.</p>
 current outcome. If this is the first outcome being considered,
 <code>state</code> will be <code>None</code>.</li>
 <li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
-<code><a href="#UnsupportedOrderError">UnsupportedOrderError</a></code> if you don't want to support the current 
+<code><a href="#UnsupportedOrder">UnsupportedOrder</a></code> if you don't want to support the current 
 order. In this case, the opposite order will then be attempted
 (if it hasn't already been attempted).</li>
 <li><strong>outcome:</strong>  The current outcome.
@@ -15335,13 +15334,13 @@ You may replace <code>**kwargs</code> with a fixed set of keyword parameters;
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">ConflictingOrderError</span><wbr>(<span class="base">icepool.order.OrderError</span>):
+    <span class="name">ConflictingOrderError</span><wbr>(<span class="base">icepool.order.OrderException</span>):
 
                 <label class="view-source-button" for="ConflictingOrderError-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#ConflictingOrderError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ConflictingOrderError-15"><a href="#ConflictingOrderError-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ConflictingOrderError</span><span class="p">(</span><span class="n">OrderError</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ConflictingOrderError-15"><a href="#ConflictingOrderError-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ConflictingOrderError</span><span class="p">(</span><span class="n">OrderException</span><span class="p">):</span>
 </span><span id="ConflictingOrderError-16"><a href="#ConflictingOrderError-16"><span class="linenos">16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that two conflicting mandatory outcome orderings were encountered.&quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -15351,19 +15350,19 @@ You may replace <code>**kwargs</code> with a fixed set of keyword parameters;
 
 
                 </section>
-                <section id="UnsupportedOrderError">
-                            <input id="UnsupportedOrderError-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="UnsupportedOrder">
+                            <input id="UnsupportedOrder-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">UnsupportedOrderError</span><wbr>(<span class="base">icepool.order.OrderError</span>):
+    <span class="name">UnsupportedOrder</span><wbr>(<span class="base">icepool.order.OrderException</span>):
 
-                <label class="view-source-button" for="UnsupportedOrderError-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="UnsupportedOrder-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#UnsupportedOrderError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="UnsupportedOrderError-19"><a href="#UnsupportedOrderError-19"><span class="linenos">19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedOrderError</span><span class="p">(</span><span class="n">OrderError</span><span class="p">):</span>
-</span><span id="UnsupportedOrderError-20"><a href="#UnsupportedOrderError-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that the given order is not supported under the current context.&quot;&quot;&quot;</span>
+    <a class="headerlink" href="#UnsupportedOrder"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="UnsupportedOrder-19"><a href="#UnsupportedOrder-19"><span class="linenos">19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedOrder</span><span class="p">(</span><span class="n">OrderException</span><span class="p">):</span>
+</span><span id="UnsupportedOrder-20"><a href="#UnsupportedOrder-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that the given order is not supported under the current context.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
