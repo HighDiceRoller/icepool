@@ -1,3 +1,29 @@
+## v2.0.0 (WIP)
+
+Major rewrite of multiset handling. Things will be more unstable than usual for a while.
+
+* `MultisetEvaluator.next_state()` now has an explicit parameter with the order in which outcomes are seen.
+* Optional `MultisetEvaluator.initial_state()` method.
+* `MultisetEvaluator.initial_state()` and `final_state()` now get the following parameters:
+  * The order in which outcomes are / were seen.
+  * All outcomes that will be / were seen.
+  * The sizes of the input multisets, if inferrable with counts being non-negative.
+  * Non-multiset keyword arguments that were passed to `evaluate()`.
+* `ascending` and `descending` variants of `next_state` no longer exist.
+  * Instead, `raise UnsupportedOrder()` if you don't like the current order. The other order will automatically be tried.
+  * This can be done in `initial_state()` (recommended), `next_state()`, or `final_outcome()`.
+* Multiset operator order is now always attached to the evaluator side rather than the generator side.
+  * Unless the operator modifies the generator in-place, but in this case both orders will certainly be supported.
+* `MultisetEvaluator` can optionally provide a key for persistent caching.
+* Some existing expressions and evaluators now take advantage of inferred multiset sizes.
+  * In particular, `keep()` and `sorted_match()`.
+* `MultisetExpression.count()` renamed to `size()`.
+* `@multiset_function` now implements late binding like a standard Python method. (Though I still recommend using only pure functions.)
+* `@multiset_function` now accepts non-multiset keyword arguments.
+* `Alignment` class is retired.
+* Deprecated `depth=None` is removed from `Die.reroll()`.
+* Multiset generators now always produce a single count value, with `MultiDeal` now producing a tuple.
+
 ## v1.7.2 - 25 February 2025
 
 * Add `Population.append()` and `.remove()` methods.
