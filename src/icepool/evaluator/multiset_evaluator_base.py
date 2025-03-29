@@ -163,30 +163,29 @@ class MultisetDungeon(Generic[T]):
         all_outcomes = sorted_union(source_outcomes, extra_outcomes)
 
         try:
-            room, cardinalities = self.initial_room(quest, sources, -pop_order,
-                                                    all_outcomes, kwargs)
+            room, sizes = self.initial_room(quest, sources, -pop_order,
+                                            all_outcomes, kwargs)
             final_states = self.evaluate_backward(pop_order, room)
             return quest.finalize_evaluation(final_states, -pop_order,
-                                             all_outcomes, cardinalities,
-                                             kwargs)
+                                             all_outcomes, sizes, kwargs)
         except UnsupportedOrder:
             try:
                 if pop_order_reason is OrderReason.Default:
                     # Flip the pop order.
-                    room, cardinalities = self.initial_room(
-                        quest, sources, pop_order, all_outcomes, kwargs)
+                    room, sizes = self.initial_room(quest, sources, pop_order,
+                                                    all_outcomes, kwargs)
                     final_states = self.evaluate_backward(-pop_order, room)
                     return quest.finalize_evaluation(final_states, pop_order,
-                                                     all_outcomes,
-                                                     cardinalities, kwargs)
+                                                     all_outcomes, sizes,
+                                                     kwargs)
                 else:
                     # Use the alternate algorithm.
-                    room, cardinalities = self.initial_room(
-                        quest, sources, pop_order, all_outcomes, kwargs)
+                    room, sizes = self.initial_room(quest, sources, pop_order,
+                                                    all_outcomes, kwargs)
                     final_states = self.evaluate_forward(pop_order, room)
                     return quest.finalize_evaluation(final_states, pop_order,
-                                                     all_outcomes,
-                                                     cardinalities, kwargs)
+                                                     all_outcomes, sizes,
+                                                     kwargs)
             except UnsupportedOrder:
                 raise ConflictingOrderError(
                     'Neither ascending nor descending order is compatable with the evaluation. '
@@ -199,14 +198,14 @@ class MultisetDungeon(Generic[T]):
             sources: 'tuple[MultisetSourceBase, ...]', order: Order,
             outcomes: tuple[T, ...],
             kwargs: Mapping[str, Hashable]) -> 'tuple[MultisetRoom[T], tuple]':
-        source_counts = (source.cardinality() for source in sources)
-        initial_statelets, cardinalities = quest.initial_statelets(
+        source_counts = (source.size() for source in sources)
+        initial_statelets, sizes = quest.initial_statelets(
             order, outcomes, source_counts, ())
         initial_state_main = quest.initial_state_main(order, outcomes,
-                                                      source_counts,
-                                                      cardinalities, kwargs)
+                                                      source_counts, sizes,
+                                                      kwargs)
         return MultisetRoom(outcomes, sources, initial_statelets,
-                            initial_state_main), cardinalities
+                            initial_state_main), sizes
 
     def evaluate_backward(
         self, pop_order: Order, room: 'MultisetRoom'
@@ -429,7 +428,7 @@ class MultisetQuest(Generic[T, U_co]):
     @abstractmethod
     def final_outcome(
         self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
-        cardinalities: tuple, kwargs: Mapping[str, Hashable]
+        sizes: tuple, kwargs: Mapping[str, Hashable]
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
@@ -453,14 +452,14 @@ class MultisetQuest(Generic[T, U_co]):
     def finalize_evaluation(
             self, final_states: Mapping[tuple[tuple[Hashable, ...], ...],
                                         Mapping[Hashable, int]], order: Order,
-            outcomes: tuple[T, ...], cardinalities: tuple,
+            outcomes: tuple[T, ...], sizes: tuple,
             kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         final_outcomes = []
         final_weights = []
         for _, main_states in final_states.items():
             for state, weight in main_states.items():
-                outcome = self.final_outcome(state, order, outcomes,
-                                             cardinalities, kwargs)
+                outcome = self.final_outcome(state, order, outcomes, sizes,
+                                             kwargs)
                 if outcome is None:
                     raise TypeError(
                         "None is not a valid final outcome.\n"

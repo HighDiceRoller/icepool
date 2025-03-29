@@ -85,8 +85,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         """
         return ()
 
-    def initial_state(self, order: Order, outcomes: Sequence[T], /,
-                      *cardinalities, **kwargs: Hashable):
+    def initial_state(self, order: Order, outcomes: Sequence[T], /, *sizes,
+                      **kwargs: Hashable):
         """Optional method to produce an initial evaluation state.
 
         If not overriden, the initial state is `None`. Note that this is not a
@@ -95,16 +95,16 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         All non-keyword arguments will be given positionally, so you are free
         to:
         * Rename any of them.
-        * Replace `cardinalities` with a fixed series of arguments.
+        * Replace `sizes` with a fixed series of arguments.
         * Replace trailing positional arguments with `*_` if you don't care
             about them.
 
         Args:
             order: The order in which outcomes will be seen by `next_state()`.
             outcomes: All outcomes that will be seen by `next_state()`.
-            cardinalities: The cardinalities of the input multisets, provided
-                that the multiset has inferrable cardinality with non-negative
-                counts. If not, the corresponding cardinality is None.
+            sizes: The sizes of the input multisets, provided
+                that the multiset has inferrable size with non-negative
+                counts. If not, the corresponding size is None.
             kwargs: Non-multiset arguments that were provided to `evaluate()`.
                 You may replace `**kwargs` with a fixed set of keyword
                 parameters; `final_outcome()` should take the same set of
@@ -117,7 +117,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def final_outcome(
             self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
-            /, *cardinalities, **kwargs: Hashable
+            /, *sizes, **kwargs: Hashable
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Optional method to generate a final output outcome from a final state.
 
@@ -131,7 +131,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         All non-keyword arguments will be given positionally, so you are free
         to:
         * Rename any of them.
-        * Replace `cardinalities` with a fixed series of arguments.
+        * Replace `sizes` with a fixed series of arguments.
         * Replace trailing positional arguments with `*_` if you don't care
             about them.
 
@@ -139,9 +139,9 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             final_state: A state after all outcomes have been processed.
             order: The order in which outcomes were seen by `next_state()`.
             outcomes: All outcomes that were seen by `next_state()`.
-            cardinalities: The cardinalities of the input multisets, provided
-                that the multiset has inferrable cardinality with non-negative
-                counts. If not, the corresponding cardinality is None.
+            sizes: The sizes of the input multisets, provided
+                that the multiset has inferrable size with non-negative
+                counts. If not, the corresponding size is None.
             kwargs: Non-multiset arguments that were provided to `evaluate()`.
                 You may replace `**kwargs` with a fixed set of keyword
                 parameters; `initial_state()` should take the same set of
@@ -246,7 +246,6 @@ class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
         return self.initial_state_eval(order, outcomes, *param_counts,
                                        **kwargs)
 
-    def final_outcome(self, final_state, order, outcomes, cardinalities,
-                      kwargs):
-        return self.final_outcome_eval(final_state, order, outcomes,
-                                       cardinalities, **kwargs)
+    def final_outcome(self, final_state, order, outcomes, sizes, kwargs):
+        return self.final_outcome_eval(final_state, order, outcomes, sizes,
+                                       **kwargs)

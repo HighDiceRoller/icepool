@@ -95,15 +95,13 @@ class MultisetAdditiveUnion(MultisetBinaryOperator):
     def symbol() -> str:
         return '+'
 
-    def _initial_state(self, order, outcomes,
-                       child_cardinalities: MutableSequence,
-                       source_cardinalities: Iterator,
-                       param_cardinalities: Sequence):
-        left_cardinality, right_cardinality = child_cardinalities
-        if left_cardinality is None or right_cardinality is None:
+    def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
+                       source_sizes: Iterator, param_sizes: Sequence):
+        left_size, right_size = child_sizes
+        if left_size is None or right_size is None:
             return None, None
         else:
-            return None, child_cardinalities[0] + child_cardinalities[1]
+            return None, child_sizes[0] + child_sizes[1]
 
 
 class MultisetSymmetricDifference(MultisetBinaryOperator):

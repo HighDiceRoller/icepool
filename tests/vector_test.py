@@ -95,7 +95,7 @@ def test_one_hot():
                 state = ()
             return state + (count, )
 
-        def final_outcome(self, final_state, order, outcomes, cardinality):
+        def final_outcome(self, final_state, order, outcomes, size):
             return icepool.Vector(final_state)
 
         def extra_outcomes(self, *_):

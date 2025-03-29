@@ -26,8 +26,8 @@ class MultisetKeep(MultisetOperator[T]):
         self._index = index
 
     def _initial_state(
-        self, order, outcomes, child_cardinalities: MutableSequence,
-        source_cardinalities: Iterator, param_cardinalities: Sequence
+        self, order, outcomes, child_sizes: MutableSequence,
+        source_sizes: Iterator, param_sizes: Sequence
     ) -> tuple[tuple[tuple[int, ...], bool], int | None]:
         """
         
@@ -35,7 +35,7 @@ class MultisetKeep(MultisetOperator[T]):
             * A keep_tuple that pops from the left regardless of order.
             * Whether items are kept after running out of the keep_tuple
         """
-        child_cardinality = child_cardinalities[0]
+        child_size = child_sizes[0]
         keep_tuple: tuple[int, ...]
         keep_more: bool
 
@@ -85,19 +85,17 @@ class MultisetKeep(MultisetOperator[T]):
                         keep_more = False
                         required_order = Order.Descending
                     else:
-                        if child_cardinality is None:
+                        if child_size is None:
                             raise ValueError(
-                                'If both start and stop are provided, they must be both negative or both non-negative, or the cardinality must be an inferrable constant.'
+                                'If both start and stop are provided, they must be both negative or both non-negative, or the size must be an inferrable constant.'
                             )
                         else:
-                            ascending_keep = [0] * child_cardinality
+                            ascending_keep = [0] * child_size
                             if start >= 0:
-                                for i in range(start,
-                                               child_cardinality + stop):
+                                for i in range(start, child_size + stop):
                                     ascending_keep[i] = 1
                             else:
-                                for i in range(child_cardinality + start,
-                                               stop):
+                                for i in range(child_size + start, stop):
                                     ascending_keep[i] = 1
                             required_order = order
                             if order > 0:
@@ -131,19 +129,18 @@ class MultisetKeep(MultisetOperator[T]):
 
         if required_order == order:
             state = (keep_tuple, keep_more)
-            if child_cardinality is None:
+            if child_size is None:
                 return state, None
-            more = max(child_cardinality - len(keep_tuple), 0)
-            cardinality = sum(
-                keep_tuple[:child_cardinality]) + keep_more * more
-            return state, cardinality
+            more = max(child_size - len(keep_tuple), 0)
+            size = sum(keep_tuple[:child_size]) + keep_more * more
+            return state, size
         else:
-            if child_cardinality is None:
+            if child_size is None:
                 raise UnsupportedOrder(
-                    'Could not find supported order for keep operator without inferrable constant cardinality.'
+                    'Could not find supported order for keep operator without inferrable constant size.'
                 )
-            more = max(child_cardinality - len(keep_tuple), 0)
-            reversed_start = max(len(keep_tuple) - child_cardinality, 0)
+            more = max(child_size - len(keep_tuple), 0)
+            reversed_start = max(len(keep_tuple) - child_size, 0)
             reversed_tuple = (keep_more, ) * more + tuple(
                 reversed(keep_tuple[reversed_start:]))
             return (reversed_tuple, False), sum(reversed_tuple)

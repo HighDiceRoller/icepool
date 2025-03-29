@@ -58,9 +58,8 @@ class MultisetOperator(MultisetExpression[T]):
         return self._expression_key
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
-                       child_cardinalities: MutableSequence,
-                       source_cardinalities: Iterator,
-                       param_cardinalities: Sequence) -> Hashable:
+                       child_sizes: MutableSequence, source_sizes: Iterator,
+                       param_sizes: Sequence) -> Hashable:
         """Optional: the initial state of this node.
 
         Args:
@@ -69,7 +68,7 @@ class MultisetOperator(MultisetExpression[T]):
             kwargs: Any keyword arguments that were passed to `evaluate()`.
 
         Returns:
-            The initial state and the cardinality of this node.
+            The initial state and the size of this node.
 
         Raises:
             UnsupportedOrder if the given order is not supported.

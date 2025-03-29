@@ -28,7 +28,7 @@ class ArgsortEvaluator(MultisetEvaluator[Any, tuple[tuple[int, ...], ...]]):
             state += (to_append, )
         return state
 
-    def final_outcome(self, final_state, order, outcomes, cardinality):
+    def final_outcome(self, final_state, order, outcomes, size):
         return final_state or ()
 
     def order(self):

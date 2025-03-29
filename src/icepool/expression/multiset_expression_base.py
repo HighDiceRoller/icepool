@@ -110,7 +110,7 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
         """The possible outcomes that could be generated, in ascending order."""
 
     @abstractmethod
-    def cardinality(self) -> Q | None:
+    def size(self) -> Q | None:
         """The total number of elements output by this source, if only non-negative counts are output.
         
         If total number of elements is not constant or unknown, or if there are
@@ -158,24 +158,22 @@ class MultisetQuestlet(Generic[T, Q]):
     """The relative (therefore negative) indexes of this node's children."""
 
     @abstractmethod
-    def initial_state(
-            self, order: Order, outcomes: Sequence[T],
-            child_cardinalities: MutableSequence,
-            source_cardinalities: Iterator,
-            param_cardinalities: Sequence) -> tuple[Hashable, Q | None]:
+    def initial_state(self, order: Order, outcomes: Sequence[T],
+                      child_sizes: MutableSequence, source_sizes: Iterator,
+                      param_sizes: Sequence) -> tuple[Hashable, Q | None]:
         """Optional: the initial state of this node.
 
         Args:
             order: The order in which `next_state` will see outcomes.
             outcomes: All outcomes that will be seen by `next_state` in ascending order.
-            child_counts: The cardinalities of the child nodes.
-            source_counts: The cardinalities produced by sources.
+            child_counts: The sizes of the child nodes.
+            source_counts: The sizes produced by sources.
                 This is an iterator which will be progressively consumed by
                 free variables.
-            param_counts: The cardinalities produced by params.
+            param_counts: The sizes produced by params.
 
         Returns:
-            The initial state, and the cardinality of this node.
+            The initial state, and the size of this node.
 
         Raises:
             UnsupportedOrder if the given order is not supported.

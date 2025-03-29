@@ -14,7 +14,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
     Negative incoming counts are treated as zero counts.
     """
 
-    def initial_state(self, order, outcomes, cardinality, index):
+    def initial_state(self, order, outcomes, size, index):
         if index is None:
             remaining = 1
         elif (order > 0) != (index >= 0):
@@ -34,7 +34,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
             result = outcome
         return result, remaining
 
-    def final_outcome(self, final_state, order, outcomes, cardinality, index):
+    def final_outcome(self, final_state, order, outcomes, size, index):
         if final_state is None:
             raise IndexError('No outcomes were seen.')
         result, remaining = final_state

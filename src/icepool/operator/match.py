@@ -29,8 +29,8 @@ class MultisetSortMatch(MultisetOperator[T]):
         self._right_first = right_first
 
     def _initial_state(
-        self, order, outcomes, child_cardinalities: MutableSequence,
-        source_cardinalities: Iterator, param_cardinalities: Sequence
+            self, order, outcomes, child_sizes: MutableSequence,
+            source_sizes: Iterator, param_sizes: Sequence
     ) -> tuple[tuple[int, int, int, int], int | None]:
         """
         State is left_lead, tie, left_first, right_first.
@@ -38,12 +38,12 @@ class MultisetSortMatch(MultisetOperator[T]):
         if order == self._order:
             return (0, self._tie, self._left_first, self._right_first), None
         else:
-            left_cardinality, right_cardinality = child_cardinalities
-            if left_cardinality is None or right_cardinality is None:
+            left_size, right_size = child_sizes
+            if left_size is None or right_size is None:
                 raise UnsupportedOrder(
-                    'Reverse order not supported unless cardinalities of both operands are inferrable.'
+                    'Reverse order not supported unless sizes of both operands are inferrable.'
                 )
-            left_lead = right_cardinality - left_cardinality
+            left_lead = right_size - left_size
             return (left_lead, self._tie, self._right_first,
                     self._left_first), None
 
@@ -83,10 +83,9 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         self._match_equal = match_equal
         self._keep = keep
 
-    def _initial_state(
-            self, order, outcomes, child_cardinalities: MutableSequence,
-            source_cardinalities: Iterator,
-            param_cardinalities: Sequence) -> tuple[int, int | None]:
+    def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
+                       source_sizes: Iterator,
+                       param_sizes: Sequence) -> tuple[int, int | None]:
         """
         
         Returns:

@@ -53,10 +53,9 @@ class MultisetTupleSubscript(MultisetExpression[T]):
         return MultisetTupleSubscript, self._index
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
-                       child_cardinalities: MutableSequence,
-                       source_cardinalities: Iterator,
-                       param_cardinalities: Sequence) -> Hashable:
-        return None, child_cardinalities[self._index]
+                       child_sizes: MutableSequence, source_sizes: Iterator,
+                       param_sizes: Sequence) -> Hashable:
+        return None, child_sizes[self._index]
 
     def _next_state(self, state: Hashable, order: Order, outcome: T,
                     child_counts: MutableSequence, source_counts: Iterator,

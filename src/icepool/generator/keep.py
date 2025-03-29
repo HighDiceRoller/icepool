@@ -369,7 +369,7 @@ def compose_keep_tuples(base: tuple[int, ...], apply: tuple[int, ...]):
 class KeepSource(MultisetSource[T]):
     keep_tuple: tuple[int, ...]
 
-    def cardinality(self):
+    def size(self):
         if any(x < 0 for x in self.keep_tuple):
             return None
         return sum(self.keep_tuple)

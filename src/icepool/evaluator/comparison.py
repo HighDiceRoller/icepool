@@ -36,7 +36,7 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
         return has_any, has_all
 
     def final_outcome(  # type: ignore
-            self, final_state, order, outcomes, cardinality) -> bool:
+            self, final_state, order, outcomes, size) -> bool:
         """Implementation."""
         if final_state is None:
             return self.default_outcome()

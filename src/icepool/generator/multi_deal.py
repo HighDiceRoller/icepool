@@ -118,7 +118,7 @@ class MultiDealSource(MultisetTupleSource[T]):
     def outcomes(self):
         return self.deck.outcomes()
 
-    def cardinality(self):
+    def size(self):
         return self.hand_sizes
 
     def pop(self, order: Order, outcome: T):

@@ -56,6 +56,6 @@ class MultisetTupleSource(MultisetSourceBase[T, tuple[int, ...]]):
 class MultisetTupleGeneratorQuestlet(MultisetQuestlet[T, tuple[int, ...]]):
     child_indexes = ()
 
-    def initial_state(self, order, outcomes, child_cardinalities,
-                      source_cardinalities, param_cardinalities):
-        return None, next(source_cardinalities)
+    def initial_state(self, order, outcomes, child_sizes, source_sizes,
+                      param_sizes):
+        return None, next(source_sizes)

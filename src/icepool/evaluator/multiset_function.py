@@ -236,10 +236,10 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
         return statelets, state
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
-                      cardinalities, kwargs):
+                      sizes, kwargs):
         _, final_main_state = final_state
         return self.inner_quest.final_outcome(final_main_state, order,
-                                              outcomes, cardinalities,
+                                              outcomes, sizes,
                                               self.inner_kwargs)
 
 
@@ -358,11 +358,11 @@ class MultisetFunctionJointQuest(MultisetQuest[T, Any]):
         return statelets, state
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
-                      cardinalities, kwargs):
+                      sizes, kwargs):
         # The kwargs have already been bound to inner_kwargses.
         result = tuple(
-            quest.final_outcome(inner_main_state, order, outcomes,
-                                cardinalities, inner_kwargs)
+            quest.final_outcome(inner_main_state, order, outcomes, sizes,
+                                inner_kwargs)
             for quest, (_, inner_main_state), inner_kwargs in zip(
                 self.inner_quests, final_state, self.inner_kwargses))
         if any(x is icepool.Reroll for x in result):
