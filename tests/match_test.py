@@ -15,7 +15,7 @@ def test_sort_match_example():
 
 
 def test_risk():
-    result = d6.pool(3).highest(2).sort_match('>', d6.pool(2)).count()
+    result = d6.pool(3).highest(2).sort_match('>', d6.pool(2)).size()
     expected = Die({0: 2275, 1: 2611, 2: 2890})
     assert result == expected
 
@@ -23,7 +23,7 @@ def test_risk():
 def test_risk_ascending():
     result = d6.pool(3).highest(2).sort_match('>',
                                               d6.pool(2),
-                                              order=Order.Ascending).count()
+                                              order=Order.Ascending).size()
     expected = Die({0: 2275, 1: 2611, 2: 2890})
     assert result == expected
 
@@ -42,7 +42,7 @@ sort_ops = ['==', '!=', '<=', '<', '>=', '>']
 
 @pytest.mark.parametrize('op', sort_ops)
 def test_sort_match_operators(op):
-    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).count()
+    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).size()
 
     @map_function
     def compute_expected(left, right):
@@ -60,7 +60,7 @@ def test_sort_match_operators(op):
 def test_sort_match_operators_ascending(op):
     result = d6.pool(3).lowest(2).sort_match(op,
                                              d6.pool(2),
-                                             order=Order.Ascending).count()
+                                             order=Order.Ascending).size()
 
     @map_function
     def compute_expected(left, right):
@@ -107,16 +107,17 @@ def test_maximum_match(op):
     if op in ['<=', '<']:
         result = d6.pool(3).maximum_match_highest(op,
                                                   d6.pool(2),
-                                                  keep='matched').count()
-        complement = d6.pool(3).maximum_match_highest(
-            op, d6.pool(2), keep='unmatched').count()
+                                                  keep='matched').size()
+        complement = d6.pool(3).maximum_match_highest(op,
+                                                      d6.pool(2),
+                                                      keep='unmatched').size()
     else:
         result = d6.pool(3).maximum_match_lowest(op,
                                                  d6.pool(2),
-                                                 keep='matched').count()
+                                                 keep='matched').size()
         complement = d6.pool(3).maximum_match_lowest(op,
                                                      d6.pool(2),
-                                                     keep='unmatched').count()
+                                                     keep='unmatched').size()
 
     @map_function
     def compute_expected(left, right):

@@ -834,18 +834,18 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         else:
             return icepool.evaluator.SumEvaluator(map).evaluate(self)
 
-    def count(self) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
+    def size(self) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
         """Evaluation: The total number of elements in the multiset.
 
         This is usually not very interesting unless some other operation is
         performed first. Examples:
 
-        `generator.unique().count()` will count the number of unique outcomes.
+        `generator.unique().size()` will count the number of unique outcomes.
 
-        `(generator & [4, 5, 6]).count()` will count up to one each of
+        `(generator & [4, 5, 6]).size()` will count up to one each of
         4, 5, and 6.
         """
-        return icepool.evaluator.count_evaluator.evaluate(self)
+        return icepool.evaluator.size_evaluator.evaluate(self)
 
     def any(self) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
         """Evaluation: Whether the multiset has at least one positive count. """
@@ -1003,7 +1003,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             order: Which order the ranks are to be emitted. Default is descending.
             limit: How many ranks to emit. Default will emit all ranks, which
                 makes the length of each outcome equal to
-                `additive_union(+self, +arg1, +arg2, ...).unique().count()`
+                `additive_union(+self, +arg1, +arg2, ...).unique().size()`
         """
         self = implicit_convert_to_expression(self)
         converted_args = [implicit_convert_to_expression(arg) for arg in args]

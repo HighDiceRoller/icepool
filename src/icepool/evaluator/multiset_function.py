@@ -74,7 +74,7 @@ def multiset_function(wrapped: Callable[
     ```python
     @multiset_function
     def count_outcomes(a, *, target):
-        return a.keep_outcomes(target).count()
+        return a.keep_outcomes(target).size()
 
     count_outcomes(a, target=[5, 6])
     ```

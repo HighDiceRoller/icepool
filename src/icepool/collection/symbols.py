@@ -413,7 +413,7 @@ class Symbols(Mapping[str, int]):
     def __hash__(self) -> int:
         return self._hash
 
-    def count(self) -> int:
+    def size(self) -> int:
         """The total number of elements."""
         return sum(self._data.values())
 

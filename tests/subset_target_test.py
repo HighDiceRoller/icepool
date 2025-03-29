@@ -25,16 +25,16 @@ def test_contains_subset():
 
 
 def test_intersection_size():
-    assert (Pool([1, 1, 2, 4, 4]) & [1, 2, 4]).count() == Die([3])
-    assert (Pool([1, 1, 2, 4, 4]) & [1, 2, 2, 4]).count() == Die([3])
+    assert (Pool([1, 1, 2, 4, 4]) & [1, 2, 4]).size() == Die([3])
+    assert (Pool([1, 1, 2, 4, 4]) & [1, 2, 2, 4]).size() == Die([3])
 
 
 def test_keep_outcomes_size():
-    assert Pool([1, 1, 2, 4, 4]).keep_outcomes([1, 2]).count() == Die([3])
+    assert Pool([1, 1, 2, 4, 4]).keep_outcomes([1, 2]).size() == Die([3])
 
 
 def test_drop_outcomes_size():
-    assert Pool([1, 1, 2, 4, 4]).drop_outcomes([1, 2]).count() == Die([2])
+    assert Pool([1, 1, 2, 4, 4]).drop_outcomes([1, 2]).size() == Die([2])
 
 
 def test_largest_matching_set():

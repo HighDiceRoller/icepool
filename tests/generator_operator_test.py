@@ -6,13 +6,13 @@ from icepool import d6, Pool, Deck, Die, Order, multiset_function
 
 
 def test_difference():
-    result = (+(d6.pool(3) - d6.pool(1))).count()
+    result = (+(d6.pool(3) - d6.pool(1))).size()
     expected = icepool.highest(3 @ (d6 != 6), 2)
     assert result.simplify() == expected.simplify()
 
 
 def test_intersection():
-    result = (d6.pool(10) & {6: 5}).count()
+    result = (d6.pool(10) & {6: 5}).size()
     expected = icepool.lowest(10 @ (d6 == 6), 5)
     assert result == expected
 
@@ -137,9 +137,8 @@ def test_example_intersect_using_map() -> None:
     def intersect(_, a, b):
         return min(a, b)
 
-    result = Pool.map_counts(d6.pool(3), d6.pool(3),
-                             function=intersect).count()
-    expected = (d6.pool(3) & d6.pool(3)).count()
+    result = Pool.map_counts(d6.pool(3), d6.pool(3), function=intersect).size()
+    expected = (d6.pool(3) & d6.pool(3)).size()
     assert result == expected
 
 

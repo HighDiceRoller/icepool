@@ -85,8 +85,8 @@ sum_evaluator: Final = SumEvaluator()
 """Shared instance for caching."""
 
 
-class CountEvaluator(MultisetEvaluator[Any, int]):
-    """Returns the total count of outcomes.
+class SizeEvaluator(MultisetEvaluator[Any, int]):
+    """Returns the total number of elements.
 
     Usually not very interesting unless the counts are adjusted by
     `unique` etc.
@@ -106,7 +106,7 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         return (type(self), )
 
 
-count_evaluator: Final = CountEvaluator()
+size_evaluator: Final = SizeEvaluator()
 """Shared instance for caching."""
 
 

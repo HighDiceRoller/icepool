@@ -29,10 +29,10 @@ def test_unique_vs_expand(pool):
 
 
 @pytest.mark.parametrize('pool', test_pools)
-def test_unique_count(pool):
+def test_unique_size(pool):
     if any(x < 0 for x in pool.keep_tuple()):
         pytest.skip()
 
     a = pool.unique().expand().map(len)
-    b = pool.unique().count()
+    b = pool.unique().size()
     assert a.equals(b)

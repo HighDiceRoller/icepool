@@ -26,7 +26,7 @@ def test_kwargs():
 
     @multiset_function
     def evaluator(x, target):
-        return x.keep_outcomes([target]).count()
+        return x.keep_outcomes([target]).size()
 
     for i in range(1, 7):
         assert evaluator(d6.pool(1), target=i) == (d6 == 1)
