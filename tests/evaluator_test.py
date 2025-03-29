@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool, Vector, Order, UnsupportedOrderError
+from icepool import d4, d6, d8, d10, d12, Pool, Vector, Order, UnsupportedOrder
 from icepool.evaluator.multiset_function import multiset_function
 
 
@@ -145,7 +145,7 @@ class SumFixedOrderAscending(icepool.MultisetEvaluator):
 
     def next_state(self, state, order, outcome, count):
         if order != Order.Ascending:
-            raise UnsupportedOrderError()
+            raise UnsupportedOrder()
         return (state or 0) + outcome * count
 
 
@@ -153,7 +153,7 @@ class SumFixedOrderDescending(icepool.MultisetEvaluator):
 
     def next_state(self, state, order, outcome, count):
         if order != Order.Descending:
-            raise UnsupportedOrderError()
+            raise UnsupportedOrder()
         return (state or 0) + outcome * count
 
 

@@ -38,7 +38,7 @@ class MultisetOperator(MultisetExpression[T]):
             The next local state and the count produced by this node.
 
         Raises:
-            UnsupportedOrderError if the order is not supported.
+            UnsupportedOrder if the order is not supported.
         """
 
     @property
@@ -72,7 +72,7 @@ class MultisetOperator(MultisetExpression[T]):
             The initial state and the cardinality of this node.
 
         Raises:
-            UnsupportedOrderError if the given order is not supported.
+            UnsupportedOrder if the given order is not supported.
         """
         return None, None
 

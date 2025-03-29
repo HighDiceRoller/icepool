@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 from typing import Any
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.order import Order, UnsupportedOrderError
+from icepool.order import Order, UnsupportedOrder
 
 
 class KeepEvaluator(MultisetEvaluator[Any, Any]):
@@ -18,7 +18,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
         if index is None:
             remaining = 1
         elif (order > 0) != (index >= 0):
-            raise UnsupportedOrderError()
+            raise UnsupportedOrder()
         else:
             if index >= 0:
                 remaining = index + 1

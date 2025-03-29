@@ -79,7 +79,7 @@ class MultisetDungeonlet(Generic[T, Q], MaybeHashKeyed):
             The next local state and the count produced by this node.
 
         Raises:
-            UnsupportedOrderError if the order is not supported.
+            UnsupportedOrder if the order is not supported.
         """
 
     def __eq__(self, other):
@@ -178,5 +178,5 @@ class MultisetQuestlet(Generic[T, Q]):
             The initial state, and the cardinality of this node.
 
         Raises:
-            UnsupportedOrderError if the given order is not supported.
+            UnsupportedOrder if the given order is not supported.
         """

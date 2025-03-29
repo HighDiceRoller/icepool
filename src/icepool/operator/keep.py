@@ -4,7 +4,7 @@ import icepool
 
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order, OrderReason, UnsupportedOrderError
+from icepool.order import Order, OrderReason, UnsupportedOrder
 
 import operator
 from abc import abstractmethod
@@ -139,7 +139,7 @@ class MultisetKeep(MultisetOperator[T]):
             return state, cardinality
         else:
             if child_cardinality is None:
-                raise UnsupportedOrderError(
+                raise UnsupportedOrder(
                     'Could not find supported order for keep operator without inferrable constant cardinality.'
                 )
             more = max(child_cardinality - len(keep_tuple), 0)

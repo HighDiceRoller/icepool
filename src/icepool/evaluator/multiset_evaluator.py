@@ -36,7 +36,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             kwargs: Any keyword arguments that were passed to `evaluate()`.
 
         Raises:
-            UnsupportedOrderError if the given order is not supported.
+            UnsupportedOrder if the given order is not supported.
         """
         return None
 
@@ -72,7 +72,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
                 current outcome. If this is the first outcome being considered,
                 `state` will be `None`.
             order: The order in which outcomes are seen. You can raise an 
-                `UnsupportedOrderError` if you don't want to support the current 
+                `UnsupportedOrder` if you don't want to support the current 
                 order. In this case, the opposite order will then be attempted
                 (if it hasn't already been attempted).
             outcome: The current outcome.

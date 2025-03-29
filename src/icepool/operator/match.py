@@ -4,7 +4,7 @@ import icepool
 
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order, OrderReason, UnsupportedOrderError
+from icepool.order import Order, OrderReason, UnsupportedOrder
 
 import operator
 from abc import abstractmethod
@@ -40,7 +40,7 @@ class MultisetSortMatch(MultisetOperator[T]):
         else:
             left_cardinality, right_cardinality = child_cardinalities
             if left_cardinality is None or right_cardinality is None:
-                raise UnsupportedOrderError(
+                raise UnsupportedOrder(
                     'Reverse order not supported unless cardinalities of both operands are inferrable.'
                 )
             left_lead = right_cardinality - left_cardinality
@@ -96,7 +96,7 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         if order == self._order:
             return 0, None
         else:
-            raise UnsupportedOrderError()
+            raise UnsupportedOrder()
 
     def _next_state(self, prev_matchable, order, outcome, child_counts,
                     source_counts, param_counts):

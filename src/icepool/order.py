@@ -7,15 +7,15 @@ import enum
 from typing import Collection
 
 
-class OrderError(Exception):
+class OrderException(Exception):
     """An error realted to outcome orderings."""
 
 
-class ConflictingOrderError(OrderError):
+class ConflictingOrderError(OrderException):
     """Indicates that two conflicting mandatory outcome orderings were encountered."""
 
 
-class UnsupportedOrderError(OrderError):
+class UnsupportedOrder(OrderException):
     """Indicates that the given order is not supported under the current context."""
 
 

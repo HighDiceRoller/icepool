@@ -3,7 +3,7 @@ __docformat__ = 'google'
 import icepool
 
 from icepool.function import sorted_union
-from icepool.order import ConflictingOrderError, Order, OrderReason, UnsupportedOrderError, merge_order_preferences
+from icepool.order import ConflictingOrderError, Order, OrderReason, UnsupportedOrder, merge_order_preferences
 
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -168,7 +168,7 @@ class MultisetDungeon(Generic[T]):
             final_states = self.evaluate_backward(pop_order, room)
             return quest.finalize_evaluation(final_states, -pop_order,
                                              all_outcomes, kwargs)
-        except UnsupportedOrderError:
+        except UnsupportedOrder:
             try:
                 if pop_order_reason is OrderReason.Default:
                     # Flip the pop order.
@@ -184,7 +184,7 @@ class MultisetDungeon(Generic[T]):
                     final_states = self.evaluate_forward(pop_order, room)
                     return quest.finalize_evaluation(final_states, pop_order,
                                                      all_outcomes, kwargs)
-            except UnsupportedOrderError:
+            except UnsupportedOrder:
                 raise ConflictingOrderError(
                     'Neither ascending nor descending order is compatable with the evaluation. '
                     +
@@ -419,7 +419,7 @@ class MultisetQuest(Generic[T, U_co]):
             kwargs: Any keyword arguments that were passed to `evaluate()`.
 
         Raises:
-            UnsupportedOrderError if the given order is not supported.
+            UnsupportedOrder if the given order is not supported.
         """
 
     @abstractmethod
