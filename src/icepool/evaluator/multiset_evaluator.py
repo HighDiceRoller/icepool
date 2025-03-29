@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def initial_state(self, order: Order, outcomes: Sequence[T], /,
-                      **kwargs: Hashable):
+                      *cardinalities, **kwargs: Hashable):
         """Optional method to produce an initial evaluation state.
 
         If not override, the initial state is `None`.
@@ -107,7 +107,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     def final_outcome(
             self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
-            /, **kwargs: Hashable
+            /, *cardinalities, **kwargs: Hashable
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Optional method to generate a final output outcome from a final state.
 
@@ -218,7 +218,10 @@ class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
 
     def initial_state_main(self, order, outcomes, source_counts, param_counts,
                            kwargs):
-        return self.initial_state_eval(order, outcomes, **kwargs)
+        return self.initial_state_eval(order, outcomes, *param_counts,
+                                       **kwargs)
 
-    def final_outcome(self, final_state, order, outcomes, kwargs):
-        return self.final_outcome_eval(final_state, order, outcomes, **kwargs)
+    def final_outcome(self, final_state, order, outcomes, cardinalities,
+                      kwargs):
+        return self.final_outcome_eval(final_state, order, outcomes,
+                                       cardinalities, **kwargs)

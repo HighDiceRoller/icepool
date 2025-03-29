@@ -235,16 +235,18 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
                                                     self.inner_kwargs)
         return statelets, state
 
-    def final_outcome(self, final_state, order, outcomes, kwargs):
+    def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
+                      cardinalities, kwargs):
         _, final_main_state = final_state
         return self.inner_quest.final_outcome(final_main_state, order,
-                                              outcomes, self.inner_kwargs)
+                                              outcomes, cardinalities,
+                                              self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
     outer_exps: tuple[MultisetExpressionBase[T, Any], ...],
-    raw_result: tuple['MultisetFunctionRawResult[T, U_co]', ...],
-) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+    raw_result: tuple['MultisetFunctionRawResult[T, Any]', ...],
+) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, Any]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
         outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
@@ -317,12 +319,12 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T], MaybeHashKeyed):
         return MultisetFunctionJointDungeon, self.dungeonlet_flats, self.inner_dungeons
 
 
-class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):
+class MultisetFunctionJointQuest(MultisetQuest[T, Any]):
 
     def __init__(
         self,
         questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]',
-        inner_quests: tuple[MultisetQuest[T, U_co], ...],
+        inner_quests: tuple[MultisetQuest[T, Any], ...],
         inner_kwargses: tuple[Mapping[str, Hashable], ...],
     ):
         self.questlet_flats = questlet_flats
@@ -355,11 +357,12 @@ class MultisetFunctionJointQuest(MultisetQuest[T, U_co]):
                                                counts, inner_kwargs)
         return statelets, state
 
-    def final_outcome(self, final_state, order, outcomes, kwargs):
+    def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
+                      cardinalities, kwargs):
         # The kwargs have already been bound to inner_kwargses.
         result = tuple(
             quest.final_outcome(inner_main_state, order, outcomes,
-                                inner_kwargs)
+                                cardinalities, inner_kwargs)
             for quest, (_, inner_main_state), inner_kwargs in zip(
                 self.inner_quests, final_state, self.inner_kwargses))
         if any(x is icepool.Reroll for x in result):

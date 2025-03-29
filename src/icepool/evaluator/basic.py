@@ -29,8 +29,7 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
             final_state,
             order_,
             outcomes,
-            /,
-            *,
+            cardinality,
             order: Order = Order.Ascending) -> tuple:
         """Implementation."""
         if final_state is None:
@@ -98,7 +97,7 @@ class CountEvaluator(MultisetEvaluator[Any, int]):
         return (state or 0) + count
 
     def final_outcome(  # type: ignore
-            self, final_state, order, outcomes) -> int:
+            self, final_state, order, outcomes, cardinality) -> int:
         """Implementation."""
         return final_state or 0
 
@@ -119,7 +118,7 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
         return state or (count > 0)
 
     def final_outcome(  # type: ignore
-            self, final_state, order, outcomes) -> bool:
+            self, final_state, order, outcomes, cardinality) -> bool:
         """Implementation."""
         return final_state or False
 
