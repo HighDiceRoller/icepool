@@ -92,6 +92,13 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         If not overriden, the initial state is `None`. Note that this is not a
         valid `final_outcome()`.
 
+        All non-keyword arguments will be given positionally, so you are free
+        to:
+        * Rename any of them.
+        * Replace `cardinalities` with a fixed series of arguments.
+        * Replace trailing positional arguments with `*_` if you don't care
+            about them.
+
         Args:
             order: The order in which outcomes will be seen by `next_state()`.
             outcomes: All outcomes that will be seen by `next_state()`.
@@ -120,6 +127,13 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         be callled with `final_state=None`.
         Subclasses that want to handle this case should explicitly define what
         happens.
+
+        All non-keyword arguments will be given positionally, so you are free
+        to:
+        * Rename any of them.
+        * Replace `cardinalities` with a fixed series of arguments.
+        * Replace trailing positional arguments with `*_` if you don't care
+            about them.
 
         Args:
             final_state: A state after all outcomes have been processed.
