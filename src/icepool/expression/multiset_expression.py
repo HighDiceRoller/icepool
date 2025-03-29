@@ -140,6 +140,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         expansion = cast('icepool.Die[tuple[T, ...]]', self.expand())
         return expansion.items()
 
+    # We need to reiterate this since we override __eq__.
+    __hash__ = MaybeHashKeyed.__hash__
+
     # Binary operators.
 
     def __add__(self,
@@ -1155,8 +1158,16 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
 
-    # We need to reiterate this since we override __eq__.
-    __hash__ = MaybeHashKeyed.__hash__
+    # For helping debugging / testing.
+    def force_order(self, force_order: Order) -> 'MultisetExpression[T]':
+        """Forces outcomes to be seen by the evaluator in the given order.
+
+        This can be useful for debugging / testing.
+        """
+        if force_order == Order.Any:
+            return self
+        return icepool.operator.MultisetForceOrder(self,
+                                                   force_order=force_order)
 
 
 class MultisetExpressionDungeonlet(MultisetDungeonlet[T, int]):

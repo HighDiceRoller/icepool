@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, d20
+from icepool import d4, d6, d8, d10, d12, d20, Order
 
 test_dice = [
     (d6, ),
@@ -68,8 +68,10 @@ test_dice = [
 @pytest.mark.parametrize('dice', test_dice)
 @pytest.mark.parametrize('keep', [0, 1, 2])
 @pytest.mark.parametrize('drop', [0, 1, 2])
-def test_pool_lowest(dice, keep, drop):
-    result = icepool.Pool(dice).lowest(keep=keep, drop=drop).sum()
+@pytest.mark.parametrize('force_order', [Order.Ascending, Order.Descending])
+def test_pool_lowest(dice, keep, drop, force_order):
+    result = icepool.Pool(dice).lowest(
+        keep=keep, drop=drop).force_order(force_order).sum()
 
     def expected_lowest(*outcomes):
         if keep == 0:
@@ -86,8 +88,10 @@ def test_pool_lowest(dice, keep, drop):
 @pytest.mark.parametrize('dice', test_dice)
 @pytest.mark.parametrize('keep', [0, 1, 2])
 @pytest.mark.parametrize('drop', [0, 1, 2])
-def test_pool_highest(dice, keep, drop):
-    result = icepool.Pool(dice).highest(keep=keep, drop=drop).sum()
+@pytest.mark.parametrize('force_order', [Order.Ascending, Order.Descending])
+def test_pool_highest(dice, keep, drop, force_order):
+    result = icepool.Pool(dice).highest(
+        keep=keep, drop=drop).force_order(force_order).sum()
 
     def expected_highest(*outcomes):
         if keep == 0:

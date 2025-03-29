@@ -2,38 +2,30 @@ import icepool
 import icepool.evaluator
 import pytest
 
-from icepool import d4, d6, d8, d10, d12, Pool, Order, UnsupportedOrder
+from icepool import d4, d6, d8, d10, d12, Pool, Order, UnsupportedOrder, ConflictingOrderError
 import icepool.evaluator.multiset_evaluator
 
 
-class LastOutcomeAscending(icepool.MultisetEvaluator):
-
-    def next_state(self, state, order, outcome, count):
-        if order != Order.Ascending:
-            raise UnsupportedOrder()
-        return outcome
-
-
-class LastOutcomeDescending(icepool.MultisetEvaluator):
-
-    def next_state(self, state, order, outcome, count):
-        if order != Order.Descending:
-            raise UnsupportedOrder()
-        return outcome
-
-
-def test_order_ascending():
-    assert LastOutcomeAscending().evaluate(d6.pool(1)).probability(6) == 1
-
-
-def test_order_descending():
-    assert LastOutcomeDescending().evaluate(d6.pool(1)).probability(1) == 1
+def test_force_order_conflict():
+    with pytest.raises(ConflictingOrderError):
+        d6.pool(1).force_order(Order.Ascending).force_order(
+            Order.Descending).sum()
 
 
 class LastOutcome(icepool.MultisetEvaluator):
 
     def next_state(self, state, order, outcome, count):
         return outcome
+
+
+def test_order_ascending():
+    assert LastOutcome().evaluate(d6.pool(1).force_order(
+        Order.Ascending)).probability(6) == 1
+
+
+def test_order_descending():
+    assert LastOutcome().evaluate(d6.pool(1).force_order(
+        Order.Descending)).probability(1) == 1
 
 
 # The auto order should maximize skips if there are no other considerations.
