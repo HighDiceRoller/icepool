@@ -4,7 +4,7 @@ import itertools
 import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
-from icepool.expression.multiset_expression_base import CountletCallTree, Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase, SizeletCallTree
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase, SizeletCallTree
 from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
 
 import inspect
@@ -190,9 +190,9 @@ class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        param_tree: 'CountletCallTree') -> Hashable:
+                        param_call_flat: Iterator[tuple]) -> Hashable:
         return self.inner_dungeon.next_state_main(state, order, outcome,
-                                                  param_tree.calls[0])
+                                                  param_call_flat)
 
     @property
     def hash_key(self):
@@ -272,14 +272,12 @@ class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        param_tree: 'CountletCallTree') -> Hashable:
+                        param_call_flat: Iterator[tuple]) -> Hashable:
         next_state: MutableSequence[Hashable] = []
         inner_dungeon: Dungeon[T]
-        inner_param_tree: CountletCallTree
-        for inner_state, inner_dungeon, inner_param_tree in zip(
-                state, self.inner_dungeons, param_tree.calls):
+        for inner_state, inner_dungeon in zip(state, self.inner_dungeons):
             next_inner_state = inner_dungeon.next_state_main(
-                inner_state, order, outcome, inner_param_tree)
+                inner_state, order, outcome, param_call_flat)
             if next_inner_state is icepool.Reroll:
                 return icepool.Reroll
             next_state.append(next_inner_state)

@@ -185,9 +185,9 @@ class DungeonletCallTree(Generic[T], NamedTuple):
     calls: 'tuple[DungeonletCallTree, ...]'
 
     def next_state(
-            self, statelet_tree: 'StateletCallTree', order: Order, outcome: T,
-            source_counts: Iterator, param_counts: Sequence
-    ) -> 'tuple[StateletCallTree, CountletCallTree]':
+        self, statelet_tree: 'StateletCallTree', order: Order, outcome: T,
+        source_counts: Iterator, param_counts: Sequence
+    ) -> 'tuple[StateletCallTree, tuple[tuple, ...]]':
         next_flats = []
         output_counts: MutableSequence = []
         for dungeonlets, statelets in zip(self.flats, statelet_tree.flats):
@@ -203,29 +203,25 @@ class DungeonletCallTree(Generic[T], NamedTuple):
             next_flats.append(tuple(next_statelets))
             output_counts.append(countlets[-1])
         next_statelet_calls = []
-        countlet_calls = []
-        for call_dungeonlet_tree, call_statelet_tree in zip(
-                self.calls, statelet_tree.calls):
-            next_call_statelet_tree, call_countlet_tree = call_dungeonlet_tree.next_state(
-                call_statelet_tree, order, outcome, source_counts,
-                output_counts)
-            next_statelet_calls.append(next_call_statelet_tree)
-            countlet_calls.append(call_countlet_tree)
+        countlet_call_flat = []
+        if self.calls:
+            for sub_dungeonlet_tree, sub_statelet_tree in zip(
+                    self.calls, statelet_tree.calls):
+                next_sub_statelet_tree, sub_countlet_call_flat = sub_dungeonlet_tree.next_state(
+                    sub_statelet_tree, order, outcome, source_counts,
+                    output_counts)
+                next_statelet_calls.append(next_sub_statelet_tree)
+                countlet_call_flat.extend(sub_countlet_call_flat)
+        else:
+            countlet_call_flat.append(output_counts)
         next_statelet_tree = StateletCallTree(tuple(next_flats),
                                               tuple(next_statelet_calls))
-        countlet_tree = CountletCallTree(tuple(output_counts),
-                                         tuple(countlet_calls))
-        return next_statelet_tree, countlet_tree
+        return next_statelet_tree, tuple(countlet_call_flat)
 
 
 class SizeletCallTree(NamedTuple):
     flats: tuple
     calls: 'tuple[SizeletCallTree, ...]'
-
-
-class CountletCallTree(NamedTuple):
-    flats: tuple
-    calls: 'tuple[CountletCallTree, ...]'
 
 
 class StateletCallTree(NamedTuple):

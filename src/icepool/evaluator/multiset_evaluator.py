@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
-from icepool.expression.multiset_expression_base import CountletCallTree, MultisetExpressionBase, SizeletCallTree
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, SizeletCallTree
 from icepool.expression.multiset_param import MultisetParamBase
 from icepool.order import Order
 
@@ -217,8 +217,9 @@ class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        param_tree: 'CountletCallTree') -> Hashable:
-        return self.next_state_eval(state, order, outcome, *param_tree.flats)
+                        param_call_flat: Iterator[tuple]) -> Hashable:
+        return self.next_state_eval(state, order, outcome,
+                                    *next(param_call_flat))
 
     @property
     def hash_key(self):
