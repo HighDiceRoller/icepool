@@ -774,7 +774,7 @@
                                 <a class="function" href="#Deal.denominator">denominator</a>
                         </li>
                         <li>
-                                <a class="function" href="#Deal.hash_key">hash_key</a>
+                                <a class="variable" href="#Deal.hash_key">hash_key</a>
                         </li>
                 </ul>
 
@@ -801,7 +801,7 @@
                                 <a class="function" href="#MultiDeal.denominator">denominator</a>
                         </li>
                         <li>
-                                <a class="function" href="#MultiDeal.hash_key">hash_key</a>
+                                <a class="variable" href="#MultiDeal.hash_key">hash_key</a>
                         </li>
                 </ul>
 
@@ -16277,19 +16277,20 @@ order, use <code><a href="#Deck.deal">deal()</a></code> instead.</p>
 </span><span id="Deal-72"><a href="#Deal-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Deal-73"><a href="#Deal-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
 </span><span id="Deal-74"><a href="#Deal-74"><span class="linenos">74</span></a>
-</span><span id="Deal-75"><a href="#Deal-75"><span class="linenos">75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Deal-76"><a href="#Deal-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
-</span><span id="Deal-77"><a href="#Deal-77"><span class="linenos">77</span></a>
-</span><span id="Deal-78"><a href="#Deal-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Deal-79"><a href="#Deal-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
-</span><span id="Deal-80"><a href="#Deal-80"><span class="linenos">80</span></a>            <span class="bp">self</span>
-</span><span id="Deal-81"><a href="#Deal-81"><span class="linenos">81</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
-</span><span id="Deal-82"><a href="#Deal-82"><span class="linenos">82</span></a>
-</span><span id="Deal-83"><a href="#Deal-83"><span class="linenos">83</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Deal-84"><a href="#Deal-84"><span class="linenos">84</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
-</span><span id="Deal-85"><a href="#Deal-85"><span class="linenos">85</span></a>            <span class="bp">self</span>
-</span><span id="Deal-86"><a href="#Deal-86"><span class="linenos">86</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; of hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-</span><span id="Deal-87"><a href="#Deal-87"><span class="linenos">87</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
+</span><span id="Deal-75"><a href="#Deal-75"><span class="linenos">75</span></a>    <span class="nd">@property</span>
+</span><span id="Deal-76"><a href="#Deal-76"><span class="linenos">76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Deal-77"><a href="#Deal-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
+</span><span id="Deal-78"><a href="#Deal-78"><span class="linenos">78</span></a>
+</span><span id="Deal-79"><a href="#Deal-79"><span class="linenos">79</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Deal-80"><a href="#Deal-80"><span class="linenos">80</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+</span><span id="Deal-81"><a href="#Deal-81"><span class="linenos">81</span></a>            <span class="bp">self</span>
+</span><span id="Deal-82"><a href="#Deal-82"><span class="linenos">82</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span id="Deal-83"><a href="#Deal-83"><span class="linenos">83</span></a>
+</span><span id="Deal-84"><a href="#Deal-84"><span class="linenos">84</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Deal-85"><a href="#Deal-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+</span><span id="Deal-86"><a href="#Deal-86"><span class="linenos">86</span></a>            <span class="bp">self</span>
+</span><span id="Deal-87"><a href="#Deal-87"><span class="linenos">87</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; of hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+</span><span id="Deal-88"><a href="#Deal-88"><span class="linenos">88</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -16447,17 +16448,16 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
                             </div>
                             <div id="Deal.hash_key" class="classattr">
                                         <input id="Deal.hash_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">hash_key</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+<div class="attr variable">
+            <span class="name">hash_key</span>
 
                 <label class="view-source-button" for="Deal.hash_key-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Deal.hash_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deal.hash_key-75"><a href="#Deal.hash_key-75"><span class="linenos">75</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Deal.hash_key-76"><a href="#Deal.hash_key-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deal.hash_key-75"><a href="#Deal.hash_key-75"><span class="linenos">75</span></a>    <span class="nd">@property</span>
+</span><span id="Deal.hash_key-76"><a href="#Deal.hash_key-76"><span class="linenos">76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Deal.hash_key-77"><a href="#Deal.hash_key-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
 </span></pre></div>
 
 
@@ -16566,19 +16566,20 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 </span><span id="MultiDeal-92"><a href="#MultiDeal-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_make_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetTupleSource[T]&#39;</span><span class="p">:</span>
 </span><span id="MultiDeal-93"><a href="#MultiDeal-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="n">MultiDealSource</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_sizes</span><span class="p">)</span>
 </span><span id="MultiDeal-94"><a href="#MultiDeal-94"><span class="linenos"> 94</span></a>
-</span><span id="MultiDeal-95"><a href="#MultiDeal-95"><span class="linenos"> 95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="MultiDeal-96"><a href="#MultiDeal-96"><span class="linenos"> 96</span></a>        <span class="k">return</span> <span class="n">MultiDeal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_sizes</span>
-</span><span id="MultiDeal-97"><a href="#MultiDeal-97"><span class="linenos"> 97</span></a>
-</span><span id="MultiDeal-98"><a href="#MultiDeal-98"><span class="linenos"> 98</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="MultiDeal-99"><a href="#MultiDeal-99"><span class="linenos"> 99</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
-</span><span id="MultiDeal-100"><a href="#MultiDeal-100"><span class="linenos">100</span></a>            <span class="bp">self</span>
-</span><span id="MultiDeal-101"><a href="#MultiDeal-101"><span class="linenos">101</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_sizes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_sizes</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
-</span><span id="MultiDeal-102"><a href="#MultiDeal-102"><span class="linenos">102</span></a>
-</span><span id="MultiDeal-103"><a href="#MultiDeal-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="MultiDeal-104"><a href="#MultiDeal-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
-</span><span id="MultiDeal-105"><a href="#MultiDeal-105"><span class="linenos">105</span></a>            <span class="bp">self</span>
-</span><span id="MultiDeal-106"><a href="#MultiDeal-106"><span class="linenos">106</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; of hand_sizes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_sizes</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-</span><span id="MultiDeal-107"><a href="#MultiDeal-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
+</span><span id="MultiDeal-95"><a href="#MultiDeal-95"><span class="linenos"> 95</span></a>    <span class="nd">@property</span>
+</span><span id="MultiDeal-96"><a href="#MultiDeal-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span id="MultiDeal-97"><a href="#MultiDeal-97"><span class="linenos"> 97</span></a>        <span class="k">return</span> <span class="n">MultiDeal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_sizes</span>
+</span><span id="MultiDeal-98"><a href="#MultiDeal-98"><span class="linenos"> 98</span></a>
+</span><span id="MultiDeal-99"><a href="#MultiDeal-99"><span class="linenos"> 99</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="MultiDeal-100"><a href="#MultiDeal-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+</span><span id="MultiDeal-101"><a href="#MultiDeal-101"><span class="linenos">101</span></a>            <span class="bp">self</span>
+</span><span id="MultiDeal-102"><a href="#MultiDeal-102"><span class="linenos">102</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_sizes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_sizes</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span id="MultiDeal-103"><a href="#MultiDeal-103"><span class="linenos">103</span></a>
+</span><span id="MultiDeal-104"><a href="#MultiDeal-104"><span class="linenos">104</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="MultiDeal-105"><a href="#MultiDeal-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+</span><span id="MultiDeal-106"><a href="#MultiDeal-106"><span class="linenos">106</span></a>            <span class="bp">self</span>
+</span><span id="MultiDeal-107"><a href="#MultiDeal-107"><span class="linenos">107</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; of hand_sizes=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_sizes</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+</span><span id="MultiDeal-108"><a href="#MultiDeal-108"><span class="linenos">108</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -16765,17 +16766,16 @@ Prefer to use the name <code><a href="#MultiDeal.outcomes">outcomes</a></code>.<
                             </div>
                             <div id="MultiDeal.hash_key" class="classattr">
                                         <input id="MultiDeal.hash_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">hash_key</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">Hashable</span>:</span></span>
+<div class="attr variable">
+            <span class="name">hash_key</span><span class="annotation">: Hashable</span>
 
                 <label class="view-source-button" for="MultiDeal.hash_key-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MultiDeal.hash_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultiDeal.hash_key-95"><a href="#MultiDeal.hash_key-95"><span class="linenos">95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="MultiDeal.hash_key-96"><a href="#MultiDeal.hash_key-96"><span class="linenos">96</span></a>        <span class="k">return</span> <span class="n">MultiDeal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_sizes</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultiDeal.hash_key-95"><a href="#MultiDeal.hash_key-95"><span class="linenos">95</span></a>    <span class="nd">@property</span>
+</span><span id="MultiDeal.hash_key-96"><a href="#MultiDeal.hash_key-96"><span class="linenos">96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span id="MultiDeal.hash_key-97"><a href="#MultiDeal.hash_key-97"><span class="linenos">97</span></a>        <span class="k">return</span> <span class="n">MultiDeal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hand_sizes</span>
 </span></pre></div>
 
 
