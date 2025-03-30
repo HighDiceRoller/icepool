@@ -187,6 +187,21 @@ class DungeonletCallTree(Generic[T], NamedTuple):
     def next_state(self, statelet_tree: 'StateletCallTree', order: Order,
                    outcome: T, source_counts: Iterator,
                    param_counts: Sequence) -> 'tuple[StateletCallTree, tuple]':
+        """Advances the statelet tree for this call tree.
+
+        Args:
+            order: The order in which the evaluation will see outcomes.
+            source_counts: The count from each source, which will be consumed in
+                traversal order.
+            param_counts: The counts of the params to this call.
+
+        Returns:
+            An next statelet call tree, and a param count call tree.
+            Each node in the latter is either a non-leaf node corresponding to
+            a multiset function, in which case it is a tuple of subtrees,
+            or it is a leaf node corresponding to a final evaluation, in which
+            case it is the actual param counts to that evaluation.
+        """
         next_flats = []
         output_counts: MutableSequence = []
         for dungeonlets, statelets in zip(self.flats, statelet_tree.flats):
@@ -220,11 +235,6 @@ class DungeonletCallTree(Generic[T], NamedTuple):
         return next_statelet_tree, count_tree
 
 
-class SizeletCallTree(NamedTuple):
-    flats: tuple
-    calls: 'tuple[SizeletCallTree, ...]'
-
-
 class StateletCallTree(NamedTuple):
     flats: 'tuple[tuple[Hashable, ...], ...]'
     calls: 'tuple[StateletCallTree, ...]'
@@ -235,31 +245,49 @@ class QuestletCallTree(Generic[T], NamedTuple):
     calls: 'tuple[QuestletCallTree, ...]'
 
     def initial_state(
-            self, order: Order, outcomes: tuple[T, ...],
-            source_counts: Iterator, param_counts: Sequence
-    ) -> 'tuple[StateletCallTree, SizeletCallTree]':
+            self, order: Order, outcomes: tuple[T,
+                                                ...], source_sizes: Iterator,
+            param_sizes: Sequence) -> 'tuple[StateletCallTree, tuple]':
+        """Generates the initial statelet tree for this call tree.
+
+        Args:
+            order: The order in which the evaluation will see outcomes.
+            source_sizes: The size of each source, which will be consumed in
+                traversal order.
+            param_sizes: The sizes of the params to this call.
+
+        Returns:
+            An initial statelet call tree, and a param size call tree.
+            Each node in the latter is either a non-leaf node corresponding to
+            a multiset function, in which case it is a tuple of subtrees,
+            or it is a leaf node corresponding to a final evaluation, in which
+            case it is the actual param sizes to that evaluation.
+        """
         statelet_flats = []
-        output_counts: MutableSequence = []
+        output_sizes: MutableSequence = []
         for questlets in self.flats:
             statelets = []
             countlets: MutableSequence = []
             for questlet in questlets:
-                child_counts = [countlets[i] for i in questlet.child_indexes]
+                child_sizes = [countlets[i] for i in questlet.child_indexes]
                 next_statelet, countlet = questlet.initial_state(
-                    order, outcomes, child_counts, source_counts, param_counts)
+                    order, outcomes, child_sizes, source_sizes, param_sizes)
                 statelets.append(next_statelet)
                 countlets.append(countlet)
             statelet_flats.append(tuple(statelets))
-            output_counts.append(countlets[-1])
-        statelet_calls = []
-        countlet_calls = []
-        for call_questlet_tree in self.calls:
-            call_statelet_flats, call_countlet = call_questlet_tree.initial_state(
-                order, outcomes, source_counts, output_counts)
-            statelet_calls.append(call_statelet_flats)
-            countlet_calls.append(call_countlet)
-        statelet_tree = StateletCallTree(tuple(statelet_flats),
-                                         tuple(statelet_calls))
-        countlet_tree = SizeletCallTree(tuple(output_counts),
-                                        tuple(countlet_calls))
+            output_sizes.append(countlets[-1])
+        if self.calls:
+            statelet_calls = []
+            countlet_calls = []
+            for call_questlet_tree in self.calls:
+                call_statelet_flats, call_countlet = call_questlet_tree.initial_state(
+                    order, outcomes, source_sizes, output_sizes)
+                statelet_calls.append(call_statelet_flats)
+                countlet_calls.append(call_countlet)
+            statelet_tree = StateletCallTree(tuple(statelet_flats),
+                                             tuple(statelet_calls))
+            countlet_tree = tuple(countlet_calls)
+        else:
+            statelet_tree = StateletCallTree(tuple(statelet_flats), ())
+            countlet_tree = tuple(output_sizes)
         return statelet_tree, countlet_tree

@@ -4,7 +4,7 @@ import itertools
 import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase, SizeletCallTree
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
 
 import inspect
@@ -190,9 +190,9 @@ class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        *param_tree) -> Hashable:
+                        *param_counts) -> Hashable:
         return self.inner_dungeon.next_state_main(state, order, outcome,
-                                                  *param_tree[0])
+                                                  *param_counts[0])
 
     @property
     def hash_key(self):
@@ -218,17 +218,17 @@ class MultisetFunctionQuest(Quest[T, U_co]):
         return self.inner_quest.extra_outcomes(outcomes)
 
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           param_size_tree: 'SizeletCallTree',
-                           kwargs: Mapping[str, Hashable]) -> Hashable:
+                           *param_sizes, **kwargs: Hashable) -> Hashable:
         # The kwargs have already been bound to inner_kwargs.
         return self.inner_quest.initial_state_main(order, outcomes,
-                                                   param_size_tree.calls[0],
-                                                   self.inner_kwargs)
+                                                   *param_sizes[0],
+                                                   **self.inner_kwargs)
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
-                      sizes, kwargs):
+                      *param_sizes, **kwargs):
         return self.inner_quest.final_outcome(final_state, order, outcomes,
-                                              sizes, self.inner_kwargs)
+                                              *param_sizes[0],
+                                              **self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
@@ -272,12 +272,12 @@ class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        *param_tree) -> Hashable:
+                        *param_counts) -> Hashable:
         next_state: MutableSequence[Hashable] = []
         inner_dungeon: Dungeon[T]
         inner_param_tree: tuple
         for inner_state, inner_dungeon, inner_param_tree in zip(
-                state, self.inner_dungeons, param_tree):
+                state, self.inner_dungeons, param_counts):
             next_inner_state = inner_dungeon.next_state_main(
                 inner_state, order, outcome, *inner_param_tree)
             if next_inner_state is icepool.Reroll:
@@ -310,23 +310,23 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
                               for quest in self.inner_quests))
 
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           param_size_tree: 'SizeletCallTree',
-                           kwargs: Mapping[str, Hashable]) -> Hashable:
+                           *param_sizes, **kwargs: Hashable) -> Hashable:
 
         return tuple(
-            inner_quest.initial_state_main(order, outcomes,
-                                           inner_param_size_tree, inner_kwargs)
-            for inner_quest, inner_kwargs, inner_param_size_tree in zip(
-                self.inner_quests, self.inner_kwargses, param_size_tree.calls))
+            inner_quest.initial_state_main(order, outcomes, *inner_param_sizes,
+                                           **inner_kwargs)
+            for inner_quest, inner_kwargs, inner_param_sizes in zip(
+                self.inner_quests, self.inner_kwargses, param_sizes))
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
-                      sizes, kwargs):
+                      *param_sizes, **kwargs: Hashable):
         # The kwargs have already been bound to inner_kwargses.
         result = tuple(
-            quest.final_outcome(inner_main_state, order, outcomes, sizes,
-                                inner_kwargs)
-            for quest, inner_main_state, inner_kwargs in zip(
-                self.inner_quests, final_state, self.inner_kwargses))
+            quest.final_outcome(inner_main_state, order, outcomes, *
+                                inner_param_sizes, **inner_kwargs)
+            for quest, inner_main_state, inner_param_sizes, inner_kwargs in
+            zip(self.inner_quests, final_state, param_sizes,
+                self.inner_kwargses))
         if any(x is icepool.Reroll for x in result):
             return icepool.Reroll
         return result

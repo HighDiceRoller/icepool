@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, SizeletCallTree
+from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_param import MultisetParamBase
 from icepool.order import Order
 
@@ -230,21 +230,13 @@ class MultisetEvaluatorQuest(Quest[T, U_co]):
     calls = ()
     # These are filled in by the constructor.
     extra_outcomes = None  # type: ignore
+    initial_state_main = None  # type: ignore
+    final_outcome = None  # type: ignore
 
-    def __init__(self, initial_state_eval: Callable[..., Hashable],
-                 extra_outcomes: Callable, final_outcome_eval: Callable,
+    def __init__(self, initial_state_main: Callable[..., Hashable],
+                 extra_outcomes: Callable, final_outcome: Callable,
                  questlet_flats: 'tuple[tuple[Questlet[T, Any], ...], ...]'):
-        self.initial_state_eval = initial_state_eval
         self.extra_outcomes = extra_outcomes  # type: ignore
-        self.final_outcome_eval = final_outcome_eval  # type: ignore
+        self.initial_state_main = initial_state_main  # type: ignore
+        self.final_outcome = final_outcome  # type: ignore
         self.questlet_flats = questlet_flats
-
-    def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           param_size_tree: 'SizeletCallTree',
-                           kwargs: Mapping[str, Hashable]) -> Hashable:
-        return self.initial_state_eval(order, outcomes, *param_size_tree.flats,
-                                       **kwargs)
-
-    def final_outcome(self, final_state, order, outcomes, sizes, kwargs):
-        return self.final_outcome_eval(final_state, order, outcomes, sizes,
-                                       **kwargs)

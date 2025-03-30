@@ -139,7 +139,8 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
         else:
             return min(state, current)
 
-    def final_outcome(self, final_state, order, outcomes, size):
+    def final_outcome(self, final_state, order, outcomes, left_size,
+                      right_size):
         if final_state is None:
             if self._empty_divisor is None:
                 raise ZeroDivisionError(
