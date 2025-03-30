@@ -178,3 +178,86 @@ class Questlet(Generic[T, Q]):
         Raises:
             UnsupportedOrder if the given order is not supported.
         """
+
+
+class DungeonletCallTree(Generic[T], NamedTuple):
+    flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'
+    calls: 'tuple[DungeonletCallTree, ...]'
+
+    def next_state(
+            self, statelet_tree: 'StateletCallTree', order: Order, outcome: T,
+            source_counts: Iterator, param_counts: Sequence
+    ) -> 'tuple[StateletCallTree, CountletCallTree]':
+        next_flats = []
+        output_counts: MutableSequence = []
+        for dungeonlets, statelets in zip(self.flats, statelet_tree.flats):
+            next_statelets = []
+            countlets: MutableSequence = []
+            for dungeonlet, statelet in zip(dungeonlets, statelets):
+                child_counts = [countlets[i] for i in dungeonlet.child_indexes]
+                next_statelet, countlet = dungeonlet.next_state(
+                    statelet, order, outcome, child_counts, source_counts,
+                    param_counts)
+                next_statelets.append(next_statelet)
+                countlets.append(countlet)
+            next_flats.append(tuple(next_statelets))
+            output_counts.append(countlets[-1])
+        next_statelet_calls = []
+        countlet_calls = []
+        for call_dungeonlet_tree, call_statelet_tree in zip(
+                self.calls, statelet_tree.calls):
+            next_call_statelet_tree, call_countlet_tree = call_dungeonlet_tree.next_state(
+                call_statelet_tree, order, outcome, source_counts,
+                output_counts)
+            next_statelet_calls.append(next_call_statelet_tree)
+            countlet_calls.append(call_countlet_tree)
+        next_statelet_tree = StateletCallTree(tuple(next_flats),
+                                              tuple(next_statelet_calls))
+        countlet_tree = CountletCallTree(tuple(output_counts),
+                                         tuple(countlet_calls))
+        return next_statelet_tree, countlet_tree
+
+
+class CountletCallTree(NamedTuple):
+    flats: tuple
+    calls: 'tuple[CountletCallTree, ...]'
+
+
+class StateletCallTree(NamedTuple):
+    flats: 'tuple[tuple[Hashable, ...], ...]'
+    calls: 'tuple[StateletCallTree, ...]'
+
+
+class QuestletCallTree(Generic[T], NamedTuple):
+    flats: 'tuple[tuple[Questlet[T, Any], ...], ...]'
+    calls: 'tuple[QuestletCallTree, ...]'
+
+    def initial_state(
+            self, order: Order, outcomes: tuple[T, ...],
+            source_counts: Iterator, param_counts: Sequence
+    ) -> 'tuple[StateletCallTree, CountletCallTree]':
+        statelet_flats = []
+        output_counts: MutableSequence = []
+        for questlets in self.flats:
+            statelets = []
+            countlets: MutableSequence = []
+            for questlet in questlets:
+                child_counts = [countlets[i] for i in questlet.child_indexes]
+                next_statelet, countlet = questlet.initial_state(
+                    order, outcomes, child_counts, source_counts, param_counts)
+                statelets.append(next_statelet)
+                countlets.append(countlet)
+            statelet_flats.append(tuple(statelets))
+            output_counts.append(countlets[-1])
+        statelet_calls = []
+        countlet_calls = []
+        for call_questlet_tree in self.calls:
+            call_statelet_flats, call_countlet = call_questlet_tree.initial_state(
+                order, outcomes, source_counts, countlets)
+            statelet_calls.append(call_statelet_flats)
+            countlet_calls.append(call_countlet)
+        statelet_tree = StateletCallTree(tuple(statelet_flats),
+                                         tuple(statelet_calls))
+        countlet_tree = CountletCallTree(tuple(output_counts),
+                                         tuple(countlet_calls))
+        return statelet_tree, countlet_tree
