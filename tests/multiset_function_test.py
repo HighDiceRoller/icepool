@@ -2,6 +2,7 @@ import icepool
 import pytest
 
 from icepool import multiset_function, d6, MultisetExpression
+from icepool.expand import tupleize
 
 
 def test_single_expression():
@@ -39,3 +40,24 @@ def test_kwargs():
 
     for i in range(1, 7):
         assert evaluator(d6.pool(1), target=i) == (d6 == 1)
+
+
+def test_constant():
+
+    @multiset_function
+    def evaluator(x):
+        return d6.pool(3).sum()
+
+    assert evaluator(d6.pool(1)).equals(3 @ d6, simplify=True)
+
+
+def test_constant_in_joint():
+
+    @multiset_function
+    def evaluator(x):
+        return d6.pool(3).sum(), x.sum()
+
+    result = evaluator(d6.pool(2))
+    expected = tupleize(3 @ d6, 2 @ d6)
+
+    assert result.equals(expected, simplify=True)

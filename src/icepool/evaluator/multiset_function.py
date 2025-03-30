@@ -118,6 +118,56 @@ class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
         yield from self.evaluator._prepare(self.body_exps, self.inner_kwargs)
 
 
+def convert_die_to_raw_result(
+    raw_result: 'MultisetFunctionRawResult[T, U_co] | icepool.Die[U_co]'
+) -> 'MultisetFunctionRawResult[T, U_co]':
+    if isinstance(raw_result, MultisetFunctionRawResult):
+        return raw_result
+    else:
+        return MultisetFunctionRawResult(ConstantEvaluator(raw_result), (), {})
+
+
+class ConstantEvaluator(MultisetEvaluatorBase[Any, U_co]):
+
+    def __init__(self, final_outcome: 'icepool.Die[U_co]'):
+        self._final_outcome = final_outcome
+
+    def _prepare(self, input_exps, kwargs):
+        dungeon = ConstantDungeon()
+        quest = ConstantQuest[U_co](self._final_outcome)
+        yield dungeon, quest, (), 1
+
+
+class ConstantDungeon(Dungeon[Any], MaybeHashKeyed):
+    dungeonlet_flats = ()
+    calls = ()
+
+    def next_state_main(self, state, order, outcome, *param_tree):
+        return None
+
+    @property
+    def hash_key(self):
+        return type(self)
+
+
+class ConstantQuest(Quest[Any, U_co]):
+    questlet_flats = ()
+    calls = ()
+
+    def __init__(self, final_outcome: 'icepool.Die[U_co]'):
+        self._final_outcome = final_outcome
+
+    def extra_outcomes(self, outcomes):
+        return ()
+
+    def initial_state_main(self, order, outcomes, *param_sizes, **kwargs):
+        return None
+
+    def final_outcome(self, final_state, order, outcomes, *param_sizes,
+                      **kwargs):
+        return self._final_outcome
+
+
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
     _positional_names: Sequence[str]
     _var_positional_name: str | None = None
@@ -162,7 +212,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
             for i, exp in enumerate(input_exps)
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
-        if isinstance(raw_result, MultisetFunctionRawResult):
+        if isinstance(raw_result, (MultisetFunctionRawResult, icepool.Die)):
             yield from prepare_multiset_function(input_exps, raw_result)
         else:
             yield from prepare_multiset_joint_function(input_exps, raw_result)
@@ -170,9 +220,10 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 def prepare_multiset_function(
     outer_exps: tuple[MultisetExpressionBase[T, Any], ...],
-    raw_result: 'MultisetFunctionRawResult[T, U_co]',
+    raw_result: 'MultisetFunctionRawResult[T, U_co] | icepool.Die[U_co]',
 ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
+    raw_result = convert_die_to_raw_result(raw_result)
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
         outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
             *outer)
@@ -246,7 +297,8 @@ class MultisetFunctionQuest(Quest[T, U_co]):
 
 def prepare_multiset_joint_function(
     outer_exps: tuple[MultisetExpressionBase[T, Any], ...],
-    raw_result: tuple['MultisetFunctionRawResult[T, Any]', ...],
+    raw_results:
+    'tuple[MultisetFunctionRawResult[T, Any] | icepool.Die[U_co], ...]',
 ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, Any]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
@@ -255,9 +307,12 @@ def prepare_multiset_joint_function(
         outer_sources = tuple(itertools.chain.from_iterable(outer_sources))
         outer_weight = math.prod(outer_weights)
 
-    inner_kwargses = tuple(raw.inner_kwargs for raw in raw_result)
+    converted_raws = tuple(
+        convert_die_to_raw_result(raw) for raw in raw_results)
+
+    inner_kwargses = tuple(raw.inner_kwargs for raw in converted_raws)
     for inner in itertools.product(*(raw.prepare_inner()
-                                     for raw in raw_result)):
+                                     for raw in converted_raws)):
         (inner_dungeons, inner_quests, all_inner_sources,
          inner_weights) = zip(*inner)
         dungeon = MultisetFunctionJointDungeon(outer_dungeonlet_flats,
@@ -340,6 +395,4 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
               for quest, inner_main_state, inner_param_sizes, inner_kwargs in
               zip(self.inner_quests, final_state, param_sizes,
                   self.inner_kwargses)))
-        if any(x is icepool.Reroll for x in result):
-            return icepool.Reroll
         return result
