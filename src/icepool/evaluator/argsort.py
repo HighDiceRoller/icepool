@@ -35,5 +35,5 @@ class ArgsortEvaluator(MultisetEvaluator[Any, tuple[tuple[int, ...], ...]]):
         return self._order
 
     @property
-    def dungeon_key(self):
+    def next_state_key(self):
         return (type(self), self._order, self._limit)

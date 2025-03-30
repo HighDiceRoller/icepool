@@ -51,7 +51,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
         return result
 
     @property
-    def dungeon_key(self):
+    def next_state_key(self):
         return (type(self), )
 
 

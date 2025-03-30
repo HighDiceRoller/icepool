@@ -176,13 +176,19 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
         return range(outcomes[0], outcomes[-1] + 1)
 
-    dungeon_key: Hashable = None
-    """Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.
-    
-    This should include any members used in `next_state()` but does NOT need to
-    include members that are only used in other methods, i.e. 
-    `extra_outcomes()`, `initial_state()`, `final_outcome()`.
-    """
+    @property
+    def next_state_key(self) -> Hashable:
+        """Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.
+        
+        This should include any members used in `next_state()` but does NOT need to
+        include members that are only used in other methods, i.e. 
+        `extra_outcomes()`, `initial_state()`, `final_outcome()`.
+
+        Returns:
+            A hashable key that uniquely identifies the `next_state()`
+            computation, or `None` to disable persistent caching.
+        """
+        return None
 
     def _prepare(
         self,
@@ -193,7 +199,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         for t in itertools.product(*(exp._prepare() for exp in input_exps)):
             dungeonlet_flats, questlet_flats, sources, weights = zip(*t)
             dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
-                self.next_state, self.dungeon_key, dungeonlet_flats)
+                self.next_state, self.next_state_key, dungeonlet_flats)
             quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
                 self.initial_state, self.extra_outcomes, self.final_outcome,
                 questlet_flats)
@@ -209,21 +215,21 @@ class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
     next_state_main = None  # type: ignore
 
     def __init__(
-            self, next_state_main: Callable[...,
-                                            Hashable], dungeon_key: Hashable,
+            self, next_state_main: Callable[..., Hashable],
+            next_state_key: Hashable,
             dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'):
         self.next_state_main = next_state_main  # type: ignore
-        self.dungeon_key = dungeon_key
+        self.next_state_key = next_state_key
         self.dungeonlet_flats = dungeonlet_flats
 
-        if dungeon_key is None:
+        if next_state_key is None:
             self.__hash__ = None  # type: ignore
 
     @property
     def hash_key(self):
         if self.__hash__ is None:
             return None
-        return MultisetEvaluatorDungeon, self.dungeonlet_flats, self.dungeon_key
+        return MultisetEvaluatorDungeon, self.dungeonlet_flats, self.next_state_key
 
 
 class MultisetEvaluatorQuest(Quest[T, U_co]):

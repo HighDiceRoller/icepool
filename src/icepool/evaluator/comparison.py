@@ -44,7 +44,7 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
         return has_any and has_all
 
     @property
-    def dungeon_key(self):
+    def next_state_key(self):
         return (type(self), )
 
 

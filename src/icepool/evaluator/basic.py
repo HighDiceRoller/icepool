@@ -9,7 +9,7 @@ from icepool.order import Order, OrderReason
 
 import operator
 
-from typing import Any, Callable, Final, Literal, Mapping
+from typing import Any, Callable, Final, Hashable, Literal, Mapping
 
 
 class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
@@ -43,6 +43,8 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
 class SumEvaluator(MultisetEvaluator[Any, Any]):
     """Sums all outcomes."""
 
+    _next_state_key: Hashable
+
     def __init__(self, map: Callable | Mapping | None = None) -> None:
         """Constructor.
 
@@ -55,10 +57,10 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
                 return outcome
 
             self._map = map_func
-            self.dungeon_key = (SumEvaluator, )
+            self._next_state_key = (SumEvaluator, )
         elif callable(map):
             self._map = map
-            self.dungeon_key = None
+            self._next_state_key = None
         else:
             map_dict = {k: v for k, v in map.items()}
 
@@ -66,7 +68,7 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
                 return map_dict[outcome]
 
             self._map = map_func
-            self.dungeon_key = None
+            self._next_state_key = None
 
     def next_state(self, state, order, outcome, count):
         """Implementation."""
@@ -79,6 +81,10 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
             return outcome * count
         else:
             return state + outcome * count
+
+    @property
+    def next_state_key(self):
+        return self._next_state_key
 
 
 sum_evaluator: Final = SumEvaluator()
@@ -102,7 +108,7 @@ class SizeEvaluator(MultisetEvaluator[Any, int]):
         return final_state or 0
 
     @property
-    def dungeon_key(self):
+    def next_state_key(self):
         return (type(self), )
 
 
@@ -123,7 +129,7 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
         return final_state or False
 
     @property
-    def dungeon_key(self):
+    def next_state_key(self):
         return (type(self), )
 
 
