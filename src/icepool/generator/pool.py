@@ -335,6 +335,7 @@ class PoolSource(KeepSource[T]):
         """The collection of unique dice in this pool."""
         return self._unique_dice
 
+    @property
     def hash_key(self):
         return PoolSource, self.dice, self.keep_tuple
 

@@ -42,6 +42,7 @@ class MultisetParamBase(Generic[T]):
     def _static_keepable(self):
         return False
 
+    @property
     def hash_key(self):
         return type(self), self._index
 
