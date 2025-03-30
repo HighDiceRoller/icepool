@@ -49,12 +49,15 @@ def iter_cartesian_product(
 # Typing: there is currently no way to intersect a type bound, and Protocol
 # can't be used with Sequence.
 def cartesian_product(
-        *args: 'Outcome | icepool.Population',
-        outcome_type: Type[S]) -> 'S | icepool.Population[S]':  #type: ignore
+    *args: 'Outcome | icepool.Population | icepool.RerollType',
+    outcome_type: Type[S]
+) -> 'S | icepool.Population[S] | icepool.RerollType':  #type: ignore
     """Computes the Cartesian product of the arguments as a sequence, or a `Population` thereof.
 
     If `Population`s are provided, they must all be `Die` or all `Deck` and not
     a mixture of the two.
+
+    If any argument is `icepool.Reroll`, the result is `icepool.Reroll`.
 
     Returns:
         If none of the outcomes is a `Population`, the result is a sequence
@@ -64,6 +67,8 @@ def cartesian_product(
     """
     population_type: Type | None = None
     for arg in args:
+        if arg is icepool.Reroll:
+            return icepool.Reroll
         new_type = getattr(arg, '_new_type', None)
         if new_type is not None and hasattr(arg,
                                             '_items_for_cartesian_product'):
@@ -78,14 +83,15 @@ def cartesian_product(
         return outcome_type(args)  # type: ignore
     else:
         data = {}
-        for outcomes, final_quantity in iter_cartesian_product(*args):
+        for outcomes, final_quantity in iter_cartesian_product(
+                *args):  # type: ignore
             data[outcome_type(outcomes)] = final_quantity  # type: ignore
         return population_type(data)
 
 
 def tupleize(
-    *args: 'T | icepool.Population[T]'
-) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]]':
+    *args: 'T | icepool.Population[T] | icepool.RerollType'
+) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]] | icepool.RerollType':
     """Returns the Cartesian product of the arguments as `tuple`s or a `Population` thereof.
 
     For example:
@@ -98,6 +104,8 @@ def tupleize(
     If `Population`s are provided, they must all be `Die` or all `Deck` and not
     a mixture of the two.
 
+    If any argument is `icepool.Reroll`, the result is `icepool.Reroll`.
+
     Returns:
         If none of the outcomes is a `Population`, the result is a `tuple`
         with one element per argument. Otherwise, the result is a `Population`
@@ -108,8 +116,8 @@ def tupleize(
 
 
 def vectorize(
-    *args: 'T | icepool.Population[T]'
-) -> 'icepool.Vector[T] | icepool.Population[icepool.Vector[T]]':
+    *args: 'T | icepool.Population[T] | icepool.RerollType'
+) -> 'icepool.Vector[T] | icepool.Population[icepool.Vector[T]] | icepool.RerollType':
     """Returns the Cartesian product of the arguments as `Vector`s or a `Population` thereof.
 
     For example:
@@ -121,6 +129,8 @@ def vectorize(
 
     If `Population`s are provided, they must all be `Die` or all `Deck` and not
     a mixture of the two.
+
+    If any argument is `icepool.Reroll`, the result is `icepool.Reroll`.
 
     Returns:
         If none of the outcomes is a `Population`, the result is a `Vector`

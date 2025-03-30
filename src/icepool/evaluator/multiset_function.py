@@ -334,12 +334,12 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
                       *param_sizes, **kwargs: Hashable):
         # The kwargs have already been bound to inner_kwargses.
-        result = tuple(
-            quest.final_outcome(inner_main_state, order, outcomes, *
-                                inner_param_sizes, **inner_kwargs)
-            for quest, inner_main_state, inner_param_sizes, inner_kwargs in
-            zip(self.inner_quests, final_state, param_sizes,
-                self.inner_kwargses))
+        result = icepool.tupleize(
+            *(quest.final_outcome(inner_main_state, order, outcomes, *
+                                  inner_param_sizes, **inner_kwargs)
+              for quest, inner_main_state, inner_param_sizes, inner_kwargs in
+              zip(self.inner_quests, final_state, param_sizes,
+                  self.inner_kwargses)))
         if any(x is icepool.Reroll for x in result):
             return icepool.Reroll
         return result
