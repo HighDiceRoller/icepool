@@ -22,7 +22,8 @@ Major rewrite of multiset handling. Things will be more unstable than usual for 
 * `@multiset_function` now accepts non-multiset keyword arguments.
 * `Alignment` class is retired.
 * Deprecated `depth=None` is removed from `Die.reroll()`.
-* Multiset generators now always produce a single count value, with `MultiDeal` now producing a tuple.
+* Multiset generators now always produce a single count value, with `MultiDeal` now producing a tuple rather than taking up multiple argument slots.
+* Multiset computations now try to infer multiset sizes if the counts are non-negative. This improves the applicability of `keep` and `sort_match` expressions.
 
 ## v1.7.2 - 25 February 2025
 
