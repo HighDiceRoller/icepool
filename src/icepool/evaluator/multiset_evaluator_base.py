@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
+from icepool.expression.multiset_expression_base import CountletCallTree, DungeonletCallTree, QuestletCallTree, SizeletCallTree, StateletCallTree
 from icepool.function import sorted_union
 from icepool.order import ConflictingOrderError, Order, OrderReason, UnsupportedOrder, merge_order_preferences
 
@@ -111,22 +112,29 @@ class Dungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
     dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'
+    calls: 'tuple[Dungeon, ...]'
+    """Dungeons resulting from calls inside a multiset function."""
 
-    ascending_cache: 'MutableMapping[Room[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
+    ascending_cache: 'MutableMapping[Room[T], Mapping[StateletCallTree, Mapping[Hashable, int]]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
-    descending_cache: 'MutableMapping[Room[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
+    descending_cache: 'MutableMapping[Room[T], Mapping[StateletCallTree, Mapping[Hashable, int]]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
+
+    @cached_property
+    def dungeonlet_call_tree(self) -> 'DungeonletCallTree[T]':
+        dungeonlet_calls = tuple(call.dungeonlet_call_tree
+                                 for call in self.calls)
+        return DungeonletCallTree(self.dungeonlet_flats, dungeonlet_calls)
 
     @abstractmethod
     def next_state_main(self, state: Hashable, order: Order, outcome: T,
-                        source_counts: Iterator,
-                        param_counts: Sequence) -> Hashable:
+                        param_count_tree: 'CountletCallTree') -> Hashable:
         """Main state transition function.
         
         Args:
@@ -197,19 +205,19 @@ class Dungeon(Generic[T]):
             self, quest: 'Quest[T, U_co]',
             sources: 'tuple[MultisetSourceBase, ...]', order: Order,
             outcomes: tuple[T, ...],
-            kwargs: Mapping[str, Hashable]) -> 'tuple[Room[T], tuple]':
+            kwargs: Mapping[str,
+                            Hashable]) -> 'tuple[Room[T], SizeletCallTree]':
         source_counts = (source.size() for source in sources)
-        initial_statelets, sizes = quest.initial_statelets(
+        initial_statelet_tree, size_tree = quest.questlet_call_tree.initial_state(
             order, outcomes, source_counts, ())
         initial_state_main = quest.initial_state_main(order, outcomes,
-                                                      source_counts, sizes,
-                                                      kwargs)
-        return Room(outcomes, sources, initial_statelets,
-                    initial_state_main), sizes
+                                                      size_tree, kwargs)
+        return Room(outcomes, sources, initial_statelet_tree,
+                    initial_state_main), size_tree
 
     def evaluate_backward(
-        self, pop_order: Order, room: 'Room'
-    ) -> Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]:
+            self, pop_order: Order, room: 'Room'
+    ) -> Mapping['StateletCallTree', Mapping[Hashable, int]]:
         """Internal algorithm for iterating so that next_state sees outcomes in backwards order.
 
         All intermediate return values are cached in the instance.
@@ -235,44 +243,37 @@ class Dungeon(Generic[T]):
         if room in cache:
             return cache[room]
 
-        result: MutableMapping[tuple[tuple[Hashable, ...], ...],
-                               MutableMapping[Hashable, int]] = defaultdict(
-                                   lambda: defaultdict(int))
+        result: MutableMapping['StateletCallTree', MutableMapping[
+            Hashable, int]] = defaultdict(lambda: defaultdict(int))
 
         if room.is_done():
-            result = {
-                room.initial_statelet_flats: {
-                    room.initial_state_main: 1
-                }
-            }
+            result = {room.initial_statelet_tree: {room.initial_state_main: 1}}
         else:
             eval_order = -pop_order
             for outcome, source_counts, prev_outcomes, prev_sources, weight in room.pop(
                     pop_order):
                 prev_room = Room(prev_outcomes, prev_sources,
-                                 room.initial_statelet_flats,
+                                 room.initial_statelet_tree,
                                  room.initial_state_main)
                 prev = self.evaluate_backward(pop_order, prev_room)
 
-                for prev_statelet_flats, prev_main in prev.items():
+                for prev_statelet_tree, prev_main in prev.items():
                     source_counts_iter = iter(source_counts)
-                    statelet_flats, counts = self.next_statelet_flats_and_counts(
-                        prev_statelet_flats, eval_order, outcome,
+                    statelet_tree, count_tree = self.dungeonlet_call_tree.next_state(
+                        prev_statelet_tree, eval_order, outcome,
                         source_counts_iter, ())
-                    subresult = result[statelet_flats]
-                    remaining_source_counts = tuple(source_counts_iter)
+                    subresult = result[statelet_tree]
                     for prev_state_main, prev_weight in prev_main.items():
                         state_main = self.next_state_main(
-                            prev_state_main, eval_order, outcome,
-                            iter(remaining_source_counts), counts)
+                            prev_state_main, eval_order, outcome, count_tree)
                         if state_main is not icepool.Reroll:
                             subresult[state_main] += prev_weight * weight
         cache[room] = result
         return result
 
     def evaluate_forward(
-        self, pop_order: Order, room: 'Room'
-    ) -> Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]:
+            self, pop_order: Order, room: 'Room'
+    ) -> Mapping['StateletCallTree', Mapping[Hashable, int]]:
         """Internal algorithm for iterating in the less-preferred order.
 
         All intermediate return values are cached in the instance.
@@ -296,30 +297,24 @@ class Dungeon(Generic[T]):
         if room in cache:
             return cache[room]
 
-        result: MutableMapping[tuple[tuple[Hashable, ...], ...],
-                               MutableMapping[Hashable, int]] = defaultdict(
-                                   lambda: defaultdict(int))
+        result: MutableMapping['StateletCallTree', MutableMapping[
+            Hashable, int]] = defaultdict(lambda: defaultdict(int))
 
         if room.is_done():
-            result = {
-                room.initial_statelet_flats: {
-                    room.initial_state_main: 1
-                }
-            }
+            result = {room.initial_statelet_tree: {room.initial_state_main: 1}}
         else:
             for outcome, source_counts, next_outcomes, next_sources, weight in room.pop(
                     pop_order):
                 source_counts_iter = iter(source_counts)
-                next_statelet_flats, counts = self.next_statelet_flats_and_counts(
-                    room.initial_statelet_flats, pop_order, outcome,
+                next_statelet_tree, count_tree = self.dungeonlet_call_tree.next_state(
+                    room.initial_statelet_tree, pop_order, outcome,
                     source_counts_iter, ())
                 next_state_main = self.next_state_main(room.initial_state_main,
                                                        pop_order, outcome,
-                                                       source_counts_iter,
-                                                       counts)
+                                                       count_tree)
                 if next_state_main is not icepool.Reroll:
                     next_room = Room(next_outcomes, next_sources,
-                                     next_statelet_flats, next_state_main)
+                                     next_statelet_tree, next_state_main)
                     final = self.evaluate_forward(pop_order, next_room)
                     for final_statelet_flats, final_main in final.items():
                         subresult = result[final_statelet_flats]
@@ -331,37 +326,11 @@ class Dungeon(Generic[T]):
         cache[room] = result
         return result
 
-    def next_statelet_flats_and_counts(
-        self, statelet_flats: 'tuple[tuple[Hashable, ...], ...]', order: Order,
-        outcome: T, source_counts: Iterator, param_counts: Sequence
-    ) -> 'tuple[tuple[tuple[Hashable, ...], ...], tuple]':
-        """Helper function to advance dungeonlet_flats.
-        
-        Returns:
-            next_statelet_flats, output_counts
-        """
-        next_flats = []
-        output_counts: MutableSequence = []
-        for dungeonlets, statelets in zip(self.dungeonlet_flats,
-                                          statelet_flats):
-            next_statelets = []
-            countlets: MutableSequence = []
-            for dungeonlet, statelet in zip(dungeonlets, statelets):
-                child_counts = [countlets[i] for i in dungeonlet.child_indexes]
-                next_statelet, countlet = dungeonlet.next_state(
-                    statelet, order, outcome, child_counts, source_counts,
-                    param_counts)
-                next_statelets.append(next_statelet)
-                countlets.append(countlet)
-            next_flats.append(tuple(next_statelets))
-            output_counts.append(countlets[-1])
-        return tuple(next_flats), tuple(output_counts)
-
 
 class Room(Generic[T], NamedTuple):
     outcomes: tuple[T, ...]
     sources: 'tuple[MultisetSourceBase[T, Any], ...]'
-    initial_statelet_flats: tuple[tuple[Hashable, ...], ...]
+    initial_statelet_tree: 'StateletCallTree'
     initial_state_main: Hashable
 
     def is_done(self) -> bool:
@@ -400,6 +369,13 @@ class Room(Generic[T], NamedTuple):
 
 class Quest(Generic[T, U_co]):
     questlet_flats: 'tuple[tuple[Questlet[T, Any], ...], ...]'
+    calls: 'tuple[Quest, ...]'
+    """Quests resulting from calls inside a multiset function."""
+
+    @cached_property
+    def questlet_call_tree(self) -> 'QuestletCallTree[T]':
+        questlet_calls = tuple(call.questlet_call_tree for call in self.calls)
+        return QuestletCallTree(self.questlet_flats, questlet_calls)
 
     @abstractmethod
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:
@@ -411,7 +387,7 @@ class Quest(Generic[T, U_co]):
 
     @abstractmethod
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           source_counts: Iterator, param_counts: Sequence,
+                           param_size_tree: 'SizeletCallTree',
                            kwargs: Mapping[str, Hashable]) -> Hashable:
         """The initial evaluation state.
 
@@ -431,25 +407,8 @@ class Quest(Generic[T, U_co]):
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
-    def initial_statelets(self, order: Order, outcomes: tuple[T, ...],
-                          source_counts: Iterator, param_counts: Sequence):
-        statelet_flats = []
-        output_counts: MutableSequence = []
-        for questlets in self.questlet_flats:
-            statelets = []
-            countlets: MutableSequence = []
-            for questlet in questlets:
-                child_counts = [countlets[i] for i in questlet.child_indexes]
-                next_statelet, countlet = questlet.initial_state(
-                    order, outcomes, child_counts, source_counts, param_counts)
-                statelets.append(next_statelet)
-                countlets.append(countlet)
-            statelet_flats.append(tuple(statelets))
-            output_counts.append(countlets[-1])
-        return tuple(statelet_flats), tuple(output_counts)
-
     def finalize_evaluation(
-            self, final_states: Mapping[tuple[tuple[Hashable, ...], ...],
+            self, final_states: Mapping['StateletCallTree',
                                         Mapping[Hashable, int]], order: Order,
             outcomes: tuple[T, ...], sizes: tuple,
             kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':

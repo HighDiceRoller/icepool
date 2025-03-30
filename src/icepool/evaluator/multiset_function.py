@@ -4,7 +4,7 @@ import itertools
 import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import CountletCallTree, Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase, SizeletCallTree
 from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
 
 import inspect
@@ -184,23 +184,15 @@ class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
     ):
         self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeon = inner_dungeon
+        self.calls = (inner_dungeon, )
 
         if self.inner_dungeon.__hash__ is None:
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        source_counts: Iterator,
-                        param_counts: Sequence) -> Hashable:
-        inner_statelet_flats, inner_state = state
-
-        next_inner_statelet_flats, counts = self.inner_dungeon.next_statelet_flats_and_counts(
-            inner_statelet_flats, order, outcome, source_counts, param_counts)
-
-        next_inner_state = self.inner_dungeon.next_state_main(
-            inner_state, order, outcome, source_counts, counts)
-        if next_inner_state is icepool.Reroll:
-            return icepool.Reroll
-        return next_inner_statelet_flats, next_inner_state
+                        param_tree: 'CountletCallTree') -> Hashable:
+        return self.inner_dungeon.next_state_main(state, order, outcome,
+                                                  param_tree.calls[0])
 
     @property
     def hash_key(self):
@@ -219,28 +211,24 @@ class MultisetFunctionQuest(Quest[T, U_co]):
     ):
         self.questlet_flats = questlet_flats
         self.inner_quest = inner_quest
+        self.calls = (inner_quest, )
         self.inner_kwargs = inner_kwargs
 
     def extra_outcomes(self, outcomes):
         return self.inner_quest.extra_outcomes(outcomes)
 
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           source_counts: Iterator, param_counts: Sequence,
+                           param_size_tree: 'SizeletCallTree',
                            kwargs: Mapping[str, Hashable]) -> Hashable:
         # The kwargs have already been bound to inner_kwargs.
-        statelets, counts = self.inner_quest.initial_statelets(
-            order, outcomes, source_counts, param_counts)
-        state = self.inner_quest.initial_state_main(order, outcomes,
-                                                    source_counts, counts,
-                                                    self.inner_kwargs)
-        return statelets, state
+        return self.inner_quest.initial_state_main(order, outcomes,
+                                                   param_size_tree.calls[0],
+                                                   self.inner_kwargs)
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
                       sizes, kwargs):
-        _, final_main_state = final_state
-        return self.inner_quest.final_outcome(final_main_state, order,
-                                              outcomes, sizes,
-                                              self.inner_kwargs)
+        return self.inner_quest.final_outcome(final_state, order, outcomes,
+                                              sizes, self.inner_kwargs)
 
 
 def prepare_multiset_joint_function(
@@ -278,38 +266,24 @@ class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
     ):
         self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeons = inner_dungeons
+        self.calls = inner_dungeons
 
         if any(dungeon.__hash__ is None for dungeon in inner_dungeons):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        source_counts: Iterator,
-                        param_counts: Sequence) -> Hashable:
-        next_state: MutableSequence[tuple[Hashable, Hashable]] = []
+                        param_tree: 'CountletCallTree') -> Hashable:
+        next_state: MutableSequence[Hashable] = []
         inner_dungeon: Dungeon[T]
-        for (inner_statelet_flats,
-             inner_state), inner_dungeon in zip(state, self.inner_dungeons):
-            next_inner_statelet_flats, counts = inner_dungeon.next_statelet_flats_and_counts(
-                inner_statelet_flats, order, outcome, source_counts,
-                param_counts)
+        inner_param_tree: CountletCallTree
+        for inner_state, inner_dungeon, inner_param_tree in zip(
+                state, self.inner_dungeons, param_tree.calls):
             next_inner_state = inner_dungeon.next_state_main(
-                inner_state, order, outcome, source_counts, counts)
+                inner_state, order, outcome, inner_param_tree)
             if next_inner_state is icepool.Reroll:
                 return icepool.Reroll
-            next_state.append((next_inner_statelet_flats, next_inner_state))
+            next_state.append(next_inner_state)
         return tuple(next_state)
-
-    @staticmethod
-    def next_state_single(inner_statelet_flats, inner_state,
-                          inner_dungeon: Dungeon[T], order: Order, outcome: T,
-                          source_counts: Iterator, param_counts: Sequence):
-        next_inner_statelet_flats, counts = inner_dungeon.next_statelet_flats_and_counts(
-            inner_statelet_flats, order, outcome, source_counts, param_counts)
-        next_inner_state = inner_dungeon.next_state_main(
-            inner_state, order, outcome, *counts)
-        if next_inner_state is icepool.Reroll:
-            return icepool.Reroll
-        return next_inner_statelet_flats, next_inner_state
 
     @property
     def hash_key(self):
@@ -328,6 +302,7 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
     ):
         self.questlet_flats = questlet_flats
         self.inner_quests = inner_quests
+        self.calls = inner_quests
         self.inner_kwargses = inner_kwargses
 
     def extra_outcomes(self, outcomes):
@@ -335,26 +310,14 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
                               for quest in self.inner_quests))
 
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           source_counts: Iterator, param_counts: Sequence,
+                           param_size_tree: 'SizeletCallTree',
                            kwargs: Mapping[str, Hashable]) -> Hashable:
 
         return tuple(
-            self.initial_state_single(
-                inner_quest, order, outcomes, source_counts, param_counts,
-                inner_kwargs) for inner_quest, inner_kwargs in zip(
-                    self.inner_quests, self.inner_kwargses))
-
-    @staticmethod
-    def initial_state_single(inner_quest: Quest[T, Any], order: Order,
-                             outcomes: tuple[T, ...], source_counts: Iterator,
-                             param_counts: Sequence,
-                             inner_kwargs: Mapping[str, Hashable]):
-        # The kwargs have already been bound to inner_kwargs.
-        statelets, counts = inner_quest.initial_statelets(
-            order, outcomes, source_counts, param_counts)
-        state = inner_quest.initial_state_main(order, outcomes, source_counts,
-                                               counts, inner_kwargs)
-        return statelets, state
+            inner_quest.initial_state_main(order, outcomes,
+                                           inner_param_size_tree, inner_kwargs)
+            for inner_quest, inner_kwargs, inner_param_size_tree in zip(
+                self.inner_quests, self.inner_kwargses, param_size_tree.calls))
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
                       sizes, kwargs):
@@ -362,7 +325,7 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
         result = tuple(
             quest.final_outcome(inner_main_state, order, outcomes, sizes,
                                 inner_kwargs)
-            for quest, (_, inner_main_state), inner_kwargs in zip(
+            for quest, inner_main_state, inner_kwargs in zip(
                 self.inner_quests, final_state, self.inner_kwargses))
         if any(x is icepool.Reroll for x in result):
             return icepool.Reroll

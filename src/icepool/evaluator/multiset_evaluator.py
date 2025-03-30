@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
+from icepool.expression.multiset_expression_base import CountletCallTree, MultisetExpressionBase, SizeletCallTree
 from icepool.expression.multiset_param import MultisetParamBase
 from icepool.order import Order
 
@@ -203,6 +203,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
 
 class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
+    calls = ()
 
     def __init__(
             self, next_state_eval: Callable[...,
@@ -216,9 +217,8 @@ class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        source_counts: Iterator,
-                        param_counts: Sequence) -> Hashable:
-        return self.next_state_eval(state, order, outcome, *param_counts)
+                        param_tree: 'CountletCallTree') -> Hashable:
+        return self.next_state_eval(state, order, outcome, *param_tree.flats)
 
     @property
     def hash_key(self):
@@ -228,6 +228,7 @@ class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
 
 
 class MultisetEvaluatorQuest(Quest[T, U_co]):
+    calls = ()
     # These are filled in by the constructor.
     extra_outcomes = None  # type: ignore
 
@@ -239,9 +240,10 @@ class MultisetEvaluatorQuest(Quest[T, U_co]):
         self.final_outcome_eval = final_outcome_eval  # type: ignore
         self.questlet_flats = questlet_flats
 
-    def initial_state_main(self, order, outcomes, source_counts, param_counts,
-                           kwargs):
-        return self.initial_state_eval(order, outcomes, *param_counts,
+    def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
+                           param_size_tree: 'SizeletCallTree',
+                           kwargs: Mapping[str, Hashable]) -> Hashable:
+        return self.initial_state_eval(order, outcomes, *param_size_tree.flats,
                                        **kwargs)
 
     def final_outcome(self, final_state, order, outcomes, sizes, kwargs):

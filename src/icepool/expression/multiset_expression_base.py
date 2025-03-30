@@ -218,6 +218,11 @@ class DungeonletCallTree(Generic[T], NamedTuple):
         return next_statelet_tree, countlet_tree
 
 
+class SizeletCallTree(NamedTuple):
+    flats: tuple
+    calls: 'tuple[SizeletCallTree, ...]'
+
+
 class CountletCallTree(NamedTuple):
     flats: tuple
     calls: 'tuple[CountletCallTree, ...]'
@@ -235,7 +240,7 @@ class QuestletCallTree(Generic[T], NamedTuple):
     def initial_state(
             self, order: Order, outcomes: tuple[T, ...],
             source_counts: Iterator, param_counts: Sequence
-    ) -> 'tuple[StateletCallTree, CountletCallTree]':
+    ) -> 'tuple[StateletCallTree, SizeletCallTree]':
         statelet_flats = []
         output_counts: MutableSequence = []
         for questlets in self.flats:
@@ -253,11 +258,11 @@ class QuestletCallTree(Generic[T], NamedTuple):
         countlet_calls = []
         for call_questlet_tree in self.calls:
             call_statelet_flats, call_countlet = call_questlet_tree.initial_state(
-                order, outcomes, source_counts, countlets)
+                order, outcomes, source_counts, output_counts)
             statelet_calls.append(call_statelet_flats)
             countlet_calls.append(call_countlet)
         statelet_tree = StateletCallTree(tuple(statelet_flats),
                                          tuple(statelet_calls))
-        countlet_tree = CountletCallTree(tuple(output_counts),
-                                         tuple(countlet_calls))
+        countlet_tree = SizeletCallTree(tuple(output_counts),
+                                        tuple(countlet_calls))
         return statelet_tree, countlet_tree
