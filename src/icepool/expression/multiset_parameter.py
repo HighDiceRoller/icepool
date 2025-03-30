@@ -45,10 +45,7 @@ class MultisetParameter(MultisetParameterBase[T, int], MultisetExpression[T]):
 
     def __init__(self, index: int, name: str):
         self._index = index
-        if name is None:
-            self._name = f'mv[{index}]'
-        else:
-            self._name = name
+        self._name = name
 
 
 class MultisetTupleParameter(MultisetParameterBase[T, IntTupleOut],
@@ -57,10 +54,7 @@ class MultisetTupleParameter(MultisetParameterBase[T, IntTupleOut],
 
     def __init__(self, index: int, name: str, length: int):
         self._index = index
-        if name is None:
-            self._name = f'mv[{index}]'
-        else:
-            self._name = name
+        self._name = name
         self._length = length
 
     def __len__(self):

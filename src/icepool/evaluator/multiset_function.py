@@ -120,6 +120,7 @@ class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
 
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
     _positional_names: Sequence[str]
+    _var_positional_name: str | None = None
 
     def __init__(self, wrapped: Callable[
         ...,
@@ -136,8 +137,19 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
                     inspect.Parameter.POSITIONAL_OR_KEYWORD,
             ]:
                 self._positional_names.append(parameter.name)
+            elif parameter.kind is inspect.Parameter.VAR_POSITIONAL:
+                self._var_positional_name = parameter.name
 
         update_wrapper(self, wrapped)
+
+    def _get_positional_name(self, index: int) -> str:
+        if index < len(self._positional_names):
+            return self._positional_names[index]
+        elif self._var_positional_name is not None:
+            return self._var_positional_name + f'[{index}]'
+        else:
+            # The exception will be raised later.
+            return '(too many args)'
 
     def _prepare(
         self,
@@ -146,7 +158,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
     ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         multiset_variables = [
-            exp._make_param(i, self._positional_names[i])
+            exp._make_param(i, self._get_positional_name(i))
             for i, exp in enumerate(input_exps)
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)

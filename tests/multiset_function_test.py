@@ -22,6 +22,15 @@ def test_body_generator():
     assert evaluator(d6.pool(1)) == 3 @ d6
 
 
+def test_var_args():
+
+    @multiset_function
+    def evaluator(*pools):
+        return sum(pools, start=[]).sum()
+
+    assert evaluator(d6.pool(1), d6.pool(1), d6.pool(1)) == 3 @ d6
+
+
 def test_kwargs():
 
     @multiset_function
