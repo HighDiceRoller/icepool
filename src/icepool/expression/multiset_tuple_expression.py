@@ -2,8 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
-from icepool.operator.multiset_operator import MultisetOperatorDungeonlet, MultisetOperatorQuestlet
+from icepool.expression.multiset_expression_base import BodyDungeonlet, BodyQuestlet, Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.order import Order
 
 from abc import abstractmethod
@@ -102,11 +101,9 @@ class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
         for dungeonlets, questlets, sources, weight in self._children[
                 0]._prepare():
             child_indexes = (-1, )
-            dungeonlet = MultisetOperatorDungeonlet[T](self._next_state,
-                                                       self.hash_key,
-                                                       child_indexes)
-            questlet = MultisetOperatorQuestlet[T](self._initial_state,
-                                                   child_indexes)
+            dungeonlet = BodyDungeonlet[T, int](self._next_state,
+                                                self.hash_key, child_indexes)
+            questlet = BodyQuestlet[T, int](self._initial_state, child_indexes)
 
             yield dungeonlets + (dungeonlet, ), tuple(questlets) + (
                 questlet, ), tuple(sources), weight
@@ -154,12 +151,11 @@ class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
         for dungeonlets, questlets, sources, weight in self._children[
                 0]._prepare():
             child_indexes = (-1, )
-            # TODO: adjust these types
-            dungeonlet = MultisetOperatorDungeonlet[T](self._next_state,
-                                                       self.hash_key,
-                                                       child_indexes)
-            questlet = MultisetOperatorQuestlet[T](self._initial_state,
-                                                   child_indexes)
+            dungeonlet = BodyDungeonlet[T, IntTupleOut](self._next_state,
+                                                        self.hash_key,
+                                                        child_indexes)
+            questlet = BodyQuestlet[T, IntTupleOut](self._initial_state,
+                                                    child_indexes)
 
             yield dungeonlets + (dungeonlet, ), tuple(questlets) + (
                 questlet, ), tuple(sources), weight

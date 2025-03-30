@@ -1,8 +1,8 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import Dungeonlet, Questlet, MultisetSourceBase
-from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
+from icepool.expression.multiset_expression_base import BodyDungeonlet, BodyQuestlet, Dungeonlet, Questlet, MultisetSourceBase
+from icepool.expression.multiset_expression import MultisetExpression
 
 import itertools
 import math
@@ -109,37 +109,11 @@ class MultisetOperator(MultisetExpression[T]):
                 positions.append(len(dungeonlets))
 
             child_indexes = tuple(p - positions[-1] - 1 for p in positions)
-            dungeonlet = MultisetOperatorDungeonlet[T](self._next_state,
-                                                       self._dungeonlet_key,
-                                                       child_indexes)
-            questlet = MultisetOperatorQuestlet[T](self._initial_state,
-                                                   child_indexes)
+            dungeonlet = BodyDungeonlet[T, int](self._next_state,
+                                                self._dungeonlet_key,
+                                                child_indexes)
+            questlet = BodyQuestlet[T, int](self._initial_state, child_indexes)
             dungeonlets.append(dungeonlet)
             questlets.append(questlet)
 
             yield tuple(dungeonlets), tuple(questlets), tuple(sources), weight
-
-
-class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
-    # Will be filled in by the constructor.
-    next_state = None  # type: ignore
-
-    def __init__(self, next_state: Callable, hash_key: Hashable,
-                 child_indexes: tuple[int, ...]):
-        self.next_state = next_state  # type: ignore
-        self._hash_key = (hash_key, child_indexes)
-        self.child_indexes = child_indexes
-
-    @property
-    def hash_key(self):
-        return self._hash_key
-
-
-class MultisetOperatorQuestlet(Questlet[T, int]):
-    # Will be filled in by the constructor.
-    initial_state = None  # type: ignore
-
-    def __init__(self, initial_state: Callable, child_indexes: tuple[int,
-                                                                     ...]):
-        self.initial_state = initial_state  # type: ignore
-        self.child_indexes = child_indexes

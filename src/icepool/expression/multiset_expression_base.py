@@ -4,7 +4,7 @@ from icepool.order import Order, OrderReason
 from abc import abstractmethod
 
 from icepool.typing import T, MaybeHashKeyed
-from typing import (TYPE_CHECKING, Any, Generic, Hashable, Iterator,
+from typing import (TYPE_CHECKING, Any, Callable, Generic, Hashable, Iterator,
                     MutableSequence, NamedTuple, Sequence, Type, TypeVar)
 
 if TYPE_CHECKING:
@@ -35,7 +35,7 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
         """Whether this expression tree contains any param."""
 
     @abstractmethod
-    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T]':
+    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T, Q]':
         """Creates a param corresponding to the output of this expression.
         
         This is used to determine the input types to multiset functions.
@@ -75,7 +75,24 @@ class Dungeonlet(Generic[T, Q], MaybeHashKeyed):
         """
 
 
+class BodyDungeonlet(Dungeonlet[T, Q]):
+    """A dungeonlet from the body of an expression, i.e. not originating from a generator or parameter."""
+    # Will be filled in by the constructor.
+    next_state = None  # type: ignore
+
+    def __init__(self, next_state: Callable, hash_key: Hashable,
+                 child_indexes: tuple[int, ...]):
+        self.next_state = next_state  # type: ignore
+        self._hash_key = (hash_key, child_indexes)
+        self.child_indexes = child_indexes
+
+    @property
+    def hash_key(self):
+        return self._hash_key
+
+
 class MultisetFreeVariable(Dungeonlet[T, Q]):
+    """A dungeonlet left behind in place of a freed source."""
     child_indexes = ()
 
     def next_state(self, state, order, outcome, child_counts, source_counts,
@@ -162,6 +179,17 @@ class Questlet(Generic[T, Q]):
         Raises:
             UnsupportedOrder if the given order is not supported.
         """
+
+
+class BodyQuestlet(Questlet[T, Q]):
+    """A questlet from the body of an expression, i.e. not originating from a generator or parameter."""
+    # Will be filled in by the constructor.
+    initial_state = None  # type: ignore
+
+    def __init__(self, initial_state: Callable, child_indexes: tuple[int,
+                                                                     ...]):
+        self.initial_state = initial_state  # type: ignore
+        self.child_indexes = child_indexes
 
 
 class DungeonletCallTree(Generic[T], NamedTuple):

@@ -1162,7 +1162,3 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             return self
         return icepool.operator.MultisetForceOrder(self,
                                                    force_order=force_order)
-
-
-class MultisetExpressionDungeonlet(Dungeonlet[T, int]):
-    pass

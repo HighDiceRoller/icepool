@@ -23,8 +23,8 @@ class MultisetParamBase(Generic[T, Q]):
     ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
                         'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Q], ...]', int]]:
-        dungeonlet = MultisetParamDungeonlet[T](self._index)
-        questlet = MultisetParamQuestlet[T](self._index)
+        dungeonlet = MultisetParamDungeonlet[T, Q](self._index)
+        questlet = MultisetParamQuestlet[T, Q](self._index)
         yield (dungeonlet, ), (questlet, ), (), 1
 
     @property
@@ -67,7 +67,7 @@ class MultisetTupleParam(MultisetParamBase[T, IntTupleOut],
         return self._length
 
 
-class MultisetParamDungeonlet(Dungeonlet[T, Any]):
+class MultisetParamDungeonlet(Dungeonlet[T, Q]):
     child_indexes = ()
 
     def __init__(self, index: int):
@@ -82,7 +82,7 @@ class MultisetParamDungeonlet(Dungeonlet[T, Any]):
         return MultisetParamDungeonlet, self.index
 
 
-class MultisetParamQuestlet(Questlet[T, Any]):
+class MultisetParamQuestlet(Questlet[T, Q]):
     child_indexes = ()
 
     def __init__(self, index: int):
