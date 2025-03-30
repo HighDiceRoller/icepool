@@ -74,14 +74,6 @@ class Dungeonlet(Generic[T, Q], MaybeHashKeyed):
             UnsupportedOrder if the order is not supported.
         """
 
-    def __eq__(self, other):
-        if not isinstance(other, Dungeonlet):
-            return False
-        return self.hash_key == other.hash_key
-
-    def __hash__(self):
-        return hash(self.hash_key)
-
 
 class MultisetFreeVariable(Dungeonlet[T, Q]):
     child_indexes = ()

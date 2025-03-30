@@ -17,7 +17,7 @@ from typing import (TYPE_CHECKING, Callable, Collection, Literal, Mapping,
 
 if TYPE_CHECKING:
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
-    from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
+    from icepool.expression.multiset_tuple_expression import MultisetTupleExpression, IntTupleOut
     from icepool.expression.multiset_param import MultisetParamBase
 
 
@@ -30,14 +30,15 @@ def implicit_convert_to_expression(
 
 @overload
 def implicit_convert_to_expression(
-        arg: 'MultisetTupleExpression[T]') -> 'MultisetTupleExpression[T]':
+    arg: 'MultisetTupleExpression[T, IntTupleOut]'
+) -> 'MultisetTupleExpression[T, IntTupleOut]':
     ...
 
 
 @overload
 def implicit_convert_to_expression(
     arg: 'MultisetExpressionBase | Mapping[T, int] | Sequence[T]'
-) -> 'MultisetExpression[T] | MultisetTupleExpression[T]':
+) -> 'MultisetExpression[T] | MultisetTupleExpression[T, IntTupleOut]':
     ...
 
 
