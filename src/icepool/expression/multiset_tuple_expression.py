@@ -8,14 +8,19 @@ from icepool.order import Order
 
 from abc import abstractmethod
 from icepool.typing import T
-from typing import (TYPE_CHECKING, Any, Hashable, Iterator, MutableSequence,
-                    Sequence, overload)
+from typing import (TYPE_CHECKING, Any, Generic, Hashable, Iterator,
+                    MutableSequence, Sequence, TypeVar, overload)
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_param import MultisetParamBase
 
+IntTupleIn = TypeVar('IntTupleIn', bound=tuple[int, ...])
+"""Count type for an input multiset tuple."""
+IntTupleOut = TypeVar('IntTupleOut', bound=tuple[int, ...])
+"""Count type for an output multiset tuple."""
 
-class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
+
+class MultisetTupleExpression(MultisetExpressionBase[T, IntTupleOut]):
     """Abstract base class representing an expression that operates on tuples of multisets.
     
     Currently the only operations are to subscript or unpack to extract single
@@ -30,11 +35,13 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
         return icepool.MultisetTupleParam(index, name, len(self))
 
     @overload
-    def __getitem__(self, index: int, /) -> 'MultisetTupleIndex[T]':
+    def __getitem__(self, index: int,
+                    /) -> 'MultisetTupleIndex[T, IntTupleOut]':
         ...
 
     @overload
-    def __getitem__(self, index: slice, /) -> 'MultisetTupleSlice[T]':
+    def __getitem__(self, index: slice,
+                    /) -> 'MultisetTupleSlice[T, IntTupleOut, Any]':
         ...
 
     @overload
@@ -49,15 +56,16 @@ class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
         elif isinstance(index, slice):
             return MultisetTupleSlice(self, index=index)
 
-    def __iter__(self) -> Iterator['MultisetTupleIndex[T]']:
+    def __iter__(self) -> Iterator['MultisetTupleIndex[T, IntTupleOut]']:
         for i in range(len(self)):
             yield self[i]
 
 
-class MultisetTupleIndex(MultisetExpression[T]):
-    _children: 'tuple[MultisetTupleExpression[T]]'
+class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
+    _children: 'tuple[MultisetTupleExpression[T, IntTupleIn]]'
 
-    def __init__(self, child: MultisetTupleExpression[T], /, *, index: int):
+    def __init__(self, child: MultisetTupleExpression[T, IntTupleIn], /, *,
+                 index: int):
         self._index = index
         self._children = (child, )
 
@@ -103,10 +111,12 @@ class MultisetTupleIndex(MultisetExpression[T]):
                 questlet, ), tuple(sources), weight
 
 
-class MultisetTupleSlice(MultisetTupleExpression[T]):
-    _children: 'tuple[MultisetTupleExpression[T]]'
+class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
+                         MultisetTupleExpression[T, IntTupleIn]):
+    _children: 'tuple[MultisetTupleExpression[T, IntTupleIn]]'
 
-    def __init__(self, child: MultisetTupleExpression[T], /, *, index: slice):
+    def __init__(self, child: MultisetTupleExpression[T, IntTupleIn], /, *,
+                 index: slice):
         self._index = index
         self._children = (child, )
 

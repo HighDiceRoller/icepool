@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
-from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
+from icepool.expression.multiset_tuple_expression import MultisetTupleExpression, IntTupleOut
 from icepool.order import Order
 from icepool.expression.multiset_expression import MultisetExpression
 
@@ -53,7 +53,8 @@ class MultisetParam(MultisetParamBase[T], MultisetExpression[T]):
             self._name = name
 
 
-class MultisetTupleParam(MultisetParamBase[T], MultisetTupleExpression[T]):
+class MultisetTupleParam(MultisetParamBase[T],
+                         MultisetTupleExpression[T, IntTupleOut]):
     """A multiset param with a count of a tuple of `int`s."""
 
     def __init__(self, index: int, name: str, length: int):
