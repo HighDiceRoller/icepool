@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
+from icepool.evaluator.multiset_function import MultisetFunctionRawResult
 from icepool.expression.multiset_expression import MultisetExpression
 
 from collections import defaultdict
@@ -65,7 +66,7 @@ class MultisetMixture(MultisetExpression[T]):
 
     def keep(
         self, index: slice | Sequence[int | EllipsisType] | int
-    ) -> 'MultisetExpression[T] | icepool.Die[T] | icepool.MultisetEvaluator[T, T]':
+    ) -> 'MultisetExpression[T] | icepool.Die[T] | icepool.MultisetEvaluator[T, T] | MultisetFunctionRawResult[T, T]':
         if self._static_keepable:
             result = self._unary_operation(lambda inner: inner.keep(index))
             if isinstance(index, int):
