@@ -91,6 +91,7 @@ class MultiDeal(MultisetTupleGenerator[T]):
     def _make_source(self) -> 'MultisetTupleSource[T]':
         return MultiDealSource(self._deck, self._hand_sizes)
 
+    @property
     def hash_key(self) -> Hashable:
         return MultiDeal, self._deck, self._hand_sizes
 

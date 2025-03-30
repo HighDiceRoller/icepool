@@ -71,6 +71,7 @@ class Deal(KeepGenerator[T]):
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self.hand_size())
 
+    @property
     def hash_key(self):
         return Deal, self._deck, self._keep_tuple
 
@@ -118,7 +119,6 @@ class DealSource(KeepSource[T]):
             pop_from_keep_tuple = pop_min_from_keep_tuple
         else:
             popped_deck, deck_count = self.deck._pop_max()
-
             pop_from_keep_tuple = pop_max_from_keep_tuple
 
         min_count = max(0,
@@ -152,6 +152,7 @@ class DealSource(KeepSource[T]):
 
         return Order.Any, OrderReason.NoPreference
 
+    @property
     def hash_key(self):
         return DealSource, self.deck, self.keep_tuple
 
