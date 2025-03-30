@@ -18,7 +18,6 @@ from typing import (Any, Collection, Generic, Hashable, Iterator, Mapping,
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, Dungeonlet, Questlet
-    from icepool.expression.multiset_param import MultisetParamBase
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool import MultisetExpression
 

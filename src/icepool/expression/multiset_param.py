@@ -1,18 +1,16 @@
 __docformat__ = 'google'
 
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Q, Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression, IntTupleOut
 from icepool.order import Order
 from icepool.expression.multiset_expression import MultisetExpression
 
-import enum
-
 from typing import Any, Generic, Iterator, MutableSequence, Sequence
 
-from icepool.typing import T, U_co
+from icepool.typing import T
 
 
-class MultisetParamBase(Generic[T]):
+class MultisetParamBase(Generic[T, Q]):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]' = ()
     _index: int
     _name: str
@@ -24,7 +22,7 @@ class MultisetParamBase(Generic[T]):
         self
     ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
                         'tuple[Questlet[T, Any], ...]',
-                        'tuple[MultisetSourceBase[T, Any], ...]', int]]:
+                        'tuple[MultisetSourceBase[T, Q], ...]', int]]:
         dungeonlet = MultisetParamDungeonlet[T](self._index)
         questlet = MultisetParamQuestlet[T](self._index)
         yield (dungeonlet, ), (questlet, ), (), 1
@@ -42,7 +40,7 @@ class MultisetParamBase(Generic[T]):
         return type(self), self._index
 
 
-class MultisetParam(MultisetParamBase[T], MultisetExpression[T]):
+class MultisetParam(MultisetParamBase[T, int], MultisetExpression[T]):
     """A multiset param with a count of a single `int`."""
 
     def __init__(self, index: int, name: str):
@@ -53,7 +51,7 @@ class MultisetParam(MultisetParamBase[T], MultisetExpression[T]):
             self._name = name
 
 
-class MultisetTupleParam(MultisetParamBase[T],
+class MultisetTupleParam(MultisetParamBase[T, IntTupleOut],
                          MultisetTupleExpression[T, IntTupleOut]):
     """A multiset param with a count of a tuple of `int`s."""
 

@@ -18,7 +18,7 @@ from typing import (TYPE_CHECKING, Callable, Collection, Literal, Mapping,
 if TYPE_CHECKING:
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool.expression.multiset_tuple_expression import MultisetTupleExpression, IntTupleOut
-    from icepool.expression.multiset_param import MultisetParamBase
+    from icepool.expression.multiset_param import MultisetParam
 
 
 @overload
@@ -125,7 +125,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T]':
+    def _make_param(self, index: int, name: str) -> 'MultisetParam[T]':
         return icepool.MultisetParam(index, name)
 
     @property
@@ -135,7 +135,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         return expansion.items()
 
     # We need to reiterate this since we override __eq__.
-    __hash__ = MaybeHashKeyed.__hash__
+    __hash__ = MaybeHashKeyed.__hash__  # type: ignore
 
     # Binary operators.
 

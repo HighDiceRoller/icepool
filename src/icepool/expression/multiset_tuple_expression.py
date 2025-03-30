@@ -12,7 +12,7 @@ from typing import (TYPE_CHECKING, Any, Generic, Hashable, Iterator,
                     MutableSequence, Sequence, TypeVar, overload)
 
 if TYPE_CHECKING:
-    from icepool.expression.multiset_param import MultisetParamBase
+    from icepool.expression.multiset_param import MultisetTupleParam
 
 IntTupleIn = TypeVar('IntTupleIn', bound=tuple[int, ...])
 """Count type for an input multiset tuple."""
@@ -31,7 +31,8 @@ class MultisetTupleExpression(MultisetExpressionBase[T, IntTupleOut]):
     def __len__(self) -> int:
         """The number of counts produced by this expression."""
 
-    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T]':
+    def _make_param(self, index: int,
+                    name: str) -> 'MultisetTupleParam[T, IntTupleOut]':
         return icepool.MultisetTupleParam(index, name, len(self))
 
     @overload
