@@ -137,7 +137,7 @@ from icepool.generator.multi_deal import MultiDeal
 
 from icepool.expression.multiset_expression import MultisetExpression, implicit_convert_to_expression
 from icepool.evaluator.multiset_function import multiset_function
-from icepool.expression.multiset_param import MultisetParam, MultisetTupleParam
+from icepool.expression.multiset_parameter import MultisetParameter, MultisetTupleParameter
 from icepool.expression.multiset_mixture import MultisetMixture
 
 from icepool.population.format import format_probability_inverse
@@ -161,6 +161,7 @@ __all__ = [
     'map_and_time', 'map_to_pool', 'Reroll', 'RerollType', 'Pool',
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'ConflictingOrderError', 'UnsupportedOrder',
-    'Deck', 'Deal', 'MultiDeal', 'multiset_function', 'function', 'typing',
-    'evaluator', 'format_probability_inverse', 'Wallenius'
+    'Deck', 'Deal', 'MultiDeal', 'multiset_function', 'MultisetParameter',
+    'MultisetTupleParameter', 'function', 'typing', 'evaluator',
+    'format_probability_inverse', 'Wallenius'
 ]

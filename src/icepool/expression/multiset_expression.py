@@ -18,7 +18,7 @@ from typing import (TYPE_CHECKING, Callable, Collection, Literal, Mapping,
 if TYPE_CHECKING:
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool.expression.multiset_tuple_expression import MultisetTupleExpression, IntTupleOut
-    from icepool.expression.multiset_param import MultisetParam
+    from icepool.expression.multiset_parameter import MultisetParameter
 
 
 @overload
@@ -125,8 +125,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    def _make_param(self, index: int, name: str) -> 'MultisetParam[T]':
-        return icepool.MultisetParam(index, name)
+    def _make_param(self, index: int, name: str) -> 'MultisetParameter[T]':
+        return icepool.MultisetParameter(index, name)
 
     @property
     def _items_for_cartesian_product(

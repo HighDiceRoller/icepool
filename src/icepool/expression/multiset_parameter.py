@@ -10,7 +10,7 @@ from typing import Any, Generic, Iterator, MutableSequence, Sequence
 from icepool.typing import T
 
 
-class MultisetParamBase(Generic[T, Q]):
+class MultisetParameterBase(Generic[T, Q]):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]' = ()
     _index: int
     _name: str
@@ -23,8 +23,8 @@ class MultisetParamBase(Generic[T, Q]):
     ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
                         'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Q], ...]', int]]:
-        dungeonlet = MultisetParamDungeonlet[T, Q](self._index)
-        questlet = MultisetParamQuestlet[T, Q](self._index)
+        dungeonlet = MultisetParameterDungeonlet[T, Q](self._index)
+        questlet = MultisetParameterQuestlet[T, Q](self._index)
         yield (dungeonlet, ), (questlet, ), (), 1
 
     @property
@@ -40,7 +40,7 @@ class MultisetParamBase(Generic[T, Q]):
         return type(self), self._index
 
 
-class MultisetParam(MultisetParamBase[T, int], MultisetExpression[T]):
+class MultisetParameter(MultisetParameterBase[T, int], MultisetExpression[T]):
     """A multiset param with a count of a single `int`."""
 
     def __init__(self, index: int, name: str):
@@ -51,8 +51,8 @@ class MultisetParam(MultisetParamBase[T, int], MultisetExpression[T]):
             self._name = name
 
 
-class MultisetTupleParam(MultisetParamBase[T, IntTupleOut],
-                         MultisetTupleExpression[T, IntTupleOut]):
+class MultisetTupleParameter(MultisetParameterBase[T, IntTupleOut],
+                             MultisetTupleExpression[T, IntTupleOut]):
     """A multiset param with a count of a tuple of `int`s."""
 
     def __init__(self, index: int, name: str, length: int):
@@ -67,7 +67,7 @@ class MultisetTupleParam(MultisetParamBase[T, IntTupleOut],
         return self._length
 
 
-class MultisetParamDungeonlet(Dungeonlet[T, Q]):
+class MultisetParameterDungeonlet(Dungeonlet[T, Q]):
     child_indexes = ()
 
     def __init__(self, index: int):
@@ -79,10 +79,10 @@ class MultisetParamDungeonlet(Dungeonlet[T, Q]):
 
     @property
     def hash_key(self):
-        return MultisetParamDungeonlet, self.index
+        return MultisetParameterDungeonlet, self.index
 
 
-class MultisetParamQuestlet(Questlet[T, Q]):
+class MultisetParameterQuestlet(Questlet[T, Q]):
     child_indexes = ()
 
     def __init__(self, index: int):

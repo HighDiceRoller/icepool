@@ -8,7 +8,7 @@ from typing import (TYPE_CHECKING, Any, Callable, Generic, Hashable, Iterator,
                     MutableSequence, NamedTuple, Sequence, Type, TypeVar)
 
 if TYPE_CHECKING:
-    from icepool.expression.multiset_param import MultisetParamBase
+    from icepool.expression.multiset_parameter import MultisetParameterBase
 
 Q = TypeVar('Q')
 """The type of count emitted by a MultisetExpression."""
@@ -35,7 +35,8 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
         """Whether this expression tree contains any param."""
 
     @abstractmethod
-    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T, Q]':
+    def _make_param(self, index: int,
+                    name: str) -> 'MultisetParameterBase[T, Q]':
         """Creates a param corresponding to the output of this expression.
         
         This is used to determine the input types to multiset functions.
