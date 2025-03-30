@@ -7,20 +7,15 @@ from icepool.expression.multiset_expression import MultisetExpression
 
 import enum
 
-from typing import Any, Generic, Hashable, Iterator, MutableSequence, Sequence
+from typing import Any, Generic, Iterator, MutableSequence, Sequence
 
 from icepool.typing import Q, T, U_co
 
 
 class MultisetParamBase(Generic[T]):
     _children: 'tuple[MultisetExpressionBase[T, Any], ...]' = ()
-
-    def __init__(self, index: int, name: str | None = None):
-        self._index = index
-        if name is None:
-            self._name = f'mv[{index}]'
-        else:
-            self._name = name
+    _index: int
+    _name: str
 
     def __str__(self) -> str:
         return self._name
@@ -50,9 +45,27 @@ class MultisetParamBase(Generic[T]):
 class MultisetParam(MultisetParamBase[T], MultisetExpression[T]):
     """A multiset param with a count of a single `int`."""
 
+    def __init__(self, index: int, name: str):
+        self._index = index
+        if name is None:
+            self._name = f'mv[{index}]'
+        else:
+            self._name = name
+
 
 class MultisetTupleParam(MultisetParamBase[T], MultisetTupleExpression[T]):
     """A multiset param with a count of a tuple of `int`s."""
+
+    def __init__(self, index: int, name: str, length: int):
+        self._index = index
+        if name is None:
+            self._name = f'mv[{index}]'
+        else:
+            self._name = name
+        self._length = length
+
+    def __len__(self):
+        return self._length
 
 
 class MultisetParamDungeonlet(Dungeonlet[T, Any]):

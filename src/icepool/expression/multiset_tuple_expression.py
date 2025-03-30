@@ -6,21 +6,36 @@ from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpr
 from icepool.operator.multiset_operator import MultisetOperatorDungeonlet, MultisetOperatorQuestlet
 from icepool.order import Order
 
+from abc import abstractmethod
 from icepool.typing import T
-from typing import (Any, Hashable, Iterator, MutableSequence, Sequence)
+from typing import (TYPE_CHECKING, Any, Hashable, Iterator, MutableSequence,
+                    Sequence)
+
+if TYPE_CHECKING:
+    from icepool.expression.multiset_param import MultisetParamBase
 
 
 class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):
     """Abstract base class representing an expression that operates on tuples of multisets.
+    
+    Currently the only operations are to subscript or unpack to extract single
+    multisets.
+    """
 
-    Currently the only operation is to subscript to produce a single multiset."""
+    @abstractmethod
+    def __len__(self) -> int:
+        """The number of counts produced by this expression."""
 
-    @property
-    def _param_type(self):
-        return icepool.MultisetTupleParam
+    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T]':
+        return icepool.MultisetTupleParam(index, name, len(self))
 
-    def __getitem__(self, index: int, /) -> 'icepool.MultisetExpression[T]':
+    def __getitem__(self, index: int, /) -> 'MultisetTupleSubscript[T]':
+        # TODO: slice?
         return MultisetTupleSubscript(self, index=index)
+
+    def __iter__(self) -> Iterator['MultisetTupleSubscript[T]']:
+        for i in range(len(self)):
+            yield self[i]
 
 
 class MultisetTupleSubscript(MultisetExpression[T]):

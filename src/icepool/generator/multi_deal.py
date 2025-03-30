@@ -76,6 +76,9 @@ class MultiDeal(MultisetTupleGenerator[T]):
         """
         return self.deck().outcomes()
 
+    def __len__(self) -> int:
+        return len(self._hand_sizes)
+
     @cached_property
     def _denomiator(self) -> int:
         d_total = icepool.math.comb(self.deck().size(),

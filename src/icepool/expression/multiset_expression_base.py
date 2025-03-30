@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from icepool.order import Order, OrderReason
 from abc import abstractmethod
 
-from icepool.typing import Q, T, U, MaybeHashKeyed, T
+from icepool.typing import Q, T, MaybeHashKeyed
 from typing import (TYPE_CHECKING, Any, Generic, Hashable, Iterator,
                     MutableSequence, NamedTuple, Sequence, Type)
 
@@ -31,10 +31,12 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
     def _has_param(self) -> bool:
         """Whether this expression tree contains any param."""
 
-    @property
     @abstractmethod
-    def _param_type(self) -> 'Type[MultisetParamBase]':
-        """The type of param corresponding to the output of this expression."""
+    def _make_param(self, index: int, name: str) -> 'MultisetParamBase[T]':
+        """Creates a param corresponding to the output of this expression.
+        
+        This is used to determine the input types to multiset functions.
+        """
 
     @property
     @abstractmethod

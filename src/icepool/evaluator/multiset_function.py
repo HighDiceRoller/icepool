@@ -13,7 +13,7 @@ from functools import update_wrapper
 from icepool.function import sorted_union
 from icepool.order import Order
 from icepool.typing import Q, T, MaybeHashKeyed, U_co
-from typing import Any, Callable, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, TypeAlias, overload
+from typing import Any, Callable, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, Sequence, TypeAlias, overload
 
 MV: TypeAlias = MultisetParam | MultisetTupleParam
 
@@ -119,6 +119,7 @@ class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
 
 
 class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
+    _positional_names: Sequence[str]
 
     def __init__(self, wrapped: Callable[
         ...,
@@ -145,7 +146,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
     ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         multiset_variables = [
-            exp._param_type(i, self._positional_names[i])
+            exp._make_param(i, self._positional_names[i])
             for i, exp in enumerate(input_exps)
         ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
