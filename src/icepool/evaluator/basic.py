@@ -4,12 +4,9 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
-from icepool.expression.multiset_expression import MultisetArityError
-from icepool.order import Order, OrderReason
+from icepool.order import Order
 
-import operator
-
-from typing import Any, Callable, Final, Hashable, Literal, Mapping
+from typing import Any, Callable, Final, Hashable, Mapping
 
 
 class ExpandEvaluator(MultisetEvaluator[Any, tuple]):

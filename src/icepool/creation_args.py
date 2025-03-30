@@ -2,16 +2,12 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collection.counts import Counts
-from icepool.typing import U, Outcome
 
-import itertools
 import math
 from collections import defaultdict
 
 from icepool.typing import T
-from typing import Any, Iterable, Mapping, MutableMapping, Sequence, Type, cast, overload
-
-from icepool.collection.vector import Vector
+from typing import Any, Mapping, MutableMapping, Sequence, cast, overload
 
 
 def itemize(keys: Mapping[Any, int] | Sequence,

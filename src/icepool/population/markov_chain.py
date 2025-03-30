@@ -1,10 +1,10 @@
 import icepool
-from icepool.typing import Outcome, T
 
 import enum
 import math
 from collections import defaultdict
 
+from icepool.typing import T
 from typing import Callable, MutableMapping
 
 

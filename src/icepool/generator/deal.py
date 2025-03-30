@@ -1,16 +1,12 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.generator.multiset_generator import MultisetSource
 import icepool.order
 from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.order import Order, OrderReason
 
-from functools import cached_property
-
 from icepool.typing import T
-from typing import Hashable, Iterator
 
 
 class Deal(KeepGenerator[T]):

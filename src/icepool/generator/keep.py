@@ -3,15 +3,13 @@ __docformat__ = 'google'
 import icepool
 from icepool.generator.multiset_generator import MultisetGenerator, MultisetSource
 
-import operator
-from collections import defaultdict
-from functools import cached_property, reduce
+from functools import cached_property
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from types import EllipsisType
-from typing import Hashable, Literal, Mapping, MutableMapping, Sequence, cast, overload, TYPE_CHECKING
+from typing import Literal, Mapping, Sequence, cast, overload, TYPE_CHECKING
 import icepool.expression.multiset_expression
-from icepool.typing import ImplicitConversionError, Outcome, T
+from icepool.typing import ImplicitConversionError, T
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression

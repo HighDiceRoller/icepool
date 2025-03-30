@@ -5,7 +5,7 @@ from icepool.expand import Expandable
 from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.collection.vector import Vector
 from icepool.math import try_fraction
-from icepool.typing import U, Outcome, T_co, count_positional_parameters, infer_star
+from icepool.typing import U, T_co, infer_star
 
 from abc import ABC, abstractmethod
 import bisect

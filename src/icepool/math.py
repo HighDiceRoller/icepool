@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 from fractions import Fraction
-import numbers
 from typing import Iterator, MutableMapping
 
 # b -> list of rows

@@ -2,7 +2,6 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.expression.multiset_expression
-from icepool.generator.multiset_generator import MultisetSource
 import icepool.math
 import icepool.creation_args
 import icepool.order

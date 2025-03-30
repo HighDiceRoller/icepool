@@ -1,6 +1,5 @@
 __docformat__ = 'google'
 
-import icepool
 from icepool.population.base import Population
 
 import csv as csv_lib

@@ -2,11 +2,11 @@ __docformat__ = 'google'
 
 import icepool
 
-from functools import cached_property
 import math
+from functools import cached_property
 
 from icepool.typing import T
-from typing import Collection, ItemsView, Iterable, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
+from typing import ItemsView, Iterable, Iterator, KeysView, Mapping, MutableMapping, Sequence, ValuesView
 
 
 class Counts(Mapping[T, int]):

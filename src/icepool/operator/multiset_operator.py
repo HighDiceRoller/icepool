@@ -1,15 +1,15 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, Dungeonlet, Questlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Dungeonlet, Questlet, MultisetSourceBase
 from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
 
 import itertools
 import math
 
 from icepool.order import Order
-from icepool.typing import T, Q
-from typing import Any, Callable, Collection, Hashable, Iterator, MutableSequence, Sequence
+from icepool.typing import T
+from typing import Any, Callable, Hashable, Iterator, MutableSequence, Sequence
 
 from abc import abstractmethod
 

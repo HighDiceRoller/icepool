@@ -3,28 +3,21 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expand import Expandable
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase
 from icepool.collection.counts import Counts
-from icepool.order import Order, OrderReason, merge_order_preferences
+from icepool.order import Order
 from icepool.population.keep import highest_slice, lowest_slice
 
-import bisect
-import itertools
 import operator
-import random
 
 from icepool.typing import Q, T, U, MaybeHashKeyed, ImplicitConversionError
 from types import EllipsisType
-from typing import (TYPE_CHECKING, Any, Callable, Collection, Iterator,
-                    Literal, Mapping, Sequence, Type, cast, overload)
+from typing import (TYPE_CHECKING, Callable, Collection, Literal, Mapping,
+                    Sequence, Type, cast, overload)
 
 if TYPE_CHECKING:
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
-
-
-class MultisetArityError(ValueError):
-    """Indicates that an arity was not the same as required."""
 
 
 @overload

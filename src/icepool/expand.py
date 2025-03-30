@@ -4,10 +4,9 @@ import icepool
 
 import itertools
 import math
-import operator
-from typing import Any, Callable, Hashable, Iterable, Iterator, Protocol, Sequence, Type, cast, overload
+from typing import Any, Iterator, Protocol, Sequence, Type
 
-from icepool.typing import A_co, Outcome, S, T, T_co, U
+from icepool.typing import A_co, Outcome, S, T
 
 
 # We don't use @runtime_checkable due to poor performance and the validation is

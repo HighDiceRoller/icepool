@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import enum
 import inspect
 
-from typing import Any, Callable, Generic, Hashable, Iterable, Literal, Mapping, Protocol, Sequence, Sized, TypeAlias, TypeGuard, TypeVar, TYPE_CHECKING
+from typing import Callable, Hashable, Protocol, Sequence, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_expression import MultisetExpression

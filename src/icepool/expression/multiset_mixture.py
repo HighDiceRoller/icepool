@@ -2,19 +2,13 @@ __docformat__ = 'google'
 
 import icepool
 
-from icepool.expression.multiset_expression_base import MultisetExpressionBase
-from icepool.expression.multiset_expression import MultisetArityError, MultisetExpression
-from icepool.generator.multiset_generator import MultisetGenerator
-from icepool.order import Order, OrderReason, merge_order_preferences
-
-import math
+from icepool.expression.multiset_expression import MultisetExpression
 
 from collections import defaultdict
-from functools import cached_property
 
-from icepool.typing import T, U
+from icepool.typing import T
 from types import EllipsisType
-from typing import TYPE_CHECKING, Any, Callable, Hashable, Iterator, Literal, Mapping, MutableMapping, Sequence, overload
+from typing import Callable, Mapping, MutableMapping, Sequence, overload
 
 
 class MultisetMixture(MultisetExpression[T]):

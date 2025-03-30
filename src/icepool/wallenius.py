@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 
-from collections import Counter, defaultdict
+from collections import Counter
 from functools import cache
 
 from typing import Generic, Iterable, Mapping, MutableMapping

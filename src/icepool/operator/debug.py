@@ -5,7 +5,7 @@ from icepool.operator.multiset_operator import MultisetOperator
 from icepool.order import Order, UnsupportedOrder
 
 from icepool.typing import T
-from typing import Callable, Collection, Hashable, Iterable, Iterator, MutableSequence, Sequence
+from typing import Iterator, MutableSequence, Sequence
 
 
 class MultisetForceOrder(MultisetOperator[T]):

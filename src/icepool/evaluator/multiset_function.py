@@ -5,15 +5,15 @@ import math
 import icepool
 from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
 from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
-from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
+from icepool.expression.multiset_param import MultisetParam, MultisetTupleParam
 
 import inspect
-from functools import cached_property, update_wrapper
+from functools import update_wrapper
 
 from icepool.function import sorted_union
 from icepool.order import Order
 from icepool.typing import Q, T, MaybeHashKeyed, U_co
-from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, Sequence, Type, TypeAlias, overload
+from typing import Any, Callable, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, TypeAlias, overload
 
 MV: TypeAlias = MultisetParam | MultisetTupleParam
 

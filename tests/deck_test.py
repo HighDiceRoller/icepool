@@ -3,7 +3,6 @@ import pytest
 
 from icepool import MultisetEvaluator, Deck
 from icepool.evaluator import LargestStraightEvaluator
-from icepool.expression.multiset_expression import MultisetArityError
 
 # no wraparound
 best_run_evaluator = LargestStraightEvaluator()

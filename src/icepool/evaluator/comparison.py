@@ -2,13 +2,11 @@
 
 __docformat__ = 'google'
 
-import icepool
-from icepool.order import Order, OrderReason
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from abc import abstractmethod
 
-from typing import Any, Literal
+from typing import Any
 
 
 class ComparisonEvaluator(MultisetEvaluator[Any, bool]):

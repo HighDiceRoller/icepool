@@ -4,7 +4,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.population.markov_chain
-from icepool.typing import Outcome, T, U, infer_star
+from icepool.typing import Outcome, T, infer_star
 
 from fractions import Fraction
 from collections import defaultdict
@@ -12,7 +12,7 @@ from functools import cache, partial, update_wrapper, wraps
 import itertools
 import math
 
-from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, TypeAlias, cast, overload
+from typing import Any, Callable, Final, Hashable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
 
 
 @cache

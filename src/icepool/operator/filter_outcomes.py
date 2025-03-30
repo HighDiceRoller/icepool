@@ -1,16 +1,9 @@
 __docformat__ = 'google'
 
-import icepool
-
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order, OrderReason
 
-import operator
-from abc import abstractmethod
-from functools import cached_property, reduce
-
-from typing import Callable, Collection, Hashable, Iterable
+from typing import Callable, Collection
 from icepool.typing import T
 
 

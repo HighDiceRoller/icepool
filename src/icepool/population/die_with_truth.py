@@ -1,14 +1,13 @@
 __docformat__ = 'google'
 
-import icepool
 from icepool.collection.counts import Counts
 from icepool.population.die import Die
-from icepool.typing import T, Outcome
+from icepool.typing import T
 
 from functools import cached_property
 import warnings
 
-from typing import Callable, Hashable
+from typing import Callable
 
 
 class DieWithTruth(Die[T]):

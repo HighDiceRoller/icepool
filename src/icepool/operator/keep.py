@@ -4,14 +4,10 @@ import icepool
 
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order, OrderReason, UnsupportedOrder
-
-import operator
-from abc import abstractmethod
-from functools import cached_property, reduce
+from icepool.order import Order, UnsupportedOrder
 
 from types import EllipsisType
-from typing import Callable, Collection, Hashable, Iterable, Iterator, MutableSequence, Sequence
+from typing import Iterator, MutableSequence, Sequence
 from icepool.typing import T
 
 

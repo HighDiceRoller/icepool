@@ -1,23 +1,13 @@
 __docformat__ = 'google'
 
-from abc import abstractmethod
 import icepool
-from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
+from icepool.expression.multiset_expression import MultisetExpression
 from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
-from icepool.collection.counts import Counts
 from icepool.operator.multiset_operator import MultisetOperatorDungeonlet, MultisetOperatorQuestlet
-from icepool.order import Order, OrderReason, merge_order_preferences
-from icepool.population.keep import highest_slice, lowest_slice
+from icepool.order import Order
 
-import bisect
-import itertools
-import operator
-import random
-
-from icepool.typing import Q, T, U, ImplicitConversionError, T
-from types import EllipsisType
-from typing import (Any, Callable, Collection, Hashable, Iterator, Literal,
-                    Mapping, MutableSequence, Sequence, Type, cast, overload)
+from icepool.typing import T
+from typing import (Any, Hashable, Iterator, MutableSequence, Sequence)
 
 
 class MultisetTupleExpression(MultisetExpressionBase[T, tuple[int, ...]]):

@@ -1,19 +1,12 @@
 __docformat__ = 'google'
 
-import operator
-import icepool
-
-from icepool.evaluator.multiset_evaluator_base import Dungeon, Quest
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, MultisetFreeVariable, Questlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetFreeVariable, Questlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
-import icepool.generator
-from icepool.generator.multiset_generator import MultisetSource
-from icepool.typing import Outcome, Q, T, U_co
+from icepool.typing import T
 
-from abc import ABC, abstractmethod
-from functools import cached_property
+from abc import abstractmethod
 
-from typing import Any, Callable, Collection, Generic, Hashable, Iterator, Mapping, Sequence, TypeAlias, cast
+from typing import Any, Iterator
 """The generator type returned by `_generate_min` and `_generate_max`.
 
 Each element is a tuple of generator, counts, weight.

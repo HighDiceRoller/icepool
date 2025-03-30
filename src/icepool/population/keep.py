@@ -4,8 +4,8 @@ import icepool
 
 import math
 
-from icepool.typing import Outcome, T
-from typing import Iterable, Literal, Sequence, cast, overload
+from icepool.typing import T
+from typing import Iterable, Literal, Sequence, overload
 
 
 def lowest_slice(keep: int | None = None, drop: int | None = None) -> slice:
@@ -301,9 +301,7 @@ def _lowest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':
     quantities_ge = tuple(
         math.prod(die.quantity('>=', outcome) for die in dice)
         for outcome in outcomes)
-    return icepool.from_cumulative(outcomes,
-                                   quantities_ge,
-                                   reverse=True)
+    return icepool.from_cumulative(outcomes, quantities_ge, reverse=True)
 
 
 def _highest_single(*args: 'T | icepool.Die[T]') -> 'icepool.Die[T]':

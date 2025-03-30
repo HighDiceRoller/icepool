@@ -1,11 +1,8 @@
 __docformat__ = 'google'
 
-from icepool.expression.multiset_expression_base import Dungeonlet, Questlet, MultisetSourceBase
-from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator, MultisetTupleSource
-
 import icepool
 from icepool.collection.counts import CountsKeysView
-from icepool.generator.multiset_generator import MultisetGenerator
+from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator, MultisetTupleSource
 from icepool.math import iter_hypergeom
 from icepool.order import Order, OrderReason
 
@@ -14,7 +11,7 @@ import math
 
 from icepool.typing import T
 
-from typing import Any, Hashable, Iterable, Iterator, Sequence, cast
+from typing import Hashable, Iterable, Iterator
 
 
 class MultiDeal(MultisetTupleGenerator[T]):

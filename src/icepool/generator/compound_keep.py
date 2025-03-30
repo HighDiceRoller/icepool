@@ -2,13 +2,13 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
-from icepool.generator.multiset_generator import MultisetGenerator, MultisetSource
+from icepool.generator.multiset_generator import MultisetSource
 from icepool.order import Order, OrderReason, merge_order_preferences
 
 import itertools
 import math
 
-from typing import Hashable, Iterator, Sequence
+from typing import Sequence
 from icepool.typing import T
 
 

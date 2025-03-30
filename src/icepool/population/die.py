@@ -18,9 +18,8 @@ from functools import cached_property
 import itertools
 import math
 import operator
-import warnings
 
-from typing import Any, Callable, Collection, Container, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, Set, cast, overload
+from typing import Any, Callable, Collection, Container, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
 
 
 def implicit_convert_to_die(
