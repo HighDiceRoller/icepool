@@ -3,8 +3,8 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetQuest
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
+from icepool.evaluator.multiset_evaluator_base import Dungeon, Quest
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, MultisetFreeVariable, Questlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 import icepool.generator
 from icepool.generator.multiset_generator import MultisetSource
@@ -39,8 +39,8 @@ class MultisetTupleGenerator(MultisetTupleExpression[T]):
 
     def _prepare(
         self
-    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T, Any], ...]',
+    ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
+                        'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlets = (MultisetFreeVariable[T, tuple[int, ...]](), )
         questlets = (MultisetTupleGeneratorQuestlet[T](), )
@@ -53,7 +53,7 @@ class MultisetTupleSource(MultisetSourceBase[T, tuple[int, ...]]):
     """A source that produces a tuple of `int` counts."""
 
 
-class MultisetTupleGeneratorQuestlet(MultisetQuestlet[T, tuple[int, ...]]):
+class MultisetTupleGeneratorQuestlet(Questlet[T, tuple[int, ...]]):
     child_indexes = ()
 
     def initial_state(self, order, outcomes, child_sizes, source_sizes,

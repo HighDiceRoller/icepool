@@ -30,8 +30,8 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
     @abstractmethod
     def _prepare(
         self
-    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T, Any], ...]',
+    ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
+                        'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         """Prepare for evaluation.
 
@@ -55,7 +55,7 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
         """Whether this expression supports keep operations via static analysis."""
 
 
-class MultisetDungeonlet(Generic[T, Q], MaybeHashKeyed):
+class Dungeonlet(Generic[T, Q], MaybeHashKeyed):
     child_indexes: tuple[int, ...]
     """The relative (therefore negative) indexes of this node's children."""
 
@@ -83,7 +83,7 @@ class MultisetDungeonlet(Generic[T, Q], MaybeHashKeyed):
         """
 
     def __eq__(self, other):
-        if not isinstance(other, MultisetDungeonlet):
+        if not isinstance(other, Dungeonlet):
             return False
         return self.hash_key == other.hash_key
 
@@ -91,7 +91,7 @@ class MultisetDungeonlet(Generic[T, Q], MaybeHashKeyed):
         return hash(self.hash_key)
 
 
-class MultisetFreeVariable(MultisetDungeonlet[T, Q]):
+class MultisetFreeVariable(Dungeonlet[T, Q]):
     child_indexes = ()
 
     def next_state(self, state, order, outcome, child_counts, source_counts,
@@ -153,7 +153,7 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
         return self.outcomes()[-1]
 
 
-class MultisetQuestlet(Generic[T, Q]):
+class Questlet(Generic[T, Q]):
     child_indexes: tuple[int, ...]
     """The relative (therefore negative) indexes of this node's children."""
 

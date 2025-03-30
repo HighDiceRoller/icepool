@@ -18,7 +18,7 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     overload)
 
 if TYPE_CHECKING:
-    from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, MultisetDungeonlet, MultisetQuestlet
+    from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, Dungeonlet, Questlet
     from icepool.expression.multiset_param import MultisetParamBase
     from icepool.evaluator.multiset_function import MultisetFunctionRawResult
     from icepool import MultisetExpression
@@ -26,14 +26,14 @@ if TYPE_CHECKING:
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
-    _cache: 'MutableMapping[Any, MultisetDungeon] | None' = None
+    _cache: 'MutableMapping[Any, Dungeon] | None' = None
 
     @abstractmethod
     def _prepare(
         self,
         input_exps: 'tuple[MultisetExpressionBase[T, Any], ...]',
         kwargs: Mapping[str, Hashable],
-    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+    ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         """Prepares an evaluation.
 
@@ -107,17 +107,17 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
 
-class MultisetDungeon(Generic[T]):
+class Dungeon(Generic[T]):
     """Holds an evaluation's next_state function and caches."""
 
-    dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
+    dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'
 
-    ascending_cache: 'MutableMapping[MultisetRoom[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
+    ascending_cache: 'MutableMapping[Room[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
     """
-    descending_cache: 'MutableMapping[MultisetRoom[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
+    descending_cache: 'MutableMapping[Room[T], Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]]'
     """Maps room -> final_state -> int for next_state seeing outcomes in ascending order.
     
     Initialized in evaluate().
@@ -141,7 +141,7 @@ class MultisetDungeon(Generic[T]):
             The next state, or icepool.Reroll to drop this branch of evaluation.
         """
 
-    def evaluate(self, quest: 'MultisetQuest[T, U_co]',
+    def evaluate(self, quest: 'Quest[T, U_co]',
                  sources: 'tuple[MultisetSourceBase[T, Any], ...]',
                  kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         """Runs evaluate_forward or evaluate_backward according to the input order versus the eval order."""
@@ -194,21 +194,21 @@ class MultisetDungeon(Generic[T]):
                 )
 
     def initial_room(
-            self, quest: 'MultisetQuest[T, U_co]',
+            self, quest: 'Quest[T, U_co]',
             sources: 'tuple[MultisetSourceBase, ...]', order: Order,
             outcomes: tuple[T, ...],
-            kwargs: Mapping[str, Hashable]) -> 'tuple[MultisetRoom[T], tuple]':
+            kwargs: Mapping[str, Hashable]) -> 'tuple[Room[T], tuple]':
         source_counts = (source.size() for source in sources)
         initial_statelets, sizes = quest.initial_statelets(
             order, outcomes, source_counts, ())
         initial_state_main = quest.initial_state_main(order, outcomes,
                                                       source_counts, sizes,
                                                       kwargs)
-        return MultisetRoom(outcomes, sources, initial_statelets,
-                            initial_state_main), sizes
+        return Room(outcomes, sources, initial_statelets,
+                    initial_state_main), sizes
 
     def evaluate_backward(
-        self, pop_order: Order, room: 'MultisetRoom'
+        self, pop_order: Order, room: 'Room'
     ) -> Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]:
         """Internal algorithm for iterating so that next_state sees outcomes in backwards order.
 
@@ -249,9 +249,9 @@ class MultisetDungeon(Generic[T]):
             eval_order = -pop_order
             for outcome, source_counts, prev_outcomes, prev_sources, weight in room.pop(
                     pop_order):
-                prev_room = MultisetRoom(prev_outcomes, prev_sources,
-                                         room.initial_statelet_flats,
-                                         room.initial_state_main)
+                prev_room = Room(prev_outcomes, prev_sources,
+                                 room.initial_statelet_flats,
+                                 room.initial_state_main)
                 prev = self.evaluate_backward(pop_order, prev_room)
 
                 for prev_statelet_flats, prev_main in prev.items():
@@ -271,7 +271,7 @@ class MultisetDungeon(Generic[T]):
         return result
 
     def evaluate_forward(
-        self, pop_order: Order, room: 'MultisetRoom'
+        self, pop_order: Order, room: 'Room'
     ) -> Mapping[tuple[tuple[Hashable, ...], ...], Mapping[Hashable, int]]:
         """Internal algorithm for iterating in the less-preferred order.
 
@@ -318,9 +318,8 @@ class MultisetDungeon(Generic[T]):
                                                        source_counts_iter,
                                                        counts)
                 if next_state_main is not icepool.Reroll:
-                    next_room = MultisetRoom(next_outcomes, next_sources,
-                                             next_statelet_flats,
-                                             next_state_main)
+                    next_room = Room(next_outcomes, next_sources,
+                                     next_statelet_flats, next_state_main)
                     final = self.evaluate_forward(pop_order, next_room)
                     for final_statelet_flats, final_main in final.items():
                         subresult = result[final_statelet_flats]
@@ -359,7 +358,7 @@ class MultisetDungeon(Generic[T]):
         return tuple(next_flats), tuple(output_counts)
 
 
-class MultisetRoom(Generic[T], NamedTuple):
+class Room(Generic[T], NamedTuple):
     outcomes: tuple[T, ...]
     sources: 'tuple[MultisetSourceBase[T, Any], ...]'
     initial_statelet_flats: tuple[tuple[Hashable, ...], ...]
@@ -399,8 +398,8 @@ class MultisetRoom(Generic[T], NamedTuple):
             yield outcome, source_counts, outcomes, sources, weight
 
 
-class MultisetQuest(Generic[T, U_co]):
-    questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]'
+class Quest(Generic[T, U_co]):
+    questlet_flats: 'tuple[tuple[Questlet[T, Any], ...], ...]'
 
     @abstractmethod
     def extra_outcomes(self, outcomes: Sequence[T]) -> Collection[T]:

@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expand import Expandable
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetQuestlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.collection.counts import Counts
 from icepool.order import Order, OrderReason, merge_order_preferences
 from icepool.population.keep import highest_slice, lowest_slice
@@ -1170,5 +1170,5 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                    force_order=force_order)
 
 
-class MultisetExpressionDungeonlet(MultisetDungeonlet[T, int]):
+class MultisetExpressionDungeonlet(Dungeonlet[T, int]):
     pass

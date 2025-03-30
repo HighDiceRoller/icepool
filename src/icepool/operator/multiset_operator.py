@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetDungeonlet, MultisetQuestlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import MultisetExpressionBase, Dungeonlet, Questlet, MultisetSourceBase
 from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
 
 import itertools
@@ -90,14 +90,14 @@ class MultisetOperator(MultisetExpression[T]):
 
     def _prepare(
         self
-    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T, Any], ...]',
+    ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
+                        'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         for t in itertools.product(*(child._prepare()
                                      for child in self._children)):
 
-            dungeonlets: MutableSequence[MultisetDungeonlet[T, Any]] = []
-            questlets: MutableSequence[MultisetQuestlet[T, Any]] = []
+            dungeonlets: MutableSequence[Dungeonlet[T, Any]] = []
+            questlets: MutableSequence[Questlet[T, Any]] = []
             sources: MutableSequence[MultisetSourceBase[T, Any]] = []
             weight = 1
             positions: MutableSequence[int] = []
@@ -135,7 +135,7 @@ class MultisetOperatorDungeonlet(MultisetExpressionDungeonlet[T]):
         return self._hash_key
 
 
-class MultisetOperatorQuestlet(MultisetQuestlet[T, int]):
+class MultisetOperatorQuestlet(Questlet[T, int]):
     # Will be filled in by the constructor.
     initial_state = None  # type: ignore
 

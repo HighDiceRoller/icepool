@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
 from icepool.expression.multiset_expression_base import MultisetExpressionBase
 from icepool.expression.multiset_param import MultisetParamBase
 from icepool.order import Order
@@ -17,7 +17,7 @@ from typing import (Any, Callable, Collection, Generic, Hashable, Iterator,
                     TypeAlias, cast, TYPE_CHECKING, overload)
 
 if TYPE_CHECKING:
-    from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, MultisetDungeonlet, MultisetQuestlet
+    from icepool.expression.multiset_expression_base import MultisetExpressionBase, MultisetSourceBase, Dungeonlet, Questlet
 
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
@@ -188,7 +188,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         self,
         input_exps: tuple[MultisetExpressionBase[T, Any], ...],
         kwargs: Mapping[str, Hashable],
-    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+    ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         for t in itertools.product(*(exp._prepare() for exp in input_exps)):
             dungeonlet_flats, questlet_flats, sources, weights = zip(*t)
@@ -202,12 +202,12 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             yield dungeon, quest, sources, weight
 
 
-class MultisetEvaluatorDungeon(MultisetDungeon[T], MaybeHashKeyed):
+class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
 
     def __init__(
-        self, next_state_eval: Callable[..., Hashable], dungeon_key: Hashable,
-        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]'
-    ):
+            self, next_state_eval: Callable[...,
+                                            Hashable], dungeon_key: Hashable,
+            dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'):
         self.next_state_eval = next_state_eval
         self.dungeon_key = dungeon_key
         self.dungeonlet_flats = dungeonlet_flats
@@ -227,15 +227,13 @@ class MultisetEvaluatorDungeon(MultisetDungeon[T], MaybeHashKeyed):
         return MultisetEvaluatorDungeon, self.dungeonlet_flats, self.dungeon_key
 
 
-class MultisetEvaluatorQuest(MultisetQuest[T, U_co]):
+class MultisetEvaluatorQuest(Quest[T, U_co]):
     # These are filled in by the constructor.
     extra_outcomes = None  # type: ignore
 
-    def __init__(
-            self, initial_state_eval: Callable[..., Hashable],
-            extra_outcomes: Callable, final_outcome_eval: Callable,
-            questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]'
-    ):
+    def __init__(self, initial_state_eval: Callable[..., Hashable],
+                 extra_outcomes: Callable, final_outcome_eval: Callable,
+                 questlet_flats: 'tuple[tuple[Questlet[T, Any], ...], ...]'):
         self.initial_state_eval = initial_state_eval
         self.extra_outcomes = extra_outcomes  # type: ignore
         self.final_outcome_eval = final_outcome_eval  # type: ignore

@@ -1,6 +1,6 @@
 __docformat__ = 'google'
 
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetQuestlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Dungeonlet, Questlet, MultisetSourceBase
 from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator, MultisetTupleSource
 
 import icepool

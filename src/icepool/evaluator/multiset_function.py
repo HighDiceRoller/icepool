@@ -3,8 +3,8 @@ __docformat__ = 'google'
 import itertools
 import math
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, MultisetDungeon, MultisetQuest
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetQuestlet, MultisetSourceBase
+from icepool.evaluator.multiset_evaluator_base import MultisetEvaluatorBase, Dungeon, Quest
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.expression.multiset_param import MultisetParam, MultisetParamBase, MultisetTupleParam
 
 import inspect
@@ -113,7 +113,7 @@ class MultisetFunctionRawResult(Generic[T, U_co], NamedTuple):
 
     def prepare_inner(
         self
-    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+    ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         yield from self.evaluator._prepare(self.body_exps, self.inner_kwargs)
 
@@ -142,7 +142,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         self,
         input_exps: tuple[MultisetExpressionBase[T, Any], ...],
         kwargs: Mapping[str, Hashable],
-    ) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+    ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         multiset_variables = [
             exp._param_type(i, self._positional_names[i])
@@ -158,7 +158,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
 def prepare_multiset_function(
     outer_exps: tuple[MultisetExpressionBase[T, Any], ...],
     raw_result: 'MultisetFunctionRawResult[T, U_co]',
-) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, U_co]',
+) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
         outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
@@ -175,12 +175,12 @@ def prepare_multiset_function(
             yield dungeon, quest, outer_sources + inner_sources, outer_weight * inner_weight
 
 
-class MultisetFunctionDungeon(MultisetDungeon[T], MaybeHashKeyed):
+class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
 
     def __init__(
         self,
-        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]',
-        inner_dungeon: MultisetDungeon[T],
+        dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]',
+        inner_dungeon: Dungeon[T],
     ):
         self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeon = inner_dungeon
@@ -209,12 +209,12 @@ class MultisetFunctionDungeon(MultisetDungeon[T], MaybeHashKeyed):
         return MultisetFunctionDungeon, self.dungeonlet_flats, self.inner_dungeon
 
 
-class MultisetFunctionQuest(MultisetQuest[T, U_co]):
+class MultisetFunctionQuest(Quest[T, U_co]):
 
     def __init__(
         self,
-        questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]',
-        inner_quest: MultisetQuest[T, U_co],
+        questlet_flats: 'tuple[tuple[Questlet[T, Any], ...], ...]',
+        inner_quest: Quest[T, U_co],
         inner_kwargs: Mapping[str, Hashable],
     ):
         self.questlet_flats = questlet_flats
@@ -246,7 +246,7 @@ class MultisetFunctionQuest(MultisetQuest[T, U_co]):
 def prepare_multiset_joint_function(
     outer_exps: tuple[MultisetExpressionBase[T, Any], ...],
     raw_result: tuple['MultisetFunctionRawResult[T, Any]', ...],
-) -> Iterator[tuple['MultisetDungeon[T]', 'MultisetQuest[T, Any]',
+) -> Iterator[tuple['Dungeon[T]', 'Quest[T, Any]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
         outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
@@ -269,12 +269,12 @@ def prepare_multiset_joint_function(
         yield dungeon, quest, sources, weight
 
 
-class MultisetFunctionJointDungeon(MultisetDungeon[T], MaybeHashKeyed):
+class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
 
     def __init__(
         self,
-        dungeonlet_flats: 'tuple[tuple[MultisetDungeonlet[T, Any], ...], ...]',
-        inner_dungeons: tuple[MultisetDungeon[T], ...],
+        dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]',
+        inner_dungeons: tuple[Dungeon[T], ...],
     ):
         self.dungeonlet_flats = dungeonlet_flats
         self.inner_dungeons = inner_dungeons
@@ -286,7 +286,7 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T], MaybeHashKeyed):
                         source_counts: Iterator,
                         param_counts: Sequence) -> Hashable:
         next_state: MutableSequence[tuple[Hashable, Hashable]] = []
-        inner_dungeon: MultisetDungeon[T]
+        inner_dungeon: Dungeon[T]
         for (inner_statelet_flats,
              inner_state), inner_dungeon in zip(state, self.inner_dungeons):
             next_inner_statelet_flats, counts = inner_dungeon.next_statelet_flats_and_counts(
@@ -301,9 +301,8 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T], MaybeHashKeyed):
 
     @staticmethod
     def next_state_single(inner_statelet_flats, inner_state,
-                          inner_dungeon: MultisetDungeon[T], order: Order,
-                          outcome: T, source_counts: Iterator,
-                          param_counts: Sequence):
+                          inner_dungeon: Dungeon[T], order: Order, outcome: T,
+                          source_counts: Iterator, param_counts: Sequence):
         next_inner_statelet_flats, counts = inner_dungeon.next_statelet_flats_and_counts(
             inner_statelet_flats, order, outcome, source_counts, param_counts)
         next_inner_state = inner_dungeon.next_state_main(
@@ -319,12 +318,12 @@ class MultisetFunctionJointDungeon(MultisetDungeon[T], MaybeHashKeyed):
         return MultisetFunctionJointDungeon, self.dungeonlet_flats, self.inner_dungeons
 
 
-class MultisetFunctionJointQuest(MultisetQuest[T, Any]):
+class MultisetFunctionJointQuest(Quest[T, Any]):
 
     def __init__(
         self,
-        questlet_flats: 'tuple[tuple[MultisetQuestlet[T, Any], ...], ...]',
-        inner_quests: tuple[MultisetQuest[T, Any], ...],
+        questlet_flats: 'tuple[tuple[Questlet[T, Any], ...], ...]',
+        inner_quests: tuple[Quest[T, Any], ...],
         inner_kwargses: tuple[Mapping[str, Hashable], ...],
     ):
         self.questlet_flats = questlet_flats
@@ -346,7 +345,7 @@ class MultisetFunctionJointQuest(MultisetQuest[T, Any]):
                     self.inner_quests, self.inner_kwargses))
 
     @staticmethod
-    def initial_state_single(inner_quest: MultisetQuest[T, Any], order: Order,
+    def initial_state_single(inner_quest: Quest[T, Any], order: Order,
                              outcomes: tuple[T, ...], source_counts: Iterator,
                              param_counts: Sequence,
                              inner_kwargs: Mapping[str, Hashable]):

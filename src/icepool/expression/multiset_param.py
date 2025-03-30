@@ -1,8 +1,8 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetQuest
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetQuestlet, MultisetSourceBase
+from icepool.evaluator.multiset_evaluator_base import Dungeon, Quest
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 from icepool.order import Order, OrderReason
 from icepool.expression.multiset_expression import MultisetExpression
@@ -29,8 +29,8 @@ class MultisetParamBase(Generic[T]):
 
     def _prepare(
         self
-    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T, Any], ...]',
+    ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
+                        'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlet = MultisetParamDungeonlet[T](self._index)
         questlet = MultisetParamQuestlet[T](self._index)
@@ -56,7 +56,7 @@ class MultisetTupleParam(MultisetParamBase[T], MultisetTupleExpression[T]):
     """A multiset param with a count of a tuple of `int`s."""
 
 
-class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
+class MultisetParamDungeonlet(Dungeonlet[T, Any]):
     child_indexes = ()
 
     def __init__(self, index: int):
@@ -71,7 +71,7 @@ class MultisetParamDungeonlet(MultisetDungeonlet[T, Any]):
         return MultisetParamDungeonlet, self.index
 
 
-class MultisetParamQuestlet(MultisetQuestlet[T, Any]):
+class MultisetParamQuestlet(Questlet[T, Any]):
     child_indexes = ()
 
     def __init__(self, index: int):

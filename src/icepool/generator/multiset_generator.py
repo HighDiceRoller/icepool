@@ -3,8 +3,8 @@ __docformat__ = 'google'
 import operator
 import icepool
 
-from icepool.evaluator.multiset_evaluator_base import MultisetDungeon, MultisetQuest
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetFreeVariable, MultisetQuestlet, MultisetSourceBase
+from icepool.evaluator.multiset_evaluator_base import Dungeon, Quest
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, MultisetFreeVariable, Questlet, MultisetSourceBase
 import icepool.generator
 from icepool.collection.counts import Counts
 from icepool.expression.multiset_expression import MultisetExpression
@@ -56,8 +56,8 @@ class MultisetGenerator(MultisetExpression[T]):
 
     def _prepare(
         self
-    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T, Any], ...]',
+    ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
+                        'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         dungeonlets = (MultisetFreeVariable[T, int](), )
         questlets = (MultisetGeneratorQuestlet[T](), )
@@ -70,7 +70,7 @@ class MultisetSource(MultisetSourceBase[T, int]):
     """A source that produces a single `int` count."""
 
 
-class MultisetGeneratorQuestlet(MultisetQuestlet[T, int]):
+class MultisetGeneratorQuestlet(Questlet[T, int]):
     child_indexes = ()
 
     def initial_state(self, order, outcomes, child_sizes, source_sizes,

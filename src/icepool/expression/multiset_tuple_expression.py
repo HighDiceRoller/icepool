@@ -3,7 +3,7 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expression.multiset_expression import MultisetExpression, MultisetExpressionDungeonlet
-from icepool.expression.multiset_expression_base import MultisetDungeonlet, MultisetExpressionBase, MultisetQuestlet, MultisetSourceBase
+from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase, Questlet, MultisetSourceBase
 from icepool.collection.counts import Counts
 from icepool.operator.multiset_operator import MultisetOperatorDungeonlet, MultisetOperatorQuestlet
 from icepool.order import Order, OrderReason, merge_order_preferences
@@ -64,8 +64,8 @@ class MultisetTupleSubscript(MultisetExpression[T]):
 
     def _prepare(
         self
-    ) -> Iterator[tuple['tuple[MultisetDungeonlet[T, Any], ...]',
-                        'tuple[MultisetQuestlet[T, Any], ...]',
+    ) -> Iterator[tuple['tuple[Dungeonlet[T, Any], ...]',
+                        'tuple[Questlet[T, Any], ...]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
         for dungeonlets, questlets, sources, weight in self._children[
                 0]._prepare():
