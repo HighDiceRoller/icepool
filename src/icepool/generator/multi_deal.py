@@ -158,6 +158,7 @@ class MultiDealSource(MultisetTupleSource[T]):
     def order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
+    @property
     def hash_key(self):
         return MultiDealSource, self.deck, self.hand_sizes
 
