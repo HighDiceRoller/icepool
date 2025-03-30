@@ -7581,34 +7581,36 @@ if any individual quantity is 10**30 or greater.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">tupleize</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span>:</span></span>
+        <span class="name">tupleize</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="tupleize-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#tupleize"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="tupleize-87"><a href="#tupleize-87"><span class="linenos"> 87</span></a><span class="k">def</span><span class="w"> </span><span class="nf">tupleize</span><span class="p">(</span>
-</span><span id="tupleize-88"><a href="#tupleize-88"><span class="linenos"> 88</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T]&#39;</span>
-</span><span id="tupleize-89"><a href="#tupleize-89"><span class="linenos"> 89</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[T, ...] | icepool.Population[tuple[T, ...]]&#39;</span><span class="p">:</span>
-</span><span id="tupleize-90"><a href="#tupleize-90"><span class="linenos"> 90</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the Cartesian product of the arguments as `tuple`s or a `Population` thereof.</span>
-</span><span id="tupleize-91"><a href="#tupleize-91"><span class="linenos"> 91</span></a>
-</span><span id="tupleize-92"><a href="#tupleize-92"><span class="linenos"> 92</span></a><span class="sd">    For example:</span>
-</span><span id="tupleize-93"><a href="#tupleize-93"><span class="linenos"> 93</span></a><span class="sd">    * `tupleize(1, 2)` would produce `(1, 2)`.</span>
-</span><span id="tupleize-94"><a href="#tupleize-94"><span class="linenos"> 94</span></a><span class="sd">    * `tupleize(d6, 0)` would produce a `Die` with outcomes `(1, 0)`, `(2, 0)`,</span>
-</span><span id="tupleize-95"><a href="#tupleize-95"><span class="linenos"> 95</span></a><span class="sd">        ... `(6, 0)`.</span>
-</span><span id="tupleize-96"><a href="#tupleize-96"><span class="linenos"> 96</span></a><span class="sd">    * `tupleize(d6, d6)` would produce a `Die` with outcomes `(1, 1)`, `(1, 2)`,</span>
-</span><span id="tupleize-97"><a href="#tupleize-97"><span class="linenos"> 97</span></a><span class="sd">        ... `(6, 5)`, `(6, 6)`.</span>
-</span><span id="tupleize-98"><a href="#tupleize-98"><span class="linenos"> 98</span></a>
-</span><span id="tupleize-99"><a href="#tupleize-99"><span class="linenos"> 99</span></a><span class="sd">    If `Population`s are provided, they must all be `Die` or all `Deck` and not</span>
-</span><span id="tupleize-100"><a href="#tupleize-100"><span class="linenos">100</span></a><span class="sd">    a mixture of the two.</span>
-</span><span id="tupleize-101"><a href="#tupleize-101"><span class="linenos">101</span></a>
-</span><span id="tupleize-102"><a href="#tupleize-102"><span class="linenos">102</span></a><span class="sd">    Returns:</span>
-</span><span id="tupleize-103"><a href="#tupleize-103"><span class="linenos">103</span></a><span class="sd">        If none of the outcomes is a `Population`, the result is a `tuple`</span>
-</span><span id="tupleize-104"><a href="#tupleize-104"><span class="linenos">104</span></a><span class="sd">        with one element per argument. Otherwise, the result is a `Population`</span>
-</span><span id="tupleize-105"><a href="#tupleize-105"><span class="linenos">105</span></a><span class="sd">        of the same type as the input `Population`, and the outcomes are</span>
-</span><span id="tupleize-106"><a href="#tupleize-106"><span class="linenos">106</span></a><span class="sd">        `tuple`s with one element per argument.</span>
-</span><span id="tupleize-107"><a href="#tupleize-107"><span class="linenos">107</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="tupleize-108"><a href="#tupleize-108"><span class="linenos">108</span></a>    <span class="k">return</span> <span class="n">cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">outcome_type</span><span class="o">=</span><span class="nb">tuple</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="tupleize-93"><a href="#tupleize-93"><span class="linenos"> 93</span></a><span class="k">def</span><span class="w"> </span><span class="nf">tupleize</span><span class="p">(</span>
+</span><span id="tupleize-94"><a href="#tupleize-94"><span class="linenos"> 94</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T] | icepool.RerollType&#39;</span>
+</span><span id="tupleize-95"><a href="#tupleize-95"><span class="linenos"> 95</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;tuple[T, ...] | icepool.Population[tuple[T, ...]] | icepool.RerollType&#39;</span><span class="p">:</span>
+</span><span id="tupleize-96"><a href="#tupleize-96"><span class="linenos"> 96</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the Cartesian product of the arguments as `tuple`s or a `Population` thereof.</span>
+</span><span id="tupleize-97"><a href="#tupleize-97"><span class="linenos"> 97</span></a>
+</span><span id="tupleize-98"><a href="#tupleize-98"><span class="linenos"> 98</span></a><span class="sd">    For example:</span>
+</span><span id="tupleize-99"><a href="#tupleize-99"><span class="linenos"> 99</span></a><span class="sd">    * `tupleize(1, 2)` would produce `(1, 2)`.</span>
+</span><span id="tupleize-100"><a href="#tupleize-100"><span class="linenos">100</span></a><span class="sd">    * `tupleize(d6, 0)` would produce a `Die` with outcomes `(1, 0)`, `(2, 0)`,</span>
+</span><span id="tupleize-101"><a href="#tupleize-101"><span class="linenos">101</span></a><span class="sd">        ... `(6, 0)`.</span>
+</span><span id="tupleize-102"><a href="#tupleize-102"><span class="linenos">102</span></a><span class="sd">    * `tupleize(d6, d6)` would produce a `Die` with outcomes `(1, 1)`, `(1, 2)`,</span>
+</span><span id="tupleize-103"><a href="#tupleize-103"><span class="linenos">103</span></a><span class="sd">        ... `(6, 5)`, `(6, 6)`.</span>
+</span><span id="tupleize-104"><a href="#tupleize-104"><span class="linenos">104</span></a>
+</span><span id="tupleize-105"><a href="#tupleize-105"><span class="linenos">105</span></a><span class="sd">    If `Population`s are provided, they must all be `Die` or all `Deck` and not</span>
+</span><span id="tupleize-106"><a href="#tupleize-106"><span class="linenos">106</span></a><span class="sd">    a mixture of the two.</span>
+</span><span id="tupleize-107"><a href="#tupleize-107"><span class="linenos">107</span></a>
+</span><span id="tupleize-108"><a href="#tupleize-108"><span class="linenos">108</span></a><span class="sd">    If any argument is `icepool.Reroll`, the result is `icepool.Reroll`.</span>
+</span><span id="tupleize-109"><a href="#tupleize-109"><span class="linenos">109</span></a>
+</span><span id="tupleize-110"><a href="#tupleize-110"><span class="linenos">110</span></a><span class="sd">    Returns:</span>
+</span><span id="tupleize-111"><a href="#tupleize-111"><span class="linenos">111</span></a><span class="sd">        If none of the outcomes is a `Population`, the result is a `tuple`</span>
+</span><span id="tupleize-112"><a href="#tupleize-112"><span class="linenos">112</span></a><span class="sd">        with one element per argument. Otherwise, the result is a `Population`</span>
+</span><span id="tupleize-113"><a href="#tupleize-113"><span class="linenos">113</span></a><span class="sd">        of the same type as the input `Population`, and the outcomes are</span>
+</span><span id="tupleize-114"><a href="#tupleize-114"><span class="linenos">114</span></a><span class="sd">        `tuple`s with one element per argument.</span>
+</span><span id="tupleize-115"><a href="#tupleize-115"><span class="linenos">115</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="tupleize-116"><a href="#tupleize-116"><span class="linenos">116</span></a>    <span class="k">return</span> <span class="n">cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">outcome_type</span><span class="o">=</span><span class="nb">tuple</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -7627,6 +7629,8 @@ if any individual quantity is 10**30 or greater.</p>
 <p>If <code><a href="#Population">Population</a></code>s are provided, they must all be <code><a href="#Die">Die</a></code> or all <code><a href="#Deck">Deck</a></code> and not
 a mixture of the two.</p>
 
+<p>If any argument is <code><a href="#Reroll">icepool.Reroll</a></code>, the result is <code><a href="#Reroll">icepool.Reroll</a></code>.</p>
+
 <h6 id="returns">Returns:</h6>
 
 <blockquote>
@@ -7644,34 +7648,36 @@ a mixture of the two.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">vectorize</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#Vector">Vector</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="n"><a href="#Vector">Vector</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]]]</span>:</span></span>
+        <span class="name">vectorize</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">,</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]</span></span><span class="return-annotation">) -> <span class="n">Union</span><span class="p">[</span><span class="n"><a href="#Vector">Vector</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">],</span> <span class="n"><a href="#Population">Population</a></span><span class="p">[</span><span class="n"><a href="#Vector">Vector</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]],</span> <span class="n"><a href="#RerollType">RerollType</a></span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="vectorize-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#vectorize"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="vectorize-111"><a href="#vectorize-111"><span class="linenos">111</span></a><span class="k">def</span><span class="w"> </span><span class="nf">vectorize</span><span class="p">(</span>
-</span><span id="vectorize-112"><a href="#vectorize-112"><span class="linenos">112</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T]&#39;</span>
-</span><span id="vectorize-113"><a href="#vectorize-113"><span class="linenos">113</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Vector[T] | icepool.Population[icepool.Vector[T]]&#39;</span><span class="p">:</span>
-</span><span id="vectorize-114"><a href="#vectorize-114"><span class="linenos">114</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the Cartesian product of the arguments as `Vector`s or a `Population` thereof.</span>
-</span><span id="vectorize-115"><a href="#vectorize-115"><span class="linenos">115</span></a>
-</span><span id="vectorize-116"><a href="#vectorize-116"><span class="linenos">116</span></a><span class="sd">    For example:</span>
-</span><span id="vectorize-117"><a href="#vectorize-117"><span class="linenos">117</span></a><span class="sd">    * `vectorize(1, 2)` would produce `Vector(1, 2)`.</span>
-</span><span id="vectorize-118"><a href="#vectorize-118"><span class="linenos">118</span></a><span class="sd">    * `vectorize(d6, 0)` would produce a `Die` with outcomes `Vector(1, 0)`,</span>
-</span><span id="vectorize-119"><a href="#vectorize-119"><span class="linenos">119</span></a><span class="sd">        `Vector(2, 0)`, ... `Vector(6, 0)`.</span>
-</span><span id="vectorize-120"><a href="#vectorize-120"><span class="linenos">120</span></a><span class="sd">    * `vectorize(d6, d6)` would produce a `Die` with outcomes `Vector(1, 1)`,</span>
-</span><span id="vectorize-121"><a href="#vectorize-121"><span class="linenos">121</span></a><span class="sd">        `Vector(1, 2)`, ... `Vector(6, 5)`, `Vector(6, 6)`.</span>
-</span><span id="vectorize-122"><a href="#vectorize-122"><span class="linenos">122</span></a>
-</span><span id="vectorize-123"><a href="#vectorize-123"><span class="linenos">123</span></a><span class="sd">    If `Population`s are provided, they must all be `Die` or all `Deck` and not</span>
-</span><span id="vectorize-124"><a href="#vectorize-124"><span class="linenos">124</span></a><span class="sd">    a mixture of the two.</span>
-</span><span id="vectorize-125"><a href="#vectorize-125"><span class="linenos">125</span></a>
-</span><span id="vectorize-126"><a href="#vectorize-126"><span class="linenos">126</span></a><span class="sd">    Returns:</span>
-</span><span id="vectorize-127"><a href="#vectorize-127"><span class="linenos">127</span></a><span class="sd">        If none of the outcomes is a `Population`, the result is a `Vector`</span>
-</span><span id="vectorize-128"><a href="#vectorize-128"><span class="linenos">128</span></a><span class="sd">        with one element per argument. Otherwise, the result is a `Population`</span>
-</span><span id="vectorize-129"><a href="#vectorize-129"><span class="linenos">129</span></a><span class="sd">        of the same type as the input `Population`, and the outcomes are</span>
-</span><span id="vectorize-130"><a href="#vectorize-130"><span class="linenos">130</span></a><span class="sd">        `Vector`s with one element per argument.</span>
-</span><span id="vectorize-131"><a href="#vectorize-131"><span class="linenos">131</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="vectorize-132"><a href="#vectorize-132"><span class="linenos">132</span></a>    <span class="k">return</span> <span class="n">cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">outcome_type</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">Vector</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="vectorize-119"><a href="#vectorize-119"><span class="linenos">119</span></a><span class="k">def</span><span class="w"> </span><span class="nf">vectorize</span><span class="p">(</span>
+</span><span id="vectorize-120"><a href="#vectorize-120"><span class="linenos">120</span></a>    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;T | icepool.Population[T] | icepool.RerollType&#39;</span>
+</span><span id="vectorize-121"><a href="#vectorize-121"><span class="linenos">121</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;icepool.Vector[T] | icepool.Population[icepool.Vector[T]] | icepool.RerollType&#39;</span><span class="p">:</span>
+</span><span id="vectorize-122"><a href="#vectorize-122"><span class="linenos">122</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the Cartesian product of the arguments as `Vector`s or a `Population` thereof.</span>
+</span><span id="vectorize-123"><a href="#vectorize-123"><span class="linenos">123</span></a>
+</span><span id="vectorize-124"><a href="#vectorize-124"><span class="linenos">124</span></a><span class="sd">    For example:</span>
+</span><span id="vectorize-125"><a href="#vectorize-125"><span class="linenos">125</span></a><span class="sd">    * `vectorize(1, 2)` would produce `Vector(1, 2)`.</span>
+</span><span id="vectorize-126"><a href="#vectorize-126"><span class="linenos">126</span></a><span class="sd">    * `vectorize(d6, 0)` would produce a `Die` with outcomes `Vector(1, 0)`,</span>
+</span><span id="vectorize-127"><a href="#vectorize-127"><span class="linenos">127</span></a><span class="sd">        `Vector(2, 0)`, ... `Vector(6, 0)`.</span>
+</span><span id="vectorize-128"><a href="#vectorize-128"><span class="linenos">128</span></a><span class="sd">    * `vectorize(d6, d6)` would produce a `Die` with outcomes `Vector(1, 1)`,</span>
+</span><span id="vectorize-129"><a href="#vectorize-129"><span class="linenos">129</span></a><span class="sd">        `Vector(1, 2)`, ... `Vector(6, 5)`, `Vector(6, 6)`.</span>
+</span><span id="vectorize-130"><a href="#vectorize-130"><span class="linenos">130</span></a>
+</span><span id="vectorize-131"><a href="#vectorize-131"><span class="linenos">131</span></a><span class="sd">    If `Population`s are provided, they must all be `Die` or all `Deck` and not</span>
+</span><span id="vectorize-132"><a href="#vectorize-132"><span class="linenos">132</span></a><span class="sd">    a mixture of the two.</span>
+</span><span id="vectorize-133"><a href="#vectorize-133"><span class="linenos">133</span></a>
+</span><span id="vectorize-134"><a href="#vectorize-134"><span class="linenos">134</span></a><span class="sd">    If any argument is `icepool.Reroll`, the result is `icepool.Reroll`.</span>
+</span><span id="vectorize-135"><a href="#vectorize-135"><span class="linenos">135</span></a>
+</span><span id="vectorize-136"><a href="#vectorize-136"><span class="linenos">136</span></a><span class="sd">    Returns:</span>
+</span><span id="vectorize-137"><a href="#vectorize-137"><span class="linenos">137</span></a><span class="sd">        If none of the outcomes is a `Population`, the result is a `Vector`</span>
+</span><span id="vectorize-138"><a href="#vectorize-138"><span class="linenos">138</span></a><span class="sd">        with one element per argument. Otherwise, the result is a `Population`</span>
+</span><span id="vectorize-139"><a href="#vectorize-139"><span class="linenos">139</span></a><span class="sd">        of the same type as the input `Population`, and the outcomes are</span>
+</span><span id="vectorize-140"><a href="#vectorize-140"><span class="linenos">140</span></a><span class="sd">        `Vector`s with one element per argument.</span>
+</span><span id="vectorize-141"><a href="#vectorize-141"><span class="linenos">141</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="vectorize-142"><a href="#vectorize-142"><span class="linenos">142</span></a>    <span class="k">return</span> <span class="n">cartesian_product</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">outcome_type</span><span class="o">=</span><span class="n">icepool</span><span class="o">.</span><span class="n">Vector</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -7689,6 +7695,8 @@ a mixture of the two.</p>
 
 <p>If <code><a href="#Population">Population</a></code>s are provided, they must all be <code><a href="#Die">Die</a></code> or all <code><a href="#Deck">Deck</a></code> and not
 a mixture of the two.</p>
+
+<p>If any argument is <code><a href="#Reroll">icepool.Reroll</a></code>, the result is <code><a href="#Reroll">icepool.Reroll</a></code>.</p>
 
 <h6 id="returns">Returns:</h6>
 
@@ -16959,10 +16967,7 @@ arguments, and non-multiset variables as keyword arguments.</li>
 </span><span id="MultisetParameter-46"><a href="#MultisetParameter-46"><span class="linenos">46</span></a>
 </span><span id="MultisetParameter-47"><a href="#MultisetParameter-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 </span><span id="MultisetParameter-48"><a href="#MultisetParameter-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
-</span><span id="MultisetParameter-49"><a href="#MultisetParameter-49"><span class="linenos">49</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetParameter-50"><a href="#MultisetParameter-50"><span class="linenos">50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
-</span><span id="MultisetParameter-51"><a href="#MultisetParameter-51"><span class="linenos">51</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetParameter-52"><a href="#MultisetParameter-52"><span class="linenos">52</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="MultisetParameter-49"><a href="#MultisetParameter-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
 </span></pre></div>
 
 
@@ -16982,10 +16987,7 @@ arguments, and non-multiset variables as keyword arguments.</li>
     <a class="headerlink" href="#MultisetParameter.__init__"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetParameter.__init__-47"><a href="#MultisetParameter.__init__-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 </span><span id="MultisetParameter.__init__-48"><a href="#MultisetParameter.__init__-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
-</span><span id="MultisetParameter.__init__-49"><a href="#MultisetParameter.__init__-49"><span class="linenos">49</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetParameter.__init__-50"><a href="#MultisetParameter.__init__-50"><span class="linenos">50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
-</span><span id="MultisetParameter.__init__-51"><a href="#MultisetParameter.__init__-51"><span class="linenos">51</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetParameter.__init__-52"><a href="#MultisetParameter.__init__-52"><span class="linenos">52</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="MultisetParameter.__init__-49"><a href="#MultisetParameter.__init__-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
 </span></pre></div>
 
 
@@ -17013,20 +17015,17 @@ arguments, and non-multiset variables as keyword arguments.</li>
 
     </div>
     <a class="headerlink" href="#MultisetTupleParameter"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetTupleParameter-55"><a href="#MultisetTupleParameter-55"><span class="linenos">55</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetTupleParameter</span><span class="p">(</span><span class="n">MultisetParameterBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">IntTupleOut</span><span class="p">],</span>
-</span><span id="MultisetTupleParameter-56"><a href="#MultisetTupleParameter-56"><span class="linenos">56</span></a>                             <span class="n">MultisetTupleExpression</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">IntTupleOut</span><span class="p">]):</span>
-</span><span id="MultisetTupleParameter-57"><a href="#MultisetTupleParameter-57"><span class="linenos">57</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A multiset param with a count of a tuple of `int`s.&quot;&quot;&quot;</span>
-</span><span id="MultisetTupleParameter-58"><a href="#MultisetTupleParameter-58"><span class="linenos">58</span></a>
-</span><span id="MultisetTupleParameter-59"><a href="#MultisetTupleParameter-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="MultisetTupleParameter-60"><a href="#MultisetTupleParameter-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
-</span><span id="MultisetTupleParameter-61"><a href="#MultisetTupleParameter-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetTupleParameter-62"><a href="#MultisetTupleParameter-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
-</span><span id="MultisetTupleParameter-63"><a href="#MultisetTupleParameter-63"><span class="linenos">63</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetTupleParameter-64"><a href="#MultisetTupleParameter-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="MultisetTupleParameter-65"><a href="#MultisetTupleParameter-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
-</span><span id="MultisetTupleParameter-66"><a href="#MultisetTupleParameter-66"><span class="linenos">66</span></a>
-</span><span id="MultisetTupleParameter-67"><a href="#MultisetTupleParameter-67"><span class="linenos">67</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="MultisetTupleParameter-68"><a href="#MultisetTupleParameter-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetTupleParameter-52"><a href="#MultisetTupleParameter-52"><span class="linenos">52</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetTupleParameter</span><span class="p">(</span><span class="n">MultisetParameterBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">IntTupleOut</span><span class="p">],</span>
+</span><span id="MultisetTupleParameter-53"><a href="#MultisetTupleParameter-53"><span class="linenos">53</span></a>                             <span class="n">MultisetTupleExpression</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">IntTupleOut</span><span class="p">]):</span>
+</span><span id="MultisetTupleParameter-54"><a href="#MultisetTupleParameter-54"><span class="linenos">54</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A multiset param with a count of a tuple of `int`s.&quot;&quot;&quot;</span>
+</span><span id="MultisetTupleParameter-55"><a href="#MultisetTupleParameter-55"><span class="linenos">55</span></a>
+</span><span id="MultisetTupleParameter-56"><a href="#MultisetTupleParameter-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="MultisetTupleParameter-57"><a href="#MultisetTupleParameter-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+</span><span id="MultisetTupleParameter-58"><a href="#MultisetTupleParameter-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="MultisetTupleParameter-59"><a href="#MultisetTupleParameter-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+</span><span id="MultisetTupleParameter-60"><a href="#MultisetTupleParameter-60"><span class="linenos">60</span></a>
+</span><span id="MultisetTupleParameter-61"><a href="#MultisetTupleParameter-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MultisetTupleParameter-62"><a href="#MultisetTupleParameter-62"><span class="linenos">62</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
 </span></pre></div>
 
 
@@ -17044,13 +17043,10 @@ arguments, and non-multiset variables as keyword arguments.</li>
 
     </div>
     <a class="headerlink" href="#MultisetTupleParameter.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetTupleParameter.__init__-59"><a href="#MultisetTupleParameter.__init__-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-</span><span id="MultisetTupleParameter.__init__-60"><a href="#MultisetTupleParameter.__init__-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
-</span><span id="MultisetTupleParameter.__init__-61"><a href="#MultisetTupleParameter.__init__-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetTupleParameter.__init__-62"><a href="#MultisetTupleParameter.__init__-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
-</span><span id="MultisetTupleParameter.__init__-63"><a href="#MultisetTupleParameter.__init__-63"><span class="linenos">63</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetTupleParameter.__init__-64"><a href="#MultisetTupleParameter.__init__-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="MultisetTupleParameter.__init__-65"><a href="#MultisetTupleParameter.__init__-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetTupleParameter.__init__-56"><a href="#MultisetTupleParameter.__init__-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="MultisetTupleParameter.__init__-57"><a href="#MultisetTupleParameter.__init__-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+</span><span id="MultisetTupleParameter.__init__-58"><a href="#MultisetTupleParameter.__init__-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="MultisetTupleParameter.__init__-59"><a href="#MultisetTupleParameter.__init__-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
 </span></pre></div>
 
 
