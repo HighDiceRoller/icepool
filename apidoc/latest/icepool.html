@@ -678,7 +678,7 @@
                                 <a class="function" href="#MultisetEvaluator.consecutive">consecutive</a>
                         </li>
                         <li>
-                                <a class="variable" href="#MultisetEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#MultisetEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -14844,30 +14844,36 @@ which both multisets have positive count, and <code>True</code> if there is not.
 </span><span id="MultisetEvaluator-177"><a href="#MultisetEvaluator-177"><span class="linenos">177</span></a>
 </span><span id="MultisetEvaluator-178"><a href="#MultisetEvaluator-178"><span class="linenos">178</span></a>        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">outcomes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">outcomes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="MultisetEvaluator-179"><a href="#MultisetEvaluator-179"><span class="linenos">179</span></a>
-</span><span id="MultisetEvaluator-180"><a href="#MultisetEvaluator-180"><span class="linenos">180</span></a>    <span class="n">dungeon_key</span><span class="p">:</span> <span class="n">Hashable</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="MultisetEvaluator-181"><a href="#MultisetEvaluator-181"><span class="linenos">181</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.</span>
-</span><span id="MultisetEvaluator-182"><a href="#MultisetEvaluator-182"><span class="linenos">182</span></a><span class="sd">    </span>
-</span><span id="MultisetEvaluator-183"><a href="#MultisetEvaluator-183"><span class="linenos">183</span></a><span class="sd">    This should include any members used in `next_state()` but does NOT need to</span>
-</span><span id="MultisetEvaluator-184"><a href="#MultisetEvaluator-184"><span class="linenos">184</span></a><span class="sd">    include members that are only used in other methods, i.e. </span>
-</span><span id="MultisetEvaluator-185"><a href="#MultisetEvaluator-185"><span class="linenos">185</span></a><span class="sd">    `extra_outcomes()`, `initial_state()`, `final_outcome()`.</span>
-</span><span id="MultisetEvaluator-186"><a href="#MultisetEvaluator-186"><span class="linenos">186</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="MultisetEvaluator-180"><a href="#MultisetEvaluator-180"><span class="linenos">180</span></a>    <span class="nd">@property</span>
+</span><span id="MultisetEvaluator-181"><a href="#MultisetEvaluator-181"><span class="linenos">181</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span id="MultisetEvaluator-182"><a href="#MultisetEvaluator-182"><span class="linenos">182</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.</span>
+</span><span id="MultisetEvaluator-183"><a href="#MultisetEvaluator-183"><span class="linenos">183</span></a><span class="sd">        </span>
+</span><span id="MultisetEvaluator-184"><a href="#MultisetEvaluator-184"><span class="linenos">184</span></a><span class="sd">        This should include any members used in `next_state()` but does NOT need to</span>
+</span><span id="MultisetEvaluator-185"><a href="#MultisetEvaluator-185"><span class="linenos">185</span></a><span class="sd">        include members that are only used in other methods, i.e. </span>
+</span><span id="MultisetEvaluator-186"><a href="#MultisetEvaluator-186"><span class="linenos">186</span></a><span class="sd">        `extra_outcomes()`, `initial_state()`, `final_outcome()`.</span>
 </span><span id="MultisetEvaluator-187"><a href="#MultisetEvaluator-187"><span class="linenos">187</span></a>
-</span><span id="MultisetEvaluator-188"><a href="#MultisetEvaluator-188"><span class="linenos">188</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
-</span><span id="MultisetEvaluator-189"><a href="#MultisetEvaluator-189"><span class="linenos">189</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetEvaluator-190"><a href="#MultisetEvaluator-190"><span class="linenos">190</span></a>        <span class="n">input_exps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
-</span><span id="MultisetEvaluator-191"><a href="#MultisetEvaluator-191"><span class="linenos">191</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
-</span><span id="MultisetEvaluator-192"><a href="#MultisetEvaluator-192"><span class="linenos">192</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Dungeon[T]&#39;</span><span class="p">,</span> <span class="s1">&#39;Quest[T, U_co]&#39;</span><span class="p">,</span>
-</span><span id="MultisetEvaluator-193"><a href="#MultisetEvaluator-193"><span class="linenos">193</span></a>                        <span class="s1">&#39;tuple[MultisetSourceBase[T, Any], ...]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span id="MultisetEvaluator-194"><a href="#MultisetEvaluator-194"><span class="linenos">194</span></a>        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">_prepare</span><span class="p">()</span> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">input_exps</span><span class="p">)):</span>
-</span><span id="MultisetEvaluator-195"><a href="#MultisetEvaluator-195"><span class="linenos">195</span></a>            <span class="n">dungeonlet_flats</span><span class="p">,</span> <span class="n">questlet_flats</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-</span><span id="MultisetEvaluator-196"><a href="#MultisetEvaluator-196"><span class="linenos">196</span></a>            <span class="n">dungeon</span><span class="p">:</span> <span class="n">MultisetEvaluatorDungeon</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">MultisetEvaluatorDungeon</span><span class="p">(</span>
-</span><span id="MultisetEvaluator-197"><a href="#MultisetEvaluator-197"><span class="linenos">197</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span><span class="p">,</span> <span class="n">dungeonlet_flats</span><span class="p">)</span>
-</span><span id="MultisetEvaluator-198"><a href="#MultisetEvaluator-198"><span class="linenos">198</span></a>            <span class="n">quest</span><span class="p">:</span> <span class="n">MultisetEvaluatorQuest</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">MultisetEvaluatorQuest</span><span class="p">(</span>
-</span><span id="MultisetEvaluator-199"><a href="#MultisetEvaluator-199"><span class="linenos">199</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">,</span>
-</span><span id="MultisetEvaluator-200"><a href="#MultisetEvaluator-200"><span class="linenos">200</span></a>                <span class="n">questlet_flats</span><span class="p">)</span>
-</span><span id="MultisetEvaluator-201"><a href="#MultisetEvaluator-201"><span class="linenos">201</span></a>            <span class="n">sources</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">sources</span><span class="p">))</span>
-</span><span id="MultisetEvaluator-202"><a href="#MultisetEvaluator-202"><span class="linenos">202</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-</span><span id="MultisetEvaluator-203"><a href="#MultisetEvaluator-203"><span class="linenos">203</span></a>            <span class="k">yield</span> <span class="n">dungeon</span><span class="p">,</span> <span class="n">quest</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">weight</span>
+</span><span id="MultisetEvaluator-188"><a href="#MultisetEvaluator-188"><span class="linenos">188</span></a><span class="sd">        Returns:</span>
+</span><span id="MultisetEvaluator-189"><a href="#MultisetEvaluator-189"><span class="linenos">189</span></a><span class="sd">            A hashable key that uniquely identifies the `next_state()`</span>
+</span><span id="MultisetEvaluator-190"><a href="#MultisetEvaluator-190"><span class="linenos">190</span></a><span class="sd">            computation, or `None` to disable persistent caching.</span>
+</span><span id="MultisetEvaluator-191"><a href="#MultisetEvaluator-191"><span class="linenos">191</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetEvaluator-192"><a href="#MultisetEvaluator-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="MultisetEvaluator-193"><a href="#MultisetEvaluator-193"><span class="linenos">193</span></a>
+</span><span id="MultisetEvaluator-194"><a href="#MultisetEvaluator-194"><span class="linenos">194</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
+</span><span id="MultisetEvaluator-195"><a href="#MultisetEvaluator-195"><span class="linenos">195</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MultisetEvaluator-196"><a href="#MultisetEvaluator-196"><span class="linenos">196</span></a>        <span class="n">input_exps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
+</span><span id="MultisetEvaluator-197"><a href="#MultisetEvaluator-197"><span class="linenos">197</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
+</span><span id="MultisetEvaluator-198"><a href="#MultisetEvaluator-198"><span class="linenos">198</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Dungeon[T]&#39;</span><span class="p">,</span> <span class="s1">&#39;Quest[T, U_co]&#39;</span><span class="p">,</span>
+</span><span id="MultisetEvaluator-199"><a href="#MultisetEvaluator-199"><span class="linenos">199</span></a>                        <span class="s1">&#39;tuple[MultisetSourceBase[T, Any], ...]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="MultisetEvaluator-200"><a href="#MultisetEvaluator-200"><span class="linenos">200</span></a>        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">_prepare</span><span class="p">()</span> <span class="k">for</span> <span class="n">exp</span> <span class="ow">in</span> <span class="n">input_exps</span><span class="p">)):</span>
+</span><span id="MultisetEvaluator-201"><a href="#MultisetEvaluator-201"><span class="linenos">201</span></a>            <span class="n">dungeonlet_flats</span><span class="p">,</span> <span class="n">questlet_flats</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+</span><span id="MultisetEvaluator-202"><a href="#MultisetEvaluator-202"><span class="linenos">202</span></a>            <span class="n">dungeon</span><span class="p">:</span> <span class="n">MultisetEvaluatorDungeon</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="n">MultisetEvaluatorDungeon</span><span class="p">(</span>
+</span><span id="MultisetEvaluator-203"><a href="#MultisetEvaluator-203"><span class="linenos">203</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">next_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_state_key</span><span class="p">,</span> <span class="n">dungeonlet_flats</span><span class="p">)</span>
+</span><span id="MultisetEvaluator-204"><a href="#MultisetEvaluator-204"><span class="linenos">204</span></a>            <span class="n">quest</span><span class="p">:</span> <span class="n">MultisetEvaluatorQuest</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]</span> <span class="o">=</span> <span class="n">MultisetEvaluatorQuest</span><span class="p">(</span>
+</span><span id="MultisetEvaluator-205"><a href="#MultisetEvaluator-205"><span class="linenos">205</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">initial_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_outcomes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_outcome</span><span class="p">,</span>
+</span><span id="MultisetEvaluator-206"><a href="#MultisetEvaluator-206"><span class="linenos">206</span></a>                <span class="n">questlet_flats</span><span class="p">)</span>
+</span><span id="MultisetEvaluator-207"><a href="#MultisetEvaluator-207"><span class="linenos">207</span></a>            <span class="n">sources</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">sources</span><span class="p">))</span>
+</span><span id="MultisetEvaluator-208"><a href="#MultisetEvaluator-208"><span class="linenos">208</span></a>            <span class="n">weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+</span><span id="MultisetEvaluator-209"><a href="#MultisetEvaluator-209"><span class="linenos">209</span></a>            <span class="k">yield</span> <span class="n">dungeon</span><span class="p">,</span> <span class="n">quest</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">weight</span>
 </span></pre></div>
 
 
@@ -15272,20 +15278,43 @@ keyword parameters.</li>
 
 
                             </div>
-                            <div id="MultisetEvaluator.dungeon_key" class="classattr">
-                                <div class="attr variable">
-            <span class="name">dungeon_key</span><span class="annotation">: Hashable</span>        =
-<span class="default_value">None</span>
+                            <div id="MultisetEvaluator.next_state_key" class="classattr">
+                                        <input id="MultisetEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">next_state_key</span><span class="annotation">: Hashable</span>
 
-        
+                <label class="view-source-button" for="MultisetEvaluator.next_state_key-view-source"><span>View Source</span></label>
+
     </div>
-    <a class="headerlink" href="#MultisetEvaluator.dungeon_key"></a>
-    
+    <a class="headerlink" href="#MultisetEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetEvaluator.next_state_key-180"><a href="#MultisetEvaluator.next_state_key-180"><span class="linenos">180</span></a>    <span class="nd">@property</span>
+</span><span id="MultisetEvaluator.next_state_key-181"><a href="#MultisetEvaluator.next_state_key-181"><span class="linenos">181</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
+</span><span id="MultisetEvaluator.next_state_key-182"><a href="#MultisetEvaluator.next_state_key-182"><span class="linenos">182</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.</span>
+</span><span id="MultisetEvaluator.next_state_key-183"><a href="#MultisetEvaluator.next_state_key-183"><span class="linenos">183</span></a><span class="sd">        </span>
+</span><span id="MultisetEvaluator.next_state_key-184"><a href="#MultisetEvaluator.next_state_key-184"><span class="linenos">184</span></a><span class="sd">        This should include any members used in `next_state()` but does NOT need to</span>
+</span><span id="MultisetEvaluator.next_state_key-185"><a href="#MultisetEvaluator.next_state_key-185"><span class="linenos">185</span></a><span class="sd">        include members that are only used in other methods, i.e. </span>
+</span><span id="MultisetEvaluator.next_state_key-186"><a href="#MultisetEvaluator.next_state_key-186"><span class="linenos">186</span></a><span class="sd">        `extra_outcomes()`, `initial_state()`, `final_outcome()`.</span>
+</span><span id="MultisetEvaluator.next_state_key-187"><a href="#MultisetEvaluator.next_state_key-187"><span class="linenos">187</span></a>
+</span><span id="MultisetEvaluator.next_state_key-188"><a href="#MultisetEvaluator.next_state_key-188"><span class="linenos">188</span></a><span class="sd">        Returns:</span>
+</span><span id="MultisetEvaluator.next_state_key-189"><a href="#MultisetEvaluator.next_state_key-189"><span class="linenos">189</span></a><span class="sd">            A hashable key that uniquely identifies the `next_state()`</span>
+</span><span id="MultisetEvaluator.next_state_key-190"><a href="#MultisetEvaluator.next_state_key-190"><span class="linenos">190</span></a><span class="sd">            computation, or `None` to disable persistent caching.</span>
+</span><span id="MultisetEvaluator.next_state_key-191"><a href="#MultisetEvaluator.next_state_key-191"><span class="linenos">191</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetEvaluator.next_state_key-192"><a href="#MultisetEvaluator.next_state_key-192"><span class="linenos">192</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span></pre></div>
+
+
             <div class="docstring"><p>Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.</p>
 
 <p>This should include any members used in <code><a href="#MultisetEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#MultisetEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#MultisetEvaluator.initial_state">initial_state()</a></code>, <code><a href="#MultisetEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#MultisetEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 

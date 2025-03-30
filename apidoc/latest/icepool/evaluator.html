@@ -52,6 +52,9 @@
                         <li>
                                 <a class="function" href="#SumEvaluator.next_state">next_state</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#SumEvaluator.next_state_key">next_state_key</a>
+                        </li>
                 </ul>
 
             </li>
@@ -68,7 +71,7 @@
                                 <a class="function" href="#SizeEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="variable" href="#SizeEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#SizeEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -86,7 +89,7 @@
                                 <a class="function" href="#AnyEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="variable" href="#AnyEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#AnyEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -104,7 +107,7 @@
                                 <a class="function" href="#HighestOutcomeAndCountEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
-                                <a class="variable" href="#HighestOutcomeAndCountEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#HighestOutcomeAndCountEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -119,7 +122,7 @@
                                 <a class="function" href="#LargestCountEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="variable" href="#LargestCountEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#LargestCountEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -134,7 +137,7 @@
                                 <a class="function" href="#LargestCountAndOutcomeEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="variable" href="#LargestCountAndOutcomeEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#LargestCountAndOutcomeEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -155,7 +158,7 @@
                                 <a class="function" href="#CountSubsetEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="variable" href="#CountSubsetEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#CountSubsetEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -176,7 +179,7 @@
                                 <a class="function" href="#AllCountsEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
-                                <a class="variable" href="#AllCountsEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#AllCountsEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -194,7 +197,7 @@
                                 <a class="function" href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
-                                <a class="variable" href="#LargestStraightEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#LargestStraightEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -221,7 +224,7 @@
                                 <a class="function" href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
-                                <a class="variable" href="#LargestStraightAndOutcomeEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#LargestStraightAndOutcomeEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -245,7 +248,7 @@
                                 <a class="function" href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes</a>
                         </li>
                         <li>
-                                <a class="variable" href="#AllStraightsEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#AllStraightsEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -287,7 +290,7 @@
                                 <a class="function" href="#ComparisonEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="variable" href="#ComparisonEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#ComparisonEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -389,7 +392,7 @@
                                 <a class="function" href="#KeepEvaluator.final_outcome">final_outcome</a>
                         </li>
                         <li>
-                                <a class="variable" href="#KeepEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#KeepEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -413,7 +416,7 @@
                                 <a class="function" href="#ArgsortEvaluator.order">order</a>
                         </li>
                         <li>
-                                <a class="variable" href="#ArgsortEvaluator.dungeon_key">dungeon_key</a>
+                                <a class="variable" href="#ArgsortEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -611,42 +614,48 @@
             <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator-44"><a href="#SumEvaluator-44"><span class="linenos">44</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SumEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 </span><span id="SumEvaluator-45"><a href="#SumEvaluator-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sums all outcomes.&quot;&quot;&quot;</span>
 </span><span id="SumEvaluator-46"><a href="#SumEvaluator-46"><span class="linenos">46</span></a>
-</span><span id="SumEvaluator-47"><a href="#SumEvaluator-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator-48"><a href="#SumEvaluator-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
-</span><span id="SumEvaluator-49"><a href="#SumEvaluator-49"><span class="linenos">49</span></a>
-</span><span id="SumEvaluator-50"><a href="#SumEvaluator-50"><span class="linenos">50</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
-</span><span id="SumEvaluator-51"><a href="#SumEvaluator-51"><span class="linenos">51</span></a><span class="sd">            before summing.</span>
-</span><span id="SumEvaluator-52"><a href="#SumEvaluator-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="SumEvaluator-53"><a href="#SumEvaluator-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator-54"><a href="#SumEvaluator-54"><span class="linenos">54</span></a>
-</span><span id="SumEvaluator-55"><a href="#SumEvaluator-55"><span class="linenos">55</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator-56"><a href="#SumEvaluator-56"><span class="linenos">56</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator-57"><a href="#SumEvaluator-57"><span class="linenos">57</span></a>
-</span><span id="SumEvaluator-58"><a href="#SumEvaluator-58"><span class="linenos">58</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator-59"><a href="#SumEvaluator-59"><span class="linenos">59</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
-</span><span id="SumEvaluator-60"><a href="#SumEvaluator-60"><span class="linenos">60</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
-</span><span id="SumEvaluator-61"><a href="#SumEvaluator-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
-</span><span id="SumEvaluator-62"><a href="#SumEvaluator-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="SumEvaluator-63"><a href="#SumEvaluator-63"><span class="linenos">63</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator-64"><a href="#SumEvaluator-64"><span class="linenos">64</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</span><span id="SumEvaluator-65"><a href="#SumEvaluator-65"><span class="linenos">65</span></a>
-</span><span id="SumEvaluator-66"><a href="#SumEvaluator-66"><span class="linenos">66</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator-67"><a href="#SumEvaluator-67"><span class="linenos">67</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
-</span><span id="SumEvaluator-68"><a href="#SumEvaluator-68"><span class="linenos">68</span></a>
-</span><span id="SumEvaluator-69"><a href="#SumEvaluator-69"><span class="linenos">69</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator-70"><a href="#SumEvaluator-70"><span class="linenos">70</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="SumEvaluator-71"><a href="#SumEvaluator-71"><span class="linenos">71</span></a>
-</span><span id="SumEvaluator-72"><a href="#SumEvaluator-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SumEvaluator-73"><a href="#SumEvaluator-73"><span class="linenos">73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SumEvaluator-74"><a href="#SumEvaluator-74"><span class="linenos">74</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="SumEvaluator-75"><a href="#SumEvaluator-75"><span class="linenos">75</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator-76"><a href="#SumEvaluator-76"><span class="linenos">76</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="SumEvaluator-77"><a href="#SumEvaluator-77"><span class="linenos">77</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
-</span><span id="SumEvaluator-78"><a href="#SumEvaluator-78"><span class="linenos">78</span></a>                <span class="c1"># multiplication in this case.</span>
-</span><span id="SumEvaluator-79"><a href="#SumEvaluator-79"><span class="linenos">79</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator-80"><a href="#SumEvaluator-80"><span class="linenos">80</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumEvaluator-81"><a href="#SumEvaluator-81"><span class="linenos">81</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator-82"><a href="#SumEvaluator-82"><span class="linenos">82</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator-47"><a href="#SumEvaluator-47"><span class="linenos">47</span></a>    <span class="n">_next_state_key</span><span class="p">:</span> <span class="n">Hashable</span>
+</span><span id="SumEvaluator-48"><a href="#SumEvaluator-48"><span class="linenos">48</span></a>
+</span><span id="SumEvaluator-49"><a href="#SumEvaluator-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator-50"><a href="#SumEvaluator-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+</span><span id="SumEvaluator-51"><a href="#SumEvaluator-51"><span class="linenos">51</span></a>
+</span><span id="SumEvaluator-52"><a href="#SumEvaluator-52"><span class="linenos">52</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
+</span><span id="SumEvaluator-53"><a href="#SumEvaluator-53"><span class="linenos">53</span></a><span class="sd">            before summing.</span>
+</span><span id="SumEvaluator-54"><a href="#SumEvaluator-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SumEvaluator-55"><a href="#SumEvaluator-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator-56"><a href="#SumEvaluator-56"><span class="linenos">56</span></a>
+</span><span id="SumEvaluator-57"><a href="#SumEvaluator-57"><span class="linenos">57</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator-58"><a href="#SumEvaluator-58"><span class="linenos">58</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator-59"><a href="#SumEvaluator-59"><span class="linenos">59</span></a>
+</span><span id="SumEvaluator-60"><a href="#SumEvaluator-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator-61"><a href="#SumEvaluator-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
+</span><span id="SumEvaluator-62"><a href="#SumEvaluator-62"><span class="linenos">62</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
+</span><span id="SumEvaluator-63"><a href="#SumEvaluator-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
+</span><span id="SumEvaluator-64"><a href="#SumEvaluator-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="SumEvaluator-65"><a href="#SumEvaluator-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator-66"><a href="#SumEvaluator-66"><span class="linenos">66</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span id="SumEvaluator-67"><a href="#SumEvaluator-67"><span class="linenos">67</span></a>
+</span><span id="SumEvaluator-68"><a href="#SumEvaluator-68"><span class="linenos">68</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator-69"><a href="#SumEvaluator-69"><span class="linenos">69</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="SumEvaluator-70"><a href="#SumEvaluator-70"><span class="linenos">70</span></a>
+</span><span id="SumEvaluator-71"><a href="#SumEvaluator-71"><span class="linenos">71</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator-72"><a href="#SumEvaluator-72"><span class="linenos">72</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="SumEvaluator-73"><a href="#SumEvaluator-73"><span class="linenos">73</span></a>
+</span><span id="SumEvaluator-74"><a href="#SumEvaluator-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SumEvaluator-75"><a href="#SumEvaluator-75"><span class="linenos">75</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SumEvaluator-76"><a href="#SumEvaluator-76"><span class="linenos">76</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="SumEvaluator-77"><a href="#SumEvaluator-77"><span class="linenos">77</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator-78"><a href="#SumEvaluator-78"><span class="linenos">78</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="SumEvaluator-79"><a href="#SumEvaluator-79"><span class="linenos">79</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
+</span><span id="SumEvaluator-80"><a href="#SumEvaluator-80"><span class="linenos">80</span></a>                <span class="c1"># multiplication in this case.</span>
+</span><span id="SumEvaluator-81"><a href="#SumEvaluator-81"><span class="linenos">81</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator-82"><a href="#SumEvaluator-82"><span class="linenos">82</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator-83"><a href="#SumEvaluator-83"><span class="linenos">83</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator-84"><a href="#SumEvaluator-84"><span class="linenos">84</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator-85"><a href="#SumEvaluator-85"><span class="linenos">85</span></a>
+</span><span id="SumEvaluator-86"><a href="#SumEvaluator-86"><span class="linenos">86</span></a>    <span class="nd">@property</span>
+</span><span id="SumEvaluator-87"><a href="#SumEvaluator-87"><span class="linenos">87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SumEvaluator-88"><a href="#SumEvaluator-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span>
 </span></pre></div>
 
 
@@ -664,30 +673,30 @@
 
     </div>
     <a class="headerlink" href="#SumEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.__init__-47"><a href="#SumEvaluator.__init__-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator.__init__-48"><a href="#SumEvaluator.__init__-48"><span class="linenos">48</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
-</span><span id="SumEvaluator.__init__-49"><a href="#SumEvaluator.__init__-49"><span class="linenos">49</span></a>
-</span><span id="SumEvaluator.__init__-50"><a href="#SumEvaluator.__init__-50"><span class="linenos">50</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
-</span><span id="SumEvaluator.__init__-51"><a href="#SumEvaluator.__init__-51"><span class="linenos">51</span></a><span class="sd">            before summing.</span>
-</span><span id="SumEvaluator.__init__-52"><a href="#SumEvaluator.__init__-52"><span class="linenos">52</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="SumEvaluator.__init__-53"><a href="#SumEvaluator.__init__-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator.__init__-54"><a href="#SumEvaluator.__init__-54"><span class="linenos">54</span></a>
-</span><span id="SumEvaluator.__init__-55"><a href="#SumEvaluator.__init__-55"><span class="linenos">55</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator.__init__-56"><a href="#SumEvaluator.__init__-56"><span class="linenos">56</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator.__init__-57"><a href="#SumEvaluator.__init__-57"><span class="linenos">57</span></a>
-</span><span id="SumEvaluator.__init__-58"><a href="#SumEvaluator.__init__-58"><span class="linenos">58</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator.__init__-59"><a href="#SumEvaluator.__init__-59"><span class="linenos">59</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
-</span><span id="SumEvaluator.__init__-60"><a href="#SumEvaluator.__init__-60"><span class="linenos">60</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
-</span><span id="SumEvaluator.__init__-61"><a href="#SumEvaluator.__init__-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
-</span><span id="SumEvaluator.__init__-62"><a href="#SumEvaluator.__init__-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="SumEvaluator.__init__-63"><a href="#SumEvaluator.__init__-63"><span class="linenos">63</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator.__init__-64"><a href="#SumEvaluator.__init__-64"><span class="linenos">64</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</span><span id="SumEvaluator.__init__-65"><a href="#SumEvaluator.__init__-65"><span class="linenos">65</span></a>
-</span><span id="SumEvaluator.__init__-66"><a href="#SumEvaluator.__init__-66"><span class="linenos">66</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator.__init__-67"><a href="#SumEvaluator.__init__-67"><span class="linenos">67</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
-</span><span id="SumEvaluator.__init__-68"><a href="#SumEvaluator.__init__-68"><span class="linenos">68</span></a>
-</span><span id="SumEvaluator.__init__-69"><a href="#SumEvaluator.__init__-69"><span class="linenos">69</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator.__init__-70"><a href="#SumEvaluator.__init__-70"><span class="linenos">70</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">dungeon_key</span> <span class="o">=</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.__init__-49"><a href="#SumEvaluator.__init__-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator.__init__-50"><a href="#SumEvaluator.__init__-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+</span><span id="SumEvaluator.__init__-51"><a href="#SumEvaluator.__init__-51"><span class="linenos">51</span></a>
+</span><span id="SumEvaluator.__init__-52"><a href="#SumEvaluator.__init__-52"><span class="linenos">52</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
+</span><span id="SumEvaluator.__init__-53"><a href="#SumEvaluator.__init__-53"><span class="linenos">53</span></a><span class="sd">            before summing.</span>
+</span><span id="SumEvaluator.__init__-54"><a href="#SumEvaluator.__init__-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SumEvaluator.__init__-55"><a href="#SumEvaluator.__init__-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator.__init__-56"><a href="#SumEvaluator.__init__-56"><span class="linenos">56</span></a>
+</span><span id="SumEvaluator.__init__-57"><a href="#SumEvaluator.__init__-57"><span class="linenos">57</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator.__init__-58"><a href="#SumEvaluator.__init__-58"><span class="linenos">58</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator.__init__-59"><a href="#SumEvaluator.__init__-59"><span class="linenos">59</span></a>
+</span><span id="SumEvaluator.__init__-60"><a href="#SumEvaluator.__init__-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator.__init__-61"><a href="#SumEvaluator.__init__-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
+</span><span id="SumEvaluator.__init__-62"><a href="#SumEvaluator.__init__-62"><span class="linenos">62</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
+</span><span id="SumEvaluator.__init__-63"><a href="#SumEvaluator.__init__-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
+</span><span id="SumEvaluator.__init__-64"><a href="#SumEvaluator.__init__-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="SumEvaluator.__init__-65"><a href="#SumEvaluator.__init__-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator.__init__-66"><a href="#SumEvaluator.__init__-66"><span class="linenos">66</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span id="SumEvaluator.__init__-67"><a href="#SumEvaluator.__init__-67"><span class="linenos">67</span></a>
+</span><span id="SumEvaluator.__init__-68"><a href="#SumEvaluator.__init__-68"><span class="linenos">68</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator.__init__-69"><a href="#SumEvaluator.__init__-69"><span class="linenos">69</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="SumEvaluator.__init__-70"><a href="#SumEvaluator.__init__-70"><span class="linenos">70</span></a>
+</span><span id="SumEvaluator.__init__-71"><a href="#SumEvaluator.__init__-71"><span class="linenos">71</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator.__init__-72"><a href="#SumEvaluator.__init__-72"><span class="linenos">72</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
 </span></pre></div>
 
 
@@ -710,21 +719,52 @@
 
     </div>
     <a class="headerlink" href="#SumEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state-72"><a href="#SumEvaluator.next_state-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SumEvaluator.next_state-73"><a href="#SumEvaluator.next_state-73"><span class="linenos">73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SumEvaluator.next_state-74"><a href="#SumEvaluator.next_state-74"><span class="linenos">74</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="SumEvaluator.next_state-75"><a href="#SumEvaluator.next_state-75"><span class="linenos">75</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator.next_state-76"><a href="#SumEvaluator.next_state-76"><span class="linenos">76</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="SumEvaluator.next_state-77"><a href="#SumEvaluator.next_state-77"><span class="linenos">77</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
-</span><span id="SumEvaluator.next_state-78"><a href="#SumEvaluator.next_state-78"><span class="linenos">78</span></a>                <span class="c1"># multiplication in this case.</span>
-</span><span id="SumEvaluator.next_state-79"><a href="#SumEvaluator.next_state-79"><span class="linenos">79</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator.next_state-80"><a href="#SumEvaluator.next_state-80"><span class="linenos">80</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumEvaluator.next_state-81"><a href="#SumEvaluator.next_state-81"><span class="linenos">81</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator.next_state-82"><a href="#SumEvaluator.next_state-82"><span class="linenos">82</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state-74"><a href="#SumEvaluator.next_state-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SumEvaluator.next_state-75"><a href="#SumEvaluator.next_state-75"><span class="linenos">75</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SumEvaluator.next_state-76"><a href="#SumEvaluator.next_state-76"><span class="linenos">76</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="SumEvaluator.next_state-77"><a href="#SumEvaluator.next_state-77"><span class="linenos">77</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator.next_state-78"><a href="#SumEvaluator.next_state-78"><span class="linenos">78</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="SumEvaluator.next_state-79"><a href="#SumEvaluator.next_state-79"><span class="linenos">79</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
+</span><span id="SumEvaluator.next_state-80"><a href="#SumEvaluator.next_state-80"><span class="linenos">80</span></a>                <span class="c1"># multiplication in this case.</span>
+</span><span id="SumEvaluator.next_state-81"><a href="#SumEvaluator.next_state-81"><span class="linenos">81</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator.next_state-82"><a href="#SumEvaluator.next_state-82"><span class="linenos">82</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator.next_state-83"><a href="#SumEvaluator.next_state-83"><span class="linenos">83</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator.next_state-84"><a href="#SumEvaluator.next_state-84"><span class="linenos">84</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Implementation.</p>
+</div>
+
+
+                            </div>
+                            <div id="SumEvaluator.next_state_key" class="classattr">
+                                        <input id="SumEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">next_state_key</span>
+
+                <label class="view-source-button" for="SumEvaluator.next_state_key-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#SumEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state_key-86"><a href="#SumEvaluator.next_state_key-86"><span class="linenos">86</span></a>    <span class="nd">@property</span>
+</span><span id="SumEvaluator.next_state_key-87"><a href="#SumEvaluator.next_state_key-87"><span class="linenos">87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SumEvaluator.next_state_key-88"><a href="#SumEvaluator.next_state_key-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.</p>
+
+<p>This should include any members used in <code><a href="#SumEvaluator.next_state">next_state()</a></code> but does NOT need to
+include members that are only used in other methods, i.e. 
+<code><a href="#SumEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#SumEvaluator.initial_state">initial_state()</a></code>, <code><a href="#SumEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#SumEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -753,25 +793,25 @@
 
     </div>
     <a class="headerlink" href="#SizeEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator-89"><a href="#SizeEvaluator-89"><span class="linenos"> 89</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SizeEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
-</span><span id="SizeEvaluator-90"><a href="#SizeEvaluator-90"><span class="linenos"> 90</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the total number of elements.</span>
-</span><span id="SizeEvaluator-91"><a href="#SizeEvaluator-91"><span class="linenos"> 91</span></a>
-</span><span id="SizeEvaluator-92"><a href="#SizeEvaluator-92"><span class="linenos"> 92</span></a><span class="sd">    Usually not very interesting unless the counts are adjusted by</span>
-</span><span id="SizeEvaluator-93"><a href="#SizeEvaluator-93"><span class="linenos"> 93</span></a><span class="sd">    `unique` etc.</span>
-</span><span id="SizeEvaluator-94"><a href="#SizeEvaluator-94"><span class="linenos"> 94</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator-95"><a href="#SizeEvaluator-95"><span class="linenos"> 95</span></a>
-</span><span id="SizeEvaluator-96"><a href="#SizeEvaluator-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SizeEvaluator-97"><a href="#SizeEvaluator-97"><span class="linenos"> 97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator-98"><a href="#SizeEvaluator-98"><span class="linenos"> 98</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
-</span><span id="SizeEvaluator-99"><a href="#SizeEvaluator-99"><span class="linenos"> 99</span></a>
-</span><span id="SizeEvaluator-100"><a href="#SizeEvaluator-100"><span class="linenos">100</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="SizeEvaluator-101"><a href="#SizeEvaluator-101"><span class="linenos">101</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="SizeEvaluator-102"><a href="#SizeEvaluator-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator-103"><a href="#SizeEvaluator-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
-</span><span id="SizeEvaluator-104"><a href="#SizeEvaluator-104"><span class="linenos">104</span></a>
-</span><span id="SizeEvaluator-105"><a href="#SizeEvaluator-105"><span class="linenos">105</span></a>    <span class="nd">@property</span>
-</span><span id="SizeEvaluator-106"><a href="#SizeEvaluator-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="SizeEvaluator-107"><a href="#SizeEvaluator-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator-95"><a href="#SizeEvaluator-95"><span class="linenos"> 95</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SizeEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="SizeEvaluator-96"><a href="#SizeEvaluator-96"><span class="linenos"> 96</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the total number of elements.</span>
+</span><span id="SizeEvaluator-97"><a href="#SizeEvaluator-97"><span class="linenos"> 97</span></a>
+</span><span id="SizeEvaluator-98"><a href="#SizeEvaluator-98"><span class="linenos"> 98</span></a><span class="sd">    Usually not very interesting unless the counts are adjusted by</span>
+</span><span id="SizeEvaluator-99"><a href="#SizeEvaluator-99"><span class="linenos"> 99</span></a><span class="sd">    `unique` etc.</span>
+</span><span id="SizeEvaluator-100"><a href="#SizeEvaluator-100"><span class="linenos">100</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator-101"><a href="#SizeEvaluator-101"><span class="linenos">101</span></a>
+</span><span id="SizeEvaluator-102"><a href="#SizeEvaluator-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SizeEvaluator-103"><a href="#SizeEvaluator-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator-104"><a href="#SizeEvaluator-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
+</span><span id="SizeEvaluator-105"><a href="#SizeEvaluator-105"><span class="linenos">105</span></a>
+</span><span id="SizeEvaluator-106"><a href="#SizeEvaluator-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="SizeEvaluator-107"><a href="#SizeEvaluator-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="SizeEvaluator-108"><a href="#SizeEvaluator-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator-109"><a href="#SizeEvaluator-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
+</span><span id="SizeEvaluator-110"><a href="#SizeEvaluator-110"><span class="linenos">110</span></a>
+</span><span id="SizeEvaluator-111"><a href="#SizeEvaluator-111"><span class="linenos">111</span></a>    <span class="nd">@property</span>
+</span><span id="SizeEvaluator-112"><a href="#SizeEvaluator-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SizeEvaluator-113"><a href="#SizeEvaluator-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -793,9 +833,9 @@
 
     </div>
     <a class="headerlink" href="#SizeEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state-96"><a href="#SizeEvaluator.next_state-96"><span class="linenos">96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SizeEvaluator.next_state-97"><a href="#SizeEvaluator.next_state-97"><span class="linenos">97</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator.next_state-98"><a href="#SizeEvaluator.next_state-98"><span class="linenos">98</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state-102"><a href="#SizeEvaluator.next_state-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SizeEvaluator.next_state-103"><a href="#SizeEvaluator.next_state-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator.next_state-104"><a href="#SizeEvaluator.next_state-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
 </span></pre></div>
 
 
@@ -815,10 +855,10 @@
 
     </div>
     <a class="headerlink" href="#SizeEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.final_outcome-100"><a href="#SizeEvaluator.final_outcome-100"><span class="linenos">100</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="SizeEvaluator.final_outcome-101"><a href="#SizeEvaluator.final_outcome-101"><span class="linenos">101</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="SizeEvaluator.final_outcome-102"><a href="#SizeEvaluator.final_outcome-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator.final_outcome-103"><a href="#SizeEvaluator.final_outcome-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.final_outcome-106"><a href="#SizeEvaluator.final_outcome-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="SizeEvaluator.final_outcome-107"><a href="#SizeEvaluator.final_outcome-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="SizeEvaluator.final_outcome-108"><a href="#SizeEvaluator.final_outcome-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator.final_outcome-109"><a href="#SizeEvaluator.final_outcome-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -827,18 +867,18 @@
 
 
                             </div>
-                            <div id="SizeEvaluator.dungeon_key" class="classattr">
-                                        <input id="SizeEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="SizeEvaluator.next_state_key" class="classattr">
+                                        <input id="SizeEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="SizeEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="SizeEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#SizeEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.dungeon_key-105"><a href="#SizeEvaluator.dungeon_key-105"><span class="linenos">105</span></a>    <span class="nd">@property</span>
-</span><span id="SizeEvaluator.dungeon_key-106"><a href="#SizeEvaluator.dungeon_key-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="SizeEvaluator.dungeon_key-107"><a href="#SizeEvaluator.dungeon_key-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#SizeEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state_key-111"><a href="#SizeEvaluator.next_state_key-111"><span class="linenos">111</span></a>    <span class="nd">@property</span>
+</span><span id="SizeEvaluator.next_state_key-112"><a href="#SizeEvaluator.next_state_key-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SizeEvaluator.next_state_key-113"><a href="#SizeEvaluator.next_state_key-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -847,6 +887,13 @@
 <p>This should include any members used in <code><a href="#SizeEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#SizeEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#SizeEvaluator.initial_state">initial_state()</a></code>, <code><a href="#SizeEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#SizeEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -875,21 +922,21 @@ include members that are only used in other methods, i.e.
 
     </div>
     <a class="headerlink" href="#AnyEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator-114"><a href="#AnyEvaluator-114"><span class="linenos">114</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AnyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
-</span><span id="AnyEvaluator-115"><a href="#AnyEvaluator-115"><span class="linenos">115</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff at least one count is positive.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-116"><a href="#AnyEvaluator-116"><span class="linenos">116</span></a>
-</span><span id="AnyEvaluator-117"><a href="#AnyEvaluator-117"><span class="linenos">117</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator-118"><a href="#AnyEvaluator-118"><span class="linenos">118</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-119"><a href="#AnyEvaluator-119"><span class="linenos">119</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a>
-</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
-</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>
-</span><span id="AnyEvaluator-126"><a href="#AnyEvaluator-126"><span class="linenos">126</span></a>    <span class="nd">@property</span>
-</span><span id="AnyEvaluator-127"><a href="#AnyEvaluator-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AnyEvaluator-128"><a href="#AnyEvaluator-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AnyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
+</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff at least one count is positive.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>
+</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="AnyEvaluator-126"><a href="#AnyEvaluator-126"><span class="linenos">126</span></a>
+</span><span id="AnyEvaluator-127"><a href="#AnyEvaluator-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="AnyEvaluator-128"><a href="#AnyEvaluator-128"><span class="linenos">128</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="AnyEvaluator-129"><a href="#AnyEvaluator-129"><span class="linenos">129</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-130"><a href="#AnyEvaluator-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
+</span><span id="AnyEvaluator-131"><a href="#AnyEvaluator-131"><span class="linenos">131</span></a>
+</span><span id="AnyEvaluator-132"><a href="#AnyEvaluator-132"><span class="linenos">132</span></a>    <span class="nd">@property</span>
+</span><span id="AnyEvaluator-133"><a href="#AnyEvaluator-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AnyEvaluator-134"><a href="#AnyEvaluator-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -908,9 +955,9 @@ include members that are only used in other methods, i.e.
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-117"><a href="#AnyEvaluator.next_state-117"><span class="linenos">117</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator.next_state-118"><a href="#AnyEvaluator.next_state-118"><span class="linenos">118</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.next_state-119"><a href="#AnyEvaluator.next_state-119"><span class="linenos">119</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-123"><a href="#AnyEvaluator.next_state-123"><span class="linenos">123</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AnyEvaluator.next_state-124"><a href="#AnyEvaluator.next_state-124"><span class="linenos">124</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.next_state-125"><a href="#AnyEvaluator.next_state-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -930,10 +977,10 @@ include members that are only used in other methods, i.e.
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-121"><a href="#AnyEvaluator.final_outcome-121"><span class="linenos">121</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="AnyEvaluator.final_outcome-122"><a href="#AnyEvaluator.final_outcome-122"><span class="linenos">122</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="AnyEvaluator.final_outcome-123"><a href="#AnyEvaluator.final_outcome-123"><span class="linenos">123</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.final_outcome-124"><a href="#AnyEvaluator.final_outcome-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-127"><a href="#AnyEvaluator.final_outcome-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="AnyEvaluator.final_outcome-128"><a href="#AnyEvaluator.final_outcome-128"><span class="linenos">128</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="AnyEvaluator.final_outcome-129"><a href="#AnyEvaluator.final_outcome-129"><span class="linenos">129</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.final_outcome-130"><a href="#AnyEvaluator.final_outcome-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -942,18 +989,18 @@ include members that are only used in other methods, i.e.
 
 
                             </div>
-                            <div id="AnyEvaluator.dungeon_key" class="classattr">
-                                        <input id="AnyEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="AnyEvaluator.next_state_key" class="classattr">
+                                        <input id="AnyEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="AnyEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="AnyEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AnyEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.dungeon_key-126"><a href="#AnyEvaluator.dungeon_key-126"><span class="linenos">126</span></a>    <span class="nd">@property</span>
-</span><span id="AnyEvaluator.dungeon_key-127"><a href="#AnyEvaluator.dungeon_key-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AnyEvaluator.dungeon_key-128"><a href="#AnyEvaluator.dungeon_key-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#AnyEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state_key-132"><a href="#AnyEvaluator.next_state_key-132"><span class="linenos">132</span></a>    <span class="nd">@property</span>
+</span><span id="AnyEvaluator.next_state_key-133"><a href="#AnyEvaluator.next_state_key-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AnyEvaluator.next_state_key-134"><a href="#AnyEvaluator.next_state_key-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -962,6 +1009,13 @@ include members that are only used in other methods, i.e.
 <p>This should include any members used in <code><a href="#AnyEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#AnyEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#AnyEvaluator.initial_state">initial_state()</a></code>, <code><a href="#AnyEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#AnyEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -1016,7 +1070,7 @@ include members that are only used in other methods, i.e.
 </span><span id="HighestOutcomeAndCountEvaluator-38"><a href="#HighestOutcomeAndCountEvaluator-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
 </span><span id="HighestOutcomeAndCountEvaluator-39"><a href="#HighestOutcomeAndCountEvaluator-39"><span class="linenos">39</span></a>
 </span><span id="HighestOutcomeAndCountEvaluator-40"><a href="#HighestOutcomeAndCountEvaluator-40"><span class="linenos">40</span></a>    <span class="nd">@property</span>
-</span><span id="HighestOutcomeAndCountEvaluator-41"><a href="#HighestOutcomeAndCountEvaluator-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="HighestOutcomeAndCountEvaluator-41"><a href="#HighestOutcomeAndCountEvaluator-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="HighestOutcomeAndCountEvaluator-42"><a href="#HighestOutcomeAndCountEvaluator-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -1082,18 +1136,18 @@ include members that are only used in other methods, i.e.
 
 
                             </div>
-                            <div id="HighestOutcomeAndCountEvaluator.dungeon_key" class="classattr">
-                                        <input id="HighestOutcomeAndCountEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="HighestOutcomeAndCountEvaluator.next_state_key" class="classattr">
+                                        <input id="HighestOutcomeAndCountEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="HighestOutcomeAndCountEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator.dungeon_key-40"><a href="#HighestOutcomeAndCountEvaluator.dungeon_key-40"><span class="linenos">40</span></a>    <span class="nd">@property</span>
-</span><span id="HighestOutcomeAndCountEvaluator.dungeon_key-41"><a href="#HighestOutcomeAndCountEvaluator.dungeon_key-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="HighestOutcomeAndCountEvaluator.dungeon_key-42"><a href="#HighestOutcomeAndCountEvaluator.dungeon_key-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#HighestOutcomeAndCountEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HighestOutcomeAndCountEvaluator.next_state_key-40"><a href="#HighestOutcomeAndCountEvaluator.next_state_key-40"><span class="linenos">40</span></a>    <span class="nd">@property</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state_key-41"><a href="#HighestOutcomeAndCountEvaluator.next_state_key-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="HighestOutcomeAndCountEvaluator.next_state_key-42"><a href="#HighestOutcomeAndCountEvaluator.next_state_key-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -1102,6 +1156,13 @@ include members that are only used in other methods, i.e.
 <p>This should include any members used in <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#HighestOutcomeAndCountEvaluator.initial_state">initial_state()</a></code>, <code><a href="#HighestOutcomeAndCountEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -1138,7 +1199,7 @@ include members that are only used in other methods, i.e.
 </span><span id="LargestCountEvaluator-95"><a href="#LargestCountEvaluator-95"><span class="linenos">95</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="n">count</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
 </span><span id="LargestCountEvaluator-96"><a href="#LargestCountEvaluator-96"><span class="linenos">96</span></a>
 </span><span id="LargestCountEvaluator-97"><a href="#LargestCountEvaluator-97"><span class="linenos">97</span></a>    <span class="nd">@property</span>
-</span><span id="LargestCountEvaluator-98"><a href="#LargestCountEvaluator-98"><span class="linenos">98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestCountEvaluator-98"><a href="#LargestCountEvaluator-98"><span class="linenos">98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="LargestCountEvaluator-99"><a href="#LargestCountEvaluator-99"><span class="linenos">99</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -1169,18 +1230,18 @@ include members that are only used in other methods, i.e.
 
 
                             </div>
-                            <div id="LargestCountEvaluator.dungeon_key" class="classattr">
-                                        <input id="LargestCountEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestCountEvaluator.next_state_key" class="classattr">
+                                        <input id="LargestCountEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="LargestCountEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestCountEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator.dungeon_key-97"><a href="#LargestCountEvaluator.dungeon_key-97"><span class="linenos">97</span></a>    <span class="nd">@property</span>
-</span><span id="LargestCountEvaluator.dungeon_key-98"><a href="#LargestCountEvaluator.dungeon_key-98"><span class="linenos">98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LargestCountEvaluator.dungeon_key-99"><a href="#LargestCountEvaluator.dungeon_key-99"><span class="linenos">99</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#LargestCountEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountEvaluator.next_state_key-97"><a href="#LargestCountEvaluator.next_state_key-97"><span class="linenos">97</span></a>    <span class="nd">@property</span>
+</span><span id="LargestCountEvaluator.next_state_key-98"><a href="#LargestCountEvaluator.next_state_key-98"><span class="linenos">98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestCountEvaluator.next_state_key-99"><a href="#LargestCountEvaluator.next_state_key-99"><span class="linenos">99</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -1189,6 +1250,13 @@ include members that are only used in other methods, i.e.
 <p>This should include any members used in <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#LargestCountEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestCountEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestCountEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -1225,7 +1293,7 @@ include members that are only used in other methods, i.e.
 </span><span id="LargestCountAndOutcomeEvaluator-111"><a href="#LargestCountAndOutcomeEvaluator-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">),</span> <span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">outcome</span><span class="p">))</span>
 </span><span id="LargestCountAndOutcomeEvaluator-112"><a href="#LargestCountAndOutcomeEvaluator-112"><span class="linenos">112</span></a>
 </span><span id="LargestCountAndOutcomeEvaluator-113"><a href="#LargestCountAndOutcomeEvaluator-113"><span class="linenos">113</span></a>    <span class="nd">@property</span>
-</span><span id="LargestCountAndOutcomeEvaluator-114"><a href="#LargestCountAndOutcomeEvaluator-114"><span class="linenos">114</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestCountAndOutcomeEvaluator-114"><a href="#LargestCountAndOutcomeEvaluator-114"><span class="linenos">114</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="LargestCountAndOutcomeEvaluator-115"><a href="#LargestCountAndOutcomeEvaluator-115"><span class="linenos">115</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -1256,18 +1324,18 @@ include members that are only used in other methods, i.e.
 
 
                             </div>
-                            <div id="LargestCountAndOutcomeEvaluator.dungeon_key" class="classattr">
-                                        <input id="LargestCountAndOutcomeEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestCountAndOutcomeEvaluator.next_state_key" class="classattr">
+                                        <input id="LargestCountAndOutcomeEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="LargestCountAndOutcomeEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestCountAndOutcomeEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestCountAndOutcomeEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator.dungeon_key-113"><a href="#LargestCountAndOutcomeEvaluator.dungeon_key-113"><span class="linenos">113</span></a>    <span class="nd">@property</span>
-</span><span id="LargestCountAndOutcomeEvaluator.dungeon_key-114"><a href="#LargestCountAndOutcomeEvaluator.dungeon_key-114"><span class="linenos">114</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LargestCountAndOutcomeEvaluator.dungeon_key-115"><a href="#LargestCountAndOutcomeEvaluator.dungeon_key-115"><span class="linenos">115</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#LargestCountAndOutcomeEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestCountAndOutcomeEvaluator.next_state_key-113"><a href="#LargestCountAndOutcomeEvaluator.next_state_key-113"><span class="linenos">113</span></a>    <span class="nd">@property</span>
+</span><span id="LargestCountAndOutcomeEvaluator.next_state_key-114"><a href="#LargestCountAndOutcomeEvaluator.next_state_key-114"><span class="linenos">114</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestCountAndOutcomeEvaluator.next_state_key-115"><a href="#LargestCountAndOutcomeEvaluator.next_state_key-115"><span class="linenos">115</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -1276,6 +1344,13 @@ include members that are only used in other methods, i.e.
 <p>This should include any members used in <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#LargestCountAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestCountAndOutcomeEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestCountAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -1337,7 +1412,7 @@ include members that are only used in other methods, i.e.
 </span><span id="CountSubsetEvaluator-152"><a href="#CountSubsetEvaluator-152"><span class="linenos">152</span></a>        <span class="k">return</span> <span class="n">final_state</span>
 </span><span id="CountSubsetEvaluator-153"><a href="#CountSubsetEvaluator-153"><span class="linenos">153</span></a>
 </span><span id="CountSubsetEvaluator-154"><a href="#CountSubsetEvaluator-154"><span class="linenos">154</span></a>    <span class="nd">@property</span>
-</span><span id="CountSubsetEvaluator-155"><a href="#CountSubsetEvaluator-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CountSubsetEvaluator-155"><a href="#CountSubsetEvaluator-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CountSubsetEvaluator-156"><a href="#CountSubsetEvaluator-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_divisor</span><span class="p">)</span>
 </span></pre></div>
 
@@ -1522,18 +1597,18 @@ keyword parameters.</li>
 
 
                             </div>
-                            <div id="CountSubsetEvaluator.dungeon_key" class="classattr">
-                                        <input id="CountSubsetEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="CountSubsetEvaluator.next_state_key" class="classattr">
+                                        <input id="CountSubsetEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="CountSubsetEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="CountSubsetEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#CountSubsetEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CountSubsetEvaluator.dungeon_key-154"><a href="#CountSubsetEvaluator.dungeon_key-154"><span class="linenos">154</span></a>    <span class="nd">@property</span>
-</span><span id="CountSubsetEvaluator.dungeon_key-155"><a href="#CountSubsetEvaluator.dungeon_key-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="CountSubsetEvaluator.dungeon_key-156"><a href="#CountSubsetEvaluator.dungeon_key-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_divisor</span><span class="p">)</span>
+    <a class="headerlink" href="#CountSubsetEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CountSubsetEvaluator.next_state_key-154"><a href="#CountSubsetEvaluator.next_state_key-154"><span class="linenos">154</span></a>    <span class="nd">@property</span>
+</span><span id="CountSubsetEvaluator.next_state_key-155"><a href="#CountSubsetEvaluator.next_state_key-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CountSubsetEvaluator.next_state_key-156"><a href="#CountSubsetEvaluator.next_state_key-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_empty_divisor</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1542,6 +1617,13 @@ keyword parameters.</li>
 <p>This should include any members used in <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#CountSubsetEvaluator.initial_state">initial_state()</a></code>, <code><a href="#CountSubsetEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -1595,7 +1677,7 @@ include members that are only used in other methods, i.e.
 </span><span id="AllCountsEvaluator-83"><a href="#AllCountsEvaluator-83"><span class="linenos">83</span></a>        <span class="k">return</span> <span class="n">outcomes</span>
 </span><span id="AllCountsEvaluator-84"><a href="#AllCountsEvaluator-84"><span class="linenos">84</span></a>
 </span><span id="AllCountsEvaluator-85"><a href="#AllCountsEvaluator-85"><span class="linenos">85</span></a>    <span class="nd">@property</span>
-</span><span id="AllCountsEvaluator-86"><a href="#AllCountsEvaluator-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator-86"><a href="#AllCountsEvaluator-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AllCountsEvaluator-87"><a href="#AllCountsEvaluator-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span>
 </span></pre></div>
 
@@ -1713,18 +1795,18 @@ If <code>None</code>, no filtering will be done.</li>
 
 
                             </div>
-                            <div id="AllCountsEvaluator.dungeon_key" class="classattr">
-                                        <input id="AllCountsEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="AllCountsEvaluator.next_state_key" class="classattr">
+                                        <input id="AllCountsEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="AllCountsEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="AllCountsEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AllCountsEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.dungeon_key-85"><a href="#AllCountsEvaluator.dungeon_key-85"><span class="linenos">85</span></a>    <span class="nd">@property</span>
-</span><span id="AllCountsEvaluator.dungeon_key-86"><a href="#AllCountsEvaluator.dungeon_key-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AllCountsEvaluator.dungeon_key-87"><a href="#AllCountsEvaluator.dungeon_key-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span>
+    <a class="headerlink" href="#AllCountsEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllCountsEvaluator.next_state_key-85"><a href="#AllCountsEvaluator.next_state_key-85"><span class="linenos">85</span></a>    <span class="nd">@property</span>
+</span><span id="AllCountsEvaluator.next_state_key-86"><a href="#AllCountsEvaluator.next_state_key-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AllCountsEvaluator.next_state_key-87"><a href="#AllCountsEvaluator.next_state_key-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1733,6 +1815,13 @@ If <code>None</code>, no filtering will be done.</li>
 <p>This should include any members used in <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#AllCountsEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#AllCountsEvaluator.initial_state">initial_state()</a></code>, <code><a href="#AllCountsEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -1769,7 +1858,7 @@ include members that are only used in other methods, i.e.
 </span><span id="LargestStraightEvaluator-176"><a href="#LargestStraightEvaluator-176"><span class="linenos">176</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span><span id="LargestStraightEvaluator-177"><a href="#LargestStraightEvaluator-177"><span class="linenos">177</span></a>
 </span><span id="LargestStraightEvaluator-178"><a href="#LargestStraightEvaluator-178"><span class="linenos">178</span></a>    <span class="nd">@property</span>
-</span><span id="LargestStraightEvaluator-179"><a href="#LargestStraightEvaluator-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator-179"><a href="#LargestStraightEvaluator-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="LargestStraightEvaluator-180"><a href="#LargestStraightEvaluator-180"><span class="linenos">180</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -1971,18 +2060,18 @@ keyword parameters.</li>
 
 
                             </div>
-                            <div id="LargestStraightEvaluator.dungeon_key" class="classattr">
-                                        <input id="LargestStraightEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestStraightEvaluator.next_state_key" class="classattr">
+                                        <input id="LargestStraightEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="LargestStraightEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestStraightEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestStraightEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.dungeon_key-178"><a href="#LargestStraightEvaluator.dungeon_key-178"><span class="linenos">178</span></a>    <span class="nd">@property</span>
-</span><span id="LargestStraightEvaluator.dungeon_key-179"><a href="#LargestStraightEvaluator.dungeon_key-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LargestStraightEvaluator.dungeon_key-180"><a href="#LargestStraightEvaluator.dungeon_key-180"><span class="linenos">180</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#LargestStraightEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightEvaluator.next_state_key-178"><a href="#LargestStraightEvaluator.next_state_key-178"><span class="linenos">178</span></a>    <span class="nd">@property</span>
+</span><span id="LargestStraightEvaluator.next_state_key-179"><a href="#LargestStraightEvaluator.next_state_key-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestStraightEvaluator.next_state_key-180"><a href="#LargestStraightEvaluator.next_state_key-180"><span class="linenos">180</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -1991,6 +2080,13 @@ keyword parameters.</li>
 <p>This should include any members used in <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestStraightEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestStraightEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -2073,7 +2169,7 @@ include members that are only used in other methods, i.e.
 </span><span id="LargestStraightAndOutcomeEvaluator-238"><a href="#LargestStraightAndOutcomeEvaluator-238"><span class="linenos">238</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span><span id="LargestStraightAndOutcomeEvaluator-239"><a href="#LargestStraightAndOutcomeEvaluator-239"><span class="linenos">239</span></a>
 </span><span id="LargestStraightAndOutcomeEvaluator-240"><a href="#LargestStraightAndOutcomeEvaluator-240"><span class="linenos">240</span></a>    <span class="nd">@property</span>
-</span><span id="LargestStraightAndOutcomeEvaluator-241"><a href="#LargestStraightAndOutcomeEvaluator-241"><span class="linenos">241</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator-241"><a href="#LargestStraightAndOutcomeEvaluator-241"><span class="linenos">241</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="LargestStraightAndOutcomeEvaluator-242"><a href="#LargestStraightAndOutcomeEvaluator-242"><span class="linenos">242</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_highest</span><span class="p">)</span>
 </span></pre></div>
 
@@ -2383,18 +2479,18 @@ keyword parameters.</li>
 
 
                             </div>
-                            <div id="LargestStraightAndOutcomeEvaluator.dungeon_key" class="classattr">
-                                        <input id="LargestStraightAndOutcomeEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="LargestStraightAndOutcomeEvaluator.next_state_key" class="classattr">
+                                        <input id="LargestStraightAndOutcomeEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="LargestStraightAndOutcomeEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="LargestStraightAndOutcomeEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.dungeon_key-240"><a href="#LargestStraightAndOutcomeEvaluator.dungeon_key-240"><span class="linenos">240</span></a>    <span class="nd">@property</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.dungeon_key-241"><a href="#LargestStraightAndOutcomeEvaluator.dungeon_key-241"><span class="linenos">241</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="LargestStraightAndOutcomeEvaluator.dungeon_key-242"><a href="#LargestStraightAndOutcomeEvaluator.dungeon_key-242"><span class="linenos">242</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_highest</span><span class="p">)</span>
+    <a class="headerlink" href="#LargestStraightAndOutcomeEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LargestStraightAndOutcomeEvaluator.next_state_key-240"><a href="#LargestStraightAndOutcomeEvaluator.next_state_key-240"><span class="linenos">240</span></a>    <span class="nd">@property</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state_key-241"><a href="#LargestStraightAndOutcomeEvaluator.next_state_key-241"><span class="linenos">241</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LargestStraightAndOutcomeEvaluator.next_state_key-242"><a href="#LargestStraightAndOutcomeEvaluator.next_state_key-242"><span class="linenos">242</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prioritize_highest</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -2403,6 +2499,13 @@ keyword parameters.</li>
 <p>This should include any members used in <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestStraightAndOutcomeEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestStraightAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -2474,7 +2577,7 @@ include members that are only used in other methods, i.e.
 </span><span id="AllStraightsEvaluator-281"><a href="#AllStraightsEvaluator-281"><span class="linenos">281</span></a>    <span class="n">extra_outcomes</span> <span class="o">=</span> <span class="n">MultisetEvaluator</span><span class="o">.</span><span class="n">consecutive</span>
 </span><span id="AllStraightsEvaluator-282"><a href="#AllStraightsEvaluator-282"><span class="linenos">282</span></a>
 </span><span id="AllStraightsEvaluator-283"><a href="#AllStraightsEvaluator-283"><span class="linenos">283</span></a>    <span class="nd">@property</span>
-</span><span id="AllStraightsEvaluator-284"><a href="#AllStraightsEvaluator-284"><span class="linenos">284</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator-284"><a href="#AllStraightsEvaluator-284"><span class="linenos">284</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AllStraightsEvaluator-285"><a href="#AllStraightsEvaluator-285"><span class="linenos">285</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -2598,18 +2701,18 @@ elements are preferentially assigned to the longer straight.</p>
 
 
                             </div>
-                            <div id="AllStraightsEvaluator.dungeon_key" class="classattr">
-                                        <input id="AllStraightsEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="AllStraightsEvaluator.next_state_key" class="classattr">
+                                        <input id="AllStraightsEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="AllStraightsEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="AllStraightsEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AllStraightsEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.dungeon_key-283"><a href="#AllStraightsEvaluator.dungeon_key-283"><span class="linenos">283</span></a>    <span class="nd">@property</span>
-</span><span id="AllStraightsEvaluator.dungeon_key-284"><a href="#AllStraightsEvaluator.dungeon_key-284"><span class="linenos">284</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AllStraightsEvaluator.dungeon_key-285"><a href="#AllStraightsEvaluator.dungeon_key-285"><span class="linenos">285</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#AllStraightsEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AllStraightsEvaluator.next_state_key-283"><a href="#AllStraightsEvaluator.next_state_key-283"><span class="linenos">283</span></a>    <span class="nd">@property</span>
+</span><span id="AllStraightsEvaluator.next_state_key-284"><a href="#AllStraightsEvaluator.next_state_key-284"><span class="linenos">284</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AllStraightsEvaluator.next_state_key-285"><a href="#AllStraightsEvaluator.next_state_key-285"><span class="linenos">285</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -2618,6 +2721,13 @@ elements are preferentially assigned to the longer straight.</p>
 <p>This should include any members used in <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#AllStraightsEvaluator.initial_state">initial_state()</a></code>, <code><a href="#AllStraightsEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -2913,7 +3023,7 @@ elements for each straight, e.g. cribbage.</li>
 </span><span id="ComparisonEvaluator-45"><a href="#ComparisonEvaluator-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="n">has_any</span> <span class="ow">and</span> <span class="n">has_all</span>
 </span><span id="ComparisonEvaluator-46"><a href="#ComparisonEvaluator-46"><span class="linenos">46</span></a>
 </span><span id="ComparisonEvaluator-47"><a href="#ComparisonEvaluator-47"><span class="linenos">47</span></a>    <span class="nd">@property</span>
-</span><span id="ComparisonEvaluator-48"><a href="#ComparisonEvaluator-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ComparisonEvaluator-48"><a href="#ComparisonEvaluator-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="ComparisonEvaluator-49"><a href="#ComparisonEvaluator-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -3029,18 +3139,18 @@ bool are <code>True</code>.</p>
 
 
                             </div>
-                            <div id="ComparisonEvaluator.dungeon_key" class="classattr">
-                                        <input id="ComparisonEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ComparisonEvaluator.next_state_key" class="classattr">
+                                        <input id="ComparisonEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="ComparisonEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ComparisonEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ComparisonEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ComparisonEvaluator.dungeon_key-47"><a href="#ComparisonEvaluator.dungeon_key-47"><span class="linenos">47</span></a>    <span class="nd">@property</span>
-</span><span id="ComparisonEvaluator.dungeon_key-48"><a href="#ComparisonEvaluator.dungeon_key-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="ComparisonEvaluator.dungeon_key-49"><a href="#ComparisonEvaluator.dungeon_key-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#ComparisonEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ComparisonEvaluator.next_state_key-47"><a href="#ComparisonEvaluator.next_state_key-47"><span class="linenos">47</span></a>    <span class="nd">@property</span>
+</span><span id="ComparisonEvaluator.next_state_key-48"><a href="#ComparisonEvaluator.next_state_key-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ComparisonEvaluator.next_state_key-49"><a href="#ComparisonEvaluator.next_state_key-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -3049,6 +3159,13 @@ bool are <code>True</code>.</p>
 <p>This should include any members used in <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#ComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#ComparisonEvaluator.initial_state">initial_state()</a></code>, <code><a href="#ComparisonEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -3629,7 +3746,7 @@ bool are <code>True</code>.</p>
 </span><span id="KeepEvaluator-52"><a href="#KeepEvaluator-52"><span class="linenos">52</span></a>        <span class="k">return</span> <span class="n">result</span>
 </span><span id="KeepEvaluator-53"><a href="#KeepEvaluator-53"><span class="linenos">53</span></a>
 </span><span id="KeepEvaluator-54"><a href="#KeepEvaluator-54"><span class="linenos">54</span></a>    <span class="nd">@property</span>
-</span><span id="KeepEvaluator-55"><a href="#KeepEvaluator-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="KeepEvaluator-55"><a href="#KeepEvaluator-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="KeepEvaluator-56"><a href="#KeepEvaluator-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
@@ -3854,18 +3971,18 @@ keyword parameters.</li>
 
 
                             </div>
-                            <div id="KeepEvaluator.dungeon_key" class="classattr">
-                                        <input id="KeepEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="KeepEvaluator.next_state_key" class="classattr">
+                                        <input id="KeepEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="KeepEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="KeepEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#KeepEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="KeepEvaluator.dungeon_key-54"><a href="#KeepEvaluator.dungeon_key-54"><span class="linenos">54</span></a>    <span class="nd">@property</span>
-</span><span id="KeepEvaluator.dungeon_key-55"><a href="#KeepEvaluator.dungeon_key-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="KeepEvaluator.dungeon_key-56"><a href="#KeepEvaluator.dungeon_key-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
+    <a class="headerlink" href="#KeepEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="KeepEvaluator.next_state_key-54"><a href="#KeepEvaluator.next_state_key-54"><span class="linenos">54</span></a>    <span class="nd">@property</span>
+</span><span id="KeepEvaluator.next_state_key-55"><a href="#KeepEvaluator.next_state_key-55"><span class="linenos">55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="KeepEvaluator.next_state_key-56"><a href="#KeepEvaluator.next_state_key-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="p">)</span>
 </span></pre></div>
 
 
@@ -3874,6 +3991,13 @@ keyword parameters.</li>
 <p>This should include any members used in <code><a href="#KeepEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#KeepEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#KeepEvaluator.initial_state">initial_state()</a></code>, <code><a href="#KeepEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#KeepEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
@@ -3930,7 +4054,7 @@ include members that are only used in other methods, i.e.
 </span><span id="ArgsortEvaluator-36"><a href="#ArgsortEvaluator-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
 </span><span id="ArgsortEvaluator-37"><a href="#ArgsortEvaluator-37"><span class="linenos">37</span></a>
 </span><span id="ArgsortEvaluator-38"><a href="#ArgsortEvaluator-38"><span class="linenos">38</span></a>    <span class="nd">@property</span>
-</span><span id="ArgsortEvaluator-39"><a href="#ArgsortEvaluator-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ArgsortEvaluator-39"><a href="#ArgsortEvaluator-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="ArgsortEvaluator-40"><a href="#ArgsortEvaluator-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
 </span></pre></div>
 
@@ -4069,18 +4193,18 @@ keyword parameters.</li>
     
 
                             </div>
-                            <div id="ArgsortEvaluator.dungeon_key" class="classattr">
-                                        <input id="ArgsortEvaluator.dungeon_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ArgsortEvaluator.next_state_key" class="classattr">
+                                        <input id="ArgsortEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
-            <span class="name">dungeon_key</span>
+            <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="ArgsortEvaluator.dungeon_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ArgsortEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ArgsortEvaluator.dungeon_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.dungeon_key-38"><a href="#ArgsortEvaluator.dungeon_key-38"><span class="linenos">38</span></a>    <span class="nd">@property</span>
-</span><span id="ArgsortEvaluator.dungeon_key-39"><a href="#ArgsortEvaluator.dungeon_key-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dungeon_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.dungeon_key-40"><a href="#ArgsortEvaluator.dungeon_key-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
+    <a class="headerlink" href="#ArgsortEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.next_state_key-38"><a href="#ArgsortEvaluator.next_state_key-38"><span class="linenos">38</span></a>    <span class="nd">@property</span>
+</span><span id="ArgsortEvaluator.next_state_key-39"><a href="#ArgsortEvaluator.next_state_key-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ArgsortEvaluator.next_state_key-40"><a href="#ArgsortEvaluator.next_state_key-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4089,6 +4213,13 @@ keyword parameters.</li>
 <p>This should include any members used in <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> but does NOT need to
 include members that are only used in other methods, i.e. 
 <code><a href="#ArgsortEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#ArgsortEvaluator.initial_state">initial_state()</a></code>, <code><a href="#ArgsortEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable key that uniquely identifies the <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code>
+  computation, or <code>None</code> to disable persistent caching.</p>
+</blockquote>
 </div>
 
 
