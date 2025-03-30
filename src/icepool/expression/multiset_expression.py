@@ -3,14 +3,14 @@ __docformat__ = 'google'
 from abc import abstractmethod
 import icepool
 from icepool.expand import Expandable
-from icepool.expression.multiset_expression_base import Dungeonlet, MultisetExpressionBase
+from icepool.expression.multiset_expression_base import Q, Dungeonlet, MultisetExpressionBase
 from icepool.collection.counts import Counts
 from icepool.order import Order
 from icepool.population.keep import highest_slice, lowest_slice
 
 import operator
 
-from icepool.typing import Q, T, U, MaybeHashKeyed, ImplicitConversionError
+from icepool.typing import T, U, MaybeHashKeyed, ImplicitConversionError
 from types import EllipsisType
 from typing import (TYPE_CHECKING, Callable, Collection, Literal, Mapping,
                     Sequence, Type, cast, overload)

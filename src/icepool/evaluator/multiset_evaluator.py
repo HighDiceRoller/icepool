@@ -9,7 +9,7 @@ from abc import abstractmethod
 import itertools
 import math
 
-from icepool.typing import Q, T, MaybeHashKeyed, U_co
+from icepool.typing import T, MaybeHashKeyed, U_co
 from typing import (Any, Callable, Collection, Hashable, Iterator, Mapping,
                     Sequence, cast, TYPE_CHECKING)
 

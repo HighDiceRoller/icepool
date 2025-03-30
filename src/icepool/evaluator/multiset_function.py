@@ -12,7 +12,7 @@ from functools import update_wrapper
 
 from icepool.function import sorted_union
 from icepool.order import Order
-from icepool.typing import Q, T, MaybeHashKeyed, U_co
+from icepool.typing import T, MaybeHashKeyed, U_co
 from typing import Any, Callable, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, Sequence, TypeAlias, overload
 
 MV: TypeAlias = MultisetParam | MultisetTupleParam

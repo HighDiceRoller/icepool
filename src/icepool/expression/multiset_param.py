@@ -9,7 +9,7 @@ import enum
 
 from typing import Any, Generic, Iterator, MutableSequence, Sequence
 
-from icepool.typing import Q, T, U_co
+from icepool.typing import T, U_co
 
 
 class MultisetParamBase(Generic[T]):

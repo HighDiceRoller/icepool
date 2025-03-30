@@ -4,10 +4,7 @@ from abc import ABC, abstractmethod
 import enum
 import inspect
 
-from typing import Callable, Hashable, Protocol, Sequence, TypeVar, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from icepool.expression.multiset_expression import MultisetExpression
+from typing import Callable, Hashable, Protocol, Sequence, TypeVar
 
 A_co = TypeVar('A_co', covariant=True)
 """Any type."""
@@ -29,9 +26,6 @@ U = TypeVar('U', bound='Outcome')
 
 U_co = TypeVar('U_co', bound='Outcome', covariant=True)
 """Another outcome type."""
-
-Q = TypeVar('Q')
-"""The type of count emitted by a MultisetExpression."""
 
 
 class RerollType(enum.Enum):

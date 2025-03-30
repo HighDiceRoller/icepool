@@ -3,12 +3,15 @@ __docformat__ = 'google'
 from icepool.order import Order, OrderReason
 from abc import abstractmethod
 
-from icepool.typing import Q, T, MaybeHashKeyed
+from icepool.typing import T, MaybeHashKeyed
 from typing import (TYPE_CHECKING, Any, Generic, Hashable, Iterator,
-                    MutableSequence, NamedTuple, Sequence, Type)
+                    MutableSequence, NamedTuple, Sequence, Type, TypeVar)
 
 if TYPE_CHECKING:
     from icepool.expression.multiset_param import MultisetParamBase
+
+Q = TypeVar('Q')
+"""The type of count emitted by a MultisetExpression."""
 
 
 class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
@@ -102,8 +105,8 @@ class MultisetSourceBase(Generic[T, Q], MaybeHashKeyed):
     def size(self) -> Q | None:
         """The total number of elements output by this source, if only non-negative counts are output.
         
-        If total number of elements is not constant or unknown, or if there are
-        negative counts, the result is `None`.
+        If total number of elements is not constant or unknown, or if there
+        could be negative counts, the result is `None`.
         """
 
     @abstractmethod
