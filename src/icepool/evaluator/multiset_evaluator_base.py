@@ -134,7 +134,7 @@ class Dungeon(Generic[T]):
 
     @abstractmethod
     def next_state_main(self, state: Hashable, order: Order, outcome: T,
-                        param_call_flat: Iterator[tuple]) -> Hashable:
+                        *param_tree) -> Hashable:
         """Main state transition function.
         
         Args:
@@ -143,7 +143,9 @@ class Dungeon(Generic[T]):
             outcome: The current outcome.
             source_counts: The counts produced by sources. This is an iterator
                 that will be consumed in order.
-            param_counts: The counts produced by parameters at this level.
+            param_tree: If this is a leaf call, the counts input to the
+                evaluator. Otherwise, the tree of counts provided to the
+                sub-calls.
 
         Returns:
             The next state, or icepool.Reroll to drop this branch of evaluation.
@@ -259,14 +261,13 @@ class Dungeon(Generic[T]):
 
                 for prev_statelet_tree, prev_main in prev.items():
                     source_counts_iter = iter(source_counts)
-                    statelet_tree, param_call_flat = self.dungeonlet_call_tree.next_state(
+                    statelet_tree, count_tree = self.dungeonlet_call_tree.next_state(
                         prev_statelet_tree, eval_order, outcome,
                         source_counts_iter, ())
                     subresult = result[statelet_tree]
                     for prev_state_main, prev_weight in prev_main.items():
                         state_main = self.next_state_main(
-                            prev_state_main, eval_order, outcome,
-                            iter(param_call_flat))
+                            prev_state_main, eval_order, outcome, *count_tree)
                         if state_main is not icepool.Reroll:
                             subresult[state_main] += prev_weight * weight
         cache[room] = result
@@ -307,12 +308,12 @@ class Dungeon(Generic[T]):
             for outcome, source_counts, next_outcomes, next_sources, weight in room.pop(
                     pop_order):
                 source_counts_iter = iter(source_counts)
-                next_statelet_tree, param_call_flat = self.dungeonlet_call_tree.next_state(
+                next_statelet_tree, count_tree = self.dungeonlet_call_tree.next_state(
                     room.initial_statelet_tree, pop_order, outcome,
                     source_counts_iter, ())
                 next_state_main = self.next_state_main(room.initial_state_main,
                                                        pop_order, outcome,
-                                                       iter(param_call_flat))
+                                                       *count_tree)
                 if next_state_main is not icepool.Reroll:
                     next_room = Room(next_outcomes, next_sources,
                                      next_statelet_tree, next_state_main)

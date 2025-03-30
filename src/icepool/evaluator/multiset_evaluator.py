@@ -205,21 +205,19 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
     calls = ()
 
+    # Will be filled in by constructor.
+    next_state_main = None  # type: ignore
+
     def __init__(
-            self, next_state_eval: Callable[...,
+            self, next_state_main: Callable[...,
                                             Hashable], dungeon_key: Hashable,
             dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'):
-        self.next_state_eval = next_state_eval
+        self.next_state_main = next_state_main  # type: ignore
         self.dungeon_key = dungeon_key
         self.dungeonlet_flats = dungeonlet_flats
 
         if dungeon_key is None:
             self.__hash__ = None  # type: ignore
-
-    def next_state_main(self, state, order: Order, outcome: T,
-                        param_call_flat: Iterator[tuple]) -> Hashable:
-        return self.next_state_eval(state, order, outcome,
-                                    *next(param_call_flat))
 
     @property
     def hash_key(self):

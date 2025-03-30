@@ -190,9 +190,9 @@ class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        param_call_flat: Iterator[tuple]) -> Hashable:
+                        *param_tree) -> Hashable:
         return self.inner_dungeon.next_state_main(state, order, outcome,
-                                                  param_call_flat)
+                                                  *param_tree[0])
 
     @property
     def hash_key(self):
@@ -272,12 +272,14 @@ class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
             self.__hash__ = None  # type: ignore
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        param_call_flat: Iterator[tuple]) -> Hashable:
+                        *param_tree) -> Hashable:
         next_state: MutableSequence[Hashable] = []
         inner_dungeon: Dungeon[T]
-        for inner_state, inner_dungeon in zip(state, self.inner_dungeons):
+        inner_param_tree: tuple
+        for inner_state, inner_dungeon, inner_param_tree in zip(
+                state, self.inner_dungeons, param_tree):
             next_inner_state = inner_dungeon.next_state_main(
-                inner_state, order, outcome, param_call_flat)
+                inner_state, order, outcome, *inner_param_tree)
             if next_inner_state is icepool.Reroll:
                 return icepool.Reroll
             next_state.append(next_inner_state)
