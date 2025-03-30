@@ -810,6 +810,24 @@
                     <a class="function" href="#multiset_function">multiset_function</a>
             </li>
             <li>
+                    <a class="class" href="#MultisetParameter">MultisetParameter</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MultisetParameter.__init__">MultisetParameter</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#MultisetTupleParameter">MultisetTupleParameter</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MultisetTupleParameter.__init__">MultisetTupleParameter</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="function" href="#format_probability_inverse">format_probability_inverse</a>
             </li>
             <li>
@@ -1002,7 +1020,7 @@ change.</li>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_expression</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetExpression</span><span class="p">,</span> <span class="n">implicit_convert_to_expression</span>
 </span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.multiset_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">multiset_function</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_param</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetParam</span><span class="p">,</span> <span class="n">MultisetTupleParam</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_parameter</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetParameter</span><span class="p">,</span> <span class="n">MultisetTupleParameter</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.expression.multiset_mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetMixture</span>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>
 </span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.population.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_probability_inverse</span>
@@ -1026,9 +1044,10 @@ change.</li>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="s1">&#39;map_and_time&#39;</span><span class="p">,</span> <span class="s1">&#39;map_to_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;Reroll&#39;</span><span class="p">,</span> <span class="s1">&#39;RerollType&#39;</span><span class="p">,</span> <span class="s1">&#39;Pool&#39;</span><span class="p">,</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="s1">&#39;standard_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetGenerator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetExpression&#39;</span><span class="p">,</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="s1">&#39;MultisetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;Order&#39;</span><span class="p">,</span> <span class="s1">&#39;ConflictingOrderError&#39;</span><span class="p">,</span> <span class="s1">&#39;UnsupportedOrder&#39;</span><span class="p">,</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiDeal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="s1">&#39;evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;format_probability_inverse&#39;</span><span class="p">,</span> <span class="s1">&#39;Wallenius&#39;</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a><span class="p">]</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="s1">&#39;Deck&#39;</span><span class="p">,</span> <span class="s1">&#39;Deal&#39;</span><span class="p">,</span> <span class="s1">&#39;MultiDeal&#39;</span><span class="p">,</span> <span class="s1">&#39;multiset_function&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetParameter&#39;</span><span class="p">,</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="s1">&#39;MultisetTupleParameter&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;typing&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="s1">&#39;format_probability_inverse&#39;</span><span class="p">,</span> <span class="s1">&#39;Wallenius&#39;</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -11547,8 +11566,8 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 </span><span id="MultisetExpression-126"><a href="#MultisetExpression-126"><span class="linenos"> 126</span></a><span class="sd">    | `all_straights`                | Lengths of all consecutive sequences in descending order                   |</span>
 </span><span id="MultisetExpression-127"><a href="#MultisetExpression-127"><span class="linenos"> 127</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="MultisetExpression-128"><a href="#MultisetExpression-128"><span class="linenos"> 128</span></a>
-</span><span id="MultisetExpression-129"><a href="#MultisetExpression-129"><span class="linenos"> 129</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_make_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetParam[T]&#39;</span><span class="p">:</span>
-</span><span id="MultisetExpression-130"><a href="#MultisetExpression-130"><span class="linenos"> 130</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetParam</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</span><span id="MultisetExpression-129"><a href="#MultisetExpression-129"><span class="linenos"> 129</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_make_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetParameter[T]&#39;</span><span class="p">:</span>
+</span><span id="MultisetExpression-130"><a href="#MultisetExpression-130"><span class="linenos"> 130</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">MultisetParameter</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </span><span id="MultisetExpression-131"><a href="#MultisetExpression-131"><span class="linenos"> 131</span></a>
 </span><span id="MultisetExpression-132"><a href="#MultisetExpression-132"><span class="linenos"> 132</span></a>    <span class="nd">@property</span>
 </span><span id="MultisetExpression-133"><a href="#MultisetExpression-133"><span class="linenos"> 133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_items_for_cartesian_product</span><span class="p">(</span>
@@ -16923,6 +16942,130 @@ arguments, and non-multiset variables as keyword arguments.</li>
 </div>
 
 
+                </section>
+                <section id="MultisetParameter">
+                            <input id="MultisetParameter-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">MultisetParameter</span><wbr>(<span class="base">icepool.expression.multiset_parameter.MultisetParameterBase[~T, int]</span>, <span class="base"><a href="#MultisetExpression">icepool.MultisetExpression[~T]</a></span>):
+
+                <label class="view-source-button" for="MultisetParameter-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MultisetParameter"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetParameter-44"><a href="#MultisetParameter-44"><span class="linenos">44</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetParameter</span><span class="p">(</span><span class="n">MultisetParameterBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">MultisetExpression</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span id="MultisetParameter-45"><a href="#MultisetParameter-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A multiset param with a count of a single `int`.&quot;&quot;&quot;</span>
+</span><span id="MultisetParameter-46"><a href="#MultisetParameter-46"><span class="linenos">46</span></a>
+</span><span id="MultisetParameter-47"><a href="#MultisetParameter-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="MultisetParameter-48"><a href="#MultisetParameter-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+</span><span id="MultisetParameter-49"><a href="#MultisetParameter-49"><span class="linenos">49</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MultisetParameter-50"><a href="#MultisetParameter-50"><span class="linenos">50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
+</span><span id="MultisetParameter-51"><a href="#MultisetParameter-51"><span class="linenos">51</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetParameter-52"><a href="#MultisetParameter-52"><span class="linenos">52</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>A multiset param with a count of a single <code>int</code>.</p>
+</div>
+
+
+                            <div id="MultisetParameter.__init__" class="classattr">
+                                        <input id="MultisetParameter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">MultisetParameter</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">index</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></span>)</span>
+
+                <label class="view-source-button" for="MultisetParameter.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MultisetParameter.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetParameter.__init__-47"><a href="#MultisetParameter.__init__-47"><span class="linenos">47</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="MultisetParameter.__init__-48"><a href="#MultisetParameter.__init__-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+</span><span id="MultisetParameter.__init__-49"><a href="#MultisetParameter.__init__-49"><span class="linenos">49</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MultisetParameter.__init__-50"><a href="#MultisetParameter.__init__-50"><span class="linenos">50</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
+</span><span id="MultisetParameter.__init__-51"><a href="#MultisetParameter.__init__-51"><span class="linenos">51</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetParameter.__init__-52"><a href="#MultisetParameter.__init__-52"><span class="linenos">52</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="MultisetParameter.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="MultisetTupleParameter">
+                            <input id="MultisetTupleParameter-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">MultisetTupleParameter</span><wbr>(<span class="base">icepool.expression.multiset_parameter.MultisetParameterBase[~T, ~IntTupleOut]</span>, <span class="base">icepool.expression.multiset_tuple_expression.MultisetTupleExpression[~T, ~IntTupleOut]</span>):
+
+                <label class="view-source-button" for="MultisetTupleParameter-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MultisetTupleParameter"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetTupleParameter-55"><a href="#MultisetTupleParameter-55"><span class="linenos">55</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetTupleParameter</span><span class="p">(</span><span class="n">MultisetParameterBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">IntTupleOut</span><span class="p">],</span>
+</span><span id="MultisetTupleParameter-56"><a href="#MultisetTupleParameter-56"><span class="linenos">56</span></a>                             <span class="n">MultisetTupleExpression</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">IntTupleOut</span><span class="p">]):</span>
+</span><span id="MultisetTupleParameter-57"><a href="#MultisetTupleParameter-57"><span class="linenos">57</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A multiset param with a count of a tuple of `int`s.&quot;&quot;&quot;</span>
+</span><span id="MultisetTupleParameter-58"><a href="#MultisetTupleParameter-58"><span class="linenos">58</span></a>
+</span><span id="MultisetTupleParameter-59"><a href="#MultisetTupleParameter-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="MultisetTupleParameter-60"><a href="#MultisetTupleParameter-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+</span><span id="MultisetTupleParameter-61"><a href="#MultisetTupleParameter-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MultisetTupleParameter-62"><a href="#MultisetTupleParameter-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
+</span><span id="MultisetTupleParameter-63"><a href="#MultisetTupleParameter-63"><span class="linenos">63</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetTupleParameter-64"><a href="#MultisetTupleParameter-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="MultisetTupleParameter-65"><a href="#MultisetTupleParameter-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+</span><span id="MultisetTupleParameter-66"><a href="#MultisetTupleParameter-66"><span class="linenos">66</span></a>
+</span><span id="MultisetTupleParameter-67"><a href="#MultisetTupleParameter-67"><span class="linenos">67</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MultisetTupleParameter-68"><a href="#MultisetTupleParameter-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>A multiset param with a count of a tuple of <code>int</code>s.</p>
+</div>
+
+
+                            <div id="MultisetTupleParameter.__init__" class="classattr">
+                                        <input id="MultisetTupleParameter.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">MultisetTupleParameter</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">index</span><span class="p">:</span> <span class="nb">int</span>, </span><span class="param"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="n">length</span><span class="p">:</span> <span class="nb">int</span></span>)</span>
+
+                <label class="view-source-button" for="MultisetTupleParameter.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MultisetTupleParameter.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetTupleParameter.__init__-59"><a href="#MultisetTupleParameter.__init__-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="MultisetTupleParameter.__init__-60"><a href="#MultisetTupleParameter.__init__-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">index</span>
+</span><span id="MultisetTupleParameter.__init__-61"><a href="#MultisetTupleParameter.__init__-61"><span class="linenos">61</span></a>        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MultisetTupleParameter.__init__-62"><a href="#MultisetTupleParameter.__init__-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;mv[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
+</span><span id="MultisetTupleParameter.__init__-63"><a href="#MultisetTupleParameter.__init__-63"><span class="linenos">63</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetTupleParameter.__init__-64"><a href="#MultisetTupleParameter.__init__-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="MultisetTupleParameter.__init__-65"><a href="#MultisetTupleParameter.__init__-65"><span class="linenos">65</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="icepool/typing.html#MaybeHashKeyed">icepool.typing.MaybeHashKeyed</a></dt>
+                                <dd id="MultisetTupleParameter.equals" class="function"><a href="icepool/typing.html#MaybeHashKeyed.equals">equals</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
                 </section>
                 <section id="format_probability_inverse">
                             <input id="format_probability_inverse-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
