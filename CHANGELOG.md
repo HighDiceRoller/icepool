@@ -1,4 +1,4 @@
-## v2.0.0 (WIP)
+## v2.0.0 - 31 March 2025
 
 Major rewrite of multiset handling. Things will be more unstable than usual for a while.
 
