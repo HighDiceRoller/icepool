@@ -19,11 +19,15 @@ Major rewrite of multiset handling. Things will be more unstable than usual for 
   * In particular, `keep()` and `sorted_match()`.
 * `MultisetExpression.count()` renamed to `size()`.
 * `@multiset_function` now implements late binding like a standard Python method. (Though I still recommend using only pure functions.)
+* `@multiset_function` now accepts variadic arguments.
 * `@multiset_function` now accepts non-multiset keyword arguments.
+* `@multiset_function` now works with joint evaluations where some sub-evaluations don't contain parameters.
+* Hopefully better `@multiset_function` performance.
 * `Alignment` class is retired.
 * Deprecated `depth=None` is removed from `Die.reroll()`.
-* Multiset generators now always produce a single count value, with `MultiDeal` now producing a tuple rather than taking up multiple argument slots.
+* Multiset generators now always produce a single count value, with `MultiDeal` now producing tuple-valued counts rather than taking up multiple argument slots.
 * Multiset computations now try to infer multiset sizes if the counts are non-negative. This improves the applicability of `keep` and `sort_match` expressions.
+* Cartesian products (e.g. `tupleize`) now return `Reroll` if any argument is `Reroll`.
 
 ## v1.7.2 - 25 February 2025
 
