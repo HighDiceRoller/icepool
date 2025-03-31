@@ -207,15 +207,6 @@ class Die(Population[T_co], MaybeHashKeyed):
         By the time this is called, the other operand has already been
         converted to a `Die`.
 
-        If one side of a binary operator is a tuple and the other is not, the
-        binary operator is applied to each element of the tuple with the
-        non-tuple side. For example, the following are equivalent:
-
-        ```python
-        cartesian_product(d6, d8) * 2
-        cartesian_product(d6 * 2, d8 * 2)
-        ```
-
         This is used for the standard binary operators
         `+, -, *, /, //, %, **, <<, >>, &, |, ^`
         and the standard binary comparators
