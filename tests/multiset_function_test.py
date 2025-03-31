@@ -61,3 +61,29 @@ def test_constant_in_joint():
     expected = tupleize(3 @ d6, 2 @ d6)
 
     assert result.equals(expected, simplify=True)
+
+
+def test_nested():
+
+    @multiset_function
+    def inner(x):
+        return x.sum()
+
+    @multiset_function
+    def outer(x):
+        return inner(x)
+
+    assert outer(d6.pool(3)) == 3 @ d6
+
+
+def test_nested_call_branch():
+
+    @multiset_function
+    def inner(x):
+        return x.sum()
+
+    @multiset_function
+    def outer(x):
+        return x.sum(), inner(x)
+
+    assert outer(d6.pool(3)) == (3 @ d6).map(lambda x: (x, x))
