@@ -121,18 +121,19 @@ class Deck(Population[T_co], MaybeHashKeyed):
         ...
 
     @overload
-    def deal(self, hand_sizes: Iterable[int]) -> 'icepool.MultiDeal[T_co]':
+    def deal(self,
+             hand_sizes: Iterable[int]) -> 'icepool.MultiDeal[T_co, Any]':
         ...
 
     @overload
     def deal(
         self, hand_sizes: int | Iterable[int]
-    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co]':
+    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, Any]':
         ...
 
     def deal(
         self, hand_sizes: int | Iterable[int]
-    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co]':
+    ) -> 'icepool.Deal[T_co] | icepool.MultiDeal[T_co, Any]':
         """Deals the specified number of cards from this deck.
 
         Args:
@@ -143,7 +144,7 @@ class Deck(Population[T_co], MaybeHashKeyed):
         if isinstance(hand_sizes, int):
             return icepool.Deal(self, hand_sizes)
         else:
-            return icepool.MultiDeal(self, hand_sizes)
+            return icepool.MultiDeal(self, tuple(hand_sizes))
 
     # Binary operators.
 
