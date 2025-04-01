@@ -1,3 +1,7 @@
+## v2.0.2 - 1 April 2025
+
+* Fix default `next_state_key` identification.
+
 ## v2.0.1 - 1 April 2025
 
 * Adjusted behavior of `MultisetEvaluator` caching between calls to `evaluate()` depending on the value of `next_state_key`.
