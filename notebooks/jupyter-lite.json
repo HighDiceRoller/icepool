@@ -304,7 +304,7 @@
     "litePluginSettings": {
       "@jupyterlite/pyodide-kernel-extension:kernel": {
         "pipliteUrls": [
-          "./pypi/all.json?sha256=65cad8f15882e285d38ccd07c44e8009020a629404873ef0612b24290378850a",
+          "./pypi/all.json?sha256=ab64f83fad6f2a407e2de1272ed0875ac4cd6556b9ff71b3c3a7f4910feb9252",
           "./extensions/@jupyterlite/pyodide-kernel-extension/static/pypi/all.json?sha256=407e85cb8847d66d1897a62a4410ca2a2d67be109cd8a0c6ed109937c4cb1a86"
         ]
       }
