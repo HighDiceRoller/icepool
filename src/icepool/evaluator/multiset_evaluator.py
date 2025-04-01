@@ -211,8 +211,21 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
                 questlet_flats = ()
                 sources = ()
                 weights = ()
+            next_state_key: Hashable
+            if self.next_state_key is None:
+                # This should only get cached inside this evaluator, but add
+                # self id to be safe.
+                next_state_key = id(self)
+                multiset_function_can_cache = False
+            elif self.next_state_key is icepool.NoCache:
+                next_state_key = icepool.NoCache
+                multiset_function_can_cache = False
+            else:
+                next_state_key = self.next_state_key
+                multiset_function_can_cache = True
             dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
-                self.next_state, self.next_state_key, dungeonlet_flats)
+                self.next_state, next_state_key, multiset_function_can_cache,
+                dungeonlet_flats)
             quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
                 self.initial_state, self.extra_outcomes, self.final_outcome,
                 questlet_flats)
@@ -232,10 +245,11 @@ class MultisetEvaluatorDungeon(Dungeon[T]):
 
     def __init__(
             self, next_state_main: Callable[..., Hashable],
-            next_state_key: Hashable,
+            next_state_key: Hashable, multiset_function_can_cache: bool,
             dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'):
         self.next_state_main = next_state_main  # type: ignore
         self.next_state_key = next_state_key
+        self._multiset_function_can_cache = multiset_function_can_cache
         self.dungeonlet_flats = dungeonlet_flats
 
         if next_state_key is icepool.NoCache:

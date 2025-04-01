@@ -33,10 +33,14 @@ def test_keyed_bare():
     evaluator = KeyedEvaluator()
     evaluator(d6.pool(1))
     assert len(evaluator._cache) == 1
+    evaluator(d6.pool(1))
+    assert len(evaluator._cache) == 1
 
 
 def test_keyless_bare():
     evaluator = KeylessEvaluator()
+    evaluator(d6.pool(1))
+    assert len(evaluator._cache) == 1
     evaluator(d6.pool(1))
     assert len(evaluator._cache) == 1
 
@@ -83,6 +87,8 @@ def test_joint_cache():
     def evaluator(x):
         return KeyedEvaluator().evaluate(x), KeyedEvaluator().evaluate(x)
 
+    evaluator(d6.pool(1))
+    assert len(evaluator._cache) == 1
     evaluator(d6.pool(1))
     assert len(evaluator._cache) == 1
 

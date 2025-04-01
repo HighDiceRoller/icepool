@@ -146,6 +146,8 @@ class ConstantDungeon(Dungeon[Any]):
     dungeonlet_flats = ()
     calls = ()
 
+    _multiset_function_can_cache = True
+
     def next_state_main(self, state, order, outcome, *param_tree):
         return None
 
@@ -224,7 +226,7 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
     def _should_cache(self, dungeon: 'Dungeon[T]') -> bool:
         # In @multiset_function we also don't cache if dungeon.hash_key is
         # None, since this could be a one-off dungeon that can't be reused.
-        return dungeon.__hash__ is not None and dungeon.hash_key is not None
+        return dungeon.__hash__ is not None and dungeon._multiset_function_can_cache
 
 
 def prepare_multiset_function(
@@ -267,6 +269,7 @@ class MultisetFunctionDungeon(Dungeon[T]):
 
         if self.inner_dungeon.__hash__ is None:
             self.__hash__ = None  # type: ignore
+        self._multiset_function_can_cache = self.inner_dungeon._multiset_function_can_cache
 
     def next_state_main(self, state, order: Order, outcome: T,
                         *param_counts) -> Hashable:
@@ -359,6 +362,9 @@ class MultisetFunctionJointDungeon(Dungeon[T]):
 
         if any(dungeon.__hash__ is None for dungeon in inner_dungeons):
             self.__hash__ = None  # type: ignore
+
+        self._multiset_function_can_cache = all(
+            dungeon._multiset_function_can_cache for dungeon in inner_dungeons)
 
     def next_state_main(self, state, order: Order, outcome: T,
                         *param_counts) -> Hashable:

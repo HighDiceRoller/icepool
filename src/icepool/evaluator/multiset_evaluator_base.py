@@ -127,6 +127,8 @@ class Dungeon(Generic[T], MaybeHashKeyed):
     Initialized in evaluate().
     """
 
+    _multiset_function_can_cache: bool
+
     @cached_property
     def dungeonlet_call_tree(self) -> 'DungeonletCallTree[T]':
         dungeonlet_calls = tuple(call.dungeonlet_call_tree
