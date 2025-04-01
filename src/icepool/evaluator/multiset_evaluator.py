@@ -175,17 +175,21 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     @property
     def next_state_key(self) -> Hashable:
-        """Subclasses may optionally provide this property; if so, intermediate calculations will be persistently cached.
+        """Subclasses may optionally provide key that uniquely identifies the `next_state()` computation.
         
         This should include any members used in `next_state()` but does NOT need to
         include members that are only used in other methods, i.e. 
-        `extra_outcomes()`, `initial_state()`, `final_outcome()`.
+        `extra_outcomes()`, `initial_state()`, `final_outcome()`. For example,
+        if `next_state()` is a pure function that only depends on the evaluator
+        class, you can return `type(self)`.
+
+        By default this is the id of the evaluator object.
 
         Returns:
             A hashable key that uniquely identifies the `next_state()`
             computation, or `None` to disable persistent caching.
         """
-        return None
+        return id(self)
 
     def _prepare(
         self,

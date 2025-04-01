@@ -34,7 +34,10 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
         reverse = order != Order.Ascending
         return tuple(sorted(final_state, reverse=reverse))
 
-    # No dungeon key, as this isn't consider worth persistently hashing.
+    @property
+    def next_state_key(self) -> Hashable:
+        # Disable persistent caching.
+        return None
 
 
 class SumEvaluator(MultisetEvaluator[Any, Any]):
@@ -106,7 +109,7 @@ class SizeEvaluator(MultisetEvaluator[Any, int]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 size_evaluator: Final = SizeEvaluator()
@@ -127,7 +130,7 @@ class AnyEvaluator(MultisetEvaluator[Any, bool]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 any_evaluator: Final = AnyEvaluator()

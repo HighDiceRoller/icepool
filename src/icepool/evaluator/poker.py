@@ -36,7 +36,7 @@ class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 highest_outcome_and_count_evaluator: Final = HighestOutcomeAndCountEvaluator()
@@ -93,7 +93,7 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 largest_count_evaluator: Final = LargestCountEvaluator()
@@ -109,7 +109,7 @@ class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 largest_count_and_outcome_evaluator: Final = LargestCountAndOutcomeEvaluator()
@@ -174,7 +174,7 @@ class LargestStraightEvaluator(MultisetEvaluator[int, int]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 largest_straight_evaluator: Final = LargestStraightEvaluator()
@@ -279,7 +279,7 @@ class AllStraightsEvaluator(MultisetEvaluator[int, tuple[int, ...]]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 all_straights_evaluator: Final = AllStraightsEvaluator()

@@ -43,7 +43,7 @@ class ComparisonEvaluator(MultisetEvaluator[Any, bool]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 class IsProperSubsetEvaluator(ComparisonEvaluator):

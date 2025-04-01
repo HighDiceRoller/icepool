@@ -52,7 +52,7 @@ class KeepEvaluator(MultisetEvaluator[Any, Any]):
 
     @property
     def next_state_key(self):
-        return (type(self), )
+        return type(self)
 
 
 keep_evaluator = KeepEvaluator()
