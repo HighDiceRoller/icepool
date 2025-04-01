@@ -539,8 +539,7 @@
 </span><span id="ExpandEvaluator-37"><a href="#ExpandEvaluator-37"><span class="linenos">37</span></a>
 </span><span id="ExpandEvaluator-38"><a href="#ExpandEvaluator-38"><span class="linenos">38</span></a>    <span class="nd">@property</span>
 </span><span id="ExpandEvaluator-39"><a href="#ExpandEvaluator-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="ExpandEvaluator-40"><a href="#ExpandEvaluator-40"><span class="linenos">40</span></a>        <span class="c1"># Disable persistent caching.</span>
-</span><span id="ExpandEvaluator-41"><a href="#ExpandEvaluator-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="ExpandEvaluator-40"><a href="#ExpandEvaluator-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">NoCache</span>
 </span></pre></div>
 
 
@@ -616,27 +615,31 @@
     <a class="headerlink" href="#ExpandEvaluator.next_state_key"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ExpandEvaluator.next_state_key-38"><a href="#ExpandEvaluator.next_state_key-38"><span class="linenos">38</span></a>    <span class="nd">@property</span>
 </span><span id="ExpandEvaluator.next_state_key-39"><a href="#ExpandEvaluator.next_state_key-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hashable</span><span class="p">:</span>
-</span><span id="ExpandEvaluator.next_state_key-40"><a href="#ExpandEvaluator.next_state_key-40"><span class="linenos">40</span></a>        <span class="c1"># Disable persistent caching.</span>
-</span><span id="ExpandEvaluator.next_state_key-41"><a href="#ExpandEvaluator.next_state_key-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="kc">None</span>
+</span><span id="ExpandEvaluator.next_state_key-40"><a href="#ExpandEvaluator.next_state_key-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">NoCache</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#ExpandEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#ExpandEvaluator.initial_state">initial_state()</a></code>, <code><a href="#ExpandEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#ExpandEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ExpandEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#ExpandEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#ExpandEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#ExpandEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#ExpandEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#ExpandEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#ExpandEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -653,51 +656,51 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SumEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator-44"><a href="#SumEvaluator-44"><span class="linenos">44</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SumEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
-</span><span id="SumEvaluator-45"><a href="#SumEvaluator-45"><span class="linenos">45</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sums all outcomes.&quot;&quot;&quot;</span>
-</span><span id="SumEvaluator-46"><a href="#SumEvaluator-46"><span class="linenos">46</span></a>
-</span><span id="SumEvaluator-47"><a href="#SumEvaluator-47"><span class="linenos">47</span></a>    <span class="n">_next_state_key</span><span class="p">:</span> <span class="n">Hashable</span>
-</span><span id="SumEvaluator-48"><a href="#SumEvaluator-48"><span class="linenos">48</span></a>
-</span><span id="SumEvaluator-49"><a href="#SumEvaluator-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator-50"><a href="#SumEvaluator-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
-</span><span id="SumEvaluator-51"><a href="#SumEvaluator-51"><span class="linenos">51</span></a>
-</span><span id="SumEvaluator-52"><a href="#SumEvaluator-52"><span class="linenos">52</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
-</span><span id="SumEvaluator-53"><a href="#SumEvaluator-53"><span class="linenos">53</span></a><span class="sd">            before summing.</span>
-</span><span id="SumEvaluator-54"><a href="#SumEvaluator-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="SumEvaluator-55"><a href="#SumEvaluator-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator-56"><a href="#SumEvaluator-56"><span class="linenos">56</span></a>
-</span><span id="SumEvaluator-57"><a href="#SumEvaluator-57"><span class="linenos">57</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator-58"><a href="#SumEvaluator-58"><span class="linenos">58</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator-59"><a href="#SumEvaluator-59"><span class="linenos">59</span></a>
-</span><span id="SumEvaluator-60"><a href="#SumEvaluator-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator-61"><a href="#SumEvaluator-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
-</span><span id="SumEvaluator-62"><a href="#SumEvaluator-62"><span class="linenos">62</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
-</span><span id="SumEvaluator-63"><a href="#SumEvaluator-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
-</span><span id="SumEvaluator-64"><a href="#SumEvaluator-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="SumEvaluator-65"><a href="#SumEvaluator-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator-66"><a href="#SumEvaluator-66"><span class="linenos">66</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</span><span id="SumEvaluator-67"><a href="#SumEvaluator-67"><span class="linenos">67</span></a>
-</span><span id="SumEvaluator-68"><a href="#SumEvaluator-68"><span class="linenos">68</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator-69"><a href="#SumEvaluator-69"><span class="linenos">69</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
-</span><span id="SumEvaluator-70"><a href="#SumEvaluator-70"><span class="linenos">70</span></a>
-</span><span id="SumEvaluator-71"><a href="#SumEvaluator-71"><span class="linenos">71</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator-72"><a href="#SumEvaluator-72"><span class="linenos">72</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="SumEvaluator-73"><a href="#SumEvaluator-73"><span class="linenos">73</span></a>
-</span><span id="SumEvaluator-74"><a href="#SumEvaluator-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SumEvaluator-75"><a href="#SumEvaluator-75"><span class="linenos">75</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SumEvaluator-76"><a href="#SumEvaluator-76"><span class="linenos">76</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="SumEvaluator-77"><a href="#SumEvaluator-77"><span class="linenos">77</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator-78"><a href="#SumEvaluator-78"><span class="linenos">78</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="SumEvaluator-79"><a href="#SumEvaluator-79"><span class="linenos">79</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
-</span><span id="SumEvaluator-80"><a href="#SumEvaluator-80"><span class="linenos">80</span></a>                <span class="c1"># multiplication in this case.</span>
-</span><span id="SumEvaluator-81"><a href="#SumEvaluator-81"><span class="linenos">81</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator-82"><a href="#SumEvaluator-82"><span class="linenos">82</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumEvaluator-83"><a href="#SumEvaluator-83"><span class="linenos">83</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator-84"><a href="#SumEvaluator-84"><span class="linenos">84</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumEvaluator-85"><a href="#SumEvaluator-85"><span class="linenos">85</span></a>
-</span><span id="SumEvaluator-86"><a href="#SumEvaluator-86"><span class="linenos">86</span></a>    <span class="nd">@property</span>
-</span><span id="SumEvaluator-87"><a href="#SumEvaluator-87"><span class="linenos">87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="SumEvaluator-88"><a href="#SumEvaluator-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator-43"><a href="#SumEvaluator-43"><span class="linenos">43</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SumEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+</span><span id="SumEvaluator-44"><a href="#SumEvaluator-44"><span class="linenos">44</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Sums all outcomes.&quot;&quot;&quot;</span>
+</span><span id="SumEvaluator-45"><a href="#SumEvaluator-45"><span class="linenos">45</span></a>
+</span><span id="SumEvaluator-46"><a href="#SumEvaluator-46"><span class="linenos">46</span></a>    <span class="n">_next_state_key</span><span class="p">:</span> <span class="n">Hashable</span>
+</span><span id="SumEvaluator-47"><a href="#SumEvaluator-47"><span class="linenos">47</span></a>
+</span><span id="SumEvaluator-48"><a href="#SumEvaluator-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator-49"><a href="#SumEvaluator-49"><span class="linenos">49</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+</span><span id="SumEvaluator-50"><a href="#SumEvaluator-50"><span class="linenos">50</span></a>
+</span><span id="SumEvaluator-51"><a href="#SumEvaluator-51"><span class="linenos">51</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
+</span><span id="SumEvaluator-52"><a href="#SumEvaluator-52"><span class="linenos">52</span></a><span class="sd">            before summing.</span>
+</span><span id="SumEvaluator-53"><a href="#SumEvaluator-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SumEvaluator-54"><a href="#SumEvaluator-54"><span class="linenos">54</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator-55"><a href="#SumEvaluator-55"><span class="linenos">55</span></a>
+</span><span id="SumEvaluator-56"><a href="#SumEvaluator-56"><span class="linenos">56</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator-57"><a href="#SumEvaluator-57"><span class="linenos">57</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator-58"><a href="#SumEvaluator-58"><span class="linenos">58</span></a>
+</span><span id="SumEvaluator-59"><a href="#SumEvaluator-59"><span class="linenos">59</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator-60"><a href="#SumEvaluator-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
+</span><span id="SumEvaluator-61"><a href="#SumEvaluator-61"><span class="linenos">61</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
+</span><span id="SumEvaluator-62"><a href="#SumEvaluator-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
+</span><span id="SumEvaluator-63"><a href="#SumEvaluator-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="SumEvaluator-64"><a href="#SumEvaluator-64"><span class="linenos">64</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator-65"><a href="#SumEvaluator-65"><span class="linenos">65</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span id="SumEvaluator-66"><a href="#SumEvaluator-66"><span class="linenos">66</span></a>
+</span><span id="SumEvaluator-67"><a href="#SumEvaluator-67"><span class="linenos">67</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator-68"><a href="#SumEvaluator-68"><span class="linenos">68</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="SumEvaluator-69"><a href="#SumEvaluator-69"><span class="linenos">69</span></a>
+</span><span id="SumEvaluator-70"><a href="#SumEvaluator-70"><span class="linenos">70</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator-71"><a href="#SumEvaluator-71"><span class="linenos">71</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="SumEvaluator-72"><a href="#SumEvaluator-72"><span class="linenos">72</span></a>
+</span><span id="SumEvaluator-73"><a href="#SumEvaluator-73"><span class="linenos">73</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SumEvaluator-74"><a href="#SumEvaluator-74"><span class="linenos">74</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SumEvaluator-75"><a href="#SumEvaluator-75"><span class="linenos">75</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="SumEvaluator-76"><a href="#SumEvaluator-76"><span class="linenos">76</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator-77"><a href="#SumEvaluator-77"><span class="linenos">77</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="SumEvaluator-78"><a href="#SumEvaluator-78"><span class="linenos">78</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
+</span><span id="SumEvaluator-79"><a href="#SumEvaluator-79"><span class="linenos">79</span></a>                <span class="c1"># multiplication in this case.</span>
+</span><span id="SumEvaluator-80"><a href="#SumEvaluator-80"><span class="linenos">80</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator-81"><a href="#SumEvaluator-81"><span class="linenos">81</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator-82"><a href="#SumEvaluator-82"><span class="linenos">82</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator-83"><a href="#SumEvaluator-83"><span class="linenos">83</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator-84"><a href="#SumEvaluator-84"><span class="linenos">84</span></a>
+</span><span id="SumEvaluator-85"><a href="#SumEvaluator-85"><span class="linenos">85</span></a>    <span class="nd">@property</span>
+</span><span id="SumEvaluator-86"><a href="#SumEvaluator-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SumEvaluator-87"><a href="#SumEvaluator-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span>
 </span></pre></div>
 
 
@@ -715,30 +718,30 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SumEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.__init__-49"><a href="#SumEvaluator.__init__-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator.__init__-50"><a href="#SumEvaluator.__init__-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
-</span><span id="SumEvaluator.__init__-51"><a href="#SumEvaluator.__init__-51"><span class="linenos">51</span></a>
-</span><span id="SumEvaluator.__init__-52"><a href="#SumEvaluator.__init__-52"><span class="linenos">52</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
-</span><span id="SumEvaluator.__init__-53"><a href="#SumEvaluator.__init__-53"><span class="linenos">53</span></a><span class="sd">            before summing.</span>
-</span><span id="SumEvaluator.__init__-54"><a href="#SumEvaluator.__init__-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="SumEvaluator.__init__-55"><a href="#SumEvaluator.__init__-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator.__init__-56"><a href="#SumEvaluator.__init__-56"><span class="linenos">56</span></a>
-</span><span id="SumEvaluator.__init__-57"><a href="#SumEvaluator.__init__-57"><span class="linenos">57</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator.__init__-58"><a href="#SumEvaluator.__init__-58"><span class="linenos">58</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator.__init__-59"><a href="#SumEvaluator.__init__-59"><span class="linenos">59</span></a>
-</span><span id="SumEvaluator.__init__-60"><a href="#SumEvaluator.__init__-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator.__init__-61"><a href="#SumEvaluator.__init__-61"><span class="linenos">61</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
-</span><span id="SumEvaluator.__init__-62"><a href="#SumEvaluator.__init__-62"><span class="linenos">62</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
-</span><span id="SumEvaluator.__init__-63"><a href="#SumEvaluator.__init__-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
-</span><span id="SumEvaluator.__init__-64"><a href="#SumEvaluator.__init__-64"><span class="linenos">64</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="SumEvaluator.__init__-65"><a href="#SumEvaluator.__init__-65"><span class="linenos">65</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator.__init__-66"><a href="#SumEvaluator.__init__-66"><span class="linenos">66</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</span><span id="SumEvaluator.__init__-67"><a href="#SumEvaluator.__init__-67"><span class="linenos">67</span></a>
-</span><span id="SumEvaluator.__init__-68"><a href="#SumEvaluator.__init__-68"><span class="linenos">68</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
-</span><span id="SumEvaluator.__init__-69"><a href="#SumEvaluator.__init__-69"><span class="linenos">69</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
-</span><span id="SumEvaluator.__init__-70"><a href="#SumEvaluator.__init__-70"><span class="linenos">70</span></a>
-</span><span id="SumEvaluator.__init__-71"><a href="#SumEvaluator.__init__-71"><span class="linenos">71</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
-</span><span id="SumEvaluator.__init__-72"><a href="#SumEvaluator.__init__-72"><span class="linenos">72</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.__init__-48"><a href="#SumEvaluator.__init__-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="n">Mapping</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator.__init__-49"><a href="#SumEvaluator.__init__-49"><span class="linenos">49</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+</span><span id="SumEvaluator.__init__-50"><a href="#SumEvaluator.__init__-50"><span class="linenos">50</span></a>
+</span><span id="SumEvaluator.__init__-51"><a href="#SumEvaluator.__init__-51"><span class="linenos">51</span></a><span class="sd">        map: If provided, outcomes will be mapped according to this just</span>
+</span><span id="SumEvaluator.__init__-52"><a href="#SumEvaluator.__init__-52"><span class="linenos">52</span></a><span class="sd">            before summing.</span>
+</span><span id="SumEvaluator.__init__-53"><a href="#SumEvaluator.__init__-53"><span class="linenos">53</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SumEvaluator.__init__-54"><a href="#SumEvaluator.__init__-54"><span class="linenos">54</span></a>        <span class="k">if</span> <span class="nb">map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator.__init__-55"><a href="#SumEvaluator.__init__-55"><span class="linenos">55</span></a>
+</span><span id="SumEvaluator.__init__-56"><a href="#SumEvaluator.__init__-56"><span class="linenos">56</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator.__init__-57"><a href="#SumEvaluator.__init__-57"><span class="linenos">57</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator.__init__-58"><a href="#SumEvaluator.__init__-58"><span class="linenos">58</span></a>
+</span><span id="SumEvaluator.__init__-59"><a href="#SumEvaluator.__init__-59"><span class="linenos">59</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator.__init__-60"><a href="#SumEvaluator.__init__-60"><span class="linenos">60</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">SumEvaluator</span><span class="p">,</span> <span class="p">)</span>
+</span><span id="SumEvaluator.__init__-61"><a href="#SumEvaluator.__init__-61"><span class="linenos">61</span></a>        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
+</span><span id="SumEvaluator.__init__-62"><a href="#SumEvaluator.__init__-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="nb">map</span>
+</span><span id="SumEvaluator.__init__-63"><a href="#SumEvaluator.__init__-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="SumEvaluator.__init__-64"><a href="#SumEvaluator.__init__-64"><span class="linenos">64</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator.__init__-65"><a href="#SumEvaluator.__init__-65"><span class="linenos">65</span></a>            <span class="n">map_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span id="SumEvaluator.__init__-66"><a href="#SumEvaluator.__init__-66"><span class="linenos">66</span></a>
+</span><span id="SumEvaluator.__init__-67"><a href="#SumEvaluator.__init__-67"><span class="linenos">67</span></a>            <span class="k">def</span><span class="w"> </span><span class="nf">map_func</span><span class="p">(</span><span class="n">outcome</span><span class="p">):</span>
+</span><span id="SumEvaluator.__init__-68"><a href="#SumEvaluator.__init__-68"><span class="linenos">68</span></a>                <span class="k">return</span> <span class="n">map_dict</span><span class="p">[</span><span class="n">outcome</span><span class="p">]</span>
+</span><span id="SumEvaluator.__init__-69"><a href="#SumEvaluator.__init__-69"><span class="linenos">69</span></a>
+</span><span id="SumEvaluator.__init__-70"><a href="#SumEvaluator.__init__-70"><span class="linenos">70</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="n">map_func</span>
+</span><span id="SumEvaluator.__init__-71"><a href="#SumEvaluator.__init__-71"><span class="linenos">71</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span> <span class="o">=</span> <span class="kc">None</span>
 </span></pre></div>
 
 
@@ -761,17 +764,17 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SumEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state-74"><a href="#SumEvaluator.next_state-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SumEvaluator.next_state-75"><a href="#SumEvaluator.next_state-75"><span class="linenos">75</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SumEvaluator.next_state-76"><a href="#SumEvaluator.next_state-76"><span class="linenos">76</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
-</span><span id="SumEvaluator.next_state-77"><a href="#SumEvaluator.next_state-77"><span class="linenos">77</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SumEvaluator.next_state-78"><a href="#SumEvaluator.next_state-78"><span class="linenos">78</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-</span><span id="SumEvaluator.next_state-79"><a href="#SumEvaluator.next_state-79"><span class="linenos">79</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
-</span><span id="SumEvaluator.next_state-80"><a href="#SumEvaluator.next_state-80"><span class="linenos">80</span></a>                <span class="c1"># multiplication in this case.</span>
-</span><span id="SumEvaluator.next_state-81"><a href="#SumEvaluator.next_state-81"><span class="linenos">81</span></a>                <span class="k">return</span> <span class="n">outcome</span>
-</span><span id="SumEvaluator.next_state-82"><a href="#SumEvaluator.next_state-82"><span class="linenos">82</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
-</span><span id="SumEvaluator.next_state-83"><a href="#SumEvaluator.next_state-83"><span class="linenos">83</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="SumEvaluator.next_state-84"><a href="#SumEvaluator.next_state-84"><span class="linenos">84</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state-73"><a href="#SumEvaluator.next_state-73"><span class="linenos">73</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SumEvaluator.next_state-74"><a href="#SumEvaluator.next_state-74"><span class="linenos">74</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SumEvaluator.next_state-75"><a href="#SumEvaluator.next_state-75"><span class="linenos">75</span></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</span><span id="SumEvaluator.next_state-76"><a href="#SumEvaluator.next_state-76"><span class="linenos">76</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SumEvaluator.next_state-77"><a href="#SumEvaluator.next_state-77"><span class="linenos">77</span></a>            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="SumEvaluator.next_state-78"><a href="#SumEvaluator.next_state-78"><span class="linenos">78</span></a>                <span class="c1"># The outcome does not need to support addition or</span>
+</span><span id="SumEvaluator.next_state-79"><a href="#SumEvaluator.next_state-79"><span class="linenos">79</span></a>                <span class="c1"># multiplication in this case.</span>
+</span><span id="SumEvaluator.next_state-80"><a href="#SumEvaluator.next_state-80"><span class="linenos">80</span></a>                <span class="k">return</span> <span class="n">outcome</span>
+</span><span id="SumEvaluator.next_state-81"><a href="#SumEvaluator.next_state-81"><span class="linenos">81</span></a>            <span class="k">return</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
+</span><span id="SumEvaluator.next_state-82"><a href="#SumEvaluator.next_state-82"><span class="linenos">82</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="SumEvaluator.next_state-83"><a href="#SumEvaluator.next_state-83"><span class="linenos">83</span></a>            <span class="k">return</span> <span class="n">state</span> <span class="o">+</span> <span class="n">outcome</span> <span class="o">*</span> <span class="n">count</span>
 </span></pre></div>
 
 
@@ -789,28 +792,33 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SumEvaluator.next_state_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state_key-86"><a href="#SumEvaluator.next_state_key-86"><span class="linenos">86</span></a>    <span class="nd">@property</span>
-</span><span id="SumEvaluator.next_state_key-87"><a href="#SumEvaluator.next_state_key-87"><span class="linenos">87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="SumEvaluator.next_state_key-88"><a href="#SumEvaluator.next_state_key-88"><span class="linenos">88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SumEvaluator.next_state_key-85"><a href="#SumEvaluator.next_state_key-85"><span class="linenos">85</span></a>    <span class="nd">@property</span>
+</span><span id="SumEvaluator.next_state_key-86"><a href="#SumEvaluator.next_state_key-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SumEvaluator.next_state_key-87"><a href="#SumEvaluator.next_state_key-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_next_state_key</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#SumEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#SumEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#SumEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#SumEvaluator.initial_state">initial_state()</a></code>, <code><a href="#SumEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#SumEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#SumEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#SumEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#SumEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#SumEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#SumEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#SumEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#SumEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#SumEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#SumEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#SumEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -839,25 +847,25 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SizeEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator-95"><a href="#SizeEvaluator-95"><span class="linenos"> 95</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SizeEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
-</span><span id="SizeEvaluator-96"><a href="#SizeEvaluator-96"><span class="linenos"> 96</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the total number of elements.</span>
-</span><span id="SizeEvaluator-97"><a href="#SizeEvaluator-97"><span class="linenos"> 97</span></a>
-</span><span id="SizeEvaluator-98"><a href="#SizeEvaluator-98"><span class="linenos"> 98</span></a><span class="sd">    Usually not very interesting unless the counts are adjusted by</span>
-</span><span id="SizeEvaluator-99"><a href="#SizeEvaluator-99"><span class="linenos"> 99</span></a><span class="sd">    `unique` etc.</span>
-</span><span id="SizeEvaluator-100"><a href="#SizeEvaluator-100"><span class="linenos">100</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator-101"><a href="#SizeEvaluator-101"><span class="linenos">101</span></a>
-</span><span id="SizeEvaluator-102"><a href="#SizeEvaluator-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SizeEvaluator-103"><a href="#SizeEvaluator-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator-104"><a href="#SizeEvaluator-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
-</span><span id="SizeEvaluator-105"><a href="#SizeEvaluator-105"><span class="linenos">105</span></a>
-</span><span id="SizeEvaluator-106"><a href="#SizeEvaluator-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="SizeEvaluator-107"><a href="#SizeEvaluator-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="SizeEvaluator-108"><a href="#SizeEvaluator-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator-109"><a href="#SizeEvaluator-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
-</span><span id="SizeEvaluator-110"><a href="#SizeEvaluator-110"><span class="linenos">110</span></a>
-</span><span id="SizeEvaluator-111"><a href="#SizeEvaluator-111"><span class="linenos">111</span></a>    <span class="nd">@property</span>
-</span><span id="SizeEvaluator-112"><a href="#SizeEvaluator-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="SizeEvaluator-113"><a href="#SizeEvaluator-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator-94"><a href="#SizeEvaluator-94"><span class="linenos"> 94</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SizeEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="SizeEvaluator-95"><a href="#SizeEvaluator-95"><span class="linenos"> 95</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the total number of elements.</span>
+</span><span id="SizeEvaluator-96"><a href="#SizeEvaluator-96"><span class="linenos"> 96</span></a>
+</span><span id="SizeEvaluator-97"><a href="#SizeEvaluator-97"><span class="linenos"> 97</span></a><span class="sd">    Usually not very interesting unless the counts are adjusted by</span>
+</span><span id="SizeEvaluator-98"><a href="#SizeEvaluator-98"><span class="linenos"> 98</span></a><span class="sd">    `unique` etc.</span>
+</span><span id="SizeEvaluator-99"><a href="#SizeEvaluator-99"><span class="linenos"> 99</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator-100"><a href="#SizeEvaluator-100"><span class="linenos">100</span></a>
+</span><span id="SizeEvaluator-101"><a href="#SizeEvaluator-101"><span class="linenos">101</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SizeEvaluator-102"><a href="#SizeEvaluator-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator-103"><a href="#SizeEvaluator-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
+</span><span id="SizeEvaluator-104"><a href="#SizeEvaluator-104"><span class="linenos">104</span></a>
+</span><span id="SizeEvaluator-105"><a href="#SizeEvaluator-105"><span class="linenos">105</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="SizeEvaluator-106"><a href="#SizeEvaluator-106"><span class="linenos">106</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="SizeEvaluator-107"><a href="#SizeEvaluator-107"><span class="linenos">107</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator-108"><a href="#SizeEvaluator-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
+</span><span id="SizeEvaluator-109"><a href="#SizeEvaluator-109"><span class="linenos">109</span></a>
+</span><span id="SizeEvaluator-110"><a href="#SizeEvaluator-110"><span class="linenos">110</span></a>    <span class="nd">@property</span>
+</span><span id="SizeEvaluator-111"><a href="#SizeEvaluator-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SizeEvaluator-112"><a href="#SizeEvaluator-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -879,9 +887,9 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SizeEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state-102"><a href="#SizeEvaluator.next_state-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="SizeEvaluator.next_state-103"><a href="#SizeEvaluator.next_state-103"><span class="linenos">103</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator.next_state-104"><a href="#SizeEvaluator.next_state-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state-101"><a href="#SizeEvaluator.next_state-101"><span class="linenos">101</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="SizeEvaluator.next_state-102"><a href="#SizeEvaluator.next_state-102"><span class="linenos">102</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator.next_state-103"><a href="#SizeEvaluator.next_state-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">state</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">count</span>
 </span></pre></div>
 
 
@@ -901,10 +909,10 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SizeEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.final_outcome-106"><a href="#SizeEvaluator.final_outcome-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="SizeEvaluator.final_outcome-107"><a href="#SizeEvaluator.final_outcome-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="SizeEvaluator.final_outcome-108"><a href="#SizeEvaluator.final_outcome-108"><span class="linenos">108</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="SizeEvaluator.final_outcome-109"><a href="#SizeEvaluator.final_outcome-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.final_outcome-105"><a href="#SizeEvaluator.final_outcome-105"><span class="linenos">105</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="SizeEvaluator.final_outcome-106"><a href="#SizeEvaluator.final_outcome-106"><span class="linenos">106</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="SizeEvaluator.final_outcome-107"><a href="#SizeEvaluator.final_outcome-107"><span class="linenos">107</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="SizeEvaluator.final_outcome-108"><a href="#SizeEvaluator.final_outcome-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -922,28 +930,33 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#SizeEvaluator.next_state_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state_key-111"><a href="#SizeEvaluator.next_state_key-111"><span class="linenos">111</span></a>    <span class="nd">@property</span>
-</span><span id="SizeEvaluator.next_state_key-112"><a href="#SizeEvaluator.next_state_key-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="SizeEvaluator.next_state_key-113"><a href="#SizeEvaluator.next_state_key-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SizeEvaluator.next_state_key-110"><a href="#SizeEvaluator.next_state_key-110"><span class="linenos">110</span></a>    <span class="nd">@property</span>
+</span><span id="SizeEvaluator.next_state_key-111"><a href="#SizeEvaluator.next_state_key-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SizeEvaluator.next_state_key-112"><a href="#SizeEvaluator.next_state_key-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#SizeEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#SizeEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#SizeEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#SizeEvaluator.initial_state">initial_state()</a></code>, <code><a href="#SizeEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#SizeEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#SizeEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#SizeEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#SizeEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#SizeEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#SizeEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#SizeEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#SizeEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#SizeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#SizeEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#SizeEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -972,21 +985,21 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AnyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
-</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff at least one count is positive.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>
-</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AnyEvaluator-126"><a href="#AnyEvaluator-126"><span class="linenos">126</span></a>
-</span><span id="AnyEvaluator-127"><a href="#AnyEvaluator-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="AnyEvaluator-128"><a href="#AnyEvaluator-128"><span class="linenos">128</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="AnyEvaluator-129"><a href="#AnyEvaluator-129"><span class="linenos">129</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-130"><a href="#AnyEvaluator-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
-</span><span id="AnyEvaluator-131"><a href="#AnyEvaluator-131"><span class="linenos">131</span></a>
-</span><span id="AnyEvaluator-132"><a href="#AnyEvaluator-132"><span class="linenos">132</span></a>    <span class="nd">@property</span>
-</span><span id="AnyEvaluator-133"><a href="#AnyEvaluator-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AnyEvaluator-134"><a href="#AnyEvaluator-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator-119"><a href="#AnyEvaluator-119"><span class="linenos">119</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AnyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
+</span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff at least one count is positive.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a>
+</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>
+</span><span id="AnyEvaluator-126"><a href="#AnyEvaluator-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="AnyEvaluator-127"><a href="#AnyEvaluator-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="AnyEvaluator-128"><a href="#AnyEvaluator-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator-129"><a href="#AnyEvaluator-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
+</span><span id="AnyEvaluator-130"><a href="#AnyEvaluator-130"><span class="linenos">130</span></a>
+</span><span id="AnyEvaluator-131"><a href="#AnyEvaluator-131"><span class="linenos">131</span></a>    <span class="nd">@property</span>
+</span><span id="AnyEvaluator-132"><a href="#AnyEvaluator-132"><span class="linenos">132</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AnyEvaluator-133"><a href="#AnyEvaluator-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1005,9 +1018,9 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-123"><a href="#AnyEvaluator.next_state-123"><span class="linenos">123</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator.next_state-124"><a href="#AnyEvaluator.next_state-124"><span class="linenos">124</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.next_state-125"><a href="#AnyEvaluator.next_state-125"><span class="linenos">125</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-122"><a href="#AnyEvaluator.next_state-122"><span class="linenos">122</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="AnyEvaluator.next_state-123"><a href="#AnyEvaluator.next_state-123"><span class="linenos">123</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.next_state-124"><a href="#AnyEvaluator.next_state-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1027,10 +1040,10 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-127"><a href="#AnyEvaluator.final_outcome-127"><span class="linenos">127</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="AnyEvaluator.final_outcome-128"><a href="#AnyEvaluator.final_outcome-128"><span class="linenos">128</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="AnyEvaluator.final_outcome-129"><a href="#AnyEvaluator.final_outcome-129"><span class="linenos">129</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.final_outcome-130"><a href="#AnyEvaluator.final_outcome-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-126"><a href="#AnyEvaluator.final_outcome-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="AnyEvaluator.final_outcome-127"><a href="#AnyEvaluator.final_outcome-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="AnyEvaluator.final_outcome-128"><a href="#AnyEvaluator.final_outcome-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="AnyEvaluator.final_outcome-129"><a href="#AnyEvaluator.final_outcome-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -1048,28 +1061,33 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#AnyEvaluator.next_state_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state_key-132"><a href="#AnyEvaluator.next_state_key-132"><span class="linenos">132</span></a>    <span class="nd">@property</span>
-</span><span id="AnyEvaluator.next_state_key-133"><a href="#AnyEvaluator.next_state_key-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AnyEvaluator.next_state_key-134"><a href="#AnyEvaluator.next_state_key-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state_key-131"><a href="#AnyEvaluator.next_state_key-131"><span class="linenos">131</span></a>    <span class="nd">@property</span>
+</span><span id="AnyEvaluator.next_state_key-132"><a href="#AnyEvaluator.next_state_key-132"><span class="linenos">132</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AnyEvaluator.next_state_key-133"><a href="#AnyEvaluator.next_state_key-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#AnyEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#AnyEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#AnyEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#AnyEvaluator.initial_state">initial_state()</a></code>, <code><a href="#AnyEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#AnyEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#AnyEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#AnyEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#AnyEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#AnyEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#AnyEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#AnyEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#AnyEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#AnyEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#AnyEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#AnyEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -1207,20 +1225,25 @@ class, you can return <code>type(self)</code>.</p>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#HighestOutcomeAndCountEvaluator.initial_state">initial_state()</a></code>, <code><a href="#HighestOutcomeAndCountEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#HighestOutcomeAndCountEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#HighestOutcomeAndCountEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#HighestOutcomeAndCountEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#HighestOutcomeAndCountEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#HighestOutcomeAndCountEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#HighestOutcomeAndCountEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -1305,20 +1328,25 @@ class, you can return <code>type(self)</code>.</p>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#LargestCountEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestCountEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestCountEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#LargestCountEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestCountEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#LargestCountEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#LargestCountEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#LargestCountEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#LargestCountEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#LargestCountEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -1403,20 +1431,25 @@ class, you can return <code>type(self)</code>.</p>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#LargestCountAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestCountAndOutcomeEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestCountAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#LargestCountAndOutcomeEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestCountAndOutcomeEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#LargestCountAndOutcomeEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#LargestCountAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#LargestCountAndOutcomeEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#LargestCountAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#LargestCountAndOutcomeEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -1680,20 +1713,25 @@ keyword parameters.</li>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#CountSubsetEvaluator.initial_state">initial_state()</a></code>, <code><a href="#CountSubsetEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#CountSubsetEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#CountSubsetEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#CountSubsetEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#CountSubsetEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#CountSubsetEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#CountSubsetEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -1882,20 +1920,25 @@ If <code>None</code>, no filtering will be done.</li>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#AllCountsEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#AllCountsEvaluator.initial_state">initial_state()</a></code>, <code><a href="#AllCountsEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#AllCountsEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#AllCountsEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#AllCountsEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#AllCountsEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#AllCountsEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#AllCountsEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#AllCountsEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -2151,20 +2194,25 @@ keyword parameters.</li>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestStraightEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestStraightEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#LargestStraightEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestStraightEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#LargestStraightEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#LargestStraightEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#LargestStraightEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#LargestStraightEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -2574,20 +2622,25 @@ keyword parameters.</li>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#LargestStraightAndOutcomeEvaluator.initial_state">initial_state()</a></code>, <code><a href="#LargestStraightAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#LargestStraightAndOutcomeEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestStraightAndOutcomeEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#LargestStraightAndOutcomeEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#LargestStraightAndOutcomeEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#LargestStraightAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#LargestStraightAndOutcomeEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -2800,20 +2853,25 @@ elements are preferentially assigned to the longer straight.</p>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#AllStraightsEvaluator.initial_state">initial_state()</a></code>, <code><a href="#AllStraightsEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#AllStraightsEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#AllStraightsEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#AllStraightsEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#AllStraightsEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#AllStraightsEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#AllStraightsEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -3242,20 +3300,25 @@ bool are <code>True</code>.</p>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#ComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#ComparisonEvaluator.initial_state">initial_state()</a></code>, <code><a href="#ComparisonEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#ComparisonEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ComparisonEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#ComparisonEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#ComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#ComparisonEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#ComparisonEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#ComparisonEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -4078,20 +4141,25 @@ keyword parameters.</li>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#KeepEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#KeepEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#KeepEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#KeepEvaluator.initial_state">initial_state()</a></code>, <code><a href="#KeepEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#KeepEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#KeepEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#KeepEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#KeepEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#KeepEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#KeepEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#KeepEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#KeepEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#KeepEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#KeepEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#KeepEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -4304,20 +4372,25 @@ keyword parameters.</li>
 
             <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> computation.</p>
 
-<p>This should include any members used in <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> but does NOT need to
-include members that are only used in other methods, i.e. 
-<code><a href="#ArgsortEvaluator.extra_outcomes">extra_outcomes()</a></code>, <code><a href="#ArgsortEvaluator.initial_state">initial_state()</a></code>, <code><a href="#ArgsortEvaluator.final_outcome">final_outcome()</a></code>. For example,
-if <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> is a pure function that only depends on the evaluator
-class, you can return <code>type(self)</code>.</p>
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ArgsortEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>By default this is the id of the evaluator object.</p>
+<p>If you do implement this, <code><a href="#ArgsortEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
 
-<h6 id="returns">Returns:</h6>
+<ul>
+<li><code><a href="#ArgsortEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#ArgsortEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#ArgsortEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</li>
+</ul>
 
-<blockquote>
-  <p>A hashable key that uniquely identifies the <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code>
-  computation, or <code>None</code> to disable persistent caching.</p>
-</blockquote>
+<p>If you want to disable caching between calls to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -4334,54 +4407,59 @@ class, you can return <code>type(self)</code>.</p>
 
     </div>
     <a class="headerlink" href="#MultisetFunctionEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator-172"><a href="#MultisetFunctionEvaluator-172"><span class="linenos">172</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetFunctionEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluatorBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
-</span><span id="MultisetFunctionEvaluator-173"><a href="#MultisetFunctionEvaluator-173"><span class="linenos">173</span></a>    <span class="n">_positional_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-174"><a href="#MultisetFunctionEvaluator-174"><span class="linenos">174</span></a>    <span class="n">_var_positional_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="MultisetFunctionEvaluator-175"><a href="#MultisetFunctionEvaluator-175"><span class="linenos">175</span></a>
-</span><span id="MultisetFunctionEvaluator-176"><a href="#MultisetFunctionEvaluator-176"><span class="linenos">176</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
-</span><span id="MultisetFunctionEvaluator-177"><a href="#MultisetFunctionEvaluator-177"><span class="linenos">177</span></a>        <span class="o">...</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-178"><a href="#MultisetFunctionEvaluator-178"><span class="linenos">178</span></a>        <span class="s1">&#39;MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]&#39;</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-179"><a href="#MultisetFunctionEvaluator-179"><span class="linenos">179</span></a>                 <span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator-180"><a href="#MultisetFunctionEvaluator-180"><span class="linenos">180</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
-</span><span id="MultisetFunctionEvaluator-181"><a href="#MultisetFunctionEvaluator-181"><span class="linenos">181</span></a>        <span class="n">wrapped_parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">wrapped</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-182"><a href="#MultisetFunctionEvaluator-182"><span class="linenos">182</span></a>                                               <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="MultisetFunctionEvaluator-183"><a href="#MultisetFunctionEvaluator-183"><span class="linenos">183</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="MultisetFunctionEvaluator-184"><a href="#MultisetFunctionEvaluator-184"><span class="linenos">184</span></a>        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrapped_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-</span><span id="MultisetFunctionEvaluator-185"><a href="#MultisetFunctionEvaluator-185"><span class="linenos">185</span></a>
-</span><span id="MultisetFunctionEvaluator-186"><a href="#MultisetFunctionEvaluator-186"><span class="linenos">186</span></a>            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span>
-</span><span id="MultisetFunctionEvaluator-187"><a href="#MultisetFunctionEvaluator-187"><span class="linenos">187</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-188"><a href="#MultisetFunctionEvaluator-188"><span class="linenos">188</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-189"><a href="#MultisetFunctionEvaluator-189"><span class="linenos">189</span></a>            <span class="p">]:</span>
-</span><span id="MultisetFunctionEvaluator-190"><a href="#MultisetFunctionEvaluator-190"><span class="linenos">190</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-191"><a href="#MultisetFunctionEvaluator-191"><span class="linenos">191</span></a>            <span class="k">elif</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-192"><a href="#MultisetFunctionEvaluator-192"><span class="linenos">192</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">name</span>
-</span><span id="MultisetFunctionEvaluator-193"><a href="#MultisetFunctionEvaluator-193"><span class="linenos">193</span></a>
-</span><span id="MultisetFunctionEvaluator-194"><a href="#MultisetFunctionEvaluator-194"><span class="linenos">194</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-195"><a href="#MultisetFunctionEvaluator-195"><span class="linenos">195</span></a>
-</span><span id="MultisetFunctionEvaluator-196"><a href="#MultisetFunctionEvaluator-196"><span class="linenos">196</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_positional_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-197"><a href="#MultisetFunctionEvaluator-197"><span class="linenos">197</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator-198"><a href="#MultisetFunctionEvaluator-198"><span class="linenos">198</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-199"><a href="#MultisetFunctionEvaluator-199"><span class="linenos">199</span></a>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-200"><a href="#MultisetFunctionEvaluator-200"><span class="linenos">200</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
-</span><span id="MultisetFunctionEvaluator-201"><a href="#MultisetFunctionEvaluator-201"><span class="linenos">201</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-202"><a href="#MultisetFunctionEvaluator-202"><span class="linenos">202</span></a>            <span class="c1"># The exception will be raised later.</span>
-</span><span id="MultisetFunctionEvaluator-203"><a href="#MultisetFunctionEvaluator-203"><span class="linenos">203</span></a>            <span class="k">return</span> <span class="s1">&#39;(too many args)&#39;</span>
-</span><span id="MultisetFunctionEvaluator-204"><a href="#MultisetFunctionEvaluator-204"><span class="linenos">204</span></a>
-</span><span id="MultisetFunctionEvaluator-205"><a href="#MultisetFunctionEvaluator-205"><span class="linenos">205</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
-</span><span id="MultisetFunctionEvaluator-206"><a href="#MultisetFunctionEvaluator-206"><span class="linenos">206</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-207"><a href="#MultisetFunctionEvaluator-207"><span class="linenos">207</span></a>        <span class="n">input_exps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
-</span><span id="MultisetFunctionEvaluator-208"><a href="#MultisetFunctionEvaluator-208"><span class="linenos">208</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
-</span><span id="MultisetFunctionEvaluator-209"><a href="#MultisetFunctionEvaluator-209"><span class="linenos">209</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Dungeon[T]&#39;</span><span class="p">,</span> <span class="s1">&#39;Quest[T, U_co]&#39;</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator-210"><a href="#MultisetFunctionEvaluator-210"><span class="linenos">210</span></a>                        <span class="s1">&#39;tuple[MultisetSourceBase[T, Any], ...]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span id="MultisetFunctionEvaluator-211"><a href="#MultisetFunctionEvaluator-211"><span class="linenos">211</span></a>        <span class="n">multiset_variables</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="MultisetFunctionEvaluator-212"><a href="#MultisetFunctionEvaluator-212"><span class="linenos">212</span></a>            <span class="n">exp</span><span class="o">.</span><span class="n">_make_param</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_positional_name</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
-</span><span id="MultisetFunctionEvaluator-213"><a href="#MultisetFunctionEvaluator-213"><span class="linenos">213</span></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_exps</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-214"><a href="#MultisetFunctionEvaluator-214"><span class="linenos">214</span></a>        <span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator-215"><a href="#MultisetFunctionEvaluator-215"><span class="linenos">215</span></a>        <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">multiset_variables</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-216"><a href="#MultisetFunctionEvaluator-216"><span class="linenos">216</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_result</span><span class="p">,</span> <span class="p">(</span><span class="n">MultisetFunctionRawResult</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">)):</span>
-</span><span id="MultisetFunctionEvaluator-217"><a href="#MultisetFunctionEvaluator-217"><span class="linenos">217</span></a>            <span class="k">yield from</span> <span class="n">prepare_multiset_function</span><span class="p">(</span><span class="n">input_exps</span><span class="p">,</span> <span class="n">raw_result</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator-218"><a href="#MultisetFunctionEvaluator-218"><span class="linenos">218</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator-219"><a href="#MultisetFunctionEvaluator-219"><span class="linenos">219</span></a>            <span class="k">yield from</span> <span class="n">prepare_multiset_joint_function</span><span class="p">(</span><span class="n">input_exps</span><span class="p">,</span> <span class="n">raw_result</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator-176"><a href="#MultisetFunctionEvaluator-176"><span class="linenos">176</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetFunctionEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluatorBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">U_co</span><span class="p">]):</span>
+</span><span id="MultisetFunctionEvaluator-177"><a href="#MultisetFunctionEvaluator-177"><span class="linenos">177</span></a>    <span class="n">_positional_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator-178"><a href="#MultisetFunctionEvaluator-178"><span class="linenos">178</span></a>    <span class="n">_var_positional_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="MultisetFunctionEvaluator-179"><a href="#MultisetFunctionEvaluator-179"><span class="linenos">179</span></a>
+</span><span id="MultisetFunctionEvaluator-180"><a href="#MultisetFunctionEvaluator-180"><span class="linenos">180</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator-181"><a href="#MultisetFunctionEvaluator-181"><span class="linenos">181</span></a>        <span class="o">...</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-182"><a href="#MultisetFunctionEvaluator-182"><span class="linenos">182</span></a>        <span class="s1">&#39;MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]&#39;</span><span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator-183"><a href="#MultisetFunctionEvaluator-183"><span class="linenos">183</span></a>                 <span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator-184"><a href="#MultisetFunctionEvaluator-184"><span class="linenos">184</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
+</span><span id="MultisetFunctionEvaluator-185"><a href="#MultisetFunctionEvaluator-185"><span class="linenos">185</span></a>        <span class="n">wrapped_parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">wrapped</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-186"><a href="#MultisetFunctionEvaluator-186"><span class="linenos">186</span></a>                                               <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="MultisetFunctionEvaluator-187"><a href="#MultisetFunctionEvaluator-187"><span class="linenos">187</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="MultisetFunctionEvaluator-188"><a href="#MultisetFunctionEvaluator-188"><span class="linenos">188</span></a>        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrapped_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+</span><span id="MultisetFunctionEvaluator-189"><a href="#MultisetFunctionEvaluator-189"><span class="linenos">189</span></a>
+</span><span id="MultisetFunctionEvaluator-190"><a href="#MultisetFunctionEvaluator-190"><span class="linenos">190</span></a>            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator-191"><a href="#MultisetFunctionEvaluator-191"><span class="linenos">191</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-192"><a href="#MultisetFunctionEvaluator-192"><span class="linenos">192</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-193"><a href="#MultisetFunctionEvaluator-193"><span class="linenos">193</span></a>            <span class="p">]:</span>
+</span><span id="MultisetFunctionEvaluator-194"><a href="#MultisetFunctionEvaluator-194"><span class="linenos">194</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-195"><a href="#MultisetFunctionEvaluator-195"><span class="linenos">195</span></a>            <span class="k">elif</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-196"><a href="#MultisetFunctionEvaluator-196"><span class="linenos">196</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">name</span>
+</span><span id="MultisetFunctionEvaluator-197"><a href="#MultisetFunctionEvaluator-197"><span class="linenos">197</span></a>
+</span><span id="MultisetFunctionEvaluator-198"><a href="#MultisetFunctionEvaluator-198"><span class="linenos">198</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-199"><a href="#MultisetFunctionEvaluator-199"><span class="linenos">199</span></a>
+</span><span id="MultisetFunctionEvaluator-200"><a href="#MultisetFunctionEvaluator-200"><span class="linenos">200</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_positional_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-201"><a href="#MultisetFunctionEvaluator-201"><span class="linenos">201</span></a>        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator-202"><a href="#MultisetFunctionEvaluator-202"><span class="linenos">202</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator-203"><a href="#MultisetFunctionEvaluator-203"><span class="linenos">203</span></a>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-204"><a href="#MultisetFunctionEvaluator-204"><span class="linenos">204</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">]&#39;</span>
+</span><span id="MultisetFunctionEvaluator-205"><a href="#MultisetFunctionEvaluator-205"><span class="linenos">205</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-206"><a href="#MultisetFunctionEvaluator-206"><span class="linenos">206</span></a>            <span class="c1"># The exception will be raised later.</span>
+</span><span id="MultisetFunctionEvaluator-207"><a href="#MultisetFunctionEvaluator-207"><span class="linenos">207</span></a>            <span class="k">return</span> <span class="s1">&#39;(too many args)&#39;</span>
+</span><span id="MultisetFunctionEvaluator-208"><a href="#MultisetFunctionEvaluator-208"><span class="linenos">208</span></a>
+</span><span id="MultisetFunctionEvaluator-209"><a href="#MultisetFunctionEvaluator-209"><span class="linenos">209</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
+</span><span id="MultisetFunctionEvaluator-210"><a href="#MultisetFunctionEvaluator-210"><span class="linenos">210</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-211"><a href="#MultisetFunctionEvaluator-211"><span class="linenos">211</span></a>        <span class="n">input_exps</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">MultisetExpressionBase</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">...</span><span class="p">],</span>
+</span><span id="MultisetFunctionEvaluator-212"><a href="#MultisetFunctionEvaluator-212"><span class="linenos">212</span></a>        <span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">],</span>
+</span><span id="MultisetFunctionEvaluator-213"><a href="#MultisetFunctionEvaluator-213"><span class="linenos">213</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;Dungeon[T]&#39;</span><span class="p">,</span> <span class="s1">&#39;Quest[T, U_co]&#39;</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator-214"><a href="#MultisetFunctionEvaluator-214"><span class="linenos">214</span></a>                        <span class="s1">&#39;tuple[MultisetSourceBase[T, Any], ...]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="MultisetFunctionEvaluator-215"><a href="#MultisetFunctionEvaluator-215"><span class="linenos">215</span></a>        <span class="n">multiset_variables</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator-216"><a href="#MultisetFunctionEvaluator-216"><span class="linenos">216</span></a>            <span class="n">exp</span><span class="o">.</span><span class="n">_make_param</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_positional_name</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+</span><span id="MultisetFunctionEvaluator-217"><a href="#MultisetFunctionEvaluator-217"><span class="linenos">217</span></a>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">exp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_exps</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-218"><a href="#MultisetFunctionEvaluator-218"><span class="linenos">218</span></a>        <span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator-219"><a href="#MultisetFunctionEvaluator-219"><span class="linenos">219</span></a>        <span class="n">raw_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">multiset_variables</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-220"><a href="#MultisetFunctionEvaluator-220"><span class="linenos">220</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_result</span><span class="p">,</span> <span class="p">(</span><span class="n">MultisetFunctionRawResult</span><span class="p">,</span> <span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">)):</span>
+</span><span id="MultisetFunctionEvaluator-221"><a href="#MultisetFunctionEvaluator-221"><span class="linenos">221</span></a>            <span class="k">yield from</span> <span class="n">prepare_multiset_function</span><span class="p">(</span><span class="n">input_exps</span><span class="p">,</span> <span class="n">raw_result</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-222"><a href="#MultisetFunctionEvaluator-222"><span class="linenos">222</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-223"><a href="#MultisetFunctionEvaluator-223"><span class="linenos">223</span></a>            <span class="k">yield from</span> <span class="n">prepare_multiset_joint_function</span><span class="p">(</span><span class="n">input_exps</span><span class="p">,</span> <span class="n">raw_result</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator-224"><a href="#MultisetFunctionEvaluator-224"><span class="linenos">224</span></a>
+</span><span id="MultisetFunctionEvaluator-225"><a href="#MultisetFunctionEvaluator-225"><span class="linenos">225</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_should_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dungeon</span><span class="p">:</span> <span class="s1">&#39;Dungeon[T]&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator-226"><a href="#MultisetFunctionEvaluator-226"><span class="linenos">226</span></a>        <span class="c1"># In @multiset_function we also don&#39;t cache if dungeon.hash_key is</span>
+</span><span id="MultisetFunctionEvaluator-227"><a href="#MultisetFunctionEvaluator-227"><span class="linenos">227</span></a>        <span class="c1"># None, since this could be a one-off dungeon that can&#39;t be reused.</span>
+</span><span id="MultisetFunctionEvaluator-228"><a href="#MultisetFunctionEvaluator-228"><span class="linenos">228</span></a>        <span class="k">return</span> <span class="n">dungeon</span><span class="o">.</span><span class="fm">__hash__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dungeon</span><span class="o">.</span><span class="n">hash_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 </span></pre></div>
 
 
@@ -4400,25 +4478,25 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#MultisetFunctionEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.__init__-176"><a href="#MultisetFunctionEvaluator.__init__-176"><span class="linenos">176</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
-</span><span id="MultisetFunctionEvaluator.__init__-177"><a href="#MultisetFunctionEvaluator.__init__-177"><span class="linenos">177</span></a>        <span class="o">...</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.__init__-178"><a href="#MultisetFunctionEvaluator.__init__-178"><span class="linenos">178</span></a>        <span class="s1">&#39;MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]&#39;</span><span class="p">]</span>
-</span><span id="MultisetFunctionEvaluator.__init__-179"><a href="#MultisetFunctionEvaluator.__init__-179"><span class="linenos">179</span></a>                 <span class="p">):</span>
-</span><span id="MultisetFunctionEvaluator.__init__-180"><a href="#MultisetFunctionEvaluator.__init__-180"><span class="linenos">180</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
-</span><span id="MultisetFunctionEvaluator.__init__-181"><a href="#MultisetFunctionEvaluator.__init__-181"><span class="linenos">181</span></a>        <span class="n">wrapped_parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">wrapped</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.__init__-182"><a href="#MultisetFunctionEvaluator.__init__-182"><span class="linenos">182</span></a>                                               <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
-</span><span id="MultisetFunctionEvaluator.__init__-183"><a href="#MultisetFunctionEvaluator.__init__-183"><span class="linenos">183</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="MultisetFunctionEvaluator.__init__-184"><a href="#MultisetFunctionEvaluator.__init__-184"><span class="linenos">184</span></a>        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrapped_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-</span><span id="MultisetFunctionEvaluator.__init__-185"><a href="#MultisetFunctionEvaluator.__init__-185"><span class="linenos">185</span></a>
-</span><span id="MultisetFunctionEvaluator.__init__-186"><a href="#MultisetFunctionEvaluator.__init__-186"><span class="linenos">186</span></a>            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span>
-</span><span id="MultisetFunctionEvaluator.__init__-187"><a href="#MultisetFunctionEvaluator.__init__-187"><span class="linenos">187</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.__init__-188"><a href="#MultisetFunctionEvaluator.__init__-188"><span class="linenos">188</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
-</span><span id="MultisetFunctionEvaluator.__init__-189"><a href="#MultisetFunctionEvaluator.__init__-189"><span class="linenos">189</span></a>            <span class="p">]:</span>
-</span><span id="MultisetFunctionEvaluator.__init__-190"><a href="#MultisetFunctionEvaluator.__init__-190"><span class="linenos">190</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-</span><span id="MultisetFunctionEvaluator.__init__-191"><a href="#MultisetFunctionEvaluator.__init__-191"><span class="linenos">191</span></a>            <span class="k">elif</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
-</span><span id="MultisetFunctionEvaluator.__init__-192"><a href="#MultisetFunctionEvaluator.__init__-192"><span class="linenos">192</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">name</span>
-</span><span id="MultisetFunctionEvaluator.__init__-193"><a href="#MultisetFunctionEvaluator.__init__-193"><span class="linenos">193</span></a>
-</span><span id="MultisetFunctionEvaluator.__init__-194"><a href="#MultisetFunctionEvaluator.__init__-194"><span class="linenos">194</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetFunctionEvaluator.__init__-180"><a href="#MultisetFunctionEvaluator.__init__-180"><span class="linenos">180</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator.__init__-181"><a href="#MultisetFunctionEvaluator.__init__-181"><span class="linenos">181</span></a>        <span class="o">...</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-182"><a href="#MultisetFunctionEvaluator.__init__-182"><span class="linenos">182</span></a>        <span class="s1">&#39;MultisetFunctionRawResult[T, U_co] | tuple[MultisetFunctionRawResult[T, U_co], ...]&#39;</span><span class="p">]</span>
+</span><span id="MultisetFunctionEvaluator.__init__-183"><a href="#MultisetFunctionEvaluator.__init__-183"><span class="linenos">183</span></a>                 <span class="p">):</span>
+</span><span id="MultisetFunctionEvaluator.__init__-184"><a href="#MultisetFunctionEvaluator.__init__-184"><span class="linenos">184</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
+</span><span id="MultisetFunctionEvaluator.__init__-185"><a href="#MultisetFunctionEvaluator.__init__-185"><span class="linenos">185</span></a>        <span class="n">wrapped_parameters</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">wrapped</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-186"><a href="#MultisetFunctionEvaluator.__init__-186"><span class="linenos">186</span></a>                                               <span class="n">follow_wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+</span><span id="MultisetFunctionEvaluator.__init__-187"><a href="#MultisetFunctionEvaluator.__init__-187"><span class="linenos">187</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="MultisetFunctionEvaluator.__init__-188"><a href="#MultisetFunctionEvaluator.__init__-188"><span class="linenos">188</span></a>        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wrapped_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+</span><span id="MultisetFunctionEvaluator.__init__-189"><a href="#MultisetFunctionEvaluator.__init__-189"><span class="linenos">189</span></a>
+</span><span id="MultisetFunctionEvaluator.__init__-190"><a href="#MultisetFunctionEvaluator.__init__-190"><span class="linenos">190</span></a>            <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">[</span>
+</span><span id="MultisetFunctionEvaluator.__init__-191"><a href="#MultisetFunctionEvaluator.__init__-191"><span class="linenos">191</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-192"><a href="#MultisetFunctionEvaluator.__init__-192"><span class="linenos">192</span></a>                    <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
+</span><span id="MultisetFunctionEvaluator.__init__-193"><a href="#MultisetFunctionEvaluator.__init__-193"><span class="linenos">193</span></a>            <span class="p">]:</span>
+</span><span id="MultisetFunctionEvaluator.__init__-194"><a href="#MultisetFunctionEvaluator.__init__-194"><span class="linenos">194</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_positional_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span id="MultisetFunctionEvaluator.__init__-195"><a href="#MultisetFunctionEvaluator.__init__-195"><span class="linenos">195</span></a>            <span class="k">elif</span> <span class="n">parameter</span><span class="o">.</span><span class="n">kind</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+</span><span id="MultisetFunctionEvaluator.__init__-196"><a href="#MultisetFunctionEvaluator.__init__-196"><span class="linenos">196</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_var_positional_name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">name</span>
+</span><span id="MultisetFunctionEvaluator.__init__-197"><a href="#MultisetFunctionEvaluator.__init__-197"><span class="linenos">197</span></a>
+</span><span id="MultisetFunctionEvaluator.__init__-198"><a href="#MultisetFunctionEvaluator.__init__-198"><span class="linenos">198</span></a>        <span class="n">update_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
 </span></pre></div>
 
 
