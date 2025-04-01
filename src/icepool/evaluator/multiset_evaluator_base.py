@@ -12,7 +12,7 @@ from functools import cached_property
 import itertools
 import math
 
-from icepool.typing import T, U_co
+from icepool.typing import T, MaybeHashKeyed, U_co
 from typing import (Any, Collection, Generic, Hashable, Iterator, Mapping,
                     MutableMapping, NamedTuple, Sequence, TYPE_CHECKING)
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
-    _cache: 'MutableMapping[Any, Dungeon] | None' = None
+    _cache: 'MutableMapping[Any, Dungeon[T]]'
 
     @abstractmethod
     def _prepare(
@@ -42,6 +42,10 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         Yields:
             dungeon, quest, sources, weight
         """
+
+    @abstractmethod
+    def _should_cache(self, dungeon: 'Dungeon[T]') -> bool:
+        """Whether the given dungeon should be cached between calls to `evaluate()`."""
 
     def evaluate(
         self, *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -81,7 +85,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
 
         # Otherwise, we perform the evaluation.
 
-        if self._cache is None:
+        if not hasattr(self, '_cache'):
             self._cache = {}
 
         final_data: 'MutableMapping[icepool.Die[U_co], int]' = defaultdict(int)
@@ -89,8 +93,8 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
         for dungeon, quest, sources, weight in self._prepare(
                 input_exps, kwargs):
 
-            # Replace dungeon with cached version if available.
-            if dungeon.__hash__ is not None:
+            if self._should_cache(dungeon):
+                # Replace dungeon with cached version if available.
                 if dungeon in self._cache:
                     dungeon = self._cache[dungeon]
                 else:
@@ -105,7 +109,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
     __call__ = evaluate
 
 
-class Dungeon(Generic[T]):
+class Dungeon(Generic[T], MaybeHashKeyed):
     """Holds an evaluation's next_state function and caches."""
 
     dungeonlet_flats: 'tuple[tuple[Dungeonlet[T, Any], ...], ...]'

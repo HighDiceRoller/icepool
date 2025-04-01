@@ -21,7 +21,7 @@ __version__ = '2.0.0'
 
 from typing import Final
 
-from icepool.typing import Outcome, RerollType
+from icepool.typing import Outcome, RerollType, NoCacheType
 from icepool.order import Order, ConflictingOrderError, UnsupportedOrder
 
 Reroll: Final = RerollType.Reroll
@@ -44,6 +44,9 @@ Operation in specific cases:
     modification.
 * When used with `MultisetEvaluator`, the entire evaluation is rerolled.
 """
+
+NoCache: Final = NoCacheType.NoCache
+"""Indicates that caching should not be performed. Exact meaning depends on context."""
 
 # Expose certain names at top-level.
 
@@ -162,6 +165,6 @@ __all__ = [
     'standard_pool', 'MultisetGenerator', 'MultisetExpression',
     'MultisetEvaluator', 'Order', 'ConflictingOrderError', 'UnsupportedOrder',
     'Deck', 'Deal', 'MultiDeal', 'multiset_function', 'MultisetParameter',
-    'MultisetTupleParameter', 'function', 'typing', 'evaluator',
+    'MultisetTupleParameter', 'NoCache', 'function', 'typing', 'evaluator',
     'format_probability_inverse', 'Wallenius'
 ]

@@ -176,20 +176,25 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
     @property
     def next_state_key(self) -> Hashable:
         """Subclasses may optionally provide key that uniquely identifies the `next_state()` computation.
+
+        This is used to persistently cache intermediate results between calls
+        to `evaluate()`. By default, `next_state_key` is `None`, which only
+        caches if not inside a `@multiset_function`.
         
-        This should include any members used in `next_state()` but does NOT need to
-        include members that are only used in other methods, i.e. 
-        `extra_outcomes()`, `initial_state()`, `final_outcome()`. For example,
-        if `next_state()` is a pure function that only depends on the evaluator
-        class, you can return `type(self)`.
+        If you do implement this, `next_state_key` should include any members 
+        used in `next_state()` but does NOT need to include members that are 
+        only used in other methods, i.e. 
+        * `extra_outcomes()`
+        * `initial_state()`
+        * `final_outcome()`. 
+        For example, if `next_state()` is a pure function other than being 
+        defined by its evaluator class, you can use `type(self)`.
 
-        By default this is the id of the evaluator object.
-
-        Returns:
-            A hashable key that uniquely identifies the `next_state()`
-            computation, or `None` to disable persistent caching.
+        If you want to disable caching between calls to `evaluate()` even
+        outside of `@multiset_function`, return the special value 
+        `icepool.NoCache`.
         """
-        return id(self)
+        return None
 
     def _prepare(
         self,
@@ -197,8 +202,15 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         kwargs: Mapping[str, Hashable],
     ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
+
         for t in itertools.product(*(exp._prepare() for exp in input_exps)):
-            dungeonlet_flats, questlet_flats, sources, weights = zip(*t)
+            if t:
+                dungeonlet_flats, questlet_flats, sources, weights = zip(*t)
+            else:
+                dungeonlet_flats = ()
+                questlet_flats = ()
+                sources = ()
+                weights = ()
             dungeon: MultisetEvaluatorDungeon[T] = MultisetEvaluatorDungeon(
                 self.next_state, self.next_state_key, dungeonlet_flats)
             quest: MultisetEvaluatorQuest[T, U_co] = MultisetEvaluatorQuest(
@@ -208,8 +220,11 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
             weight = math.prod(weights)
             yield dungeon, quest, sources, weight
 
+    def _should_cache(self, dungeon: 'Dungeon[T]') -> bool:
+        return dungeon.__hash__ is not None
 
-class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
+
+class MultisetEvaluatorDungeon(Dungeon[T]):
     calls = ()
 
     # Will be filled in by constructor.
@@ -223,12 +238,12 @@ class MultisetEvaluatorDungeon(Dungeon[T], MaybeHashKeyed):
         self.next_state_key = next_state_key
         self.dungeonlet_flats = dungeonlet_flats
 
-        if next_state_key is None:
+        if next_state_key is icepool.NoCache:
             self.__hash__ = None  # type: ignore
 
     @property
     def hash_key(self):
-        if self.__hash__ is None:
+        if self.__hash__ is None or self.next_state_key is None:
             return None
         return MultisetEvaluatorDungeon, self.dungeonlet_flats, self.next_state_key
 

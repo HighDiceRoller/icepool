@@ -34,6 +34,12 @@ class RerollType(enum.Enum):
     """Indicates an outcome should be rerolled (with unlimited depth)."""
 
 
+class NoCacheType(enum.Enum):
+    """The type of the NoCache singleton."""
+    NoCache = 'NoCache'
+    """Indicates that caching should not be performed. Exact meaning depends on context."""
+
+
 class Outcome(Hashable, Protocol[T_contra]):
     """Protocol to attempt to verify that outcome types are hashable and sortable.
 

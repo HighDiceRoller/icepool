@@ -36,8 +36,7 @@ class ExpandEvaluator(MultisetEvaluator[Any, tuple]):
 
     @property
     def next_state_key(self) -> Hashable:
-        # Disable persistent caching.
-        return None
+        return icepool.NoCache
 
 
 class SumEvaluator(MultisetEvaluator[Any, Any]):

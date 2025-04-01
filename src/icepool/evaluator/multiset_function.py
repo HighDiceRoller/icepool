@@ -137,8 +137,12 @@ class ConstantEvaluator(MultisetEvaluatorBase[Any, U_co]):
         quest = ConstantQuest[U_co](self._final_outcome)
         yield dungeon, quest, (), 1
 
+    def _should_cache(self, dungeon):
+        # No point in caching.
+        return False
 
-class ConstantDungeon(Dungeon[Any], MaybeHashKeyed):
+
+class ConstantDungeon(Dungeon[Any]):
     dungeonlet_flats = ()
     calls = ()
 
@@ -217,6 +221,11 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         else:
             yield from prepare_multiset_joint_function(input_exps, raw_result)
 
+    def _should_cache(self, dungeon: 'Dungeon[T]') -> bool:
+        # In @multiset_function we also don't cache if dungeon.hash_key is
+        # None, since this could be a one-off dungeon that can't be reused.
+        return dungeon.__hash__ is not None and dungeon.hash_key is not None
+
 
 def prepare_multiset_function(
     outer_exps: tuple[MultisetExpressionBase[T, Any], ...],
@@ -225,8 +234,14 @@ def prepare_multiset_function(
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
     raw_result = convert_die_to_raw_result(raw_result)
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
-        outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
-            *outer)
+        if outer:
+            outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
+                *outer)
+        else:
+            outer_dungeonlet_flats = ()
+            outer_questlet_flats = ()
+            outer_sources = ()
+            outer_weights = ()
         outer_sources = tuple(itertools.chain.from_iterable(outer_sources))
         outer_weight = math.prod(outer_weights)
 
@@ -239,7 +254,7 @@ def prepare_multiset_function(
             yield dungeon, quest, outer_sources + inner_sources, outer_weight * inner_weight
 
 
-class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
+class MultisetFunctionDungeon(Dungeon[T]):
 
     def __init__(
         self,
@@ -260,7 +275,7 @@ class MultisetFunctionDungeon(Dungeon[T], MaybeHashKeyed):
 
     @property
     def hash_key(self):
-        if self.__hash__ is None:
+        if self.inner_dungeon.__hash__ is None or self.inner_dungeon.hash_key is None:
             return None
         return MultisetFunctionDungeon, self.dungeonlet_flats, self.inner_dungeon
 
@@ -325,7 +340,7 @@ def prepare_multiset_joint_function(
         yield dungeon, quest, sources, weight
 
 
-class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
+class MultisetFunctionJointDungeon(Dungeon[T]):
 
     def __init__(
         self,
@@ -355,7 +370,8 @@ class MultisetFunctionJointDungeon(Dungeon[T], MaybeHashKeyed):
 
     @property
     def hash_key(self):
-        if self.__hash__ is None:
+        if self.__hash__ is None or any(dungeon.hash_key is None
+                                        for dungeon in self.inner_dungeons):
             return None
         return MultisetFunctionJointDungeon, self.dungeonlet_flats, self.inner_dungeons
 
