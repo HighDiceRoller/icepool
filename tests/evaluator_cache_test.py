@@ -50,10 +50,10 @@ def test_nocache_bare():
 def test_keyed_wrapped():
 
     @multiset_function
-    def evaluator():
-        return KeyedEvaluator().evaluate()
+    def evaluator(x):
+        return KeyedEvaluator().evaluate(x)
 
-    evaluator()
+    evaluator(d6.pool(1))
     assert len(evaluator._cache) == 1
 
 
@@ -72,6 +72,26 @@ def test_nocache_wrapped():
     @multiset_function
     def evaluator(x):
         return NoCacheEvaluator().evaluate(x)
+
+    evaluator(d6.pool(1))
+    assert len(evaluator._cache) == 0
+
+
+def test_joint_cache():
+
+    @multiset_function
+    def evaluator(x):
+        return KeyedEvaluator().evaluate(x), KeyedEvaluator().evaluate(x)
+
+    evaluator(d6.pool(1))
+    assert len(evaluator._cache) == 1
+
+
+def test_joint_nocache():
+
+    @multiset_function
+    def evaluator(x):
+        return KeyedEvaluator().evaluate(x), NoCacheEvaluator().evaluate(x)
 
     evaluator(d6.pool(1))
     assert len(evaluator._cache) == 0
