@@ -33,4 +33,3 @@ import '@jupyterlab/vega5-extension/style/index.js';
 import '@jupyterlite/application-extension/style/index.js';
 import '@jupyterlite/iframe-extension/style/index.js';
 import '@jupyterlite/notebook-application-extension/style/index.js';
-import '@jupyterlite/server-extension/style/index.js';
