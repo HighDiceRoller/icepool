@@ -317,8 +317,14 @@ def prepare_multiset_joint_function(
 ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, Any]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
-        outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
-            *outer)
+        if outer:
+            outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
+                *outer)
+        else:
+            outer_dungeonlet_flats = ()
+            outer_questlet_flats = ()
+            outer_sources = ()
+            outer_weights = ()
         outer_sources = tuple(itertools.chain.from_iterable(outer_sources))
         outer_weight = math.prod(outer_weights)
 
