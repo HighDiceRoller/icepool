@@ -1,3 +1,12 @@
+## v2.0.1 - 1 April 2025
+
+* Adjusted behavior of `MultisetEvaluator` caching between calls to `evaluate()` depending on the value of `next_state_key`.
+  * By default, `next_state_key` will only cache if the evaluator is called directly (i.e. not inside a `@multiset_function`).
+  * If a full `next_state_key` is given, it will cache inside `@multiset_function`, provided the other contents agree.
+  * The special value `NoCache` will disable caching.
+* Support argumentless evaluations.
+* Some typing fixes.
+
 ## v2.0.0 - 31 March 2025
 
 Major rewrite of multiset handling. Things will be more unstable than usual for a while.
