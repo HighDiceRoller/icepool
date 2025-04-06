@@ -238,7 +238,7 @@
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates that `star` could not be inferred.&quot;&quot;&quot;</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
 </span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    Args:</span>
@@ -648,13 +648,13 @@ inheritance.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">infer_star</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">function</span>, </span><span class="param"><span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
+        <span class="name">infer_star</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span>, </span><span class="param"><span class="n">arg_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
 
                 <label class="view-source-button" for="infer_star-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#infer_star"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="infer_star-113"><a href="#infer_star-113"><span class="linenos">113</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">arg_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="infer_star-113"><a href="#infer_star-113"><span class="linenos">113</span></a><span class="k">def</span><span class="w"> </span><span class="nf">infer_star</span><span class="p">(</span><span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">arg_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 </span><span id="infer_star-114"><a href="#infer_star-114"><span class="linenos">114</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Infers whether the first argument should be unpacked before giving it to the function.</span>
 </span><span id="infer_star-115"><a href="#infer_star-115"><span class="linenos">115</span></a>
 </span><span id="infer_star-116"><a href="#infer_star-116"><span class="linenos">116</span></a><span class="sd">    Args:</span>
