@@ -144,7 +144,13 @@ class Deck(Population[T_co], MaybeHashKeyed):
         if isinstance(hand_sizes, int):
             return icepool.Deal(self, hand_sizes)
         else:
-            return icepool.MultiDeal(self, tuple(hand_sizes))
+            return icepool.MultiDeal(
+                self, tuple((hand_size, 1) for hand_size in hand_sizes))
+
+    def deal_groups(
+            self, *hand_groups: tuple[int,
+                                      int]) -> 'icepool.MultiDeal[T_co, Any]':
+        return icepool.MultiDeal(self, hand_groups)
 
     # Binary operators.
 

@@ -7,8 +7,9 @@ from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator, M
 from icepool.math import iter_hypergeom
 from icepool.order import Order, OrderReason
 
-from functools import cached_property
 import math
+import itertools
+from functools import cached_property
 
 from icepool.typing import T
 
@@ -16,13 +17,19 @@ from typing import Hashable, Iterable, Iterator, cast
 
 
 class MultiDeal(MultisetTupleGenerator[T, IntTupleOut]):
-    """Represents an unordered deal of multiple hands from a `Deck`."""
+    """Represents an deal of multiple hands from a `Deck`.
+    
+    The cards within each hand are in sorted order. Furthermore, hands may be
+    organized into groups in which the hands are initially indistinguishable.
+    """
 
     _deck: 'icepool.Deck[T]'
-    _hand_sizes: IntTupleOut
+    # An ordered tuple of hand groups.
+    # Each group is designated by (hand_size, hand_count).
+    _hand_groups: tuple[tuple[int, int], ...]
 
     def __init__(self, deck: 'icepool.Deck[T]',
-                 hand_sizes: IntTupleOut) -> None:
+                 hand_groups: tuple[tuple[int, int], ...]) -> None:
         """Constructor.
 
         For algorithmic reasons, you must pre-commit to the number of cards to
@@ -35,26 +42,26 @@ class MultiDeal(MultisetTupleGenerator[T, IntTupleOut]):
 
         Args:
             deck: The `Deck` to deal from.
-            *hand_sizes: How many cards to deal. If multiple `hand_sizes` are
-                provided, `MultisetEvaluator.next_state` will recieve one count
-                per hand in order. Try to keep the number of hands to a minimum
-                as this can be computationally intensive.
+            hand_groups: An ordered tuple of hand groups.
+                Each group is designated by (hand_size, hand_count) with the
+                hands of each group being arbitrarily ordered.
+                The resulting counts are produced in a flat tuple.
         """
-        if any(hand < 0 for hand in hand_sizes):
-            raise ValueError('hand_sizes cannot be negative.')
         self._deck = deck
-        self._hand_sizes = hand_sizes
+        self._hand_groups = hand_groups
         if self.total_cards_dealt() > self.deck().size():
             raise ValueError(
                 'The total number of cards dealt cannot exceed the size of the deck.'
             )
 
     @classmethod
-    def _new_raw(cls, deck: 'icepool.Deck[T]',
-                 hand_sizes: IntTupleOut) -> 'MultiDeal[T, IntTupleOut]':
+    def _new_raw(
+        cls, deck: 'icepool.Deck[T]',
+        hand_sizes: tuple[tuple[int, int],
+                          ...]) -> 'MultiDeal[T, IntTupleOut]':
         self = super(MultiDeal, cls).__new__(cls)
         self._deck = deck
-        self._hand_sizes = hand_sizes
+        self._hand_groups = hand_sizes
         return self
 
     def deck(self) -> 'icepool.Deck[T]':
@@ -63,11 +70,17 @@ class MultiDeal(MultisetTupleGenerator[T, IntTupleOut]):
 
     def hand_sizes(self) -> IntTupleOut:
         """The number of cards dealt to each hand as a tuple."""
-        return self._hand_sizes
+        return cast(
+            IntTupleOut,
+            tuple(
+                itertools.chain.from_iterable(
+                    (hand_size, ) * group_size
+                    for hand_size, group_size in self._hand_groups)))
 
     def total_cards_dealt(self) -> int:
         """The total number of cards dealt."""
-        return sum(self.hand_sizes())
+        return sum(hand_size * group_size
+                   for hand_size, group_size in self._hand_groups)
 
     def outcomes(self) -> CountsKeysView[T]:
         """The outcomes of the `Deck` in ascending order.
@@ -78,10 +91,10 @@ class MultiDeal(MultisetTupleGenerator[T, IntTupleOut]):
         return self.deck().outcomes()
 
     def __len__(self) -> int:
-        return len(self._hand_sizes)
+        return sum(group_size for _, group_size in self._hand_groups)
 
     @cached_property
-    def _denomiator(self) -> int:
+    def _denominator(self) -> int:
         d_total = icepool.math.comb(self.deck().size(),
                                     self.total_cards_dealt())
         d_split = math.prod(
@@ -90,38 +103,39 @@ class MultiDeal(MultisetTupleGenerator[T, IntTupleOut]):
         return d_total * d_split
 
     def denominator(self) -> int:
-        return self._denomiator
+        return self._denominator
 
     def _make_source(self) -> 'MultisetTupleSource[T, IntTupleOut]':
-        return MultiDealSource(self._deck, self._hand_sizes)
+        return MultiDealSource(self._deck, self._hand_groups)
 
     @property
     def hash_key(self) -> Hashable:
-        return MultiDeal, self._deck, self._hand_sizes
+        return MultiDeal, self._deck, self._hand_groups
 
     def __repr__(self) -> str:
         return type(
             self
-        ).__qualname__ + f'({repr(self.deck())}, hand_sizes={self.hand_sizes()})'
+        ).__qualname__ + f'({repr(self.deck())}, hand_groups={self._hand_groups})'
 
     def __str__(self) -> str:
         return type(
             self
-        ).__qualname__ + f' of hand_sizes={self.hand_sizes()} from deck:\n' + str(
+        ).__qualname__ + f' of hand_groups={self._hand_groups} from deck:\n' + str(
             self.deck())
 
 
 class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
 
-    def __init__(self, deck: 'icepool.Deck[T]', hand_sizes: IntTupleOut):
+    def __init__(self, deck: 'icepool.Deck[T]',
+                 hand_groups: tuple[tuple[int, int], ...]):
         self.deck = deck
-        self.hand_sizes = hand_sizes
+        self.hand_groups = hand_groups
 
     def outcomes(self):
         return self.deck.outcomes()
 
     def size(self):
-        return self.hand_sizes
+        return self.hand_sizes()
 
     def pop(self, order: Order, outcome: T):
         if not self.outcomes():
@@ -139,38 +153,51 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
             yield self, 0, 1
             return
 
-        yield from self.generate_common(popped_deck, deck_count)
-
-    def generate_common(
-        self, popped_deck: 'icepool.Deck[T]', deck_count: int
-    ) -> Iterator[tuple['MultiDealSource[T, IntTupleOut]', IntTupleOut, int]]:
-        """Common implementation for _generate_min and _generate_max."""
         min_count = max(
             0, deck_count + self.total_cards_dealt() - self.deck.size())
         max_count = min(deck_count, self.total_cards_dealt())
         for count_total in range(min_count, max_count + 1):
             weight_total = icepool.math.comb(deck_count, count_total)
-            # The "deck" is the hand sizes.
-            for counts, weight_split in iter_hypergeom(self.hand_sizes,
-                                                       count_total):
-                # mypy doesn't recognize the tuple length here.
+            # The "deck" assigns the cards of the current outcome to hands.
+            for raw_counts, weight_split in iter_hypergeom(
+                    self.hand_sizes(), count_total):
+                pos = 0
+                counts = list(raw_counts)
+                next_hand_groups = []
+                for hand_size, group_size in self.hand_groups:
+                    counts[pos:pos + group_size] = sorted(
+                        raw_counts[pos:pos + group_size])
+                    for count, next_group_counts in itertools.groupby(
+                            counts[pos:pos + group_size]):
+                        next_group_size = len(list(next_group_counts))
+                        next_hand_groups.append(
+                            (hand_size - count, next_group_size))
+                    pos += group_size
                 popped_source = MultiDealSource[T, IntTupleOut](
-                    popped_deck,
-                    tuple(h - c for h, c in zip(self.hand_sizes,
-                                                counts)))  # type: ignore
+                    popped_deck, tuple(next_hand_groups))
                 weight = weight_total * weight_split
-                yield popped_source, counts, weight  # type: ignore
+                yield popped_source, tuple(counts), weight
 
     def order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
 
     @property
     def hash_key(self):
-        return MultiDealSource, self.deck, self.hand_sizes
+        return MultiDealSource, self.deck, self.hand_groups
+
+    def hand_sizes(self) -> IntTupleOut:
+        """The number of cards dealt to each hand as a tuple."""
+        return cast(
+            IntTupleOut,
+            tuple(
+                itertools.chain.from_iterable(
+                    (hand_size, ) * group_size
+                    for hand_size, group_size in self.hand_groups)))
 
     def total_cards_dealt(self) -> int:
         """The total number of cards dealt."""
-        return sum(self.hand_sizes)
+        return sum(hand_size * group_size
+                   for hand_size, group_size in self.hand_groups)
 
     def is_resolvable(self) -> bool:
         return len(self.outcomes()) != 0
