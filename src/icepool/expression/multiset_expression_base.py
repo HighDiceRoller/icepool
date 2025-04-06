@@ -35,11 +35,22 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
         """Whether this expression tree contains any param."""
 
     @abstractmethod
-    def _make_param(self, index: int,
-                    name: str) -> 'MultisetParameterBase[T, Q]':
+    def _make_param(
+            self,
+            name: str,
+            arg_index: int,
+            star_index: int | None = None) -> 'MultisetParameterBase[T, Any]':
         """Creates a param corresponding to the output of this expression.
         
         This is used to determine the input types to multiset functions.
+
+        Args:
+            name: The name of the parameter, taken from the function definition.
+            index: The index of the argument which is passed to this parameter.
+                In the case of starring this may be different than the
+                parameter index.
+            star_index: If provided, the argument will be subscripted before
+                sending its value to the parameter.
         """
 
     @property

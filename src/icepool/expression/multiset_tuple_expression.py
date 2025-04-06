@@ -11,7 +11,7 @@ from typing import (TYPE_CHECKING, Any, Generic, Hashable, Iterator,
                     MutableSequence, Sequence, TypeVar, overload)
 
 if TYPE_CHECKING:
-    from icepool.expression.multiset_parameter import MultisetTupleParameter
+    from icepool.expression.multiset_parameter import MultisetParameter, MultisetTupleParameter
 
 IntTupleIn = TypeVar('IntTupleIn', bound=tuple[int, ...])
 """Count type for an input multiset tuple."""
@@ -30,9 +30,39 @@ class MultisetTupleExpression(MultisetExpressionBase[T, IntTupleOut]):
     def __len__(self) -> int:
         """The number of counts produced by this expression."""
 
-    def _make_param(self, index: int,
-                    name: str) -> 'MultisetTupleParameter[T, IntTupleOut]':
-        return icepool.MultisetTupleParameter(index, name, len(self))
+    @overload
+    def _make_param(
+            self,
+            name: str,
+            arg_index: int,
+            star_index: None = None
+    ) -> 'MultisetTupleParameter[T, IntTupleOut]':
+        ...
+
+    @overload
+    def _make_param(self, name: str, arg_index: int,
+                    star_index: int) -> 'MultisetParameter[T]':
+        ...
+
+    @overload
+    def _make_param(
+        self,
+        name: str,
+        arg_index: int,
+        star_index: int | None = None
+    ) -> 'MultisetTupleParameter[T, IntTupleOut] | MultisetParameter[T]':
+        ...
+
+    def _make_param(
+        self,
+        name: str,
+        arg_index: int,
+        star_index: int | None = None
+    ) -> 'MultisetTupleParameter[T, IntTupleOut] | MultisetParameter[T]':
+        if star_index is None:
+            return icepool.MultisetTupleParameter(name, arg_index, len(self))
+        else:
+            return icepool.MultisetParameter(name, arg_index, star_index)
 
     @overload
     def __getitem__(self, index: int,

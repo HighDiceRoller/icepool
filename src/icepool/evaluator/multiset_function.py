@@ -10,10 +10,11 @@ from icepool.expression.multiset_parameter import MultisetParameter, MultisetTup
 import inspect
 from functools import update_wrapper
 
+from icepool.expression.multiset_tuple_expression import MultisetTupleExpression
 from icepool.function import sorted_union
 from icepool.order import Order
-from icepool.typing import T, MaybeHashKeyed, U_co
-from typing import Any, Callable, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, Sequence, TypeAlias, overload
+from icepool.typing import T, MaybeHashKeyed, U_co, infer_star
+from typing import Any, Callable, Generic, Hashable, Iterator, Mapping, MutableSequence, NamedTuple, Sequence, TypeAlias, cast, overload
 
 MV: TypeAlias = MultisetParameter | MultisetTupleParameter
 
@@ -69,8 +70,23 @@ def multiset_function(wrapped: Callable[
         return (a - b).expand(), (b - a).expand()
     ```
 
-    You can send non-multiset variables as keyword arguments
-    (recommended to be defined as keyword-only).
+    The special `star` keyword argument will unpack tuple-valued counts of the
+    first argument inside the multiset function. For example,
+    ```python
+    hands = deck.deal((5, 5))
+    two_way_difference(hands, star=True)
+    ```
+    effectively unpacks as if we had written
+    ```python
+    @multiset_function
+    def two_way_difference(hands):
+        a, b = hands
+        return (a - b).expand(), (b - a).expand()
+    ```
+
+    If not provided explicitly, `star` will be inferred automatically.
+
+    You can pass non-multiset values as keyword-only arguments.
     ```python
     @multiset_function
     def count_outcomes(a, *, target):
@@ -213,10 +229,29 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
         kwargs: Mapping[str, Hashable],
     ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, U_co]',
                         'tuple[MultisetSourceBase[T, Any], ...]', int]]:
-        multiset_variables = [
-            exp._make_param(i, self._get_positional_name(i))
-            for i, exp in enumerate(input_exps)
-        ]
+        if 'star' in kwargs:
+            star = cast(bool, kwargs['star'])
+            kwargs = {k: v for k, v in kwargs.items() if k != 'star'}
+        else:
+            star = infer_star(self._wrapped, len(input_exps))
+
+        if star:
+            first_expression = cast(MultisetTupleExpression[T, Any],
+                                    input_exps[0])
+            multiset_variables = [
+                first_expression._make_param(self._get_positional_name(i), 0,
+                                             i)
+                for i in range(len(first_expression))
+            ] + [
+                exp._make_param(
+                    self._get_positional_name(i + len(first_expression)),
+                    i + 1) for i, exp in enumerate(input_exps[1:])
+            ]
+        else:
+            multiset_variables = [
+                exp._make_param(self._get_positional_name(i), i)
+                for i, exp in enumerate(input_exps)
+            ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
         if isinstance(raw_result, (MultisetFunctionRawResult, icepool.Die)):
             yield from prepare_multiset_function(input_exps, raw_result)

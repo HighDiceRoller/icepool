@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import multiset_function, d6, MultisetExpression
+from icepool import multiset_function, d6, MultisetExpression, Deck
 from icepool.expand import tupleize
 
 
@@ -32,10 +32,27 @@ def test_var_args():
     assert evaluator(d6.pool(1), d6.pool(1), d6.pool(1)) == 3 @ d6
 
 
+def test_star_auto():
+
+    @multiset_function
+    def evaluator(a, b):
+        return (a & b).size()
+
+    @multiset_function
+    def evaluator_unpack(hands):
+        a, b = hands
+        return (a & b).size()
+
+    deck = Deck(range(5), times=4)
+    deal = deck.deal((5, 5))
+    assert evaluator(deal, star=True) == evaluator_unpack(deal)
+    assert evaluator(deal) == evaluator_unpack(deal)
+
+
 def test_kwargs():
 
     @multiset_function
-    def evaluator(x, target):
+    def evaluator(x, *, target):
         return x.keep_outcomes([target]).size()
 
     for i in range(1, 7):

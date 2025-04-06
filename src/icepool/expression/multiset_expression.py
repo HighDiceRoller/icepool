@@ -125,8 +125,15 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `all_straights`                | Lengths of all consecutive sequences in descending order                   |
     """
 
-    def _make_param(self, index: int, name: str) -> 'MultisetParameter[T]':
-        return icepool.MultisetParameter(index, name)
+    def _make_param(self,
+                    name: str,
+                    arg_index: int,
+                    star_index: int | None = None) -> 'MultisetParameter[T]':
+        if star_index is not None:
+            raise TypeError(
+                'The single int count of MultisetExpression cannot be starred.'
+            )
+        return icepool.MultisetParameter(name, arg_index, star_index)
 
     @property
     def _items_for_cartesian_product(

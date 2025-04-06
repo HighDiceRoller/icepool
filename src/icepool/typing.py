@@ -109,7 +109,7 @@ class InferStarError(ValueError):
     """Indicates that `star` could not be inferred."""
 
 
-def infer_star(function, arg_count=1) -> bool:
+def infer_star(function: Callable, arg_count: int = 1) -> bool:
     """Infers whether the first argument should be unpacked before giving it to the function.
 
     Args:
