@@ -23,7 +23,7 @@ class MultisetKeep(MultisetOperator[T]):
 
     def _initial_state(
         self, order, outcomes, child_sizes: MutableSequence,
-        source_sizes: Iterator, param_sizes: Sequence
+        source_sizes: Iterator, arg_sizes: Sequence
     ) -> tuple[tuple[tuple[int, ...], bool], int | None]:
         """
         
@@ -142,7 +142,7 @@ class MultisetKeep(MultisetOperator[T]):
             return (reversed_tuple, False), sum(reversed_tuple)
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
+                    arg_counts):
         keep_tuple, keep_more = state
         child_count = max(child_counts[0], 0)
         count = sum(keep_tuple[:child_count])

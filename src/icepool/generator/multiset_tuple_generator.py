@@ -23,7 +23,7 @@ class MultisetTupleGenerator(MultisetTupleExpression[T, IntTupleOut]):
         """Create a source from this generator."""
 
     @property
-    def _has_param(self) -> bool:
+    def _has_parameter(self) -> bool:
         return False
 
     @property
@@ -50,5 +50,5 @@ class MultisetTupleGeneratorQuestlet(Questlet[T, IntTupleOut]):
     child_indexes = ()
 
     def initial_state(self, order, outcomes, child_sizes, source_sizes,
-                      param_sizes):
+                      arg_sizes):
         return None, next(source_sizes)

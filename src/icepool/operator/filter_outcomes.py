@@ -44,7 +44,7 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
             self._func = function
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
+                    arg_counts):
         if bool(self._func(outcome)) != self._invert:
             count = child_counts[0]
         else:
@@ -89,7 +89,7 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
         self._invert = invert
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
+                    arg_counts):
         source_count, target_count = child_counts
         if (target_count > 0) != self._invert:
             count = source_count

@@ -79,7 +79,7 @@ class MultisetEvaluatorBase(ABC, Generic[T, U_co]):
             icepool.implicit_convert_to_expression(arg) for arg in args)
 
         # In this case we are inside a @multiset_function.
-        if any(exp._has_param for exp in input_exps):
+        if any(exp._has_parameter for exp in input_exps):
             from icepool.evaluator.multiset_function import MultisetFunctionRawResult
             return MultisetFunctionRawResult(self, input_exps, kwargs)
 
@@ -137,7 +137,7 @@ class Dungeon(Generic[T], MaybeHashKeyed):
 
     @abstractmethod
     def next_state_main(self, state: Hashable, order: Order, outcome: T,
-                        *param_tree) -> Hashable:
+                        *arg_tree) -> Hashable:
         """Main state transition function.
         
         Args:
@@ -146,8 +146,8 @@ class Dungeon(Generic[T], MaybeHashKeyed):
             outcome: The current outcome.
             source_counts: The counts produced by sources. This is an iterator
                 that will be consumed in order.
-            param_tree: If this is a leaf call, each argument is a param count.
-                Otherwise, the arguments are the trees of param counts provided 
+            arg_tree: If this is a leaf call, each argument is a arg count.
+                Otherwise, the arguments are the trees of arg counts provided 
                 to the sub-calls.
 
         Returns:
@@ -176,28 +176,28 @@ class Dungeon(Generic[T], MaybeHashKeyed):
         all_outcomes = sorted_union(source_outcomes, extra_outcomes)
 
         try:
-            room, param_sizes = self.initial_room(quest, sources, -pop_order,
-                                                  all_outcomes, kwargs)
+            room, arg_sizes = self.initial_room(quest, sources, -pop_order,
+                                                all_outcomes, kwargs)
             final_states = self.evaluate_backward(pop_order, room)
             return quest.finalize_evaluation(final_states, -pop_order,
-                                             all_outcomes, param_sizes, kwargs)
+                                             all_outcomes, arg_sizes, kwargs)
         except UnsupportedOrder:
             try:
                 if pop_order_reason is OrderReason.Default:
                     # Flip the pop order.
-                    room, param_sizes = self.initial_room(
+                    room, arg_sizes = self.initial_room(
                         quest, sources, pop_order, all_outcomes, kwargs)
                     final_states = self.evaluate_backward(-pop_order, room)
                     return quest.finalize_evaluation(final_states, pop_order,
-                                                     all_outcomes, param_sizes,
+                                                     all_outcomes, arg_sizes,
                                                      kwargs)
                 else:
                     # Use the alternate algorithm.
-                    room, param_sizes = self.initial_room(
+                    room, arg_sizes = self.initial_room(
                         quest, sources, pop_order, all_outcomes, kwargs)
                     final_states = self.evaluate_forward(pop_order, room)
                     return quest.finalize_evaluation(final_states, pop_order,
-                                                     all_outcomes, param_sizes,
+                                                     all_outcomes, arg_sizes,
                                                      kwargs)
             except UnsupportedOrder:
                 raise ConflictingOrderError(
@@ -212,12 +212,12 @@ class Dungeon(Generic[T], MaybeHashKeyed):
             outcomes: tuple[T, ...],
             kwargs: Mapping[str, Hashable]) -> 'tuple[Room[T], tuple]':
         source_counts = (source.size() for source in sources)
-        initial_statelet_tree, param_sizes = quest.questlet_call_tree.initial_state(
+        initial_statelet_tree, arg_sizes = quest.questlet_call_tree.initial_state(
             order, outcomes, source_counts, ())
         initial_state_main = quest.initial_state_main(order, outcomes,
-                                                      *param_sizes, **kwargs)
+                                                      *arg_sizes, **kwargs)
         return Room(outcomes, sources, initial_statelet_tree,
-                    initial_state_main), param_sizes
+                    initial_state_main), arg_sizes
 
     def evaluate_backward(
             self, pop_order: Order, room: 'Room'
@@ -391,13 +391,13 @@ class Quest(Generic[T, U_co]):
 
     @abstractmethod
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           *param_sizes, **kwargs: Hashable) -> Hashable:
+                           *arg_sizes, **kwargs: Hashable) -> Hashable:
         """The initial evaluation state.
 
         Args:
             order: The order in which `next_state` will see outcomes.
             outcomes: All outcomes that will be seen by `next_state` in sorted order.
-            param_sizes: If this is a leaf call, each argument is the size of an
+            arg_sizes: If this is a leaf call, each argument is the size of an
                 argument multiset. Otherwise, each element is the tree of
                 a sub-call.
             kwargs: Any keyword arguments that were passed to `evaluate()`.
@@ -409,21 +409,21 @@ class Quest(Generic[T, U_co]):
     @abstractmethod
     def final_outcome(
             self, final_state: Hashable, order: Order, outcomes: tuple[T, ...],
-            *param_sizes, **kwargs: Hashable
+            *arg_sizes, **kwargs: Hashable
     ) -> 'U_co | icepool.Die[U_co] | icepool.RerollType':
         """Generates a final outcome from a final state."""
 
     def finalize_evaluation(
             self, final_states: Mapping['StateletCallTree',
                                         Mapping[Hashable, int]], order: Order,
-            outcomes: tuple[T, ...], param_sizes: tuple,
+            outcomes: tuple[T, ...], arg_sizes: tuple,
             kwargs: Mapping[str, Hashable]) -> 'icepool.Die[U_co]':
         final_outcomes = []
         final_weights = []
         for _, main_states in final_states.items():
             for state, weight in main_states.items():
                 outcome = self.final_outcome(state, order, outcomes,
-                                             *param_sizes, **kwargs)
+                                             *arg_sizes, **kwargs)
                 if outcome is None:
                     raise TypeError(
                         "None is not a valid final outcome.\n"

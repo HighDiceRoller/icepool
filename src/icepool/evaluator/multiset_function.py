@@ -164,7 +164,7 @@ class ConstantDungeon(Dungeon[Any]):
 
     _multiset_function_can_cache = True
 
-    def next_state_main(self, state, order, outcome, *param_tree):
+    def next_state_main(self, state, order, outcome, *arg_tree):
         return None
 
     @property
@@ -182,10 +182,10 @@ class ConstantQuest(Quest[Any, U_co]):
     def extra_outcomes(self, outcomes):
         return ()
 
-    def initial_state_main(self, order, outcomes, *param_sizes, **kwargs):
+    def initial_state_main(self, order, outcomes, *arg_sizes, **kwargs):
         return None
 
-    def final_outcome(self, final_state, order, outcomes, *param_sizes,
+    def final_outcome(self, final_state, order, outcomes, *arg_sizes,
                       **kwargs):
         return self._final_outcome
 
@@ -307,9 +307,9 @@ class MultisetFunctionDungeon(Dungeon[T]):
         self._multiset_function_can_cache = self.inner_dungeon._multiset_function_can_cache
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        *param_counts) -> Hashable:
+                        *arg_counts) -> Hashable:
         return self.inner_dungeon.next_state_main(state, order, outcome,
-                                                  *param_counts[0])
+                                                  *arg_counts[0])
 
     @property
     def hash_key(self):
@@ -335,16 +335,16 @@ class MultisetFunctionQuest(Quest[T, U_co]):
         return self.inner_quest.extra_outcomes(outcomes)
 
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           *param_sizes, **kwargs: Hashable) -> Hashable:
+                           *arg_sizes, **kwargs: Hashable) -> Hashable:
         # The kwargs have already been bound to inner_kwargs.
         return self.inner_quest.initial_state_main(order, outcomes,
-                                                   *param_sizes[0],
+                                                   *arg_sizes[0],
                                                    **self.inner_kwargs)
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
-                      *param_sizes, **kwargs):
+                      *arg_sizes, **kwargs):
         return self.inner_quest.final_outcome(final_state, order, outcomes,
-                                              *param_sizes[0],
+                                              *arg_sizes[0],
                                               **self.inner_kwargs)
 
 
@@ -402,14 +402,14 @@ class MultisetFunctionJointDungeon(Dungeon[T]):
             dungeon._multiset_function_can_cache for dungeon in inner_dungeons)
 
     def next_state_main(self, state, order: Order, outcome: T,
-                        *param_counts) -> Hashable:
+                        *arg_counts) -> Hashable:
         next_state: MutableSequence[Hashable] = []
         inner_dungeon: Dungeon[T]
-        inner_param_tree: tuple
-        for inner_state, inner_dungeon, inner_param_tree in zip(
-                state, self.inner_dungeons, param_counts):
+        inner_arg_tree: tuple
+        for inner_state, inner_dungeon, inner_arg_tree in zip(
+                state, self.inner_dungeons, arg_counts):
             next_inner_state = inner_dungeon.next_state_main(
-                inner_state, order, outcome, *inner_param_tree)
+                inner_state, order, outcome, *inner_arg_tree)
             if next_inner_state is icepool.Reroll:
                 return icepool.Reroll
             next_state.append(next_inner_state)
@@ -441,21 +441,19 @@ class MultisetFunctionJointQuest(Quest[T, Any]):
                               for quest in self.inner_quests))
 
     def initial_state_main(self, order: Order, outcomes: tuple[T, ...],
-                           *param_sizes, **kwargs: Hashable) -> Hashable:
+                           *arg_sizes, **kwargs: Hashable) -> Hashable:
 
         return tuple(
-            inner_quest.initial_state_main(order, outcomes, *inner_param_sizes,
+            inner_quest.initial_state_main(order, outcomes, *inner_arg_sizes,
                                            **inner_kwargs)
-            for inner_quest, inner_kwargs, inner_param_sizes in zip(
-                self.inner_quests, self.inner_kwargses, param_sizes))
+            for inner_quest, inner_kwargs, inner_arg_sizes in zip(
+                self.inner_quests, self.inner_kwargses, arg_sizes))
 
     def final_outcome(self, final_state, order: Order, outcomes: tuple[T, ...],
-                      *param_sizes, **kwargs: Hashable):
+                      *arg_sizes, **kwargs: Hashable):
         # The kwargs have already been bound to inner_kwargses.
-        result = icepool.tupleize(
-            *(quest.final_outcome(inner_main_state, order, outcomes, *
-                                  inner_param_sizes, **inner_kwargs)
-              for quest, inner_main_state, inner_param_sizes, inner_kwargs in
-              zip(self.inner_quests, final_state, param_sizes,
-                  self.inner_kwargses)))
+        result = icepool.tupleize(*(quest.final_outcome(
+            inner_main_state, order, outcomes, *inner_arg_sizes, **inner_kwargs
+        ) for quest, inner_main_state, inner_arg_sizes, inner_kwargs in zip(
+            self.inner_quests, final_state, arg_sizes, self.inner_kwargses)))
         return result

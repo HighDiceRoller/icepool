@@ -100,8 +100,8 @@ class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
         self._children = (child, )
 
     @property
-    def _has_param(self):
-        return self._children[0]._has_param
+    def _has_parameter(self):
+        return self._children[0]._has_parameter
 
     @property
     def _static_keepable(self):
@@ -113,14 +113,14 @@ class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
                        child_sizes: MutableSequence, source_sizes: Iterator,
-                       param_sizes: Sequence) -> Hashable:
+                       arg_sizes: Sequence) -> Hashable:
         if child_sizes[0] is None:
             return None
         return None, child_sizes[0][self._index]
 
     def _next_state(self, state: Hashable, order: Order, outcome: T,
                     child_counts: MutableSequence, source_counts: Iterator,
-                    param_counts: Sequence) -> tuple[Hashable, int]:
+                    arg_counts: Sequence) -> tuple[Hashable, int]:
         return None, child_counts[0][self._index]
 
     def _prepare(
@@ -149,8 +149,8 @@ class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
         self._children = (child, )
 
     @property
-    def _has_param(self):
-        return self._children[0]._has_param
+    def _has_parameter(self):
+        return self._children[0]._has_parameter
 
     @property
     def _static_keepable(self):
@@ -163,14 +163,14 @@ class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
                        child_sizes: MutableSequence, source_sizes: Iterator,
-                       param_sizes: Sequence) -> Hashable:
+                       arg_sizes: Sequence) -> Hashable:
         if child_sizes[0] is None:
             return None
         return None, child_sizes[0][self._index]
 
     def _next_state(self, state: Hashable, order: Order, outcome: T,
                     child_counts: MutableSequence, source_counts: Iterator,
-                    param_counts: Sequence) -> tuple[Hashable, int]:
+                    arg_counts: Sequence) -> tuple[Hashable, int]:
         return None, child_counts[0][self._index]
 
     def _prepare(

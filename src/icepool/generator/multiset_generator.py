@@ -38,7 +38,7 @@ class MultisetGenerator(MultisetExpression[T]):
         """Create a source from this generator."""
 
     @property
-    def _has_param(self) -> bool:
+    def _has_parameter(self) -> bool:
         return False
 
     def _prepare(
@@ -61,5 +61,5 @@ class MultisetGeneratorQuestlet(Questlet[T, int]):
     child_indexes = ()
 
     def initial_state(self, order, outcomes, child_sizes, source_sizes,
-                      param_sizes):
+                      arg_sizes):
         return None, next(source_sizes)

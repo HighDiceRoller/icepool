@@ -31,8 +31,8 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
 
     @property
     @abstractmethod
-    def _has_param(self) -> bool:
-        """Whether this expression tree contains any param."""
+    def _has_parameter(self) -> bool:
+        """Whether this expression tree contains any parameter."""
 
     @abstractmethod
     def _make_param(
@@ -40,7 +40,7 @@ class MultisetExpressionBase(Generic[T, Q], MaybeHashKeyed):
             name: str,
             arg_index: int,
             star_index: int | None = None) -> 'MultisetParameterBase[T, Any]':
-        """Creates a param corresponding to the output of this expression.
+        """Creates a parameter corresponding to the output of this expression.
         
         This is used to determine the input types to multiset functions.
 
@@ -66,7 +66,7 @@ class Dungeonlet(Generic[T, Q], MaybeHashKeyed):
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
                    child_counts: MutableSequence, source_counts: Iterator,
-                   param_counts: Sequence) -> tuple[Hashable, Q]:
+                   arg_counts: Sequence) -> tuple[Hashable, Q]:
         """Advances the state of this dungeonlet.
         
         Args:
@@ -77,7 +77,7 @@ class Dungeonlet(Generic[T, Q], MaybeHashKeyed):
             source_counts: The counts produced by sources.
                 This is an iterator which will be progressively consumed by
                 free variables.
-            param_counts: The counts produced by params.
+            arg_counts: The counts produced by args.
 
         Returns:
             The next local state and the count produced by this node.
@@ -108,7 +108,7 @@ class MultisetFreeVariable(Dungeonlet[T, Q]):
     child_indexes = ()
 
     def next_state(self, state, order, outcome, child_counts, source_counts,
-                   param_counts):
+                   arg_counts):
         return None, next(source_counts)
 
     @property
@@ -173,7 +173,7 @@ class Questlet(Generic[T, Q]):
     @abstractmethod
     def initial_state(self, order: Order, outcomes: Sequence[T],
                       child_sizes: MutableSequence, source_sizes: Iterator,
-                      param_sizes: Sequence) -> tuple[Hashable, Q | None]:
+                      arg_sizes: Sequence) -> tuple[Hashable, Q | None]:
         """Optional: the initial state of this node.
 
         Args:
@@ -183,7 +183,7 @@ class Questlet(Generic[T, Q]):
             source_counts: The sizes produced by sources.
                 This is an iterator which will be progressively consumed by
                 free variables.
-            param_counts: The sizes produced by params.
+            arg_sizes: The sizes produced by args.
 
         Returns:
             The initial state, and the size of this node.
@@ -210,21 +210,21 @@ class DungeonletCallTree(Generic[T], NamedTuple):
 
     def next_state(self, statelet_tree: 'StateletCallTree', order: Order,
                    outcome: T, source_counts: Iterator,
-                   param_counts: Sequence) -> 'tuple[StateletCallTree, tuple]':
+                   arg_counts: Sequence) -> 'tuple[StateletCallTree, tuple]':
         """Advances the statelet tree for this call tree.
 
         Args:
             order: The order in which the evaluation will see outcomes.
             source_counts: The count from each source, which will be consumed in
                 traversal order.
-            param_counts: The counts of the params to this call.
+            arg_counts: The counts of the args to this call.
 
         Returns:
-            An next statelet call tree, and a param count call tree.
+            An next statelet call tree, and a arg count call tree.
             Each node in the latter is either a non-leaf node corresponding to
             a multiset function, in which case it is a tuple of subtrees,
             or it is a leaf node corresponding to a final evaluation, in which
-            case it is the actual param counts to that evaluation.
+            case it is the actual arg counts to that evaluation.
         """
         next_flats = []
         output_counts: MutableSequence = []
@@ -235,7 +235,7 @@ class DungeonletCallTree(Generic[T], NamedTuple):
                 child_counts = [countlets[i] for i in dungeonlet.child_indexes]
                 next_statelet, countlet = dungeonlet.next_state(
                     statelet, order, outcome, child_counts, source_counts,
-                    param_counts)
+                    arg_counts)
                 next_statelets.append(next_statelet)
                 countlets.append(countlet)
             next_flats.append(tuple(next_statelets))
@@ -268,24 +268,23 @@ class QuestletCallTree(Generic[T], NamedTuple):
     flats: 'tuple[tuple[Questlet[T, Any], ...], ...]'
     calls: 'tuple[QuestletCallTree, ...]'
 
-    def initial_state(
-            self, order: Order, outcomes: tuple[T,
-                                                ...], source_sizes: Iterator,
-            param_sizes: Sequence) -> 'tuple[StateletCallTree, tuple]':
+    def initial_state(self, order: Order, outcomes: tuple[T, ...],
+                      source_sizes: Iterator,
+                      arg_sizes: Sequence) -> 'tuple[StateletCallTree, tuple]':
         """Generates the initial statelet tree for this call tree.
 
         Args:
             order: The order in which the evaluation will see outcomes.
             source_sizes: The size of each source, which will be consumed in
                 traversal order.
-            param_sizes: The sizes of the params to this call.
+            arg_sizes: The sizes of the args to this call.
 
         Returns:
-            An initial statelet call tree, and a param size call tree.
+            An initial statelet call tree, and a arg size call tree.
             Each node in the latter is either a non-leaf node corresponding to
             a multiset function, in which case it is a tuple of subtrees,
             or it is a leaf node corresponding to a final evaluation, in which
-            case it is the actual param sizes to that evaluation.
+            case it is the actual arg sizes to that evaluation.
         """
         statelet_flats = []
         output_sizes: MutableSequence = []
@@ -295,7 +294,7 @@ class QuestletCallTree(Generic[T], NamedTuple):
             for questlet in questlets:
                 child_sizes = [countlets[i] for i in questlet.child_indexes]
                 next_statelet, countlet = questlet.initial_state(
-                    order, outcomes, child_sizes, source_sizes, param_sizes)
+                    order, outcomes, child_sizes, source_sizes, arg_sizes)
                 statelets.append(next_statelet)
                 countlets.append(countlet)
             statelet_flats.append(tuple(statelets))

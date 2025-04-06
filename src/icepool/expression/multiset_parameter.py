@@ -32,7 +32,7 @@ class MultisetParameterBase(Generic[T, Q]):
         yield (dungeonlet, ), (questlet, ), (), 1
 
     @property
-    def _has_param(self):
+    def _has_parameter(self):
         return True
 
     @property
@@ -75,11 +75,11 @@ class MultisetParameterDungeonlet(Dungeonlet[T, Q]):
         self.star_index = star_index
 
     def next_state(self, state, order, outcome, child_counts, source_counts,
-                   param_counts):
+                   arg_sizes):
         if self.star_index is None:
-            return None, param_counts[self.arg_index]
+            return None, arg_sizes[self.arg_index]
         else:
-            return None, param_counts[self.arg_index][self.star_index]
+            return None, arg_sizes[self.arg_index][self.star_index]
 
     @property
     def hash_key(self):
@@ -95,8 +95,8 @@ class MultisetParameterQuestlet(Questlet[T, Q]):
 
     def initial_state(self, order: Order, outcomes: Sequence[T],
                       child_sizes: MutableSequence, source_sizes: Iterator,
-                      param_sizes: Sequence):
+                      arg_sizes: Sequence):
         if self.star_index is None:
-            return None, param_sizes[self.arg_index]
+            return None, arg_sizes[self.arg_index]
         else:
-            return None, param_sizes[self.arg_index][self.star_index]
+            return None, arg_sizes[self.arg_index][self.star_index]

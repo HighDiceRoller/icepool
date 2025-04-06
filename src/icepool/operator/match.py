@@ -23,7 +23,7 @@ class MultisetSortMatch(MultisetOperator[T]):
 
     def _initial_state(
             self, order, outcomes, child_sizes: MutableSequence,
-            source_sizes: Iterator, param_sizes: Sequence
+            source_sizes: Iterator, arg_sizes: Sequence
     ) -> tuple[tuple[int, int, int, int], int | None]:
         """
         State is left_lead, tie, left_first, right_first.
@@ -41,7 +41,7 @@ class MultisetSortMatch(MultisetOperator[T]):
                     self._left_first), None
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
+                    arg_counts):
         left_lead, tie, left_first, right_first = state
         left_count, right_count = child_counts
         left_count = max(left_count, 0)
@@ -78,7 +78,7 @@ class MultisetMaximumMatch(MultisetOperator[T]):
 
     def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
                        source_sizes: Iterator,
-                       param_sizes: Sequence) -> tuple[int, int | None]:
+                       arg_sizes: Sequence) -> tuple[int, int | None]:
         """
         
         Returns:
@@ -91,7 +91,7 @@ class MultisetMaximumMatch(MultisetOperator[T]):
             raise UnsupportedOrder()
 
     def _next_state(self, prev_matchable, order, outcome, child_counts,
-                    source_counts, param_counts):
+                    source_counts, arg_counts):
         left_count, right_count = child_counts
 
         left_count = max(left_count, 0)

@@ -18,13 +18,13 @@ class MultisetForceOrder(MultisetOperator[T]):
 
     def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
                        source_sizes: Iterator,
-                       param_sizes: Sequence) -> tuple[None, int | None]:
+                       arg_sizes: Sequence) -> tuple[None, int | None]:
         if self._force_order != Order.Any and order != self._force_order:
             raise UnsupportedOrder()
         return None, child_sizes[0]
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
+                    arg_counts):
         return None, child_counts[0]
 
     @property

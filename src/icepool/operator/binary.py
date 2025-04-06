@@ -37,7 +37,7 @@ class MultisetBinaryOperator(MultisetOperator[T]):
         """A symbol representing this operation."""
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
-                    param_counts):
+                    arg_counts):
         count = reduce(self.merge_counts, child_counts)
         return None, count
 
@@ -94,7 +94,7 @@ class MultisetAdditiveUnion(MultisetBinaryOperator):
         return '+'
 
     def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
-                       source_sizes: Iterator, param_sizes: Sequence):
+                       source_sizes: Iterator, arg_sizes: Sequence):
         left_size, right_size = child_sizes
         if left_size is None or right_size is None:
             return None, None
