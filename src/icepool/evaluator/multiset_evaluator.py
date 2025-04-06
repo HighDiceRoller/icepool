@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 
 class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
+    """Evaluates a multiset based on a state transition function."""
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T, /,
