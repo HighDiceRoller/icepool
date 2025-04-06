@@ -151,7 +151,8 @@ class Deck(Population[T_co], MaybeHashKeyed):
     def additive_union(
             self, *args: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
         """Both decks merged together."""
-        return functools.reduce(operator.add, args, initial=self)
+        return functools.reduce(operator.add, args,
+                                initial=self)  # type: ignore
 
     def __add__(self,
                 other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
@@ -165,7 +166,8 @@ class Deck(Population[T_co], MaybeHashKeyed):
     def difference(self, *args:
                    Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
         """This deck with the other cards removed (but not below zero of each card)."""
-        return functools.reduce(operator.sub, args, initial=self)
+        return functools.reduce(operator.sub, args,
+                                initial=self)  # type: ignore
 
     def __sub__(self,
                 other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
@@ -184,7 +186,8 @@ class Deck(Population[T_co], MaybeHashKeyed):
     def intersection(
             self, *args: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
         """The cards that both decks have."""
-        return functools.reduce(operator.and_, args, initial=self)
+        return functools.reduce(operator.and_, args,
+                                initial=self)  # type: ignore
 
     def __and__(self,
                 other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
@@ -198,7 +201,8 @@ class Deck(Population[T_co], MaybeHashKeyed):
     def union(self, *args:
               Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
         """As many of each card as the deck that has more of them."""
-        return functools.reduce(operator.or_, args, initial=self)
+        return functools.reduce(operator.or_, args,
+                                initial=self)  # type: ignore
 
     def __or__(self,
                other: Iterable[T_co] | Mapping[T_co, int]) -> 'Deck[T_co]':
