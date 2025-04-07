@@ -159,24 +159,38 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
         for count_total in range(min_count, max_count + 1):
             weight_total = icepool.math.comb(deck_count, count_total)
             # The "deck" assigns the cards of the current outcome to hands.
+            skip_weight = None
             for raw_counts, weight_split in iter_hypergeom(
                     self.hand_sizes(), count_total):
                 pos = 0
                 counts = list(raw_counts)
-                next_hand_groups = []
+                next_hand_groups: list[tuple[int, int]] = []
                 for hand_size, group_size in self.hand_groups:
                     counts[pos:pos + group_size] = sorted(
                         raw_counts[pos:pos + group_size], reverse=True)
                     for count, next_group_counts in itertools.groupby(
                             counts[pos:pos + group_size]):
                         next_group_size = len(list(next_group_counts))
-                        next_hand_groups.append(
-                            (hand_size - count, next_group_size))
+                        if count == hand_size:
+                            next_hand_groups.extend(
+                                ((0, 1), ) * next_group_size)
+                        else:
+                            next_hand_groups.append(
+                                (hand_size - count, next_group_size))
                     pos += group_size
                 popped_source = MultiDealSource[T, IntTupleOut](
                     popped_deck, tuple(next_hand_groups))
                 weight = weight_total * weight_split
+                if not any(hand_size for hand_size, _ in next_hand_groups):
+                    skip_weight = (skip_weight or
+                                   0) + weight * popped_source.denominator()
+                    continue
                 yield popped_source, tuple(counts), weight
+
+        if skip_weight is not None:
+            skip_source = MultiDealSource[T, IntTupleOut](
+                popped_deck, ((0, 1), ) * self.hand_count())
+            yield skip_source, self.hand_sizes(), skip_weight
 
     def order_preference(self) -> tuple[Order, OrderReason]:
         return Order.Any, OrderReason.NoPreference
@@ -184,6 +198,17 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
     @property
     def hash_key(self):
         return MultiDealSource, self.deck, self.hand_groups
+
+    @cached_property
+    def _denominator(self) -> int:
+        d_total = icepool.math.comb(self.deck.size(), self.total_cards_dealt())
+        d_split = math.prod(
+            icepool.math.comb(self.total_cards_dealt(), h)
+            for h in self.hand_sizes()[1:])
+        return d_total * d_split
+
+    def denominator(self) -> int:
+        return self._denominator
 
     def hand_sizes(self) -> IntTupleOut:
         """The number of cards dealt to each hand as a tuple."""
