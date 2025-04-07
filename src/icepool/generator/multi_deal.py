@@ -139,7 +139,7 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
 
     def pop(self, order: Order, outcome: T):
         if not self.outcomes():
-            yield self, 0, 1
+            yield self, (0, ) * self.hand_count(), 1
             return
 
         if order > 0:
@@ -150,7 +150,7 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
             popped_deck, deck_count = self.deck._pop_max()
 
         if pop_outcome != outcome:
-            yield self, 0, 1
+            yield self, (0, ) * self.hand_count(), 1
             return
 
         min_count = max(
@@ -193,6 +193,9 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
                 itertools.chain.from_iterable(
                     (hand_size, ) * group_size
                     for hand_size, group_size in self.hand_groups)))
+
+    def hand_count(self) -> int:
+        return sum(group_size for _, group_size in self.hand_groups)
 
     def total_cards_dealt(self) -> int:
         """The total number of cards dealt."""
