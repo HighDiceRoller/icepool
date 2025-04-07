@@ -166,7 +166,7 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
                 next_hand_groups = []
                 for hand_size, group_size in self.hand_groups:
                     counts[pos:pos + group_size] = sorted(
-                        raw_counts[pos:pos + group_size])
+                        raw_counts[pos:pos + group_size], reverse=True)
                     for count, next_group_counts in itertools.groupby(
                             counts[pos:pos + group_size]):
                         next_group_size = len(list(next_group_counts))
