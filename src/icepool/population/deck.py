@@ -150,6 +150,13 @@ class Deck(Population[T_co], MaybeHashKeyed):
     def deal_groups(
             self, *hand_groups: tuple[int,
                                       int]) -> 'icepool.MultiDeal[T_co, Any]':
+        """EXPERIMENTAL: Deal cards into groups of hands, where the hands in each group could be produced in arbitrary order.
+        
+        Args:
+            hand_groups: Each argument is a tuple (hand_size, group_size),
+                denoting the number of cards in each hand of the group and
+                the number of hands in the group respectively.
+        """
         return icepool.MultiDeal(self, hand_groups)
 
     # Binary operators.
