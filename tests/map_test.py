@@ -233,3 +233,11 @@ def test_group_by_index():
     assert result['a'] == Die(['aardvark', 'alligator', 'asp'])
     assert result['b'] == Die(['blowfish'])
     assert result['c'] == Die(['cat', 'crocodile'])
+
+
+def test_kwargs():
+
+    def test(x, *, die):
+        return x @ die
+
+    assert d6.map(test, die=d6) == d6 @ d6

@@ -260,6 +260,7 @@ class Deck(Population[T_co], MaybeHashKeyed):
             repl:
         'Callable[..., U | Deck[U] | icepool.RerollType] | Mapping[T_co, U | Deck[U] | icepool.RerollType]',
             /,
+            *,
             star: bool | None = None) -> 'Deck[U]':
         """Maps outcomes of this `Deck` to other outcomes.
 

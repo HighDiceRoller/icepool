@@ -445,18 +445,18 @@ class Die(Population[T_co], MaybeHashKeyed):
     # Processes.
 
     def map(
-        self,
-        repl:
+            self,
+            repl:
         'Callable[..., U | Die[U] | icepool.RerollType | icepool.AgainExpression] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.AgainExpression]',
-        /,
-        *extra_args,
-        star: bool | None = None,
-        repeat: int | Literal['inf'] = 1,
-        time_limit: int | Literal['inf'] | None = None,
-        again_count: int | None = None,
-        again_depth: int | None = None,
-        again_end: 'U | Die[U] | icepool.RerollType | None' = None
-    ) -> 'Die[U]':
+            /,
+            *extra_args,
+            star: bool | None = None,
+            repeat: int | Literal['inf'] = 1,
+            time_limit: int | Literal['inf'] | None = None,
+            again_count: int | None = None,
+            again_depth: int | None = None,
+            again_end: 'U | Die[U] | icepool.RerollType | None' = None,
+            **kwargs) -> 'Die[U]':
         """Maps outcomes of the `Die` to other outcomes.
 
         This is also useful for representing processes.
@@ -471,7 +471,8 @@ class Die(Population[T_co], MaybeHashKeyed):
                            time_limit=time_limit,
                            again_count=again_count,
                            again_depth=again_depth,
-                           again_end=again_end)
+                           again_end=again_end,
+                           **kwargs)
 
     def map_and_time(
             self,
@@ -480,7 +481,8 @@ class Die(Population[T_co], MaybeHashKeyed):
             /,
             *extra_args,
             star: bool | None = None,
-            time_limit: int) -> 'Die[tuple[T_co, int]]':
+            time_limit: int,
+            **kwargs) -> 'Die[tuple[T_co, int]]':
         """Repeatedly map outcomes of the state to other outcomes, while also
         counting timesteps.
 
@@ -492,7 +494,8 @@ class Die(Population[T_co], MaybeHashKeyed):
                                     self,
                                     *extra_args,
                                     star=star,
-                                    time_limit=time_limit)
+                                    time_limit=time_limit,
+                                    **kwargs)
 
     def time_to_sum(self: 'Die[int]',
                     target: int,
@@ -946,7 +949,7 @@ class Die(Population[T_co], MaybeHashKeyed):
             /,
             *extra_args: 'Outcome | icepool.Die | icepool.MultisetExpression',
             star: bool | None = None,
-            denominator: int | None = None) -> 'icepool.MultisetExpression[U]':
+            **kwargs) -> 'icepool.MultisetExpression[U]':
         """EXPERIMENTAL: Maps outcomes of this `Die` to `Pools`, creating a `MultisetGenerator`.
 
         As `icepool.map_to_pool(repl, self, ...)`.
@@ -955,36 +958,14 @@ class Die(Population[T_co], MaybeHashKeyed):
         mixture of pools directly, similar to the inverse of `pool.expand()`.
         Note that this is not particularly efficient since it does not make much
         use of dynamic programming.
-
-        Args:
-            repl: One of the following:
-                * A callable that takes in one outcome per element of args and
-                    produces a `Pool` (or something convertible to such).
-                * A mapping from old outcomes to `Pool` 
-                    (or something convertible to such).
-                    In this case args must have exactly one element.
-                The new outcomes may be dice rather than just single outcomes.
-                The special value `icepool.Reroll` will reroll that old outcome.
-            star: If `True`, the first of the args will be unpacked before 
-                giving them to `repl`.
-                If not provided, it will be guessed based on the signature of 
-                `repl` and the number of arguments.
-            denominator: If provided, the denominator of the result will be this
-                value. Otherwise it will be the minimum to correctly weight the
-                pools.
-
-        Returns:
-            A `MultisetGenerator` representing the mixture of `Pool`s. Note  
-            that this is not technically a `Pool`, though it supports most of 
-            the same operations.
-
-        Raises:
-            ValueError: If `denominator` cannot be made consistent with the 
-                resulting mixture of pools.
         """
         if repl is None:
             repl = lambda x: x
-        return icepool.map_to_pool(repl, self, *extra_args, star=star)
+        return icepool.map_to_pool(repl,
+                                   self,
+                                   *extra_args,
+                                   star=star,
+                                   **kwargs)
 
     def explode_to_pool(self,
                         rolls: int,

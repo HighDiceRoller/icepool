@@ -482,7 +482,8 @@ def _canonicalize_transition_function(repl: 'Callable | Mapping',
             star = infer_star(repl, arg_count)
         if star:
             func = cast(Callable, repl)
-            return lambda o, *extra_args: func(*o, *extra_args)
+            return lambda o, *extra_args, **kwargs: func(
+                *o, *extra_args, **kwargs)
         else:
             return repl
     elif isinstance(repl, Mapping):
@@ -496,17 +497,17 @@ def _canonicalize_transition_function(repl: 'Callable | Mapping',
 
 
 def map(
-    repl:
+        repl:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
-    /,
-    *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-    star: bool | None = None,
-    repeat: int | Literal['inf'] = 1,
-    time_limit: int | Literal['inf'] | None = None,
-    again_count: int | None = None,
-    again_depth: int | None = None,
-    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
-) -> 'icepool.Die[T]':
+        /,
+        *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+        star: bool | None = None,
+        repeat: int | Literal['inf'] = 1,
+        time_limit: int | Literal['inf'] | None = None,
+        again_count: int | None = None,
+        again_depth: int | None = None,
+        again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
+        **kwargs) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, returning a Die.
 
     See `map_function` for a decorator version of this.
@@ -534,15 +535,15 @@ def map(
                 `Population`s of `tuple`s.
                 This does not apply to subclasses of `tuple`s such as `namedtuple`
                 or other classes such as `Vector`.
-        *args: `func` will be called with all joint outcomes of these.
+        *args: `repl` will be called with all joint outcomes of these.
             Allowed arg types are:
             * Single outcome.
-            * `Die`. All outcomes will be sent to `func`.
+            * `Die`. All outcomes will be sent to `repl`.
             * `MultisetExpression`. All sorted tuples of outcomes will be sent
-                to `func`, as `MultisetExpression.expand()`.
+                to `repl`, as `MultisetExpression.expand()`.
         star: If `True`, the first of the args will be unpacked before giving
-            them to `func`.
-            If not provided, it will be guessed based on the signature of `func`
+            them to `repl`.
+            If not provided, it will be guessed based on the signature of `repl`
             and the number of arguments.
         repeat: This will be repeated with the same arguments on the
             result this many times, except the first of `args` will be replaced
@@ -557,9 +558,13 @@ def map(
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
         time_limit: Similar to `repeat`, but will return early if a fixed point
-             is reached. If both `repeat` and `time_limit` are provided
-             (not recommended), `time_limit` takes priority.
+            is reached. If both `repeat` and `time_limit` are provided
+            (not recommended), `time_limit` takes priority.
         again_count, again_depth, again_end: Forwarded to the final die constructor.
+        **kwargs: Keyword-only arguments can be forwarded to a callable `repl`.
+            Unlike *args, outcomes will not be expanded, i.e. `Die` and
+            `MultisetExpression` will be passed as-is. This is invalid for
+            non-callable `repl`.
     """
     transition_function = _canonicalize_transition_function(
         repl, len(args), star)
@@ -567,7 +572,7 @@ def map(
     if len(args) == 0:
         if repeat != 1:
             raise ValueError('If no arguments are given, repeat must be 1.')
-        return icepool.Die([transition_function()],
+        return icepool.Die([transition_function(**kwargs)],
                            again_count=again_count,
                            again_depth=again_depth,
                            again_end=again_end)
@@ -590,7 +595,8 @@ def map(
                        star=False,
                        again_count=again_count,
                        again_depth=again_depth,
-                       again_end=again_end)
+                       again_end=again_end,
+                       **kwargs)
 
         return icepool.population.markov_chain.absorbing_markov_chain(
             icepool.Die([args[0]]), unary_transition_function)
@@ -605,7 +611,7 @@ def map(
             final_quantities: list[int] = []
             for outcomes, final_quantity in icepool.iter_cartesian_product(
                     *args):
-                final_outcome = transition_function(*outcomes)
+                final_outcome = transition_function(*outcomes, **kwargs)
                 if final_outcome is not icepool.Reroll:
                     final_outcomes.append(final_outcome)
                     final_quantities.append(final_quantity)
@@ -623,7 +629,8 @@ def map(
                                           star=False,
                                           again_count=again_count,
                                           again_depth=again_depth,
-                                          again_end=again_end)
+                                          again_end=again_end,
+                                          **kwargs)
                 if time_limit is not None and result.simplify(
                 ) == next_result.simplify():
                     return result
@@ -641,15 +648,15 @@ def map_function(
 
 @overload
 def map_function(
-    function: None,
-    /,
-    *,
-    star: bool | None = None,
-    repeat: int | Literal['inf'] = 1,
-    again_count: int | None = None,
-    again_depth: int | None = None,
-    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
-) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
+        function: None,
+        /,
+        *,
+        star: bool | None = None,
+        repeat: int | Literal['inf'] = 1,
+        again_count: int | None = None,
+        again_depth: int | None = None,
+        again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
+        **kwargs) -> 'Callable[..., Callable[..., icepool.Die[T]]]':
     ...
 
 
@@ -663,7 +670,8 @@ def map_function(
     repeat: int | Literal['inf'] = 1,
     again_count: int | None = None,
     again_depth: int | None = None,
-    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
+    **kwargs
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
     ...
 
@@ -677,7 +685,8 @@ def map_function(
     repeat: int | Literal['inf'] = 1,
     again_count: int | None = None,
     again_depth: int | None = None,
-    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
+    **kwargs
 ) -> 'Callable[..., icepool.Die[T]] | Callable[..., Callable[..., icepool.Die[T]]]':
     """Decorator that turns a function that takes outcomes into a function that takes dice.
 
@@ -718,7 +727,7 @@ def map_function(
     """
 
     if function is not None:
-        return update_wrapper(partial(map, function), function)
+        return update_wrapper(partial(map, function, **kwargs), function)
     else:
 
         def decorator(
@@ -733,7 +742,8 @@ def map_function(
                         repeat=repeat,
                         again_count=again_count,
                         again_depth=again_depth,
-                        again_end=again_end), function)
+                        again_end=again_end,
+                        **kwargs), function)
 
         return decorator
 
@@ -745,7 +755,8 @@ def map_and_time(
         /,
         *extra_args,
         star: bool | None = None,
-        time_limit: int) -> 'icepool.Die[tuple[T, int]]':
+        time_limit: int,
+        **kwargs) -> 'icepool.Die[tuple[T, int]]':
     """Repeatedly map outcomes of the state to other outcomes, while also
     counting timesteps.
 
@@ -777,6 +788,10 @@ def map_and_time(
             and the number of arguments.
         time_limit: This will be repeated with the same arguments on the result
             up to this many times.
+        **kwargs: Keyword-only arguments can be forwarded to a callable `repl`.
+            Unlike *args, outcomes will not be expanded, i.e. `Die` and
+            `MultisetExpression` will be passed as-is. This is invalid for
+            non-callable `repl`.
 
     Returns:
         The `Die` after the modification.
@@ -790,7 +805,7 @@ def map_and_time(
     # This is needed to correctly evaluate whether each outcome is absorbing.
     def transition_with_steps(outcome_and_steps, extra_args):
         outcome, steps = outcome_and_steps
-        next_outcome = map(transition_function, outcome, *extra_args)
+        next_outcome = map(transition_function, outcome, *extra_args, **kwargs)
         if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
             return outcome, steps
         else:
@@ -807,7 +822,8 @@ def map_to_pool(
     'Callable[..., icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType] | Mapping[Any, icepool.MultisetExpression | Sequence[icepool.Die[T] | T] | Mapping[icepool.Die[T], int] | Mapping[T, int] | icepool.RerollType]',
         /,
         *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
-        star: bool | None = None) -> 'icepool.MultisetExpression[T]':
+        star: bool | None = None,
+        **kwargs) -> 'icepool.MultisetExpression[T]':
     """EXPERIMENTAL: Applies `repl(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, producing a MultisetExpression.
     
     Args:
@@ -823,9 +839,10 @@ def map_to_pool(
             them to `repl`.
             If not provided, it will be guessed based on the signature of `repl`
             and the number of arguments.
-        denominator: If provided, the denominator of the result will be this
-            value. Otherwise it will be the minimum to correctly weight the
-            pools.
+        **kwargs: Keyword-only arguments can be forwarded to a callable `repl`.
+            Unlike *args, outcomes will not be expanded, i.e. `Die` and
+            `MultisetExpression` will be passed as-is. This is invalid for
+            non-callable `repl`.
 
     Returns:
         A `MultisetExpression` representing the mixture of `Pool`s. Note  
@@ -842,7 +859,7 @@ def map_to_pool(
     data: 'MutableMapping[icepool.MultisetExpression[T], int]' = defaultdict(
         int)
     for outcomes, quantity in icepool.iter_cartesian_product(*args):
-        pool = transition_function(*outcomes)
+        pool = transition_function(*outcomes, **kwargs)
         if pool is icepool.Reroll:
             continue
         elif isinstance(pool, icepool.MultisetExpression):
