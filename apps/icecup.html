@@ -129,7 +129,14 @@ import fractions
 import pyodide
 import builtins
 import js
-import itertools    
+import itertools
+import numbers
+
+def type_sort_string(outcome):
+    if isinstance(outcome, numbers.Real):
+        return ''
+    else:
+        return type(outcome).__qualname__
 
 class OutputManager():
 
@@ -242,7 +249,10 @@ class OutputManager():
         if all(isinstance(x, int) for x in outcomes) and max(outcomes) - min(outcomes) <= 1000:
             outcomes = list(range(min(outcomes), max(outcomes) + 1))
         else:
-            outcomes = sorted(outcomes)
+            try:
+                outcomes = sorted(outcomes)
+            except TypeError:
+                _, outcomes = zip(*sorted((type_sort_string(outcome), outcome) for outcome in outcomes))
             
         if transpose:
             x_labels = []
