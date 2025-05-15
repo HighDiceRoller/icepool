@@ -560,7 +560,7 @@ elif min_ability >= single_ability.max_outcome():
 elif max_ability <= single_ability.min_outcome():
     single_ability = icepool.Die([max_ability])
 else:
-    single_ability = single_ability.reroll(lambda x: x < min_ability or x > max_ability, depth='inf')
+    single_ability = single_ability.reroll(lambda x: x < min_ability or x > max_ability, depth=None)
 single_ability = single_ability.highest(num_ability_repeat)
 
 ranks = []
