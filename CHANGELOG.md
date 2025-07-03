@@ -1,3 +1,12 @@
+## v2.0.3 - 3 July 2025
+
+* Add `star` option for `multiset_function`.
+* Add `kwargs` option for `map` and similar functions.
+* Skip optimization for multideal.
+* Fix `Vector` comparisons so that they properly serve the dual purpose of element-wise comparison and truth value comparison.
+* Fix multideal null pops.
+* Experimental `Deck.deal_groups()`.
+
 ## v2.0.2 - 1 April 2025
 
 * Fix default `next_state_key` identification.
