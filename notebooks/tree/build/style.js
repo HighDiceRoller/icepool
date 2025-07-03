@@ -33,5 +33,6 @@ import '@jupyterlab/translation-extension/style/index.js';
 import '@jupyterlab/ui-components-extension/style/index.js';
 import '@jupyterlab/vega5-extension/style/index.js';
 import '@jupyterlite/application-extension/style/index.js';
+import '@jupyterlite/apputils-extension/style/index.js';
 import '@jupyterlite/iframe-extension/style/index.js';
 import '@jupyterlite/notebook-application-extension/style/index.js';

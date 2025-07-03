@@ -608,6 +608,17 @@ export async function main() {
       console.error(e);
     }
   }
+  if (!federatedExtensionNames.has('@jupyterlite/apputils-extension')) {
+    try {
+      let ext = require('@jupyterlite/apputils-extension');
+      ext.__scope__ = '@jupyterlite/apputils-extension';
+      for (let plugin of activePlugins(ext)) {
+        pluginsToRegister.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
   if (!federatedExtensionNames.has('@jupyterlite/notebook-application-extension')) {
     try {
       let ext = require('@jupyterlite/notebook-application-extension');

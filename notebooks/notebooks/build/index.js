@@ -346,6 +346,17 @@ export async function main() {
       console.error(e);
     }
   }
+  if (!federatedExtensionNames.has('@jupyterlab/logconsole-extension')) {
+    try {
+      let ext = require('@jupyterlab/logconsole-extension');
+      ext.__scope__ = '@jupyterlab/logconsole-extension';
+      for (let plugin of activePlugins(ext)) {
+        pluginsToRegister.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
   if (!federatedExtensionNames.has('@jupyterlab/lsp-extension')) {
     try {
       let ext = require('@jupyterlab/lsp-extension');
@@ -592,6 +603,17 @@ export async function main() {
     try {
       let ext = require('@jupyterlite/application-extension');
       ext.__scope__ = '@jupyterlite/application-extension';
+      for (let plugin of activePlugins(ext)) {
+        pluginsToRegister.push(plugin);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  if (!federatedExtensionNames.has('@jupyterlite/apputils-extension')) {
+    try {
+      let ext = require('@jupyterlite/apputils-extension');
+      ext.__scope__ = '@jupyterlite/apputils-extension';
       for (let plugin of activePlugins(ext)) {
         pluginsToRegister.push(plugin);
       }

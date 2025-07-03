@@ -101,16 +101,21 @@
           "$ref": "#/definitions/localforage-driver-set"
         },
         "contentsStorageName": {
-          "description": "name used to store Jupyter contents in the browser",
+          "description": "Name used to store Jupyter contents in the browser. The baseUrl is appended to the default value",
           "type": "string",
           "default": "JupyterLite Storage"
+        },
+        "showLoadingIndicator": {
+          "description": "Whether to show the loading indicator during app initialization",
+          "type": "boolean",
+          "default": false
         },
         "settingsStorageDrivers": {
           "description": "names of the localforage driver for settings, or `null` for the best available",
           "$ref": "#/definitions/localforage-driver-set"
         },
         "settingsStorageName": {
-          "description": "name used to store Jupyter settings in the browser",
+          "description": "Name used to store Jupyter settings in the browser. The baseUrl is appended to the default value",
           "type": "string",
           "default": "JupyterLite Storage"
         },
