@@ -213,6 +213,7 @@ class Vector(Outcome, Sequence[T_co]):
                         op: Callable[..., U],
                         *args,
                         compare_for_truth: bool = False,
+                        compare_non_vector: bool | None = None,
                         **kwargs) -> 'Vector[U]':
         """Binary operators on `Vector` are applied elementwise.
 
@@ -249,7 +250,8 @@ class Vector(Outcome, Sequence[T_co]):
         elif isinstance(other, (icepool.Population, icepool.AgainExpression)):
             return NotImplemented  # delegate to the other
         else:
-            return Vector((op(x, other, *args, **kwargs) for x in self))
+            return Vector((op(x, other, *args, **kwargs) for x in self),
+                          truth_value=compare_non_vector)
 
     def reverse_binary_operator(self, other, op: Callable[..., U], *args,
                                 **kwargs) -> 'Vector[U]':
@@ -343,34 +345,40 @@ class Vector(Outcome, Sequence[T_co]):
     # These returns a value with a truth value, but not a bool.
 
     def __lt__(self, other) -> 'Vector':  # type: ignore
-        if not isinstance(other, Vector):
-            return NotImplemented
-        return self.binary_operator(other, operator.lt, compare_for_truth=True)
+        return self.binary_operator(other,
+                                    operator.lt,
+                                    compare_for_truth=True,
+                                    compare_non_vector=None)
 
     def __le__(self, other) -> 'Vector':  # type: ignore
-        if not isinstance(other, Vector):
-            return NotImplemented
-        return self.binary_operator(other, operator.le, compare_for_truth=True)
+        return self.binary_operator(other,
+                                    operator.le,
+                                    compare_for_truth=True,
+                                    compare_non_vector=None)
 
     def __gt__(self, other) -> 'Vector':  # type: ignore
-        if not isinstance(other, Vector):
-            return NotImplemented
-        return self.binary_operator(other, operator.gt, compare_for_truth=True)
+        return self.binary_operator(other,
+                                    operator.gt,
+                                    compare_for_truth=True,
+                                    compare_non_vector=None)
 
     def __ge__(self, other) -> 'Vector':  # type: ignore
-        if not isinstance(other, Vector):
-            return NotImplemented
-        return self.binary_operator(other, operator.ge, compare_for_truth=True)
+        return self.binary_operator(other,
+                                    operator.ge,
+                                    compare_for_truth=True,
+                                    compare_non_vector=None)
 
     def __eq__(self, other) -> 'Vector | bool':  # type: ignore
-        if not isinstance(other, Vector):
-            return False
-        return self.binary_operator(other, operator.eq, compare_for_truth=True)
+        return self.binary_operator(other,
+                                    operator.eq,
+                                    compare_for_truth=True,
+                                    compare_non_vector=False)
 
     def __ne__(self, other) -> 'Vector | bool':  # type: ignore
-        if not isinstance(other, Vector):
-            return True
-        return self.binary_operator(other, operator.ne, compare_for_truth=True)
+        return self.binary_operator(other,
+                                    operator.ne,
+                                    compare_for_truth=True,
+                                    compare_non_vector=True)
 
     def __bool__(self) -> bool:
         if self._truth_value is None:

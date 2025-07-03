@@ -31,6 +31,18 @@ def test_vector_matmul():
     assert result.equals(expected)
 
 
+def test_vector_compare_eq_to_scalar():
+    result = icepool.vectorize(True, False, True) == False
+    assert result == icepool.vectorize(False, True, False)
+    assert bool(result) == False
+
+
+def test_vector_compare_ne_to_scalar():
+    result = icepool.vectorize(True, False, True) != True
+    assert result == icepool.vectorize(False, True, False)
+    assert bool(result) == True
+
+
 def test_nested_unary_elementwise():
     result = icepool.Die([vectorize(vectorize(vectorize(1, ), ), )])
     result = -result
