@@ -585,6 +585,8 @@ def map(
     if time_limit is not None:
         repeat = time_limit
 
+    result: 'icepool.Die[T]'
+
     if repeat == 'inf':
         # Infinite repeat.
         # T_co and U should be the same in this case.
@@ -598,8 +600,9 @@ def map(
                        again_end=again_end,
                        **kwargs)
 
-        return icepool.population.markov_chain.absorbing_markov_chain(
-            icepool.Die([args[0]]), unary_transition_function)
+        result, _ = icepool.population.markov_chain.absorbing_markov_chain(
+            icepool.Die([first_arg]), unary_transition_function)
+        return result
     else:
         if repeat < 0:
             raise ValueError('repeat cannot be negative.')
@@ -621,7 +624,7 @@ def map(
                                again_depth=again_depth,
                                again_end=again_end)
         else:
-            result: 'icepool.Die[T]' = icepool.Die([first_arg])
+            result = icepool.Die([first_arg])
             for _ in range(repeat):
                 next_result = icepool.map(transition_function,
                                           result,
@@ -815,6 +818,58 @@ def map_and_time(
                result,
                extra_args,
                time_limit=time_limit)
+
+
+def mean_time_to_absorb(
+        repl:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+        initial_state: 'T | icepool.Die[T]',
+        /,
+        *extra_args,
+        star: bool | None = None,
+        **kwargs) -> Fraction:
+    """EXPERIMENTAL: The mean time for the process to reach an absorbing state.
+    
+    An absorbing state is one that maps to itself with unity probability.
+
+    Args:
+        repl: One of the following:
+            * A callable returning a new outcome for each old outcome.
+            * A mapping from old outcomes to new outcomes.
+                Unmapped old outcomes stay the same.
+            The new outcomes may be dice rather than just single outcomes.
+            The special value `icepool.Reroll` will reroll that old outcome.
+        initial_state: The initial state of the process, which could be a
+            single state or a `Die`.
+        extra_args: Extra arguments to use, as per `map`. Note that these are
+            rerolled at every time step.
+        star: If `True`, the first of the args will be unpacked before giving
+            them to `func`.
+            If not provided, it will be guessed based on the signature of `func`
+            and the number of arguments.
+        **kwargs: Keyword-only arguments can be forwarded to a callable `repl`.
+            Unlike *args, outcomes will not be expanded, i.e. `Die` and
+            `MultisetExpression` will be passed as-is. This is invalid for
+            non-callable `repl`.
+
+    Returns:
+        The mean time to absorption.
+    """
+    transition_function = _canonicalize_transition_function(
+        repl, 1 + len(extra_args), star)
+
+    # Infinite repeat.
+    # T_co and U should be the same in this case.
+    def unary_transition_function(state):
+        return map(transition_function,
+                   state,
+                   *extra_args,
+                   star=False,
+                   **kwargs)
+
+    _, result = icepool.population.markov_chain.absorbing_markov_chain(
+        icepool.Die([initial_state]), unary_transition_function)
+    return result
 
 
 def map_to_pool(

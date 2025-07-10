@@ -497,6 +497,24 @@ class Die(Population[T_co], MaybeHashKeyed):
                                     time_limit=time_limit,
                                     **kwargs)
 
+    def mean_time_to_absorb(
+            self,
+            repl:
+        'Callable[..., T_co | icepool.Die[T_co] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T_co | icepool.Die[T_co] | icepool.RerollType | icepool.AgainExpression]',
+            /,
+            *extra_args,
+            star: bool | None = None,
+            **kwargs) -> Fraction:
+        """EXPERIMENTAL: The mean time for the process to reach an absorbing state.
+        
+        As `mean_time_to_absorb(repl, self, ...)`.
+        """
+        return icepool.mean_time_to_absorb(repl,
+                                           self,
+                                           *extra_args,
+                                           star=star,
+                                           **kwargs)
+
     def time_to_sum(self: 'Die[int]',
                     target: int,
                     /,

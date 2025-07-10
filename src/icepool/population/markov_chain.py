@@ -5,6 +5,7 @@ import math
 from collections import defaultdict
 
 from icepool.typing import T
+from fractions import Fraction
 from typing import Callable, MutableMapping
 
 
@@ -82,7 +83,7 @@ def is_absorbing(outcome, next_outcome) -> bool:
 def absorbing_markov_chain(
     die: 'icepool.Die[T]',
     function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType]'
-) -> 'icepool.Die[T]':
+) -> 'tuple[icepool.Die[T], Fraction]':
     """Computes the absorption distribution of an absorbing Markov chain.
 
     Zero-weight outcomes will not be preserved.
@@ -93,7 +94,8 @@ def absorbing_markov_chain(
             be considered absorbing.
 
     Returns:
-        A `Die` in simplest form reprensenting the absorption distribution.
+        A `Die` in simplest form reprensenting the absorption distribution,
+        and the mean absorption time.
     """
 
     # Find all reachable states.
@@ -116,7 +118,7 @@ def absorbing_markov_chain(
 
     if t == 0:
         # No transients; everything is absorbed immediately.
-        return die.simplify()
+        return die.simplify(), Fraction(0, 1)
 
     outcome_to_index = {
         outcome: i
@@ -173,7 +175,7 @@ def absorbing_markov_chain(
                 pivot] - pivot_row * fundamental_solve[i][pivot]
             fundamental_solve[i].simplify()
 
-    mean_absorption_time = 0.0
+    mean_absorption_time = Fraction(0, 1)
 
     results = {}
     for pivot_index, (pivot, absorption_row) in enumerate(
@@ -184,7 +186,8 @@ def absorbing_markov_chain(
         d = fundamental_solve[pivot_index][pivot]
 
         # TODO: Is this right?
-        mean_absorption_time += n / d * transients[pivot].denominator()
+        mean_absorption_time += Fraction(n,
+                                         d) * transients[pivot].denominator()
 
         if len(absorption_row) > 0:
             results[pivot] = (n * absorption_row, d)
@@ -196,4 +199,5 @@ def absorbing_markov_chain(
             normalized_results[outcome] += quantity * results_denominator // d
 
     # Inference to Die[T] seems to fail here.
-    return icepool.Die(normalized_results).simplify()  # type: ignore
+    return icepool.Die(
+        normalized_results).simplify(), mean_absorption_time  # type: ignore

@@ -72,6 +72,13 @@ def test_map_and_time() -> None:
     assert result.marginals[1].mean() == pytest.approx(4.0)
 
 
+def test_mean_time_to_absorb() -> None:
+    initial: icepool.Die[int] = icepool.Die([0])
+    result = initial.mean_time_to_absorb(lambda x: x
+                                         if x >= 2 else x + coin(1, 2))
+    assert result == 4
+
+
 def test_random_walk():
 
     def repl(x):

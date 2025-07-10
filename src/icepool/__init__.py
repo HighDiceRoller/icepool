@@ -55,7 +55,7 @@ from icepool.function import (d, z, __getattr__, coin, stochastic_round,
                               pointwise_min, min_outcome, max_outcome,
                               consecutive, sorted_union, commonize_denominator,
                               reduce, accumulate, map, map_function,
-                              map_and_time, map_to_pool)
+                              map_and_time, mean_time_to_absorb, map_to_pool)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
@@ -161,10 +161,11 @@ __all__ = [
     'from_rv', 'pointwise_max', 'pointwise_min', 'lowest', 'highest', 'middle',
     'min_outcome', 'max_outcome', 'consecutive', 'sorted_union',
     'commonize_denominator', 'reduce', 'accumulate', 'map', 'map_function',
-    'map_and_time', 'map_to_pool', 'Reroll', 'RerollType', 'Pool',
-    'standard_pool', 'MultisetGenerator', 'MultisetExpression',
-    'MultisetEvaluator', 'Order', 'ConflictingOrderError', 'UnsupportedOrder',
-    'Deck', 'Deal', 'MultiDeal', 'multiset_function', 'MultisetParameter',
-    'MultisetTupleParameter', 'NoCache', 'function', 'typing', 'evaluator',
-    'format_probability_inverse', 'Wallenius'
+    'map_and_time', 'mean_time_to_absorb', 'map_to_pool', 'Reroll',
+    'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',
+    'MultisetExpression', 'MultisetEvaluator', 'Order',
+    'ConflictingOrderError', 'UnsupportedOrder', 'Deck', 'Deal', 'MultiDeal',
+    'multiset_function', 'MultisetParameter', 'MultisetTupleParameter',
+    'NoCache', 'function', 'typing', 'evaluator', 'format_probability_inverse',
+    'Wallenius'
 ]
