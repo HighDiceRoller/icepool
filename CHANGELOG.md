@@ -1,3 +1,8 @@
+## v2.0.4 - 9 July 2025
+
+* Fix internal `star` in `map_and_time()`.
+* Experimental `mean_time_to_absorb()`.
+
 ## v2.0.3 - 3 July 2025
 
 * Add `star` option for `multiset_function`.
