@@ -808,7 +808,11 @@ def map_and_time(
     # This is needed to correctly evaluate whether each outcome is absorbing.
     def transition_with_steps(outcome_and_steps, extra_args):
         outcome, steps = outcome_and_steps
-        next_outcome = map(transition_function, outcome, *extra_args, **kwargs)
+        next_outcome = map(transition_function,
+                           outcome,
+                           *extra_args,
+                           star=False,
+                           **kwargs)
         if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
             return outcome, steps
         else:
