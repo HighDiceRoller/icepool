@@ -69,7 +69,8 @@ Again: Final = AgainExpression(is_additive=True)
 
 This is designed to be used with the `Die()` constructor.
 `AgainExpression`s should not be fed to functions or methods other than
-`Die()`, but it can be used with operators. Examples:
+`Die()` (or indirectly via `map()`), but they can be used with operators.
+Examples:
 
 * `Again + 6`: Roll again and add 6.
 * `Again + Again`: Roll again twice and sum.
@@ -77,7 +78,7 @@ This is designed to be used with the `Die()` constructor.
 The `again_count`, `again_depth`, and `again_end` arguments to `Die()`
 affect how these arguments are processed. At most one of `again_count` or
 `again_depth` may be provided; if neither are provided, the behavior is as
-`again_depth=1.
+`again_depth=1`.
 
 For finer control over rolling processes, use e.g. `Die.map()` instead.
 
