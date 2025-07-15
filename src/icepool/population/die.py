@@ -986,7 +986,7 @@ class Die(Population[T_co], MaybeHashKeyed):
                                    **kwargs)
 
     def explode_to_pool(self,
-                        rolls: int,
+                        rolls: int = 1,
                         which: Collection[T_co] | Callable[..., bool]
                         | None = None,
                         /,
