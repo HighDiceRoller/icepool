@@ -1,35 +1,35 @@
 __docformat__ = 'google'
 
 from icepool.expression.multiset_expression import MultisetExpression
+from icepool.lexi import compute_lexi_tuple
 from icepool.operator.multiset_operator import MultisetOperator
 from icepool.order import Order, UnsupportedOrder
 
-from typing import Iterator, MutableSequence, Sequence
+from typing import Iterator, Literal, MutableSequence, Sequence
 from icepool.typing import T
 
 
 class MultisetSortMatch(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
-                 right: MultisetExpression[T], *, order: Order, tie: int,
-                 left_first: int, right_first: int):
+                 right: MultisetExpression[T], *,
+                 comparison: Literal['==', '!=', '<=', '<', '>=', '>',
+                                     'cmp'], order: Order):
         if order == Order.Any:
             order = Order.Descending
         self._children = (left, right)
+        self._comparison = comparison
         self._order = order
-        self._tie = tie
-        self._left_first = left_first
-        self._right_first = right_first
 
     def _initial_state(
-            self, order, outcomes, child_sizes: MutableSequence,
-            source_sizes: Iterator, arg_sizes: Sequence
-    ) -> tuple[tuple[int, int, int, int], int | None]:
+        self, order, outcomes, child_sizes: MutableSequence,
+        source_sizes: Iterator, arg_sizes: Sequence
+    ) -> tuple[tuple[tuple[int, int, int], int], int | None]:
         """
-        State is left_lead, tie, left_first, right_first.
+        State is lexi_order, left_lead.
         """
         if order == self._order:
-            return (0, self._tie, self._left_first, self._right_first), None
+            left_lead = 0
         else:
             left_size, right_size = child_sizes
             if left_size is None or right_size is None:
@@ -37,12 +37,11 @@ class MultisetSortMatch(MultisetOperator[T]):
                     'Reverse order not supported unless sizes of both operands are inferrable.'
                 )
             left_lead = right_size - left_size
-            return (left_lead, self._tie, self._right_first,
-                    self._left_first), None
+        return (compute_lexi_tuple(self._comparison, order), left_lead), None
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
                     arg_counts):
-        left_lead, tie, left_first, right_first = state
+        (tie, left_first, right_first), left_lead = state
         left_count, right_count = child_counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
@@ -59,11 +58,11 @@ class MultisetSortMatch(MultisetOperator[T]):
         if left_lead > 0:
             count += min(left_lead, left_count) * left_first
 
-        return (left_lead, tie, left_first, right_first), count
+        return ((tie, left_first, right_first), left_lead), count
 
     @property
     def _expression_key(self):
-        return MultisetSortMatch, self._order, self._left_first, self._tie, self._right_first
+        return MultisetSortMatch, self._comparison, self._order
 
     @property
     def _dungeonlet_key(self):

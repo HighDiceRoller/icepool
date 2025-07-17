@@ -627,7 +627,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     # Matching.
 
     def sort_match(self,
-                   comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+                   comparison: Literal['==', '!=', '<=', '<', '>=', '>',
+                                       'cmp'],
                    other: 'MultisetExpression[T]',
                    /,
                    order: Order = Order.Descending) -> 'MultisetExpression[T]':
@@ -637,6 +638,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         extra elements are kept depends on the `order` and `comparison`:
         * Descending: kept for `'>='`, `'>'`
         * Ascending: kept for `'<='`, `'<'`
+
+        In other words, extra elements in `self` are considered to appear
+        earlier in `order` than their missing counterparts.
 
         Example: An attacker rolls 3d6 versus a defender's 2d6 in the game of
         *RISK*. Which pairs did the attacker win?
@@ -666,41 +670,18 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 * `'=='` vs. `'!='`
                 * `'<='` vs. `'>'`
                 * `'>='` vs. `'<'`
+                'cmp' is the same as the difference between '>' and '<'
+                (which can result in negative counts).
             other: The other multiset to match elements with.
             order: The order in which to sort before forming matches.
                 Default is descending.
         """
         other = implicit_convert_to_expression(other)
 
-        match comparison:
-            case '==':
-                lesser, tie, greater = 0, 1, 0
-            case '!=':
-                lesser, tie, greater = 1, 0, 1
-            case '<=':
-                lesser, tie, greater = 1, 1, 0
-            case '<':
-                lesser, tie, greater = 1, 0, 0
-            case '>=':
-                lesser, tie, greater = 0, 1, 1
-            case '>':
-                lesser, tie, greater = 0, 0, 1
-            case _:
-                raise ValueError(f'Invalid comparison {comparison}')
-
-        if order > 0:
-            left_first = lesser
-            right_first = greater
-        else:
-            left_first = greater
-            right_first = lesser
-
         return icepool.operator.MultisetSortMatch(self,
                                                   other,
-                                                  order=order,
-                                                  tie=tie,
-                                                  left_first=left_first,
-                                                  right_first=right_first)
+                                                  comparison=comparison,
+                                                  order=order)
 
     def maximum_match_highest(
             self, comparison: Literal['<=',
