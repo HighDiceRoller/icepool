@@ -49,7 +49,7 @@ def test_reroll_pool_vs_map():
 
 def test_reroll_pool_empowered_spell():
     result = d6.reroll_to_pool(8, [1, 2, 3], 4, mode='lowest').sum()
-    assert result.mean() == pytest.approx(33.61, abs=0.01)
+    assert float(result.mean()) == pytest.approx(33.61, abs=0.01)
 
 
 def test_explode_empty():

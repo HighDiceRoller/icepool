@@ -1046,7 +1046,8 @@ class Die(Population[T_co], MaybeHashKeyed):
         rolls: int,
         which: Callable[..., bool] | Collection[T_co],
         /,
-        max_rerolls: int,
+        max_rerolls: int | Literal['inf'],
+        depth: int | Literal['inf'] = 1,
         *,
         star: bool | None = None,
         mode: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
@@ -1062,10 +1063,10 @@ class Die(Population[T_co], MaybeHashKeyed):
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     could be rerolled.
-            max_rerolls: The maximum number of dice to reroll. 
-                Note that each die can only be rerolled once, so if the number 
-                of eligible dice is less than this, the excess rerolls have no
-                effect.
+            max_rerolls: The maximum total number of rerolls.
+                If `max_rerolls == 'inf'`, then this is the same as 
+                `self.reroll(which, star=star, depth=depth).pool(rolls)`.
+            depth: EXTRA EXPERIMENTAL: The maximum depth of rerolls.
             star: Whether outcomes should be unpacked into separate arguments
                 before sending them to a callable `which`.
                 If not provided, this will be guessed based on the function
@@ -1087,6 +1088,9 @@ class Die(Population[T_co], MaybeHashKeyed):
             that this is not technically a `Pool`, though it supports most of 
             the same operations.
         """
+        if max_rerolls == 'inf':
+            return self.reroll(which, star=star, depth=depth).pool(rolls)
+
         rerollable_set = self._select_outcomes(which, star)
         if not rerollable_set:
             return self.pool(rolls)
@@ -1096,56 +1100,67 @@ class Die(Population[T_co], MaybeHashKeyed):
         rerollable_die, not_rerollable_die = self.split(rerollable_set)
         single_is_rerollable = icepool.coin(rerollable_die.denominator(),
                                             self.denominator())
-        rerollable = rolls @ single_is_rerollable
 
-        def split(initial_rerollable: int) -> Die[tuple[int, int, int]]:
-            """Computes the composition of the pool.
+        if depth == 'inf':
+            depth = max_rerolls
 
+        def step(rerollable, rerolls_left):
+            """Advances one step of rerolling if there are enough rerolls left to cover all rerollable dice.
+            
             Returns:
-                initial_rerollable: The number of dice that initially fell into
-                    the rerollable set.
-                rerolled_to_rerollable: The number of dice that were rerolled,
-                    but fell into the rerollable set again.
-                not_rerollable: The number of dice that ended up outside the
-                    rerollable set, including both initial and rerolled dice.
-                not_rerolled: The number of dice that were eligible for
-                    rerolling but were not rerolled.
+                The number of dice showing rerollable outcomes and the number of remaining rerolls.
             """
-            initial_not_rerollable = rolls - initial_rerollable
-            rerolled = min(initial_rerollable, max_rerolls)
-            not_rerolled = initial_rerollable - rerolled
+            if rerollable == 0:
+                return 0, 0
+            if rerolls_left < rerollable:
+                return rerollable, rerolls_left
 
-            def second_split(rerolled_to_rerollable):
-                """Splits the rerolled dice into those that fell into the rerollable and not-rerollable sets."""
-                rerolled_to_not_rerollable = rerolled - rerolled_to_rerollable
-                return icepool.tupleize(
-                    initial_rerollable, rerolled_to_rerollable,
-                    initial_not_rerollable + rerolled_to_not_rerollable,
-                    not_rerolled)
+            return icepool.tupleize(rerollable @ single_is_rerollable,
+                                    rerolls_left - rerollable)
 
-            return icepool.map(second_split,
-                               rerolled @ single_is_rerollable,
-                               star=False)
+        initial_state = icepool.tupleize(rolls @ single_is_rerollable,
+                                         max_rerolls)
+        mid_pool_composition: Die[tuple[int, int]]
+        mid_pool_composition = icepool.map(step,
+                                           initial_state,
+                                           star=True,
+                                           repeat=depth - 1)
 
-        pool_composition = rerollable.map(split, star=False)
-        denominator = self.denominator()**(rolls + min(rolls, max_rerolls))
+        def final_step(rerollable, rerolls_left):
+            """Performs the final reroll, which might not have enough rerolls to cover all rerollable dice.
+            
+            Returns: The number of dice that had a rerollable outcome,
+                the number of dice that were rerolled due to max_rerolls,
+                the number of rerolled dice that landed on a rerollable outcome
+                again.
+            """
+            rerolled = min(rerollable, rerolls_left)
+
+            return icepool.tupleize(rerollable, rerolled,
+                                    rerolled @ single_is_rerollable)
+
+        pool_composition: Die[tuple[int, int, int]] = mid_pool_composition.map(
+            final_step, star=True)
+
+        denominator = self.denominator()**(rolls + max_rerolls)
         pool_composition = pool_composition.multiply_to_denominator(
             denominator)
 
-        def make_pool(initial_rerollable, rerolled_to_rerollable,
-                      not_rerollable, not_rerolled):
+        def make_pool(rerollable, rerolled, rerolled_to_rerollable):
+            rerolls_ran_out = rerollable - rerolled
+            not_rerollable = rolls - rerolls_ran_out - rerolled_to_rerollable
             common = rerollable_die.pool(
                 rerolled_to_rerollable) + not_rerollable_die.pool(
                     not_rerollable)
             match mode:
                 case 'random':
-                    return common + rerollable_die.pool(not_rerolled)
+                    return common + rerollable_die.pool(rerolls_ran_out)
                 case 'lowest':
-                    return common + rerollable_die.pool(
-                        initial_rerollable).highest(not_rerolled)
+                    return common + rerollable_die.pool(rerollable).highest(
+                        rerolls_ran_out)
                 case 'highest':
-                    return common + rerollable_die.pool(
-                        initial_rerollable).lowest(not_rerolled)
+                    return common + rerollable_die.pool(rerollable).lowest(
+                        rerolls_ran_out)
                 case 'drop':
                     return not_rerollable_die.pool(not_rerollable)
                 case _:
