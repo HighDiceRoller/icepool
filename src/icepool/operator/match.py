@@ -63,7 +63,11 @@ class MultisetSortMatch(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetSortMatch, self._order
+        return MultisetSortMatch, self._order, self._left_first, self._tie, self._right_first
+
+    @property
+    def _dungeonlet_key(self):
+        return MultisetSortMatch
 
 
 class MultisetMaximumMatch(MultisetOperator[T]):
