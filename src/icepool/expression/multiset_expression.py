@@ -5,6 +5,7 @@ import icepool
 from icepool.expand import Expandable
 from icepool.expression.multiset_expression_base import Q, Dungeonlet, MultisetExpressionBase
 from icepool.collection.counts import Counts
+from icepool.lexi import compute_lexi_tuple_with_extra
 from icepool.order import Order
 from icepool.population.keep import highest_slice, lowest_slice
 
@@ -1139,6 +1140,54 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Negative incoming counts are treated as zero counts.
         """
         return self._compare(other, icepool.evaluator.IsDisjointSetEvaluator)
+
+    # Lexicographic comparisons.
+
+    def leximin(
+        self,
+        comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'],
+        other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        /,
+        extra: Literal['early', 'late', 'low', 'high', 'drop'] = 'high'
+    ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
+        """Evaluation: EXPERIMENTAL: Lexicographic comparison.
+        
+        Args:
+            comparison: The comparison to use.
+            other: The multiset to compare to.
+            extra: If one side has more elements than the other, how the extra
+                elements are considered.
+        """
+        lexi_tuple = compute_lexi_tuple_with_extra(comparison, Order.Ascending,
+                                                   extra)
+        return icepool.evaluator.lexi_comparison_evaluator.evaluate(
+            self,
+            implicit_convert_to_expression(other),
+            sort_order=Order.Ascending,
+            lexi_tuple=lexi_tuple)
+
+    def leximax(
+        self,
+        comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'],
+        other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        /,
+        extra: Literal['early', 'late', 'low', 'high', 'drop'] = 'high'
+    ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
+        """Evaluation: EXPERIMENTAL: Lexicographic comparison.
+        
+        Args:
+            comparison: The comparison to use.
+            other: The multiset to compare to.
+            extra: If one side has more elements than the other, how the extra
+                elements are considered.
+        """
+        lexi_tuple = compute_lexi_tuple_with_extra(comparison,
+                                                   Order.Descending, extra)
+        return icepool.evaluator.lexi_comparison_evaluator.evaluate(
+            self,
+            implicit_convert_to_expression(other),
+            sort_order=Order.Descending,
+            lexi_tuple=lexi_tuple)
 
     # For helping debugging / testing.
     def force_order(self, force_order: Order) -> 'MultisetExpression[T]':

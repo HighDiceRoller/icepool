@@ -41,7 +41,8 @@ class MultisetSortMatch(MultisetOperator[T]):
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
                     arg_counts):
-        (tie, left_first, right_first), left_lead = state
+        lexi_tuple, left_lead = state
+        tie, left_first, right_first = lexi_tuple
         left_count, right_count = child_counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
@@ -58,7 +59,7 @@ class MultisetSortMatch(MultisetOperator[T]):
         if left_lead > 0:
             count += min(left_lead, left_count) * left_first
 
-        return ((tie, left_first, right_first), left_lead), count
+        return (lexi_tuple, left_lead), count
 
     @property
     def _expression_key(self):

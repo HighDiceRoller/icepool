@@ -19,6 +19,7 @@ from icepool.evaluator.comparison import (
     ComparisonEvaluator, IsSubsetEvaluator, IsProperSubsetEvaluator,
     IsSupersetEvaluator, IsProperSupersetEvaluator, IsEqualSetEvaluator,
     IsNotEqualSetEvaluator, IsDisjointSetEvaluator)
+from icepool.evaluator.lexi import LexiComparisonEvaluator, lexi_comparison_evaluator
 from icepool.evaluator.keep import KeepEvaluator, keep_evaluator
 from icepool.evaluator.argsort import ArgsortEvaluator
 from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
@@ -36,6 +37,7 @@ __all__ = [
     'all_straights_evaluator', 'AllStraightsReduceCountsEvaluator',
     'ComparisonEvaluator', 'IsSubsetEvaluator', 'IsProperSubsetEvaluator',
     'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
-    'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator', 'KeepEvaluator',
+    'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator',
+    'LexiComparisonEvaluator', 'lexi_comparison_evaluator', 'KeepEvaluator',
     'keep_evaluator', 'ArgsortEvaluator', 'MultisetFunctionEvaluator'
 ]
