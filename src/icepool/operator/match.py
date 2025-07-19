@@ -42,7 +42,7 @@ class MultisetSortMatch(MultisetOperator[T]):
     def _next_state(self, state, order, outcome, child_counts, source_counts,
                     arg_counts):
         lexi_tuple, left_lead = state
-        tie, left_first, right_first = lexi_tuple
+        left_first, tie, right_first = lexi_tuple
         left_count, right_count = child_counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)

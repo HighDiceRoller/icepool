@@ -18,33 +18,33 @@ def compute_lexi_tuple(comparison: Literal['==', '!=', '<=', '<', '>=', '>',
 
     Returns:
         A 3-tuple with the following elements:
-        * 0: tie: The result if no elements were matched.
-        * 1: left_first: The result if the left side had the first different
+        * left_first: The result if the left side had the first different
             element and it was matched with a later right side element.
-        * -1: right_first: As right_first but vice versa.
+        * tie: The result if no elements were matched.
+        * right_first: As right_first but vice versa.
     """
     match comparison:
         case '==':
-            tie, left_first, right_first = 1, 0, 0
+            left_first, tie, right_first = 0, 1, 0
         case '!=':
-            tie, left_first, right_first = 0, 1, 1
+            left_first, tie, right_first = 1, 0, 1
         case '<=':
-            tie, left_first, right_first = 1, 1, 0
+            left_first, tie, right_first = 1, 1, 0
         case '<':
-            tie, left_first, right_first = 0, 1, 0
+            left_first, tie, right_first = 1, 0, 0
         case '>=':
-            tie, left_first, right_first = 1, 0, 1
+            left_first, tie, right_first = 0, 1, 1
         case '>':
-            tie, left_first, right_first = 0, 0, 1
+            left_first, tie, right_first = 0, 0, 1
         case 'cmp':
-            tie, left_first, right_first = 0, -1, 1
+            left_first, tie, right_first = -1, 0, 1
         case _:
             raise ValueError(f'Invalid comparison {comparison}')
 
     if order < 0:
         left_first, right_first = right_first, left_first
 
-    return tie, left_first, right_first
+    return left_first, tie, right_first
 
 
 def compute_lexi_tuple_with_extra(
@@ -64,15 +64,15 @@ def compute_lexi_tuple_with_extra(
     
     Returns:
         A 5-tuple with the following elements:
-        * 0: tie: The result if no elements were matched.
-        * 1: left_extra: The result if the left side had the first different
-            element and it was never matched with a right side element.
-        * 2: left_first: The result if the left side had the first different
+        * left_first: The result if the left side had the first different
             element and it was matched with a later right side element.
-        * -2: right_first: As right_first but vice versa.
-        * -1: right_extra: As left_extra but vice versa.
+        * left_extra: The result if the left side had the first different
+            element and it was never matched with a right side element.
+        * tie: The result if no elements were matched.
+        * right_extra: As left_extra but vice versa.
+        * right_first: As right_first but vice versa.
     """
-    tie, left_first, right_first = compute_lexi_tuple(comparison, order)
+    left_first, tie, right_first = compute_lexi_tuple(comparison, order)
 
     if extra == 'low':
         extra = 'early' if order > 0 else 'late'
@@ -89,4 +89,4 @@ def compute_lexi_tuple_with_extra(
         case _:
             raise ValueError(f'Invalid extra {extra}')
 
-    return tie, left_extra, left_first, right_first, right_extra
+    return left_first, left_extra, tie, right_extra, right_first

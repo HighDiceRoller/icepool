@@ -37,7 +37,7 @@ class LexiComparisonEvaluator(MultisetEvaluator[Any, int]):
     def final_outcome(  # type: ignore
             self, final_state, order, outcomes, left_size, right_size,
             sort_order: Order, lexi_tuple: tuple[int, int, int, int, int]):
-        return lexi_tuple[final_state]
+        return lexi_tuple[2 - final_state]
 
 
 lexi_comparison_evaluator = LexiComparisonEvaluator()
