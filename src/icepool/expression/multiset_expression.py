@@ -1177,7 +1177,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'],
         other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
         /,
-        extra: Literal['early', 'late', 'low', 'high', 'drop'] = 'high'
+        extra: Literal['low', 'high', 'drop'] = 'high'
     ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
         """Evaluation: EXPERIMENTAL: Lexicographic comparison.
         
@@ -1200,7 +1200,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'],
         other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
         /,
-        extra: Literal['early', 'late', 'low', 'high', 'drop'] = 'high'
+        extra: Literal['low', 'high', 'drop'] = 'high'
     ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
         """Evaluation: EXPERIMENTAL: Lexicographic comparison.
         
