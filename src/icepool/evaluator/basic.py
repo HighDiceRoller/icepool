@@ -115,22 +115,23 @@ size_evaluator: Final = SizeEvaluator()
 """Shared instance for caching."""
 
 
-class AnyEvaluator(MultisetEvaluator[Any, bool]):
-    """Returns `True` iff at least one count is positive."""
+class EmptyEvaluator(MultisetEvaluator[Any, bool]):
+    """Returns `True` iff the multiset contains only zero counts."""
+
+    def initial_state(self, order, outcomes, /, *sizes):
+        return True
 
     def next_state(self, state, order, outcome, count):
-        """Implementation."""
-        return state or (count > 0)
+        return state and (count == 0)
 
     def final_outcome(  # type: ignore
             self, final_state, order, outcomes, size) -> bool:
-        """Implementation."""
-        return final_state or False
+        return final_state
 
     @property
     def next_state_key(self):
         return type(self)
 
 
-any_evaluator: Final = AnyEvaluator()
+empty_evaluator: Final = EmptyEvaluator()
 """Shared instance for caching."""

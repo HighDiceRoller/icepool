@@ -830,9 +830,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """
         return icepool.evaluator.size_evaluator.evaluate(self)
 
-    def any(self) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
-        """Evaluation: Whether the multiset has at least one positive count. """
-        return icepool.evaluator.any_evaluator.evaluate(self)
+    def empty(
+            self) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
+        """Evaluation: Whether the multiset contains only zero counts."""
+        return icepool.evaluator.empty_evaluator.evaluate(self)
 
     def highest_outcome_and_count(
         self

@@ -4,8 +4,8 @@ __docformat__ = 'google'
 
 from icepool.evaluator.basic import (ExpandEvaluator, SumEvaluator,
                                      sum_evaluator, SizeEvaluator,
-                                     size_evaluator, AnyEvaluator,
-                                     any_evaluator)
+                                     size_evaluator, EmptyEvaluator,
+                                     empty_evaluator)
 from icepool.evaluator.poker import (
     HighestOutcomeAndCountEvaluator, highest_outcome_and_count_evaluator,
     LargestCountEvaluator, largest_count_evaluator,
@@ -26,7 +26,7 @@ from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
 
 __all__ = [
     'ExpandEvaluator', 'SumEvaluator', 'sum_evaluator', 'SizeEvaluator',
-    'size_evaluator', 'AnyEvaluator', 'any_evaluator',
+    'size_evaluator', 'EmptyEvaluator', 'empty_evaluator',
     'HighestOutcomeAndCountEvaluator', 'highest_outcome_and_count_evaluator',
     'LargestCountEvaluator', 'largest_count_evaluator',
     'LargestCountAndOutcomeEvaluator', 'largest_count_and_outcome_evaluator',

@@ -234,6 +234,6 @@ def test_contains_subset_vs_intersection_size():
     assert result_a == result_b
 
 
-def test_any():
-    result = (d6.pool(1) & d6.pool(1)).any()
-    assert result == (d6 == d6)
+def test_empty():
+    result = (d6.pool(1) & d6.pool(1)).empty()
+    assert result == (d6 != d6)
