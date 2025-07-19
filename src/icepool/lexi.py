@@ -4,6 +4,24 @@ from icepool.order import Order
 from typing import Literal
 
 
+def negate_comparison(comparison: Literal['==', '!=', '<=', '<', '>=', '>']):
+    match comparison:
+        case '==':
+            return '!='
+        case '!=':
+            return '=='
+        case '<=':
+            return '>'
+        case '<':
+            return '>='
+        case '>=':
+            return '<'
+        case '>':
+            return '<='
+        case _:
+            raise ValueError(f'Invalid comparison {comparison}')
+
+
 def compute_lexi_tuple(comparison: Literal['==', '!=', '<=', '<', '>=', '>',
                                            'cmp'],
                        order: Order) -> tuple[int, int, int]:
@@ -45,6 +63,18 @@ def compute_lexi_tuple(comparison: Literal['==', '!=', '<=', '<', '>=', '>',
         left_first, right_first = right_first, left_first
 
     return left_first, tie, right_first
+
+
+def compute_lexi_tuple_with_zero_right_first(
+    comparison: Literal['<=', '<', '>=', '>']
+) -> tuple[tuple[int, int, int], Order]:
+    """As compute_lexi_tuple, but also computes an order such that right_first is 0."""
+    lexi_tuple = compute_lexi_tuple(comparison, Order.Ascending)
+    if lexi_tuple[-1] == 0:
+        return lexi_tuple, Order.Ascending
+    else:
+        lexi_tuple = tuple(reversed(lexi_tuple))  # type: ignore
+        return lexi_tuple, Order.Descending
 
 
 def compute_lexi_tuple_with_extra(

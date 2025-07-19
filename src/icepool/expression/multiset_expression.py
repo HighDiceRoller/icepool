@@ -5,7 +5,7 @@ import icepool
 from icepool.expand import Expandable
 from icepool.expression.multiset_expression_base import Q, Dungeonlet, MultisetExpressionBase
 from icepool.collection.counts import Counts
-from icepool.lexi import compute_lexi_tuple_with_extra
+from icepool.lexi import compute_lexi_tuple_with_extra, compute_lexi_tuple_with_zero_right_first, negate_comparison
 from icepool.order import Order
 from icepool.population.keep import highest_slice, lowest_slice
 
@@ -790,6 +790,34 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                      order=Order.Ascending,
                                                      match_equal=match_equal,
                                                      keep=keep_boolean)
+
+    def versus_all(self, comparison: Literal['<=', '<', '>=', '>'],
+                   other: 'MultisetExpression[T]'):
+        """EXPERIMENTAL: Keeps elements from `self` that fit the comparison against all elements of the other multiset.
+        
+        Args:
+            comparison: One of '<=', '<', '>=', '>'.
+            other: The other multiset to compare to. Negative counts are treated
+                as 0.
+        """
+        other = implicit_convert_to_expression(other)
+        lexi_tuple, order = compute_lexi_tuple_with_zero_right_first(
+            comparison)
+        return icepool.operator.MultisetVersusAll(self,
+                                                  other,
+                                                  lexi_tuple=lexi_tuple,
+                                                  order=order)
+
+    def versus_any(self, comparison: Literal['<=', '<', '>=', '>'],
+                   other: 'MultisetExpression[T]'):
+        """EXPERIMENTAL: Keeps elements from `self` that fit the comparison against any element of the other multiset.
+        
+        Args:
+            comparison: One of '<=', '<', '>=', '>'.
+            other: The other multiset to compare to. Negative counts are treated
+                as 0.
+        """
+        return self.versus_all(negate_comparison(comparison), other)
 
     # Evaluations.
 

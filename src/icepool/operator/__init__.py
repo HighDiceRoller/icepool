@@ -10,5 +10,7 @@ from icepool.operator.filter_outcomes import (MultisetFilterOutcomes,
                                               MultisetFilterOutcomesBinary)
 from icepool.operator.keep import MultisetKeep
 from icepool.operator.match import (MultisetSortMatch, MultisetMaximumMatch)
+from icepool.operator.versus_all import (
+    MultisetVersusAll, )
 from icepool.operator.debug import (
     MultisetForceOrder, )
