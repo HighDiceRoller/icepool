@@ -83,22 +83,25 @@
                     <a class="variable" href="#size_evaluator">size_evaluator</a>
             </li>
             <li>
-                    <a class="class" href="#AnyEvaluator">AnyEvaluator</a>
+                    <a class="class" href="#EmptyEvaluator">EmptyEvaluator</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#AnyEvaluator.next_state">next_state</a>
+                                <a class="function" href="#EmptyEvaluator.initial_state">initial_state</a>
                         </li>
                         <li>
-                                <a class="function" href="#AnyEvaluator.final_outcome">final_outcome</a>
+                                <a class="function" href="#EmptyEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="variable" href="#AnyEvaluator.next_state_key">next_state_key</a>
+                                <a class="function" href="#EmptyEvaluator.final_outcome">final_outcome</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#EmptyEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
             </li>
             <li>
-                    <a class="variable" href="#any_evaluator">any_evaluator</a>
+                    <a class="variable" href="#empty_evaluator">empty_evaluator</a>
             </li>
             <li>
                     <a class="class" href="#HighestOutcomeAndCountEvaluator">HighestOutcomeAndCountEvaluator</a>
@@ -383,6 +386,24 @@
 
             </li>
             <li>
+                    <a class="class" href="#LexiComparisonEvaluator">LexiComparisonEvaluator</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#LexiComparisonEvaluator.initial_state">initial_state</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LexiComparisonEvaluator.next_state">next_state</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#LexiComparisonEvaluator.final_outcome">final_outcome</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="variable" href="#lexi_comparison_evaluator">lexi_comparison_evaluator</a>
+            </li>
+            <li>
                     <a class="class" href="#KeepEvaluator">KeepEvaluator</a>
                             <ul class="memberlist">
                         <li>
@@ -462,8 +483,8 @@
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.basic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ExpandEvaluator</span><span class="p">,</span> <span class="n">SumEvaluator</span><span class="p">,</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>                                     <span class="n">sum_evaluator</span><span class="p">,</span> <span class="n">SizeEvaluator</span><span class="p">,</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>                                     <span class="n">size_evaluator</span><span class="p">,</span> <span class="n">AnyEvaluator</span><span class="p">,</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>                                     <span class="n">any_evaluator</span><span class="p">)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>                                     <span class="n">size_evaluator</span><span class="p">,</span> <span class="n">EmptyEvaluator</span><span class="p">,</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>                                     <span class="n">empty_evaluator</span><span class="p">)</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.poker</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">HighestOutcomeAndCountEvaluator</span><span class="p">,</span> <span class="n">highest_outcome_and_count_evaluator</span><span class="p">,</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">LargestCountEvaluator</span><span class="p">,</span> <span class="n">largest_count_evaluator</span><span class="p">,</span>
@@ -477,26 +498,28 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">ComparisonEvaluator</span><span class="p">,</span> <span class="n">IsSubsetEvaluator</span><span class="p">,</span> <span class="n">IsProperSubsetEvaluator</span><span class="p">,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">IsSupersetEvaluator</span><span class="p">,</span> <span class="n">IsProperSupersetEvaluator</span><span class="p">,</span> <span class="n">IsEqualSetEvaluator</span><span class="p">,</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.keep</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeepEvaluator</span><span class="p">,</span> <span class="n">keep_evaluator</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.argsort</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgsortEvaluator</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.multiset_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetFunctionEvaluator</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SizeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;size_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AnyEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;any_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;highest_outcome_and_count_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;largest_count_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;largest_count_and_outcome_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="s1">&#39;CountSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="s1">&#39;largest_straight_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_low&#39;</span><span class="p">,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_high&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="s1">&#39;all_straights_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsReduceCountsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;KeepEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="s1">&#39;keep_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ArgsortEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetFunctionEvaluator&#39;</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="p">]</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.lexi</span><span class="w"> </span><span class="kn">import</span> <span class="n">LexiComparisonEvaluator</span><span class="p">,</span> <span class="n">lexi_comparison_evaluator</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.keep</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeepEvaluator</span><span class="p">,</span> <span class="n">keep_evaluator</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.argsort</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgsortEvaluator</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.multiset_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetFunctionEvaluator</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SizeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="s1">&#39;size_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;EmptyEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;empty_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;highest_outcome_and_count_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;largest_count_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;largest_count_and_outcome_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="s1">&#39;CountSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="s1">&#39;largest_straight_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_low&#39;</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_high&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="s1">&#39;all_straights_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsReduceCountsEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="s1">&#39;LexiComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;lexi_comparison_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;KeepEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="s1">&#39;keep_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ArgsortEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetFunctionEvaluator&#39;</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -974,118 +997,259 @@ outside of <code>@multiset_function</code>, return the special value
     
 
                 </section>
-                <section id="AnyEvaluator">
-                            <input id="AnyEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="EmptyEvaluator">
+                            <input id="EmptyEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">AnyEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[typing.Any, bool]</span>):
+    <span class="name">EmptyEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[typing.Any, bool]</span>):
 
-                <label class="view-source-button" for="AnyEvaluator-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="EmptyEvaluator-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AnyEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator-119"><a href="#AnyEvaluator-119"><span class="linenos">119</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AnyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
-</span><span id="AnyEvaluator-120"><a href="#AnyEvaluator-120"><span class="linenos">120</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff at least one count is positive.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-121"><a href="#AnyEvaluator-121"><span class="linenos">121</span></a>
-</span><span id="AnyEvaluator-122"><a href="#AnyEvaluator-122"><span class="linenos">122</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator-123"><a href="#AnyEvaluator-123"><span class="linenos">123</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-124"><a href="#AnyEvaluator-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span id="AnyEvaluator-125"><a href="#AnyEvaluator-125"><span class="linenos">125</span></a>
-</span><span id="AnyEvaluator-126"><a href="#AnyEvaluator-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="AnyEvaluator-127"><a href="#AnyEvaluator-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="AnyEvaluator-128"><a href="#AnyEvaluator-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator-129"><a href="#AnyEvaluator-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
-</span><span id="AnyEvaluator-130"><a href="#AnyEvaluator-130"><span class="linenos">130</span></a>
-</span><span id="AnyEvaluator-131"><a href="#AnyEvaluator-131"><span class="linenos">131</span></a>    <span class="nd">@property</span>
-</span><span id="AnyEvaluator-132"><a href="#AnyEvaluator-132"><span class="linenos">132</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AnyEvaluator-133"><a href="#AnyEvaluator-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <a class="headerlink" href="#EmptyEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="EmptyEvaluator-119"><a href="#EmptyEvaluator-119"><span class="linenos">119</span></a><span class="k">class</span><span class="w"> </span><span class="nc">EmptyEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
+</span><span id="EmptyEvaluator-120"><a href="#EmptyEvaluator-120"><span class="linenos">120</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `True` iff the multiset contains only zero counts.&quot;&quot;&quot;</span>
+</span><span id="EmptyEvaluator-121"><a href="#EmptyEvaluator-121"><span class="linenos">121</span></a>
+</span><span id="EmptyEvaluator-122"><a href="#EmptyEvaluator-122"><span class="linenos">122</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">sizes</span><span class="p">):</span>
+</span><span id="EmptyEvaluator-123"><a href="#EmptyEvaluator-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="EmptyEvaluator-124"><a href="#EmptyEvaluator-124"><span class="linenos">124</span></a>
+</span><span id="EmptyEvaluator-125"><a href="#EmptyEvaluator-125"><span class="linenos">125</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="EmptyEvaluator-126"><a href="#EmptyEvaluator-126"><span class="linenos">126</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">and</span> <span class="p">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="EmptyEvaluator-127"><a href="#EmptyEvaluator-127"><span class="linenos">127</span></a>
+</span><span id="EmptyEvaluator-128"><a href="#EmptyEvaluator-128"><span class="linenos">128</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="EmptyEvaluator-129"><a href="#EmptyEvaluator-129"><span class="linenos">129</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="EmptyEvaluator-130"><a href="#EmptyEvaluator-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">final_state</span>
+</span><span id="EmptyEvaluator-131"><a href="#EmptyEvaluator-131"><span class="linenos">131</span></a>
+</span><span id="EmptyEvaluator-132"><a href="#EmptyEvaluator-132"><span class="linenos">132</span></a>    <span class="nd">@property</span>
+</span><span id="EmptyEvaluator-133"><a href="#EmptyEvaluator-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="EmptyEvaluator-134"><a href="#EmptyEvaluator-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Returns <code>True</code> iff at least one count is positive.</p>
+            <div class="docstring"><p>Returns <code>True</code> iff the multiset contains only zero counts.</p>
 </div>
 
 
-                            <div id="AnyEvaluator.next_state" class="classattr">
-                                        <input id="AnyEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="EmptyEvaluator.initial_state" class="classattr">
+                                        <input id="EmptyEvaluator.initial_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">initial_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcomes</span>, </span><span class="param"><span class="o">/</span>, </span><span class="param"><span class="o">*</span><span class="n">sizes</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="EmptyEvaluator.initial_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#EmptyEvaluator.initial_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="EmptyEvaluator.initial_state-122"><a href="#EmptyEvaluator.initial_state-122"><span class="linenos">122</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">sizes</span><span class="p">):</span>
+</span><span id="EmptyEvaluator.initial_state-123"><a href="#EmptyEvaluator.initial_state-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Optional method to produce an initial evaluation state.</p>
+
+<p>If not overriden, the initial state is <code>None</code>. Note that this is not a
+valid <code><a href="#EmptyEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<p>All non-keyword arguments will be given positionally, so you are free
+to:</p>
+
+<ul>
+<li>Rename any of them.</li>
+<li>Replace <code>sizes</code> with a fixed series of arguments.</li>
+<li>Replace trailing positional arguments with <code>*_</code> if you don't care
+about them.</li>
+</ul>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>order:</strong>  The order in which outcomes will be seen by <code><a href="#EmptyEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>outcomes:</strong>  All outcomes that will be seen by <code><a href="#EmptyEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>sizes:</strong>  The sizes of the input multisets, provided
+that the multiset has inferrable size with non-negative
+counts. If not, the corresponding size is None.</li>
+<li><strong>kwargs:</strong>  Non-multiset arguments that were provided to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code>.
+You may replace <code>**kwargs</code> with a fixed set of keyword
+parameters; <code><a href="#EmptyEvaluator.final_outcome">final_outcome()</a></code> should take the same set of
+keyword parameters.</li>
+</ul>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li>UnsupportedOrder if the given order is not supported.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="EmptyEvaluator.next_state" class="classattr">
+                                        <input id="EmptyEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">count</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="AnyEvaluator.next_state-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="EmptyEvaluator.next_state-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AnyEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state-122"><a href="#AnyEvaluator.next_state-122"><span class="linenos">122</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
-</span><span id="AnyEvaluator.next_state-123"><a href="#AnyEvaluator.next_state-123"><span class="linenos">123</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.next_state-124"><a href="#AnyEvaluator.next_state-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">or</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <a class="headerlink" href="#EmptyEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="EmptyEvaluator.next_state-125"><a href="#EmptyEvaluator.next_state-125"><span class="linenos">125</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+</span><span id="EmptyEvaluator.next_state-126"><a href="#EmptyEvaluator.next_state-126"><span class="linenos">126</span></a>        <span class="k">return</span> <span class="n">state</span> <span class="ow">and</span> <span class="p">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Implementation.</p>
+            <div class="docstring"><p>State transition function.</p>
+
+<p>This should produce a state given the previous state, an outcome,
+the count of that outcome produced by each multiset input, and any
+**kwargs provided to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code>.</p>
+
+<p><code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code> will always call this with <code>state, outcome, *counts</code> as
+positional arguments. Furthermore, there is no expectation that a 
+subclass be able to handle an arbitrary number of counts. </p>
+
+<p>Thus, you are free to:</p>
+
+<ul>
+<li>Rename <code>state</code> or <code>outcome</code> in a subclass.</li>
+<li>Replace <code>*counts</code> with a fixed set of parameters.</li>
+</ul>
+
+<p>States must be hashable. At current, they do not have to be orderable.
+However, this may change in the future, and if they are not totally
+orderable, you must override <code><a href="#EmptyEvaluator.final_outcome">final_outcome</a></code> to create totally orderable
+final outcomes.</p>
+
+<p>Returning a <code>Die</code> is not supported.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>state:</strong>  A hashable object indicating the state before rolling the
+current outcome. If <code><a href="#EmptyEvaluator.initial_state">initial_state()</a></code> is not overridden, the
+initial state is <code>None</code>.</li>
+<li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
+<code>UnsupportedOrder</code> if you don't want to support the current 
+order. In this case, the opposite order will then be attempted
+(if it hasn't already been attempted).</li>
+<li><strong>outcome:</strong>  The current outcome.
+If there are multiple inputs, the set of outcomes is at 
+least the union of the outcomes of the invididual inputs. 
+You can use <code><a href="#EmptyEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
+<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+many of the current outcome were produced. You may replace this
+with a fixed series of parameters.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable object indicating the next state.
+  The special value <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code> can be used to immediately remove
+  the state from consideration, effectively performing a full reroll.</p>
+</blockquote>
 </div>
 
 
                             </div>
-                            <div id="AnyEvaluator.final_outcome" class="classattr">
-                                        <input id="AnyEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="EmptyEvaluator.final_outcome" class="classattr">
+                                        <input id="EmptyEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
         <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcomes</span>, </span><span class="param"><span class="n">size</span></span><span class="return-annotation">) -> <span class="nb">bool</span>:</span></span>
 
-                <label class="view-source-button" for="AnyEvaluator.final_outcome-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="EmptyEvaluator.final_outcome-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AnyEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.final_outcome-126"><a href="#AnyEvaluator.final_outcome-126"><span class="linenos">126</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
-</span><span id="AnyEvaluator.final_outcome-127"><a href="#AnyEvaluator.final_outcome-127"><span class="linenos">127</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="AnyEvaluator.final_outcome-128"><a href="#AnyEvaluator.final_outcome-128"><span class="linenos">128</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="AnyEvaluator.final_outcome-129"><a href="#AnyEvaluator.final_outcome-129"><span class="linenos">129</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="kc">False</span>
+    <a class="headerlink" href="#EmptyEvaluator.final_outcome"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="EmptyEvaluator.final_outcome-128"><a href="#EmptyEvaluator.final_outcome-128"><span class="linenos">128</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="EmptyEvaluator.final_outcome-129"><a href="#EmptyEvaluator.final_outcome-129"><span class="linenos">129</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="EmptyEvaluator.final_outcome-130"><a href="#EmptyEvaluator.final_outcome-130"><span class="linenos">130</span></a>        <span class="k">return</span> <span class="n">final_state</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Implementation.</p>
+            <div class="docstring"><p>Optional method to generate a final output outcome from a final state.</p>
+
+<p>By default, the final outcome is equal to the final state.
+Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
+and if there are no outcomes, <code><a href="#EmptyEvaluator.final_outcome">final_outcome</a></code> will be immediately
+be callled with <code>final_state=None</code>.
+Subclasses that want to handle this case should explicitly define what
+happens.</p>
+
+<p>All non-keyword arguments will be given positionally, so you are free
+to:</p>
+
+<ul>
+<li>Rename any of them.</li>
+<li>Replace <code>sizes</code> with a fixed series of arguments.</li>
+<li>Replace trailing positional arguments with <code>*_</code> if you don't care
+about them.</li>
+</ul>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>final_state:</strong>  A state after all outcomes have been processed.</li>
+<li><strong>order:</strong>  The order in which outcomes were seen by <code><a href="#EmptyEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>outcomes:</strong>  All outcomes that were seen by <code><a href="#EmptyEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>sizes:</strong>  The sizes of the input multisets, provided
+that the multiset has inferrable size with non-negative
+counts. If not, the corresponding size is None.</li>
+<li><strong>kwargs:</strong>  Non-multiset arguments that were provided to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code>.
+You may replace <code>**kwargs</code> with a fixed set of keyword
+parameters; <code><a href="#EmptyEvaluator.initial_state">initial_state()</a></code> should take the same set of
+keyword parameters.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A final outcome that will be used as part of constructing the result <code>Die</code>.
+  As usual for <code>Die()</code>, this could itself be a <code>Die</code> or <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code>.</p>
+</blockquote>
 </div>
 
 
                             </div>
-                            <div id="AnyEvaluator.next_state_key" class="classattr">
-                                        <input id="AnyEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="EmptyEvaluator.next_state_key" class="classattr">
+                                        <input id="EmptyEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
             <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="AnyEvaluator.next_state_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="EmptyEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#AnyEvaluator.next_state_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AnyEvaluator.next_state_key-131"><a href="#AnyEvaluator.next_state_key-131"><span class="linenos">131</span></a>    <span class="nd">@property</span>
-</span><span id="AnyEvaluator.next_state_key-132"><a href="#AnyEvaluator.next_state_key-132"><span class="linenos">132</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="AnyEvaluator.next_state_key-133"><a href="#AnyEvaluator.next_state_key-133"><span class="linenos">133</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    <a class="headerlink" href="#EmptyEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="EmptyEvaluator.next_state_key-132"><a href="#EmptyEvaluator.next_state_key-132"><span class="linenos">132</span></a>    <span class="nd">@property</span>
+</span><span id="EmptyEvaluator.next_state_key-133"><a href="#EmptyEvaluator.next_state_key-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="EmptyEvaluator.next_state_key-134"><a href="#EmptyEvaluator.next_state_key-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#AnyEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
-to <code><a href="#AnyEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#AnyEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#EmptyEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
 caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>If you do implement this, <code><a href="#AnyEvaluator.next_state_key">next_state_key</a></code> should include any members 
-used in <code><a href="#AnyEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+<p>If you do implement this, <code><a href="#EmptyEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
 only used in other methods, i.e. </p>
 
 <ul>
-<li><code><a href="#AnyEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
-<li><code><a href="#AnyEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#AnyEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#AnyEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+<li><code><a href="#EmptyEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#EmptyEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#EmptyEvaluator.final_outcome">final_outcome()</a></code>. 
+For example, if <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> is a pure function other than being 
 defined by its evaluator class, you can use <code>type(self)</code>.</li>
 </ul>
 
-<p>If you want to disable caching between calls to <code><a href="#AnyEvaluator.evaluate">evaluate()</a></code> even
+<p>If you want to disable caching between calls to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
 <code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
@@ -1093,14 +1257,14 @@ outside of <code>@multiset_function</code>, return the special value
 
                             </div>
                 </section>
-                <section id="any_evaluator">
+                <section id="empty_evaluator">
                     <div class="attr variable">
-            <span class="name">any_evaluator</span>        =
-<span class="default_value">&lt;<a href="#AnyEvaluator">AnyEvaluator</a> object&gt;</span>
+            <span class="name">empty_evaluator</span>        =
+<span class="default_value">&lt;<a href="#EmptyEvaluator">EmptyEvaluator</a> object&gt;</span>
 
         
     </div>
-    <a class="headerlink" href="#any_evaluator"></a>
+    <a class="headerlink" href="#empty_evaluator"></a>
     
     
 
@@ -3841,6 +4005,271 @@ bool are <code>True</code>.</p>
 
 
                             </div>
+                </section>
+                <section id="LexiComparisonEvaluator">
+                            <input id="LexiComparisonEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">LexiComparisonEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[typing.Any, int]</span>):
+
+                <label class="view-source-button" for="LexiComparisonEvaluator-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#LexiComparisonEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LexiComparisonEvaluator-12"><a href="#LexiComparisonEvaluator-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LexiComparisonEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LexiComparisonEvaluator-13"><a href="#LexiComparisonEvaluator-13"><span class="linenos">13</span></a>
+</span><span id="LexiComparisonEvaluator-14"><a href="#LexiComparisonEvaluator-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="LexiComparisonEvaluator-15"><a href="#LexiComparisonEvaluator-15"><span class="linenos">15</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">left_size</span><span class="p">,</span> <span class="n">right_size</span><span class="p">,</span> <span class="n">sort_order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
+</span><span id="LexiComparisonEvaluator-16"><a href="#LexiComparisonEvaluator-16"><span class="linenos">16</span></a>            <span class="n">lexi_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LexiComparisonEvaluator-17"><a href="#LexiComparisonEvaluator-17"><span class="linenos">17</span></a>        <span class="k">if</span> <span class="n">order</span> <span class="o">!=</span> <span class="n">sort_order</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator-18"><a href="#LexiComparisonEvaluator-18"><span class="linenos">18</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrder</span><span class="p">()</span>
+</span><span id="LexiComparisonEvaluator-19"><a href="#LexiComparisonEvaluator-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="mi">0</span>
+</span><span id="LexiComparisonEvaluator-20"><a href="#LexiComparisonEvaluator-20"><span class="linenos">20</span></a>
+</span><span id="LexiComparisonEvaluator-21"><a href="#LexiComparisonEvaluator-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+</span><span id="LexiComparisonEvaluator-22"><a href="#LexiComparisonEvaluator-22"><span class="linenos">22</span></a>        <span class="c1"># States:</span>
+</span><span id="LexiComparisonEvaluator-23"><a href="#LexiComparisonEvaluator-23"><span class="linenos">23</span></a>        <span class="c1"># 1: left has unmatched extra element</span>
+</span><span id="LexiComparisonEvaluator-24"><a href="#LexiComparisonEvaluator-24"><span class="linenos">24</span></a>        <span class="c1"># 2: left has matched extra element</span>
+</span><span id="LexiComparisonEvaluator-25"><a href="#LexiComparisonEvaluator-25"><span class="linenos">25</span></a>        <span class="c1"># -1: right has unmatched extra element</span>
+</span><span id="LexiComparisonEvaluator-26"><a href="#LexiComparisonEvaluator-26"><span class="linenos">26</span></a>        <span class="c1"># -2: right has matched extra element</span>
+</span><span id="LexiComparisonEvaluator-27"><a href="#LexiComparisonEvaluator-27"><span class="linenos">27</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator-28"><a href="#LexiComparisonEvaluator-28"><span class="linenos">28</span></a>            <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator-29"><a href="#LexiComparisonEvaluator-29"><span class="linenos">29</span></a>                <span class="n">state</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="LexiComparisonEvaluator-30"><a href="#LexiComparisonEvaluator-30"><span class="linenos">30</span></a>            <span class="k">elif</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="n">left</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator-31"><a href="#LexiComparisonEvaluator-31"><span class="linenos">31</span></a>                <span class="n">state</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="LexiComparisonEvaluator-32"><a href="#LexiComparisonEvaluator-32"><span class="linenos">32</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator-33"><a href="#LexiComparisonEvaluator-33"><span class="linenos">33</span></a>            <span class="n">state</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span id="LexiComparisonEvaluator-34"><a href="#LexiComparisonEvaluator-34"><span class="linenos">34</span></a>        <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator-35"><a href="#LexiComparisonEvaluator-35"><span class="linenos">35</span></a>            <span class="n">state</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+</span><span id="LexiComparisonEvaluator-36"><a href="#LexiComparisonEvaluator-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="n">state</span>
+</span><span id="LexiComparisonEvaluator-37"><a href="#LexiComparisonEvaluator-37"><span class="linenos">37</span></a>
+</span><span id="LexiComparisonEvaluator-38"><a href="#LexiComparisonEvaluator-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="LexiComparisonEvaluator-39"><a href="#LexiComparisonEvaluator-39"><span class="linenos">39</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">left_size</span><span class="p">,</span> <span class="n">right_size</span><span class="p">,</span>
+</span><span id="LexiComparisonEvaluator-40"><a href="#LexiComparisonEvaluator-40"><span class="linenos">40</span></a>            <span class="n">sort_order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span> <span class="n">lexi_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LexiComparisonEvaluator-41"><a href="#LexiComparisonEvaluator-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">lexi_tuple</span><span class="p">[</span><span class="n">final_state</span><span class="p">]</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Evaluates a multiset based on a state transition function.</p>
+</div>
+
+
+                            <div id="LexiComparisonEvaluator.initial_state" class="classattr">
+                                        <input id="LexiComparisonEvaluator.initial_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">initial_state</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">order</span>,</span><span class="param">	<span class="n">outcomes</span>,</span><span class="param">	<span class="n">left_size</span>,</span><span class="param">	<span class="n">right_size</span>,</span><span class="param">	<span class="n">sort_order</span><span class="p">:</span> <span class="n"><a href="../icepool.html#Order">icepool.Order</a></span>,</span><span class="param">	<span class="n">lexi_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="LexiComparisonEvaluator.initial_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#LexiComparisonEvaluator.initial_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LexiComparisonEvaluator.initial_state-14"><a href="#LexiComparisonEvaluator.initial_state-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="LexiComparisonEvaluator.initial_state-15"><a href="#LexiComparisonEvaluator.initial_state-15"><span class="linenos">15</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">left_size</span><span class="p">,</span> <span class="n">right_size</span><span class="p">,</span> <span class="n">sort_order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
+</span><span id="LexiComparisonEvaluator.initial_state-16"><a href="#LexiComparisonEvaluator.initial_state-16"><span class="linenos">16</span></a>            <span class="n">lexi_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LexiComparisonEvaluator.initial_state-17"><a href="#LexiComparisonEvaluator.initial_state-17"><span class="linenos">17</span></a>        <span class="k">if</span> <span class="n">order</span> <span class="o">!=</span> <span class="n">sort_order</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator.initial_state-18"><a href="#LexiComparisonEvaluator.initial_state-18"><span class="linenos">18</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrder</span><span class="p">()</span>
+</span><span id="LexiComparisonEvaluator.initial_state-19"><a href="#LexiComparisonEvaluator.initial_state-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="mi">0</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Optional method to produce an initial evaluation state.</p>
+
+<p>If not overriden, the initial state is <code>None</code>. Note that this is not a
+valid <code><a href="#LexiComparisonEvaluator.final_outcome">final_outcome()</a></code>.</p>
+
+<p>All non-keyword arguments will be given positionally, so you are free
+to:</p>
+
+<ul>
+<li>Rename any of them.</li>
+<li>Replace <code>sizes</code> with a fixed series of arguments.</li>
+<li>Replace trailing positional arguments with <code>*_</code> if you don't care
+about them.</li>
+</ul>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>order:</strong>  The order in which outcomes will be seen by <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>outcomes:</strong>  All outcomes that will be seen by <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>sizes:</strong>  The sizes of the input multisets, provided
+that the multiset has inferrable size with non-negative
+counts. If not, the corresponding size is None.</li>
+<li><strong>kwargs:</strong>  Non-multiset arguments that were provided to <code><a href="#LexiComparisonEvaluator.evaluate">evaluate()</a></code>.
+You may replace <code>**kwargs</code> with a fixed set of keyword
+parameters; <code><a href="#LexiComparisonEvaluator.final_outcome">final_outcome()</a></code> should take the same set of
+keyword parameters.</li>
+</ul>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li>UnsupportedOrder if the given order is not supported.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="LexiComparisonEvaluator.next_state" class="classattr">
+                                        <input id="LexiComparisonEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="n">left</span>, </span><span class="param"><span class="n">right</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="LexiComparisonEvaluator.next_state-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#LexiComparisonEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LexiComparisonEvaluator.next_state-21"><a href="#LexiComparisonEvaluator.next_state-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+</span><span id="LexiComparisonEvaluator.next_state-22"><a href="#LexiComparisonEvaluator.next_state-22"><span class="linenos">22</span></a>        <span class="c1"># States:</span>
+</span><span id="LexiComparisonEvaluator.next_state-23"><a href="#LexiComparisonEvaluator.next_state-23"><span class="linenos">23</span></a>        <span class="c1"># 1: left has unmatched extra element</span>
+</span><span id="LexiComparisonEvaluator.next_state-24"><a href="#LexiComparisonEvaluator.next_state-24"><span class="linenos">24</span></a>        <span class="c1"># 2: left has matched extra element</span>
+</span><span id="LexiComparisonEvaluator.next_state-25"><a href="#LexiComparisonEvaluator.next_state-25"><span class="linenos">25</span></a>        <span class="c1"># -1: right has unmatched extra element</span>
+</span><span id="LexiComparisonEvaluator.next_state-26"><a href="#LexiComparisonEvaluator.next_state-26"><span class="linenos">26</span></a>        <span class="c1"># -2: right has matched extra element</span>
+</span><span id="LexiComparisonEvaluator.next_state-27"><a href="#LexiComparisonEvaluator.next_state-27"><span class="linenos">27</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator.next_state-28"><a href="#LexiComparisonEvaluator.next_state-28"><span class="linenos">28</span></a>            <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator.next_state-29"><a href="#LexiComparisonEvaluator.next_state-29"><span class="linenos">29</span></a>                <span class="n">state</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="LexiComparisonEvaluator.next_state-30"><a href="#LexiComparisonEvaluator.next_state-30"><span class="linenos">30</span></a>            <span class="k">elif</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="n">left</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator.next_state-31"><a href="#LexiComparisonEvaluator.next_state-31"><span class="linenos">31</span></a>                <span class="n">state</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="LexiComparisonEvaluator.next_state-32"><a href="#LexiComparisonEvaluator.next_state-32"><span class="linenos">32</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator.next_state-33"><a href="#LexiComparisonEvaluator.next_state-33"><span class="linenos">33</span></a>            <span class="n">state</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span id="LexiComparisonEvaluator.next_state-34"><a href="#LexiComparisonEvaluator.next_state-34"><span class="linenos">34</span></a>        <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">left</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="LexiComparisonEvaluator.next_state-35"><a href="#LexiComparisonEvaluator.next_state-35"><span class="linenos">35</span></a>            <span class="n">state</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+</span><span id="LexiComparisonEvaluator.next_state-36"><a href="#LexiComparisonEvaluator.next_state-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="n">state</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>State transition function.</p>
+
+<p>This should produce a state given the previous state, an outcome,
+the count of that outcome produced by each multiset input, and any
+**kwargs provided to <code><a href="#LexiComparisonEvaluator.evaluate">evaluate()</a></code>.</p>
+
+<p><code><a href="#LexiComparisonEvaluator.evaluate">evaluate()</a></code> will always call this with <code>state, outcome, *counts</code> as
+positional arguments. Furthermore, there is no expectation that a 
+subclass be able to handle an arbitrary number of counts. </p>
+
+<p>Thus, you are free to:</p>
+
+<ul>
+<li>Rename <code>state</code> or <code>outcome</code> in a subclass.</li>
+<li>Replace <code>*counts</code> with a fixed set of parameters.</li>
+</ul>
+
+<p>States must be hashable. At current, they do not have to be orderable.
+However, this may change in the future, and if they are not totally
+orderable, you must override <code><a href="#LexiComparisonEvaluator.final_outcome">final_outcome</a></code> to create totally orderable
+final outcomes.</p>
+
+<p>Returning a <code>Die</code> is not supported.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>state:</strong>  A hashable object indicating the state before rolling the
+current outcome. If <code><a href="#LexiComparisonEvaluator.initial_state">initial_state()</a></code> is not overridden, the
+initial state is <code>None</code>.</li>
+<li><strong>order:</strong>  The order in which outcomes are seen. You can raise an 
+<code>UnsupportedOrder</code> if you don't want to support the current 
+order. In this case, the opposite order will then be attempted
+(if it hasn't already been attempted).</li>
+<li><strong>outcome:</strong>  The current outcome.
+If there are multiple inputs, the set of outcomes is at 
+least the union of the outcomes of the invididual inputs. 
+You can use <code><a href="#LexiComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
+<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+many of the current outcome were produced. You may replace this
+with a fixed series of parameters.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A hashable object indicating the next state.
+  The special value <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code> can be used to immediately remove
+  the state from consideration, effectively performing a full reroll.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div id="LexiComparisonEvaluator.final_outcome" class="classattr">
+                                        <input id="LexiComparisonEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">final_outcome</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">final_state</span>,</span><span class="param">	<span class="n">order</span>,</span><span class="param">	<span class="n">outcomes</span>,</span><span class="param">	<span class="n">left_size</span>,</span><span class="param">	<span class="n">right_size</span>,</span><span class="param">	<span class="n">sort_order</span><span class="p">:</span> <span class="n"><a href="../icepool.html#Order">icepool.Order</a></span>,</span><span class="param">	<span class="n">lexi_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="LexiComparisonEvaluator.final_outcome-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#LexiComparisonEvaluator.final_outcome"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LexiComparisonEvaluator.final_outcome-38"><a href="#LexiComparisonEvaluator.final_outcome-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+</span><span id="LexiComparisonEvaluator.final_outcome-39"><a href="#LexiComparisonEvaluator.final_outcome-39"><span class="linenos">39</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">left_size</span><span class="p">,</span> <span class="n">right_size</span><span class="p">,</span>
+</span><span id="LexiComparisonEvaluator.final_outcome-40"><a href="#LexiComparisonEvaluator.final_outcome-40"><span class="linenos">40</span></a>            <span class="n">sort_order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span> <span class="n">lexi_tuple</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+</span><span id="LexiComparisonEvaluator.final_outcome-41"><a href="#LexiComparisonEvaluator.final_outcome-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">lexi_tuple</span><span class="p">[</span><span class="n">final_state</span><span class="p">]</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Optional method to generate a final output outcome from a final state.</p>
+
+<p>By default, the final outcome is equal to the final state.
+Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
+and if there are no outcomes, <code><a href="#LexiComparisonEvaluator.final_outcome">final_outcome</a></code> will be immediately
+be callled with <code>final_state=None</code>.
+Subclasses that want to handle this case should explicitly define what
+happens.</p>
+
+<p>All non-keyword arguments will be given positionally, so you are free
+to:</p>
+
+<ul>
+<li>Rename any of them.</li>
+<li>Replace <code>sizes</code> with a fixed series of arguments.</li>
+<li>Replace trailing positional arguments with <code>*_</code> if you don't care
+about them.</li>
+</ul>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>final_state:</strong>  A state after all outcomes have been processed.</li>
+<li><strong>order:</strong>  The order in which outcomes were seen by <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>outcomes:</strong>  All outcomes that were seen by <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>sizes:</strong>  The sizes of the input multisets, provided
+that the multiset has inferrable size with non-negative
+counts. If not, the corresponding size is None.</li>
+<li><strong>kwargs:</strong>  Non-multiset arguments that were provided to <code><a href="#LexiComparisonEvaluator.evaluate">evaluate()</a></code>.
+You may replace <code>**kwargs</code> with a fixed set of keyword
+parameters; <code><a href="#LexiComparisonEvaluator.initial_state">initial_state()</a></code> should take the same set of
+keyword parameters.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A final outcome that will be used as part of constructing the result <code>Die</code>.
+  As usual for <code>Die()</code>, this could itself be a <code>Die</code> or <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code>.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="lexi_comparison_evaluator">
+                    <div class="attr variable">
+            <span class="name">lexi_comparison_evaluator</span>        =
+<span class="default_value">&lt;<a href="#LexiComparisonEvaluator">LexiComparisonEvaluator</a> object&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#lexi_comparison_evaluator"></a>
+    
+    
+
                 </section>
                 <section id="KeepEvaluator">
                             <input id="KeepEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
