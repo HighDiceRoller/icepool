@@ -32,7 +32,7 @@ class LexiComparisonEvaluator(MultisetEvaluator[Any, int]):
             return False, extra, 0, right_size - left_size
 
     def next_state(self, state, order, outcome, left, right):
-        forward_order, extra, first = state
+        forward_order, extra, first, left_lead = state
         left = max(left, 0)
         right = max(right, 0)
         if forward_order:
@@ -41,22 +41,22 @@ class LexiComparisonEvaluator(MultisetEvaluator[Any, int]):
                     extra = -1
                 elif right < left:
                     extra = 1
-            if extra == 1 and right > 0:
+            elif extra == 1 and right > 0:
                 first = 1
             elif extra == -1 and left > 0:
                 first = -1
         else:
             left_lead += left - right
             if left_lead > 0 and left > 0:
-                first = 1
-            elif left_lead < 0 and right > 0:
                 first = -1
+            elif left_lead < 0 and right > 0:
+                first = 1
         return forward_order, extra, first, left_lead
 
     def final_outcome(  # type: ignore
             self, final_state, order, outcomes, left_size, right_size,
             sort_order: Order, lexi_tuple: tuple[int, int, int, int, int]):
-        forward_order, extra, first = final_state
+        forward_order, extra, first, left_lead = final_state
         left_first, left_extra, tie, right_extra, right_first = lexi_tuple
         if first > 0:
             return left_first
