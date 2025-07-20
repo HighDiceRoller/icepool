@@ -14,6 +14,14 @@ class MultisetVersusAll(MultisetOperator[T]):
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *,
                  lexi_tuple: tuple[int, int, int], order: Order):
+        """Constructor.
+        
+        Args:
+            lexi_tuple: Whether left elements are kept if they appear before, at
+                the same time, and after right elements (when using preferred
+                order).
+            order: The preferred order in which to consider the outcomes.
+        """
         self._children = (left, right)
         self._lexi_tuple = lexi_tuple
         self._order = order
