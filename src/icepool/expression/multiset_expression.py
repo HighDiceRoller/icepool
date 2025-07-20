@@ -1179,7 +1179,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         /,
         extra: Literal['low', 'high', 'drop'] = 'high'
     ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
-        """Evaluation: EXPERIMENTAL: Lexicographic comparison.
+        """Evaluation: EXPERIMENTAL: Lexicographic comparison after sorting each multiset in ascending order.
+
+        Compares the lowest element of each multiset; if they are equal,
+        compares the next-lowest element, and so on.
         
         Args:
             comparison: The comparison to use.
@@ -1202,7 +1205,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         /,
         extra: Literal['low', 'high', 'drop'] = 'high'
     ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
-        """Evaluation: EXPERIMENTAL: Lexicographic comparison.
+        """Evaluation: EXPERIMENTAL: Lexicographic comparison after sorting each multiset in descending order.
+
+        Compares the highest element of each multiset; if they are equal,
+        compares the next-highest element, and so on.
         
         Args:
             comparison: The comparison to use.
