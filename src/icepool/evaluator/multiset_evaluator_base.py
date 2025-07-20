@@ -181,7 +181,7 @@ class Dungeon(Generic[T], MaybeHashKeyed):
             final_states = self.evaluate_backward(pop_order, room)
             return quest.finalize_evaluation(final_states, -pop_order,
                                              all_outcomes, arg_sizes, kwargs)
-        except UnsupportedOrder:
+        except UnsupportedOrder as backwards_unsuported:
             try:
                 if pop_order_reason is OrderReason.Default:
                     # Flip the pop order.
@@ -199,11 +199,15 @@ class Dungeon(Generic[T], MaybeHashKeyed):
                     return quest.finalize_evaluation(final_states, pop_order,
                                                      all_outcomes, arg_sizes,
                                                      kwargs)
-            except UnsupportedOrder:
+            except UnsupportedOrder as forwards_unsupported:
                 raise ConflictingOrderError(
-                    'Neither ascending nor descending order is compatable with the evaluation. '
+                    'Neither ascending nor descending order is compatable with the evaluation.\n'
                     +
-                    f'Preferred input order was {pop_order.name} with reason {pop_order_reason.name}.'
+                    f'Preferred input order was {pop_order.name} with reason {pop_order_reason.name}.\n'
+                    +
+                    f'Backwards evaluation could not be done because: {backwards_unsuported}\n'
+                    +
+                    f'Forwards evaluation could not be done because: {forwards_unsupported}'
                 )
 
     def initial_room(

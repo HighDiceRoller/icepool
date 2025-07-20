@@ -20,7 +20,7 @@ class MultisetForceOrder(MultisetOperator[T]):
                        source_sizes: Iterator,
                        arg_sizes: Sequence) -> tuple[None, int | None]:
         if self._force_order != Order.Any and order != self._force_order:
-            raise UnsupportedOrder()
+            raise UnsupportedOrder(f"Order was forced to {self._force_order}")
         return None, child_sizes[0]
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
