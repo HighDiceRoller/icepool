@@ -13,31 +13,61 @@ class LexiComparisonEvaluator(MultisetEvaluator[Any, int]):
     def initial_state(  # type: ignore
             self, order, outcomes, left_size, right_size, sort_order: Order,
             lexi_tuple: tuple[int, int, int, int, int]):
-        if order != sort_order:
-            raise UnsupportedOrder()
-        return 0
+        # state: forward_order, extra, first, left_lead
+        # positive on first/extra means the left side is earlier
+        # first means the first differing element was matched with a later
+        # element from the other side
+        if order == sort_order:
+            return True, 0, 0, 0
+        else:
+            if left_size is None or right_size is None:
+                raise UnsupportedOrder(
+                    'Reverse order not supported unless sizes of both operands are inferrable.'
+                )
+            extra = 0
+            if left_size < right_size:
+                extra = -1
+            elif right_size < left_size:
+                extra = 1
+            return False, extra, 0, right_size - left_size
 
     def next_state(self, state, order, outcome, left, right):
-        # States:
-        # 1: left has unmatched extra element
-        # 2: left has matched extra element
-        # -1: right has unmatched extra element
-        # -2: right has matched extra element
-        if state == 0:
-            if left < right:
-                state = 1
-            elif right < left:
-                state = -1
-        if state == 1 and right > 0:
-            state = 2
-        elif state == -1 and left > 0:
-            state = -2
-        return state
+        forward_order, extra, first = state
+        left = max(left, 0)
+        right = max(right, 0)
+        if forward_order:
+            if extra == 0:
+                if left < right:
+                    extra = -1
+                elif right < left:
+                    extra = 1
+            if extra == 1 and right > 0:
+                first = 1
+            elif extra == -1 and left > 0:
+                first = -1
+        else:
+            left_lead += left - right
+            if left_lead > 0 and left > 0:
+                first = 1
+            elif left_lead < 0 and right > 0:
+                first = -1
+        return forward_order, extra, first, left_lead
 
     def final_outcome(  # type: ignore
             self, final_state, order, outcomes, left_size, right_size,
             sort_order: Order, lexi_tuple: tuple[int, int, int, int, int]):
-        return lexi_tuple[2 - final_state]
+        forward_order, extra, first = final_state
+        left_first, left_extra, tie, right_extra, right_first = lexi_tuple
+        if first > 0:
+            return left_first
+        elif first < 0:
+            return right_first
+        elif extra > 0:
+            return left_extra
+        elif extra < 0:
+            return right_extra
+        else:
+            return tie
 
 
 lexi_comparison_evaluator = LexiComparisonEvaluator()
