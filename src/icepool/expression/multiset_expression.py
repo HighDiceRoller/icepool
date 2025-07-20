@@ -817,7 +817,16 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: The other multiset to compare to. Negative counts are treated
                 as 0.
         """
-        return self.versus_all(negate_comparison(comparison), other)
+        other = implicit_convert_to_expression(other)
+        lexi_tuple, order = compute_lexi_tuple_with_zero_right_first(
+            comparison)
+        lexi_tuple = tuple(reversed(lexi_tuple))  # type: ignore
+        order = -order
+
+        return icepool.operator.MultisetVersusAll(self,
+                                                  other,
+                                                  lexi_tuple=lexi_tuple,
+                                                  order=order)
 
     # Evaluations.
 
