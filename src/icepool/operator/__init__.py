@@ -10,6 +10,7 @@ from icepool.operator.filter_outcomes import (MultisetFilterOutcomes,
                                               MultisetFilterOutcomesBinary)
 from icepool.operator.keep import MultisetKeep
 from icepool.operator.pair import (MultisetSortPair, MultisetMaximumPair)
-from icepool.operator.versus import (MultisetVersus, MultisetCmp)
+from icepool.operator.versus import (
+    MultisetVersus, )
 from icepool.operator.debug import (
     MultisetForceOrder, )

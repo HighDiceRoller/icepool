@@ -826,44 +826,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                lexi_tuple=lexi_tuple,
                                                order=order)
 
-    def cmp_versus_lowest(
-            self, other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: The lowest element in each multiset cancels all higher elements in the other multiset.
-        
-        The result has non-negative counts if the left side had the lowest 
-        element overall, non-positive counts if the right side had the lowest 
-        element overall, and is empty if the two were tied for lowest element.
-
-        Equivalent to
-        ```python
-        @multiset_function
-        def cmp_versus_lowest(a, b):
-            return evaluate(a.versus_all('<', b) - b.versus_all('<', a))
-        ```
-        """
-        other = implicit_convert_to_expression(other)
-        return icepool.operator.MultisetCmp(self, other, order=Order.Ascending)
-
-    def cmp_versus_highest(
-            self, other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: The highest element in each multiset cancels all higher elements in the other multiset.
-        
-        The result has non-negative counts if the left side had the highest 
-        element overall, non-positive counts if the right side had the highest 
-        element overall, and is empty if the two were tied for highest element.
-
-        Equivalent to
-        ```python
-        @multiset_function
-        def cmp_versus_lowest(a, b):
-            return evaluate(a.versus_all('>', b) - b.versus_all('>', a))
-        ```
-        """
-        other = implicit_convert_to_expression(other)
-        return icepool.operator.MultisetCmp(self,
-                                            other,
-                                            order=Order.Descending)
-
     # Evaluations.
 
     def expand(
