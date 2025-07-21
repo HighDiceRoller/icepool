@@ -5,25 +5,25 @@ import pytest
 from icepool import d4, d6, d8, Die, Order, map_function, Pool
 
 
-def test_sort_match_example():
-    without_highest = Pool([6, 4, 3]).sort_match('>', [5, 5]).expand()
+def test_sort_pair_example():
+    without_highest = Pool([6, 4, 3]).sort_pair('>', [5, 5]).expand()
     assert without_highest.simplify() == Die([(3, 6)])
     with_highest = Pool([6, 4,
-                         3]).highest(2).sort_match('>',
-                                                   [5, 5]).expand().simplify()
+                         3]).highest(2).sort_pair('>',
+                                                  [5, 5]).expand().simplify()
     assert with_highest == Die([(6, )])
 
 
 def test_risk():
-    result = d6.pool(3).highest(2).sort_match('>', d6.pool(2)).size()
+    result = d6.pool(3).highest(2).sort_pair('>', d6.pool(2)).size()
     expected = Die({0: 2275, 1: 2611, 2: 2890})
     assert result == expected
 
 
 def test_risk_ascending():
-    result = d6.pool(3).highest(2).sort_match('>',
-                                              d6.pool(2),
-                                              order=Order.Ascending).size()
+    result = d6.pool(3).highest(2).sort_pair('>',
+                                             d6.pool(2),
+                                             order=Order.Ascending).size()
     expected = Die({0: 2275, 1: 2611, 2: 2890})
     assert result == expected
 
@@ -41,8 +41,8 @@ sort_ops = ['==', '!=', '<=', '<', '>=', '>']
 
 
 @pytest.mark.parametrize('op', sort_ops)
-def test_sort_match_operators(op):
-    result = d6.pool(3).highest(2).sort_match(op, d6.pool(2)).size()
+def test_sort_pair_operators(op):
+    result = d6.pool(3).highest(2).sort_pair(op, d6.pool(2)).size()
 
     @map_function
     def compute_expected(left, right):
@@ -57,10 +57,10 @@ def test_sort_match_operators(op):
 
 
 @pytest.mark.parametrize('op', sort_ops)
-def test_sort_match_operators_ascending(op):
-    result = d6.pool(3).lowest(2).sort_match(op,
-                                             d6.pool(2),
-                                             order=Order.Ascending).size()
+def test_sort_pair_operators_ascending(op):
+    result = d6.pool(3).lowest(2).sort_pair(op,
+                                            d6.pool(2),
+                                            order=Order.Ascending).size()
 
     @map_function
     def compute_expected(left, right):
@@ -77,8 +77,8 @@ def test_sort_match_operators_ascending(op):
 @pytest.mark.parametrize('op', sort_ops)
 @pytest.mark.parametrize('left', [d6.pool(2), d6.pool(3), Pool([d4, d6, d8])])
 @pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
-def test_sort_match_operators_expand(op, left, right):
-    result = left.highest(2).sort_match(op, right).expand()
+def test_sort_pair_operators_expand(op, left, right):
+    result = left.highest(2).sort_pair(op, right).expand()
 
     @map_function
     def compute_expected(left, right):
@@ -92,10 +92,9 @@ def test_sort_match_operators_expand(op, left, right):
     assert result == expected
 
 
-def test_maximum_match_example():
-    result = Pool([6,
-                   4, 3, 1]).maximum_match_highest('<=', [5, 5],
-                                                   keep='unmatched').expand()
+def test_maximum_pair_example():
+    result = Pool([6, 4, 3, 1]).maximum_pair_highest('<=', [5, 5],
+                                                     keep='unpaired').expand()
     assert result.simplify() == Die([(1, 6)])
 
 
@@ -103,21 +102,19 @@ maximum_ops = ['<=', '<', '>=', '>']
 
 
 @pytest.mark.parametrize('op', maximum_ops)
-def test_maximum_match(op):
+def test_maximum_pair(op):
     if op in ['<=', '<']:
-        result = d6.pool(3).maximum_match_highest(op,
-                                                  d6.pool(2),
-                                                  keep='matched').size()
-        complement = d6.pool(3).maximum_match_highest(op,
-                                                      d6.pool(2),
-                                                      keep='unmatched').size()
-    else:
-        result = d6.pool(3).maximum_match_lowest(op,
-                                                 d6.pool(2),
-                                                 keep='matched').size()
-        complement = d6.pool(3).maximum_match_lowest(op,
+        result = d6.pool(3).maximum_pair_highest(op, d6.pool(2),
+                                                 keep='paired').size()
+        complement = d6.pool(3).maximum_pair_highest(op,
                                                      d6.pool(2),
-                                                     keep='unmatched').size()
+                                                     keep='unpaired').size()
+    else:
+        result = d6.pool(3).maximum_pair_lowest(op, d6.pool(2),
+                                                keep='paired').size()
+        complement = d6.pool(3).maximum_pair_lowest(op,
+                                                    d6.pool(2),
+                                                    keep='unpaired').size()
 
     @map_function
     def compute_expected(left, right):
@@ -144,11 +141,11 @@ def test_maximum_match(op):
 @pytest.mark.parametrize('op', maximum_ops)
 @pytest.mark.parametrize('left', [d6.pool(2), d6.pool(3), Pool([d4, d6, d8])])
 @pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
-def test_maximum_match_expand(op, left, right):
+def test_maximum_pair_expand(op, left, right):
     if op in ['<=', '<']:
-        result = left.maximum_match_highest(op, right, keep='matched').expand()
+        result = left.maximum_pair_highest(op, right, keep='paired').expand()
     else:
-        result = left.maximum_match_lowest(op, right, keep='matched').expand()
+        result = left.maximum_pair_lowest(op, right, keep='paired').expand()
 
     @map_function
     def compute_expected(left, right):

@@ -29,9 +29,8 @@ class Pool(KeepGenerator[T]):
 
     Note that operators are performed on the multiset of rolls, not the multiset
     of dice. For example, `d6.pool(3) - d6.pool(3)` is not an empty pool, but
-    an expression meaning "roll two pools of 3d6 and get the rolls from the
-    first pool, with rolls in the second pool cancelling matching rolls in the
-    first pool one-for-one".
+    an expression meaning "roll two pools of 3d6 and with rolls in the second 
+    pool cancelling matching rolls in the first pool one-for-one".
     """
 
     _dice: tuple[tuple['icepool.Die[T]', int], ...]

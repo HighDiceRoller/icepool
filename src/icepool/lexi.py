@@ -37,8 +37,8 @@ def compute_lexi_tuple(comparison: Literal['==', '!=', '<=', '<', '>=', '>',
     Returns:
         A 3-tuple with the following elements:
         * left_first: The result if the left side had the first different
-            element and it was matched with a later right side element.
-        * tie: The result if no elements were matched.
+            element and it was paired with a later right side element.
+        * tie: The result if no elements were paired.
         * right_first: As right_first but vice versa.
     """
     match comparison:
@@ -95,10 +95,10 @@ def compute_lexi_tuple_with_extra(
     Returns:
         A 5-tuple with the following elements:
         * left_first: The result if the left side had the first different
-            element and it was matched with a later right side element.
+            element and it was paired with a later right side element.
         * left_extra: The result if the left side had the first different
-            element and it was never matched with a right side element.
-        * tie: The result if no elements were matched.
+            element and it was never paired with a right side element.
+        * tie: The result if no elements were paired.
         * right_extra: As left_extra but vice versa.
         * right_first: As right_first but vice versa.
     """

@@ -15,7 +15,7 @@ class LexiComparisonEvaluator(MultisetEvaluator[Any, int]):
             lexi_tuple: tuple[int, int, int, int, int]):
         # state: forward_order, extra, first, left_lead
         # positive on first/extra means the left side is earlier
-        # first means the first differing element was matched with a later
+        # first means the first differing element was paired with a later
         # element from the other side
         if order == sort_order:
             return True, 0, 0, 0

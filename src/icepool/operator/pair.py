@@ -9,7 +9,7 @@ from typing import Iterator, Literal, MutableSequence, Sequence
 from icepool.typing import T
 
 
-class MultisetSortMatch(MultisetOperator[T]):
+class MultisetSortPair(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *,
@@ -63,21 +63,21 @@ class MultisetSortMatch(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetSortMatch, self._comparison, self._order
+        return MultisetSortPair, self._comparison, self._order
 
     @property
     def _dungeonlet_key(self):
-        return MultisetSortMatch
+        return MultisetSortPair
 
 
-class MultisetMaximumMatch(MultisetOperator[T]):
+class MultisetMaximumPair(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *, order: Order,
-                 match_equal: bool, keep: bool):
+                 pair_equal: bool, keep: bool):
         self._children = (left, right)
         self._order = order
-        self._match_equal = match_equal
+        self._pair_equal = pair_equal
         self._keep = keep
 
     def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
@@ -87,31 +87,31 @@ class MultisetMaximumMatch(MultisetOperator[T]):
         
         Returns:
             prev_matchable: The number of previously-seen elements that are
-                eligible to be matched.
+                eligible to be paired.
         """
         if order == self._order:
             return 0, None
         else:
             raise UnsupportedOrder()
 
-    def _next_state(self, prev_matchable, order, outcome, child_counts,
+    def _next_state(self, prev_pairable, order, outcome, child_counts,
                     source_counts, arg_counts):
         left_count, right_count = child_counts
 
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
 
-        if self._match_equal:
-            new_matches = min(prev_matchable + right_count, left_count)
+        if self._pair_equal:
+            new_pairs = min(prev_pairable + right_count, left_count)
         else:
-            new_matches = min(prev_matchable, left_count)
-        prev_matchable += right_count - new_matches
+            new_pairs = min(prev_pairable, left_count)
+        prev_pairable += right_count - new_pairs
         if self._keep:
-            count = new_matches
+            count = new_pairs
         else:
-            count = left_count - new_matches
-        return prev_matchable, count
+            count = left_count - new_pairs
+        return prev_pairable, count
 
     @property
     def _expression_key(self):
-        return MultisetMaximumMatch, self._order, self._match_equal, self._keep
+        return MultisetMaximumPair, self._order, self._pair_equal, self._keep
