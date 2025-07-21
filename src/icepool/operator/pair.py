@@ -86,7 +86,7 @@ class MultisetMaximumPair(MultisetOperator[T]):
         """
         
         Returns:
-            prev_matchable: The number of previously-seen elements that are
+            prev_pairable: The number of previously-seen elements that are
                 eligible to be paired.
         """
         if order == self._order:
