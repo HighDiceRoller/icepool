@@ -715,7 +715,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Contrast `sort_pair()`, which first creates pairs in
         sorted order and then filters them by `comparison`.
         In the above example, `sort_pair()` would force the defender to pair
-        against the 5 and the 4, which would only allow them to block the 4.
+        against the 6 and the 4, which would only allow them to block the 4
+        and let the 6, 3, and 1 through.
 
         Negative incoming counts are treated as zero counts.
 
