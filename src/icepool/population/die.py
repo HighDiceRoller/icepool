@@ -1426,26 +1426,8 @@ class Die(Population[T_co], MaybeHashKeyed):
         return icepool.DieWithTruth(data_callback, truth_value_callback)
 
     def cmp(self, other) -> 'Die[int]':
-        """A `Die` with outcomes 1, -1, and 0.
-
-        The quantities are equal to the positive outcome of `self > other`,
-        `self < other`, and the remainder respectively.
-        """
-        other = implicit_convert_to_die(other)
-
-        data = {}
-
-        lt = self < other
-        if True in lt:
-            data[-1] = lt[True]
-        eq = self == other
-        if True in eq:
-            data[0] = eq[True]
-        gt = self > other
-        if True in gt:
-            data[1] = gt[True]
-
-        return Die(data)
+        """As (self - other).sign()."""
+        return (self - other).sign()
 
     @staticmethod
     def _sign(x) -> int:
