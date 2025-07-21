@@ -800,10 +800,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         other = implicit_convert_to_expression(other)
         lexi_tuple, order = compute_lexi_tuple_with_zero_right_first(
             comparison)
-        return icepool.operator.MultisetVersusAll(self,
-                                                  other,
-                                                  lexi_tuple=lexi_tuple,
-                                                  order=order)
+        return icepool.operator.MultisetVersus(self,
+                                               other,
+                                               lexi_tuple=lexi_tuple,
+                                               order=order)
 
     def versus_any(self, comparison: Literal['<=', '<', '>=', '>'],
                    other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
@@ -820,10 +820,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         lexi_tuple = tuple(reversed(lexi_tuple))  # type: ignore
         order = -order
 
-        return icepool.operator.MultisetVersusAll(self,
-                                                  other,
-                                                  lexi_tuple=lexi_tuple,
-                                                  order=order)
+        return icepool.operator.MultisetVersus(self,
+                                               other,
+                                               lexi_tuple=lexi_tuple,
+                                               order=order)
 
     def cmp_versus_lowest(
             self, other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':

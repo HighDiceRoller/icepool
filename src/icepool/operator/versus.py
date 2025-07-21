@@ -9,7 +9,7 @@ from icepool.order import Order, UnsupportedOrder
 from typing import Iterator, Literal, MutableSequence, Sequence
 
 
-class MultisetVersusAll(MultisetOperator[T]):
+class MultisetVersus(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *,
@@ -67,11 +67,11 @@ class MultisetVersusAll(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetVersusAll, self._lexi_tuple, self._order
+        return MultisetVersus, self._lexi_tuple, self._order
 
     @property
     def _dungeonlet_key(self):
-        return MultisetVersusAll
+        return MultisetVersus
 
 
 class MultisetCmp(MultisetOperator[T]):
