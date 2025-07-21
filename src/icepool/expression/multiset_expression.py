@@ -796,7 +796,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """EXPERIMENTAL: Keeps elements from `self` that fit the comparison against all elements of the other multiset.
         
         Args:
-            comparison: One of '<=', '<', '>=', '>'.
+            comparison: One of `'<=', '<', '>=', '>'`.
             other: The other multiset to compare to. Negative counts are treated
                 as 0.
         """
@@ -813,7 +813,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """EXPERIMENTAL: Keeps elements from `self` that fit the comparison against any element of the other multiset.
         
         Args:
-            comparison: One of '<=', '<', '>=', '>'.
+            comparison: One of `'<=', '<', '>=', '>'`.
             other: The other multiset to compare to. Negative counts are treated
                 as 0.
         """
