@@ -5,9 +5,12 @@ import pytest
 from icepool import d4, d6, d8, Die, Order, map_function, Pool
 
 
-def test_sort_pair_example():
+def test_sort_pair_example_1():
     without_highest = Pool([6, 4, 3]).sort_pair('>', [5, 5]).expand()
     assert without_highest.simplify() == Die([(3, 6)])
+
+
+def test_sort_pair_example_2():
     with_highest = Pool([6, 4,
                          3]).highest(2).sort_pair('>',
                                                   [5, 5]).expand().simplify()
@@ -41,8 +44,12 @@ sort_ops = ['==', '!=', '<=', '<', '>=', '>']
 
 
 @pytest.mark.parametrize('op', sort_ops)
-def test_sort_pair_operators(op):
-    result = d6.pool(3).highest(2).sort_pair(op, d6.pool(2)).size()
+@pytest.mark.parametrize('use_drop', [False, True])
+def test_sort_pair_operators(op, use_drop):
+    if use_drop:
+        result = d6.pool(3).sort_pair(op, d6.pool(2), extra='drop').size()
+    else:
+        result = d6.pool(3).highest(2).sort_pair(op, d6.pool(2)).size()
 
     @map_function
     def compute_expected(left, right):
@@ -57,10 +64,17 @@ def test_sort_pair_operators(op):
 
 
 @pytest.mark.parametrize('op', sort_ops)
-def test_sort_pair_operators_ascending(op):
-    result = d6.pool(3).lowest(2).sort_pair(op,
-                                            d6.pool(2),
-                                            order=Order.Ascending).size()
+@pytest.mark.parametrize('use_drop', [False, True])
+def test_sort_pair_operators_ascending(op, use_drop):
+    if use_drop:
+        result = d6.pool(3).sort_pair(op,
+                                      d6.pool(2),
+                                      order=Order.Ascending,
+                                      extra='drop').size()
+    else:
+        result = d6.pool(3).lowest(2).sort_pair(op,
+                                                d6.pool(2),
+                                                order=Order.Ascending).size()
 
     @map_function
     def compute_expected(left, right):

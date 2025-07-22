@@ -79,7 +79,7 @@ def compute_lexi_tuple_with_zero_right_first(
 
 def compute_lexi_tuple_with_extra(
     comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'], order: Order,
-    extra: Literal['early', 'late', 'low', 'high', 'drop']
+    extra: Literal['early', 'late', 'low', 'high', 'equal', 'keep', 'drop']
 ) -> tuple[int, int, int, int, int]:
     """A 5-tuple representing a lexicographic comparison between two multisets.
 
@@ -100,7 +100,7 @@ def compute_lexi_tuple_with_extra(
             element and it was never paired with a right side element.
         * tie: The result if no elements were paired.
         * right_extra: As left_extra but vice versa.
-        * right_first: As right_first but vice versa.
+        * right_first: As left_first but vice versa.
     """
     left_first, tie, right_first = compute_lexi_tuple(comparison, order)
 
@@ -114,6 +114,10 @@ def compute_lexi_tuple_with_extra(
             left_extra, right_extra = left_first, right_first
         case 'late':
             left_extra, right_extra = right_first, left_first
+        case 'equal':
+            left_extra, right_extra = tie, tie
+        case 'keep':
+            left_extra, right_extra = 1, 1
         case 'drop':
             left_extra, right_extra = 0, 0
         case _:

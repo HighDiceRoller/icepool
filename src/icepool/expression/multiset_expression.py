@@ -633,7 +633,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         other: 'MultisetExpression[T]',
         /,
         order: Order = Order.Descending,
-        extra: Literal['early', 'late', 'low', 'high', 'drop'] = 'early'
+        extra: Literal['early', 'late', 'low', 'high', 'equal', 'keep',
+                       'drop'] = 'early'
     ) -> 'MultisetExpression[T]':
         """EXPERIMENTAL: Pairs elements of `self` with elements of `other` in sorted order, then keeps elements from `self` that fit `comparison` with their partner.
 
@@ -646,10 +647,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Suppose the attacker rolled 6, 4, 3 and the defender 5, 5.
         In this case the 4 would be blocked since the attacker lost that pair,
         leaving the attacker's 6 and 3. If you don't want to keep the extra
-        element, you can use `highest`.
+        element, you can set the `extra` parameter.
         ```python
         Pool([6, 4, 3]).sort_pair('>', [5, 5]) -> [6, 3]
-        Pool([6, 4, 3]).highest(2).sort_pair('>', [5, 5]) -> [6]
+        Pool([6, 4, 3]).sort_pair('>', [5, 5], extra='drop') -> [6]
         ```
 
         Contrast `maximum_pair()`, which first creates the maximum number of
@@ -668,7 +669,16 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: The other multiset to pair elements with.
             order: The order in which to sort before forming pairs.
                 Default is descending.
-            extra: TODO: document this
+            extra: If the left operand has more elements than the right
+                operand, this determines what is done with the extra elements.
+                * `'early'`, `'late'`: The extra elements are considered to   
+                    occur earlier or later in `order` than their missing
+                    counterparts.
+                * `'low'`, `'high'`, `'equal'`: The extra elements are 
+                    considered to be lower or higher than their missing
+                    counterparts.
+                * `'keep'`, `'drop'`: The extra elements are always kept or 
+                    dropped.
         """
         other = implicit_convert_to_expression(other)
 
