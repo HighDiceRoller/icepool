@@ -675,9 +675,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 The default is `'drop'`.
                 * `'early'`, `'late'`: The extra elements are considered to   
                     occur earlier or later in `order` than their missing
-                    counterparts. Note that `'early'` is the only option that
-                    never requires that the size of the right multiset be
-                    inferrable.
+                    counterparts.
                 * `'low'`, `'high'`, `'equal'`: The extra elements are 
                     considered to be lower or higher than their missing
                     counterparts.
