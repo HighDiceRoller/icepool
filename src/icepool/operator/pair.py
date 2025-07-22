@@ -29,9 +29,6 @@ class MultisetSortPair(MultisetOperator[T]):
         source_sizes: Iterator, arg_sizes: Sequence
     ) -> tuple[tuple[tuple[int, int, int, int], bool, int, int | None], int
                | None]:
-        """
-        State is lexi_order, left_lead.
-        """
         left_first, left_extra, tie, right_extra, right_first = compute_lexi_tuple_with_extra(
             self._comparison, self._sort_order, self._extra)
 

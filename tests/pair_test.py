@@ -7,14 +7,13 @@ from icepool import d4, d6, d8, Die, Order, map_function, Pool
 
 def test_sort_pair_example_1():
     without_highest = Pool([6, 4, 3]).sort_pair('>', [5, 5]).expand()
-    assert without_highest.simplify() == Die([(3, 6)])
+    assert without_highest.simplify() == Die([(6, )])
 
 
 def test_sort_pair_example_2():
-    with_highest = Pool([6, 4,
-                         3]).highest(2).sort_pair('>',
-                                                  [5, 5]).expand().simplify()
-    assert with_highest == Die([(6, )])
+    with_highest = Pool([6, 4, 3]).sort_pair('>', [5, 5],
+                                             extra='keep').expand().simplify()
+    assert with_highest == Die([(3, 6)])
 
 
 def test_risk():

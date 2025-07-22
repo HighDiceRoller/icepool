@@ -634,9 +634,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         /,
         order: Order = Order.Descending,
         extra: Literal['early', 'late', 'low', 'high', 'equal', 'keep',
-                       'drop'] = 'early'
+                       'drop'] = 'drop'
     ) -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: Pairs elements of `self` with elements of `other` in sorted order, then keeps elements from `self` that fit `comparison` with their partner.
+        """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then keep the elements from `self` from each pair that fit the given comparision.
 
         Example: An attacker rolls 3d6 versus a defender's 2d6 in the game of
         *RISK*. Which pairs did the attacker win?
@@ -646,11 +646,12 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         
         Suppose the attacker rolled 6, 4, 3 and the defender 5, 5.
         In this case the 4 would be blocked since the attacker lost that pair,
-        leaving the attacker's 6 and 3. If you don't want to keep the extra
-        element, you can set the `extra` parameter.
+        leaving the attacker's 6. If you want to keep the extra element (3), you 
+        can use the `extra` parameter.
         ```python
-        Pool([6, 4, 3]).sort_pair('>', [5, 5]) -> [6, 3]
-        Pool([6, 4, 3]).sort_pair('>', [5, 5], extra='drop') -> [6]
+
+        Pool([6, 4, 3]).sort_pair('>', [5, 5]) -> [6]
+        Pool([6, 4, 3]).sort_pair('>', [5, 5], extra='keep') -> [6, 3]
         ```
 
         Contrast `maximum_pair()`, which first creates the maximum number of
@@ -671,9 +672,12 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 Default is descending.
             extra: If the left operand has more elements than the right
                 operand, this determines what is done with the extra elements.
+                The default is `'drop'`.
                 * `'early'`, `'late'`: The extra elements are considered to   
                     occur earlier or later in `order` than their missing
-                    counterparts.
+                    counterparts. Note that `'early'` is the only option that
+                    never requires that the size of the right multiset be
+                    inferrable.
                 * `'low'`, `'high'`, `'equal'`: The extra elements are 
                     considered to be lower or higher than their missing
                     counterparts.
