@@ -110,7 +110,7 @@ class MultisetSortPair(MultisetOperator[T]):
         return MultisetSortPair
 
 
-class MultisetMaximumPair(MultisetOperator[T]):
+class MultisetMaxPair(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *, order: Order,
@@ -154,4 +154,4 @@ class MultisetMaximumPair(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetMaximumPair, self._order, self._pair_equal, self._keep
+        return MultisetMaxPair, self._order, self._pair_equal, self._keep

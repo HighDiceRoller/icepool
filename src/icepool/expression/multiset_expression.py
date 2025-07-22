@@ -654,9 +654,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Pool([6, 4, 3]).sort_pair('>', [5, 5], extra='keep') -> [6, 3]
         ```
 
-        Contrast `maximum_pair()`, which first creates the maximum number of
-        pairs that fit the comparison, not necessarily in sorted order.
-        In the above example, `maximum_pair()` would allow the defender to
+        Contrast `max_pair_lowest()` and `max_pair_highest()`, which first 
+        create the maximum number of pairs that fit the comparison, not
+        necessarily in sorted order.
+        In the above example, `max_pair()` would allow the defender to
         assign their 5s to block both the 4 and the 3.
 
         Negative incoming counts are treated as zero counts.
@@ -690,7 +691,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                  sort_order=order,
                                                  extra=extra)
 
-    def maximum_pair_highest(
+    def max_pair_highest(
             self, comparison: Literal['<=',
                                       '<'], other: 'MultisetExpression[T]', /,
             *, keep: Literal['paired', 'unpaired']) -> 'MultisetExpression[T]':
@@ -709,13 +710,13 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         value, and the defender prefers to block the highest attacker dice
         possible. Which attacker dice were not blocked?
         ```python
-        d6.pool(4).maximum_pair('<=', d6.pool(3), keep='unpaired').sum()
+        d6.pool(4).max_pair('<=', d6.pool(3), keep='unpaired').sum()
         ```
 
         Suppose the attacker rolls 6, 4, 3, 1 and the defender rolls 5, 5.
         Then the result would be [6, 1].
         ```python
-        d6.pool([6, 4, 3, 1]).maximum_pair('<=', [5, 5], keep='unpaired')
+        d6.pool([6, 4, 3, 1]).max_pair('<=', [5, 5], keep='unpaired')
         -> [6, 1]
         ```
 
@@ -747,13 +748,13 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 pair_equal = False
             case _:
                 raise ValueError(f'Invalid comparison {comparison}')
-        return icepool.operator.MultisetMaximumPair(self,
-                                                    other,
-                                                    order=Order.Descending,
-                                                    pair_equal=pair_equal,
-                                                    keep=keep_boolean)
+        return icepool.operator.MultisetMaxPair(self,
+                                                other,
+                                                order=Order.Descending,
+                                                pair_equal=pair_equal,
+                                                keep=keep_boolean)
 
-    def maximum_pair_lowest(
+    def max_pair_lowest(
             self, comparison: Literal['>=',
                                       '>'], other: 'MultisetExpression[T]', /,
             *, keep: Literal['paired', 'unpaired']) -> 'MultisetExpression[T]':
@@ -790,11 +791,11 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 pair_equal = False
             case _:
                 raise ValueError(f'Invalid comparison {comparison}')
-        return icepool.operator.MultisetMaximumPair(self,
-                                                    other,
-                                                    order=Order.Ascending,
-                                                    pair_equal=pair_equal,
-                                                    keep=keep_boolean)
+        return icepool.operator.MultisetMaxPair(self,
+                                                other,
+                                                order=Order.Ascending,
+                                                pair_equal=pair_equal,
+                                                keep=keep_boolean)
 
     def versus_all(self, comparison: Literal['<=', '<', '>=', '>'],
                    other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
