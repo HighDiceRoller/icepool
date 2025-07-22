@@ -627,20 +627,15 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
     # Pairing.
 
-    def sort_pair(self,
-                  comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'],
-                  other: 'MultisetExpression[T]',
-                  /,
-                  order: Order = Order.Descending) -> 'MultisetExpression[T]':
+    def sort_pair(
+        self,
+        comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+        other: 'MultisetExpression[T]',
+        /,
+        order: Order = Order.Descending,
+        extra: Literal['early', 'late', 'low', 'high', 'drop'] = 'early'
+    ) -> 'MultisetExpression[T]':
         """EXPERIMENTAL: Pairs elements of `self` with elements of `other` in sorted order, then keeps elements from `self` that fit `comparison` with their partner.
-
-        Extra elements: If `self` has more elements than `other`, whether the
-        extra elements are kept depends on the `order` and `comparison`:
-        * Descending: kept for `'>='`, `'>'`
-        * Ascending: kept for `'<='`, `'<'`
-
-        In other words, extra elements in `self` are considered to appear
-        earlier in `order` than their missing counterparts.
 
         Example: An attacker rolls 3d6 versus a defender's 2d6 in the game of
         *RISK*. Which pairs did the attacker win?
@@ -670,18 +665,18 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 * `'=='` vs. `'!='`
                 * `'<='` vs. `'>'`
                 * `'>='` vs. `'<'`
-                'cmp' is the same as the difference between '>' and '<'
-                (which can result in negative counts).
             other: The other multiset to pair elements with.
             order: The order in which to sort before forming pairs.
                 Default is descending.
+            extra: TODO: document this
         """
         other = implicit_convert_to_expression(other)
 
         return icepool.operator.MultisetSortPair(self,
                                                  other,
                                                  comparison=comparison,
-                                                 order=order)
+                                                 sort_order=order,
+                                                 extra=extra)
 
     def maximum_pair_highest(
             self, comparison: Literal['<=',

@@ -1,9 +1,9 @@
 __docformat__ = 'google'
 
 from icepool.expression.multiset_expression import MultisetExpression
-from icepool.lexi import compute_lexi_tuple
+from icepool.lexi import compute_lexi_tuple, compute_lexi_tuple_with_extra
 from icepool.operator.multiset_operator import MultisetOperator
-from icepool.order import Order, UnsupportedOrder
+from icepool.order import Order, OrderError, UnsupportedOrder
 
 from typing import Iterator, Literal, MutableSequence, Sequence
 from icepool.typing import T
@@ -13,36 +13,62 @@ class MultisetSortPair(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *,
-                 comparison: Literal['==', '!=', '<=', '<', '>=', '>',
-                                     'cmp'], order: Order):
-        if order == Order.Any:
-            order = Order.Descending
+                 comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+                 sort_order: Order, extra: Literal['early', 'late', 'low',
+                                                   'high', 'drop']):
+        if sort_order == Order.Any:
+            sort_order = Order.Descending
         self._children = (left, right)
         self._comparison = comparison
-        self._order = order
+        self._sort_order = sort_order
+        self._extra = extra
 
     def _initial_state(
         self, order, outcomes, child_sizes: MutableSequence,
         source_sizes: Iterator, arg_sizes: Sequence
-    ) -> tuple[tuple[tuple[int, int, int], int], int | None]:
+    ) -> tuple[tuple[tuple[int, int, int, int], bool, int, int | None], int
+               | None]:
         """
         State is lexi_order, left_lead.
         """
-        if order == self._order:
+        left_first, left_extra, tie, right_extra, right_first = compute_lexi_tuple_with_extra(
+            self._comparison, order, self._extra)
+        # drop right_extra
+        lexi_tuple = left_first, left_extra, tie, right_first
+        if order == self._sort_order:
+            forward_order = True
             left_lead = 0
+            if left_first == left_extra:
+                countdown = None
+            else:
+                left_size, right_size = child_sizes
+                if right_size is None:
+                    raise OrderError(
+                        f'The size of the right operand must be inferrable to sort_pair({self._comparison}, extra={self._extra}).'
+                    )
+                # After countdown elements, the remaining elements will be
+                # unconditionally dropped.
+                countdown = right_size
         else:
+            forward_order = False
             left_size, right_size = child_sizes
             if left_size is None or right_size is None:
                 raise UnsupportedOrder(
                     'Reverse order not supported unless sizes of both operands are inferrable.'
                 )
-            left_lead = right_size - left_size
-        return (compute_lexi_tuple(self._comparison, order), left_lead), None
+            left_lead = right_size - left_size  # TODO: use both this and countdown, or just one?
+            if left_first == left_extra:
+                countdown = None
+            else:
+                # Elements will be unconditionally dropped until countdown
+                # elements.
+                countdown = left_lead
+        return (lexi_tuple, forward_order, left_lead, countdown), None
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
                     arg_counts):
-        lexi_tuple, left_lead = state
-        left_first, tie, right_first = lexi_tuple
+        lexi_tuple, forward_order, left_lead, countdown = state
+        left_first, left_extra, tie, right_first = lexi_tuple
         left_count, right_count = child_counts
         left_count = max(left_count, 0)
         right_count = max(right_count, 0)
@@ -59,11 +85,14 @@ class MultisetSortPair(MultisetOperator[T]):
         if left_lead > 0:
             count += min(left_lead, left_count) * left_first
 
-        return (lexi_tuple, left_lead), count
+        if countdown is not None:
+            countdown -= left_count
+
+        return (lexi_tuple, forward_order, left_lead, countdown), count
 
     @property
     def _expression_key(self):
-        return MultisetSortPair, self._comparison, self._order
+        return MultisetSortPair, self._comparison, self._sort_order
 
     @property
     def _dungeonlet_key(self):

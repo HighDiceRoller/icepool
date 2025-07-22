@@ -8,15 +8,22 @@ from typing import Collection
 
 
 class OrderException(Exception):
-    """An error realted to outcome orderings."""
+    """An error related to outcome orderings."""
 
 
-class ConflictingOrderError(OrderException):
+class OrderError(OrderException):
+    """An unrecoverable error related to outcome orderings."""
+
+
+class ConflictingOrderError(OrderError):
     """Indicates that two conflicting mandatory outcome orderings were encountered."""
 
 
 class UnsupportedOrder(OrderException):
-    """Indicates that the given order is not supported under the current context."""
+    """Indicates that the given order is not supported under the current context.
+    
+    It may still be possible that retrying with the opposite order will succeed.
+    """
 
 
 class Order(enum.IntEnum):
