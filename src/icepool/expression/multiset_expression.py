@@ -5,7 +5,7 @@ import icepool
 from icepool.expand import Expandable
 from icepool.expression.multiset_expression_base import Q, Dungeonlet, MultisetExpressionBase
 from icepool.collection.counts import Counts
-from icepool.lexi import compute_lexi_tuple_with_extra, compute_lexi_tuple_with_zero_right_first, negate_comparison
+from icepool.lexi import compute_lexi_tuple_with_extra, compute_lexi_tuple_with_zero_right_first
 from icepool.order import Order
 from icepool.population.keep import highest_slice, lowest_slice
 
@@ -678,7 +678,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                     occur earlier or later in `order` than their missing
                     counterparts.
                 * `'low'`, `'high'`, `'equal'`: The extra elements are 
-                    considered to be lower or higher than their missing
+                    considered to be lower, higher, or equal to their missing
                     counterparts.
                 * `'keep'`, `'drop'`: The extra elements are always kept or 
                     dropped.
@@ -1203,7 +1203,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             comparison: The comparison to use.
             other: The multiset to compare to.
             extra: If one side has more elements than the other, how the extra
-                elements are considered.
+                elements are considered compared to their missing counterparts.
         """
         lexi_tuple = compute_lexi_tuple_with_extra(comparison, Order.Ascending,
                                                    extra)
@@ -1229,7 +1229,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             comparison: The comparison to use.
             other: The multiset to compare to.
             extra: If one side has more elements than the other, how the extra
-                elements are considered.
+                elements are considered compared to their missing counterparts.
         """
         lexi_tuple = compute_lexi_tuple_with_extra(comparison,
                                                    Order.Descending, extra)

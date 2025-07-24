@@ -4,24 +4,6 @@ from icepool.order import Order
 from typing import Literal
 
 
-def negate_comparison(comparison: Literal['==', '!=', '<=', '<', '>=', '>']):
-    match comparison:
-        case '==':
-            return '!='
-        case '!=':
-            return '=='
-        case '<=':
-            return '>'
-        case '<':
-            return '>='
-        case '>=':
-            return '<'
-        case '>':
-            return '<='
-        case _:
-            raise ValueError(f'Invalid comparison {comparison}')
-
-
 def compute_lexi_tuple(comparison: Literal['==', '!=', '<=', '<', '>=', '>',
                                            'cmp'],
                        order: Order) -> tuple[int, int, int]:
