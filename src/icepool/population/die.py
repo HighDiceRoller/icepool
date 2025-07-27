@@ -1045,12 +1045,12 @@ class Die(Population[T_co], MaybeHashKeyed):
     def reroll_to_pool(
         self,
         rolls: int,
-        outcomes: Callable[..., bool] | Collection[T_co],
+        outcomes: Callable[..., bool] | Collection[T_co] | None = None,
         /,
-        max_rerolls: int | Literal['inf'],
-        depth: int | Literal['inf'] = 1,
         *,
+        max_rerolls: int | Literal['inf'],
         star: bool | None = None,
+        depth: int | Literal['inf'] = 1,
         mode: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
     ) -> 'icepool.MultisetExpression[T_co]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
@@ -1065,6 +1065,7 @@ class Die(Population[T_co], MaybeHashKeyed):
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     could be rerolled.
+                * If not provided, the single minimum outcome will be rerolled.
             max_rerolls: The maximum total number of rerolls.
                 If `max_rerolls == 'inf'`, then this is the same as 
                 `self.reroll(which, star=star, depth=depth).pool(rolls)`.
@@ -1093,9 +1094,12 @@ class Die(Population[T_co], MaybeHashKeyed):
         if max_rerolls == 'inf':
             return self.reroll(outcomes, star=star, depth=depth).pool(rolls)
 
-        rerollable_set = self._select_outcomes(outcomes, star)
-        if not rerollable_set:
-            return self.pool(rolls)
+        if outcomes is None:
+            rerollable_set = {self.min_outcome()}
+        else:
+            rerollable_set = self._select_outcomes(outcomes, star)
+            if not rerollable_set:
+                return self.pool(rolls)
 
         rerollable_die: 'Die[T_co]'
         not_rerollable_die: 'Die[T_co]'

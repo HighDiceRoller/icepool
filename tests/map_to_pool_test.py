@@ -18,7 +18,8 @@ def test_map_to_pool():
 
 
 def test_reroll_to_pool_vs_reroll():
-    assert d6.reroll_to_pool(3, [1], 3).sum() == 3 @ d6.reroll([1], depth=1)
+    assert d6.reroll_to_pool(
+        3, [1], max_rerolls=3).sum() == 3 @ d6.reroll([1], depth=1)
 
 
 def test_reroll_pool_vs_map():
@@ -40,7 +41,7 @@ def test_reroll_pool_vs_map():
         else:
             return rolls
 
-    result = d6.reroll_to_pool(3, lambda x: x < 4, 1).expand()
+    result = d6.reroll_to_pool(3, lambda x: x < 4, max_rerolls=1).expand()
     assert result.simplify() == map(
         expected_function,
         d6.pool(3)).map(lambda rolls: tuple(sorted(rolls))).simplify()
@@ -48,7 +49,8 @@ def test_reroll_pool_vs_map():
 
 
 def test_reroll_pool_empowered_spell():
-    result = d6.reroll_to_pool(8, [1, 2, 3], 4, mode='lowest').sum()
+    result = d6.reroll_to_pool(8, [1, 2, 3], max_rerolls=4,
+                               mode='lowest').sum()
     assert float(result.mean()) == pytest.approx(33.61, abs=0.01)
 
 
@@ -58,16 +60,16 @@ def test_explode_empty():
 
 
 def test_reroll_empty():
-    result = d6.reroll_to_pool(3, [], 2)
+    result = d6.reroll_to_pool(3, [], max_rerolls=2)
     assert result.sum().simplify() == 3 @ d6
 
 
 def test_reroll_drop():
-    pool = (d6 - 3).reroll_to_pool(3, [0], 3, mode='drop')
+    pool = (d6 - 3).reroll_to_pool(3, [0], max_rerolls=3, mode='drop')
     assert pool.keep_outcomes([0]).size().mean() == 0
 
 
 def test_reroll_drop_sum():
-    a = (d6 - 3).reroll_to_pool(3, [0], 3, mode='drop').sum()
-    b = (d6 - 3).reroll_to_pool(3, [0], 3, mode='random').sum()
+    a = (d6 - 3).reroll_to_pool(3, [0], max_rerolls=3, mode='drop').sum()
+    b = (d6 - 3).reroll_to_pool(3, [0], max_rerolls=3, mode='random').sum()
     assert a == b
