@@ -780,7 +780,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         return self._new_type(data)
 
     def split(self,
-              which: Callable[..., bool] | Collection[T_co] | None = None,
+              which: Callable[..., bool] | Collection[T_co],
               /,
               *,
               star: bool | None = None) -> tuple[C, C]:
@@ -805,10 +805,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             A population consisting of the outcomes that were selected by
             `which`, and a population consisting of the unselected outcomes.
         """
-        if which is None:
-            outcome_set = {self.min_outcome()}
-        else:
-            outcome_set = self._select_outcomes(which, star)
+        outcome_set = self._select_outcomes(which, star)
 
         selected = {}
         not_selected = {}
