@@ -8,7 +8,7 @@ from icepool.typing import T
 
 
 class MultisetFilterOutcomes(MultisetOperator[T]):
-    """Keeps all elements in the target set of outcomes, dropping the rest, or vice versa.
+    """Keeps the designated outcomes, dropping the rest, or vice versa.
 
     This is similar to `intersection` or `difference`, except the target set is
     considered to have unlimited multiplicity.
@@ -20,23 +20,23 @@ class MultisetFilterOutcomes(MultisetOperator[T]):
                  child: MultisetExpression[T],
                  /,
                  *,
-                 target: Callable[[T], bool] | Collection[T],
+                 outcomes: Callable[[T], bool] | Collection[T],
                  invert: bool = False) -> None:
         """Constructor.
 
         Args:
             child: The child expression.
-            target: A callable returning `True` iff the outcome should be kept,
+            outcomes: A callable returning `True` iff the outcome should be kept,
                 or a collection of outcomes to keep.
             invert: If set, the filter is inverted.
         """
 
         self._children = (child, )
         self._invert = invert
-        if callable(target):
-            self._func = target
+        if callable(outcomes):
+            self._func = outcomes
         else:
-            target_set = frozenset(target)
+            target_set = frozenset(outcomes)
 
             def function(outcome: T) -> bool:
                 return outcome in target_set
@@ -73,19 +73,19 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
 
     def __init__(self,
                  source: MultisetExpression[T],
-                 target: MultisetExpression[T],
+                 outcomes: MultisetExpression[T],
                  *,
                  invert: bool = False) -> None:
         """Constructor.
 
         Args:
             child: The child expression.
-            target: An expression of outcomes to keep if they have positive count.
+            outcomes: An expression of outcomes to keep if they have positive count.
             invert: If set, the filter is inverted.
         """
         self._source = source
-        self._target = target
-        self._children = (source, target)
+        self._outcomes = outcomes
+        self._children = (source, outcomes)
         self._invert = invert
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
@@ -103,6 +103,6 @@ class MultisetFilterOutcomesBinary(MultisetOperator[T]):
 
     def __str__(self) -> str:
         if self._invert:
-            return f'{self._source}.drop_outcomes({self._target})'
+            return f'{self._source}.drop_outcomes({self._outcomes})'
         else:
-            return f'{self._source}.keep_outcomes({self._target})'
+            return f'{self._source}.keep_outcomes({self._outcomes})'

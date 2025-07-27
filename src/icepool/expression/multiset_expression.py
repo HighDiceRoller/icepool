@@ -339,43 +339,45 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             self, implicit_convert_to_expression(other))
 
     def keep_outcomes(
-            self, target:
+            self, outcomes:
         'Callable[[T], bool] | Collection[T] | MultisetExpression[T]',
             /) -> 'MultisetExpression[T]':
-        """Keeps the elements in the target set of outcomes, and drops the rest by setting their counts to zero.
+        """Keeps the designated outcomes, and drops the rest by setting their counts to zero.
 
         This is similar to `intersection()`, except the right side is considered
         to have unlimited multiplicity.
 
         Args:
-            target: A callable returning `True` iff the outcome should be kept,
+            outcomes: A callable returning `True` iff the outcome should be kept,
                 or an expression or collection of outcomes to keep.
         """
-        if isinstance(target, MultisetExpression):
-            return icepool.operator.MultisetFilterOutcomesBinary(self, target)
+        if isinstance(outcomes, MultisetExpression):
+            return icepool.operator.MultisetFilterOutcomesBinary(
+                self, outcomes)
         else:
-            return icepool.operator.MultisetFilterOutcomes(self, target=target)
+            return icepool.operator.MultisetFilterOutcomes(self,
+                                                           outcomes=outcomes)
 
     def drop_outcomes(
-            self, target:
+            self, outcomes:
         'Callable[[T], bool] | Collection[T] | MultisetExpression[T]',
             /) -> 'MultisetExpression[T]':
-        """Drops the elements in the target set of outcomes by setting their counts to zero, and keeps the rest.
+        """Drops the designated outcomes by setting their counts to zero, and keeps the rest.
 
         This is similar to `difference()`, except the right side is considered
         to have unlimited multiplicity.
 
         Args:
-            target: A callable returning `True` iff the outcome should be
+            outcomes: A callable returning `True` iff the outcome should be
                 dropped, or an expression or collection of outcomes to drop.
         """
-        if isinstance(target, MultisetExpression):
+        if isinstance(outcomes, MultisetExpression):
             return icepool.operator.MultisetFilterOutcomesBinary(self,
-                                                                 target,
+                                                                 outcomes,
                                                                  invert=True)
         else:
             return icepool.operator.MultisetFilterOutcomes(self,
-                                                           target=target,
+                                                           outcomes=outcomes,
                                                            invert=True)
 
     # Adjust counts.

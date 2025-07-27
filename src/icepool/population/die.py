@@ -656,13 +656,13 @@ class Die(Population[T_co], MaybeHashKeyed):
             again_depth=again_depth,
             again_end=again_end)
 
-    def is_in(self, target: Container[T_co], /) -> 'Die[bool]':
+    def is_in(self, outcomes: Container[T_co], /) -> 'Die[bool]':
         """A die that returns True iff the roll of the die is contained in the target."""
-        return self.map(lambda x: x in target)
+        return self.map(lambda x: x in outcomes)
 
-    def count(self, rolls: int, target: Container[T_co], /) -> 'Die[int]':
+    def count(self, rolls: int, outcomes: Container[T_co], /) -> 'Die[int]':
         """Roll this dice a number of times and count how many are in the target."""
-        return rolls @ self.is_in(target)
+        return rolls @ self.is_in(outcomes)
 
     # Pools and sums.
 

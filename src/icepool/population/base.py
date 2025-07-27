@@ -330,7 +330,8 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         }
         return self._new_type(data)
 
-    def pad_to_denominator(self: C, target: int, /, outcome: Hashable) -> C:
+    def pad_to_denominator(self: C, denominator: int, /,
+                           outcome: Hashable) -> C:
         """Changes the denominator to a target number by changing the quantity of a specified outcome.
         
         Args:
@@ -346,7 +347,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             `ValueError` if this would require the quantity of the specified
             outcome to be negative.
         """
-        adjustment = target - self.denominator()
+        adjustment = denominator - self.denominator()
         data = {outcome: quantity for outcome, quantity in self.items()}
         new_quantity = data.get(outcome, 0) + adjustment
         if new_quantity > 0:
@@ -355,7 +356,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             del data[outcome]
         else:
             raise ValueError(
-                f'Padding to denominator of {target} would require a negative quantity of {new_quantity} for {outcome}'
+                f'Padding to denominator of {denominator} would require a negative quantity of {new_quantity} for {outcome}'
             )
         return self._new_type(data)
 

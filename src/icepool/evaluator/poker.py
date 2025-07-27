@@ -150,7 +150,7 @@ class CountSubsetEvaluator(MultisetEvaluator[Any, int]):
 
     @property
     def next_state_key(self):
-        return (type(self), self._empty_divisor)
+        return (type(self), )
 
 
 class LargestStraightEvaluator(MultisetEvaluator[int, int]):
