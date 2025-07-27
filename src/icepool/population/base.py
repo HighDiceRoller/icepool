@@ -781,7 +781,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         return self._new_type(data)
 
     def split(self,
-              which: Callable[..., bool] | Collection[T_co],
+              outcomes: Callable[..., bool] | Collection[T_co],
               /,
               *,
               star: bool | None = None) -> tuple[C, C]:
@@ -793,7 +793,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         If you want to split more than two ways, use `Population.group_by()`.
 
         Args:
-            which: Selects which outcomes to select. Options:
+            outcomes: Selects which outcomes to select. Options:
                 * A callable that takes an outcome and returns `True` if it
                     should be selected.
                 * A collection of outcomes to select.
@@ -806,7 +806,7 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             A population consisting of the outcomes that were selected by
             `which`, and a population consisting of the unselected outcomes.
         """
-        outcome_set = self._select_outcomes(which, star)
+        outcome_set = self._select_outcomes(outcomes, star)
 
         selected = {}
         not_selected = {}

@@ -268,7 +268,7 @@ class Die(Population[T_co], MaybeHashKeyed):
     # Rerolls and other outcome management.
 
     def reroll(self,
-               which: Callable[..., bool] | Collection[T_co] | None = None,
+               outcomes: Callable[..., bool] | Collection[T_co] | None = None,
                /,
                *,
                star: bool | None = None,
@@ -276,7 +276,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         """Rerolls the given outcomes.
 
         Args:
-            which: Selects which outcomes to reroll. Options:
+            outcomes: Selects which outcomes to reroll. Options:
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     should be rerolled.
@@ -293,10 +293,10 @@ class Die(Population[T_co], MaybeHashKeyed):
             If the reroll would never terminate, the result has no outcomes.
         """
 
-        if which is None:
+        if outcomes is None:
             outcome_set = {self.min_outcome()}
         else:
-            outcome_set = self._select_outcomes(which, star)
+            outcome_set = self._select_outcomes(outcomes, star)
 
         if depth == 'inf':
             data = {
@@ -323,7 +323,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         return icepool.Die(data)
 
     def filter(self,
-               which: Callable[..., bool] | Collection[T_co],
+               outcomes: Callable[..., bool] | Collection[T_co],
                /,
                *,
                star: bool | None = None,
@@ -333,7 +333,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         Essentially the complement of `reroll()`.
 
         Args:
-            which: Selects which outcomes to reroll until. Options:
+            outcomes: Selects which outcomes to reroll until. Options:
                 * A callable that takes an outcome and returns `True` if it
                     should be accepted.
                 * A collection of outcomes to reroll until.
@@ -349,25 +349,26 @@ class Die(Population[T_co], MaybeHashKeyed):
             If the reroll would never terminate, the result has no outcomes.
         """
 
-        if callable(which):
+        if callable(outcomes):
             if star is None:
-                star = infer_star(which)
+                star = infer_star(outcomes)
             if star:
 
                 not_outcomes = {
                     outcome
                     for outcome in self.outcomes()
-                    if not which(*outcome)  # type: ignore
+                    if not outcomes(*outcome)  # type: ignore
                 }
             else:
                 not_outcomes = {
                     outcome
-                    for outcome in self.outcomes() if not which(outcome)
+                    for outcome in self.outcomes() if not outcomes(outcome)
                 }
         else:
             not_outcomes = {
                 not_outcome
-                for not_outcome in self.outcomes() if not_outcome not in which
+                for not_outcome in self.outcomes()
+                if not_outcome not in outcomes
             }
         return self.reroll(not_outcomes, depth=depth)
 
@@ -585,7 +586,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         return result
 
     def explode(self,
-                which: Collection[T_co] | Callable[..., bool] | None = None,
+                outcomes: Collection[T_co] | Callable[..., bool] | None = None,
                 /,
                 *,
                 star: bool | None = None,
@@ -594,7 +595,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         """Causes outcomes to be rolled again and added to the total.
 
         Args:
-            which: Which outcomes to explode. Options:
+            outcomes: Which outcomes to explode. Options:
                 * An collection of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
                     should be exploded.
@@ -612,10 +613,10 @@ class Die(Population[T_co], MaybeHashKeyed):
                 a non-exploding outcome is reached.
         """
 
-        if which is None:
+        if outcomes is None:
             outcome_set = {self.max_outcome()}
         else:
-            outcome_set = self._select_outcomes(which, star)
+            outcome_set = self._select_outcomes(outcomes, star)
 
         if depth < 0:
             raise ValueError('depth cannot be negative.')
@@ -987,7 +988,7 @@ class Die(Population[T_co], MaybeHashKeyed):
 
     def explode_to_pool(self,
                         rolls: int = 1,
-                        which: Collection[T_co] | Callable[..., bool]
+                        outcomes: Collection[T_co] | Callable[..., bool]
                         | None = None,
                         /,
                         *,
@@ -997,7 +998,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         
         Args:
             rolls: The number of initial dice.
-            which: Which outcomes to explode. Options:
+            outcomes: Which outcomes to explode. Options:
                 * A single outcome to explode.
                 * An collection of outcomes to explode.
                 * A callable that takes an outcome and returns `True` if it
@@ -1016,10 +1017,10 @@ class Die(Population[T_co], MaybeHashKeyed):
         """
         if depth == 0:
             return self.pool(rolls)
-        if which is None:
+        if outcomes is None:
             explode_set = {self.max_outcome()}
         else:
-            explode_set = self._select_outcomes(which, star)
+            explode_set = self._select_outcomes(outcomes, star)
         if not explode_set:
             return self.pool(rolls)
         explode: 'Die[T_co]'
@@ -1044,7 +1045,7 @@ class Die(Population[T_co], MaybeHashKeyed):
     def reroll_to_pool(
         self,
         rolls: int,
-        which: Callable[..., bool] | Collection[T_co],
+        outcomes: Callable[..., bool] | Collection[T_co],
         /,
         max_rerolls: int | Literal['inf'],
         depth: int | Literal['inf'] = 1,
@@ -1059,7 +1060,8 @@ class Die(Population[T_co], MaybeHashKeyed):
         
         Args:
             rolls: How many dice in the pool.
-            which: Selects which outcomes are eligible to be rerolled. Options:
+            outcomes: Selects which outcomes are eligible to be rerolled.
+                Options:
                 * A collection of outcomes to reroll.
                 * A callable that takes an outcome and returns `True` if it
                     could be rerolled.
@@ -1089,9 +1091,9 @@ class Die(Population[T_co], MaybeHashKeyed):
             the same operations.
         """
         if max_rerolls == 'inf':
-            return self.reroll(which, star=star, depth=depth).pool(rolls)
+            return self.reroll(outcomes, star=star, depth=depth).pool(rolls)
 
-        rerollable_set = self._select_outcomes(which, star)
+        rerollable_set = self._select_outcomes(outcomes, star)
         if not rerollable_set:
             return self.pool(rolls)
 
