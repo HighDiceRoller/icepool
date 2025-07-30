@@ -1,3 +1,13 @@
+## v2.1.0 - 30 July 2025
+
+* Breaking change: `any()` multiset evaluation renamed and inverted to `empty()`.
+* Breaking change: `sort_match()` renamed to `sort_pair()`, `maximum_match_highest()` renamed to `max_pair_highest()` and similar for `minimum_match_highest()`.
+* Add `extra` parameter to `sort_pair`.
+* Rename several `which` and `target` parameters to `outcomes`.
+* Make `max_rerolls` and `depth` parameters of `reroll_to_pool()` keyword-only, and add default outcomes to reroll.
+* Experimental `leximin()` and `leximax()` multiset evaluations.
+* Experimental `versus_any()` and `versus_all()` multiset operations.
+
 ## v2.0.4 - 9 July 2025
 
 * Fix internal `star` in `map_and_time()`.
