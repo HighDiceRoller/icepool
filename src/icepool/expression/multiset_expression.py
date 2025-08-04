@@ -700,31 +700,29 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                              /,
                              order: Order = Order.Descending,
                              extra: Literal['early', 'late', 'low', 'high',
-                                            'equal', 'keep', 'drop'] = 'drop'):
+                                            'equal', 'continue',
+                                            'break'] = 'break'):
         """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and keep elements from `self` while the `comparison` holds, dropping the rest.
 
         Negative incoming counts are treated as zero counts.
 
         Args:
-            comparison: The comparison to filter by. If you want to drop rather
-                than keep, use the complementary comparison:
-                * `'=='` vs. `'!='`
-                * `'<='` vs. `'>'`
-                * `'>='` vs. `'<'`
+            comparison: The comparison for which to continue the "while".
             other: The other multiset to pair elements with.
             order: The order in which to sort before forming pairs.
                 Default is descending.
             extra: If the left operand has more elements than the right
                 operand, this determines what is done with the extra elements.
-                The default is `'drop'`.
+                The default is `'break'`.
                 * `'early'`, `'late'`: The extra elements are considered to   
                     occur earlier or later in `order` than their missing
                     counterparts.
                 * `'low'`, `'high'`, `'equal'`: The extra elements are 
                     considered to be lower, higher, or equal to their missing
                     counterparts.
-                * `'keep'`, `'drop'`: The extra elements are always kept or 
-                    dropped.
+                * `'continue'`, `'break'`: If the "while" still holds upon 
+                    reaching the extra elements, whether those elements
+                    continue to be kept.
         """
         other = implicit_convert_to_expression(other)
         return icepool.operator.MultisetSortPairWhile(self,
@@ -741,31 +739,29 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                              /,
                              order: Order = Order.Descending,
                              extra: Literal['early', 'late', 'low', 'high',
-                                            'equal', 'keep', 'drop'] = 'drop'):
+                                            'equal', 'continue',
+                                            'break'] = 'break'):
         """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each,  then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.
 
         Negative incoming counts are treated as zero counts.
 
         Args:
-            comparison: The comparison to filter by. If you want to drop rather
-                than keep, use the complementary comparison:
-                * `'=='` vs. `'!='`
-                * `'<='` vs. `'>'`
-                * `'>='` vs. `'<'`
+            comparison: The comparison for which to continue the "while".
             other: The other multiset to pair elements with.
             order: The order in which to sort before forming pairs.
                 Default is descending.
             extra: If the left operand has more elements than the right
                 operand, this determines what is done with the extra elements.
-                The default is `'drop'`.
+                The default is `'break'`.
                 * `'early'`, `'late'`: The extra elements are considered to   
                     occur earlier or later in `order` than their missing
                     counterparts.
                 * `'low'`, `'high'`, `'equal'`: The extra elements are 
                     considered to be lower, higher, or equal to their missing
                     counterparts.
-                * `'keep'`, `'drop'`: The extra elements are always kept or 
-                    dropped.
+                * `'continue'`, `'break'`: If the "while" still holds upon 
+                    reaching the extra elements, whether those elements
+                    continue to be dropped.
         """
         other = implicit_convert_to_expression(other)
         return icepool.operator.MultisetSortPairWhile(self,

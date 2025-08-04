@@ -61,7 +61,8 @@ def compute_lexi_tuple_with_zero_right_first(
 
 def compute_lexi_tuple_with_extra(
     comparison: Literal['==', '!=', '<=', '<', '>=', '>', 'cmp'], order: Order,
-    extra: Literal['early', 'late', 'low', 'high', 'equal', 'keep', 'drop']
+    extra: Literal['early', 'late', 'low', 'high', 'equal', 'keep', 'drop',
+                   'continue', 'break']
 ) -> tuple[int, int, int, int, int]:
     """A 5-tuple representing a lexicographic comparison between two multisets.
 
@@ -98,9 +99,9 @@ def compute_lexi_tuple_with_extra(
             left_extra, right_extra = right_first, left_first
         case 'equal':
             left_extra, right_extra = tie, tie
-        case 'keep':
+        case 'keep' | 'continue':
             left_extra, right_extra = 1, 1
-        case 'drop':
+        case 'drop' | 'break':
             left_extra, right_extra = 0, 0
         case _:
             raise ValueError(f'Invalid extra {extra}')

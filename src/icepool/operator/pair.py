@@ -122,7 +122,7 @@ class MultisetSortPairWhile(MultisetOperator[T]):
                  comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
                  sort_order: Order,
                  extra: Literal['early', 'late', 'low', 'high', 'equal',
-                                'keep', 'drop']):
+                                'continue', 'break']):
         """
         
         Args:
