@@ -693,6 +693,88 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                  sort_order=order,
                                                  extra=extra)
 
+    def sort_pair_keep_while(self,
+                             comparison: Literal['==', '!=', '<=', '<', '>=',
+                                                 '>'],
+                             other: 'MultisetExpression[T]',
+                             /,
+                             order: Order = Order.Descending,
+                             extra: Literal['early', 'late', 'low', 'high',
+                                            'equal', 'keep', 'drop'] = 'drop'):
+        """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and keep elements from `self` while the `comparison` holds, dropping the rest.
+
+        Negative incoming counts are treated as zero counts.
+
+        Args:
+            comparison: The comparison to filter by. If you want to drop rather
+                than keep, use the complementary comparison:
+                * `'=='` vs. `'!='`
+                * `'<='` vs. `'>'`
+                * `'>='` vs. `'<'`
+            other: The other multiset to pair elements with.
+            order: The order in which to sort before forming pairs.
+                Default is descending.
+            extra: If the left operand has more elements than the right
+                operand, this determines what is done with the extra elements.
+                The default is `'drop'`.
+                * `'early'`, `'late'`: The extra elements are considered to   
+                    occur earlier or later in `order` than their missing
+                    counterparts.
+                * `'low'`, `'high'`, `'equal'`: The extra elements are 
+                    considered to be lower, higher, or equal to their missing
+                    counterparts.
+                * `'keep'`, `'drop'`: The extra elements are always kept or 
+                    dropped.
+        """
+        other = implicit_convert_to_expression(other)
+        return icepool.operator.MultisetSortPairWhile(self,
+                                                      other,
+                                                      keep=True,
+                                                      comparison=comparison,
+                                                      sort_order=order,
+                                                      extra=extra)
+
+    def sort_pair_drop_while(self,
+                             comparison: Literal['==', '!=', '<=', '<', '>=',
+                                                 '>'],
+                             other: 'MultisetExpression[T]',
+                             /,
+                             order: Order = Order.Descending,
+                             extra: Literal['early', 'late', 'low', 'high',
+                                            'equal', 'keep', 'drop'] = 'drop'):
+        """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each,  then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.
+
+        Negative incoming counts are treated as zero counts.
+
+        Args:
+            comparison: The comparison to filter by. If you want to drop rather
+                than keep, use the complementary comparison:
+                * `'=='` vs. `'!='`
+                * `'<='` vs. `'>'`
+                * `'>='` vs. `'<'`
+            other: The other multiset to pair elements with.
+            order: The order in which to sort before forming pairs.
+                Default is descending.
+            extra: If the left operand has more elements than the right
+                operand, this determines what is done with the extra elements.
+                The default is `'drop'`.
+                * `'early'`, `'late'`: The extra elements are considered to   
+                    occur earlier or later in `order` than their missing
+                    counterparts.
+                * `'low'`, `'high'`, `'equal'`: The extra elements are 
+                    considered to be lower, higher, or equal to their missing
+                    counterparts.
+                * `'keep'`, `'drop'`: The extra elements are always kept or 
+                    dropped.
+        """
+        other = implicit_convert_to_expression(other)
+        return icepool.operator.MultisetSortPairWhile(self,
+                                                      other,
+                                                      keep=False,
+                                                      comparison=comparison,
+                                                      sort_order=order,
+                                                      extra=extra)
+
     def max_pair_highest(
             self, comparison: Literal['<=',
                                       '<'], other: 'MultisetExpression[T]', /,

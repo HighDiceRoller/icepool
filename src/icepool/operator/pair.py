@@ -86,6 +86,8 @@ class MultisetSortPair(MultisetOperator[T]):
 
         right_count = max(right_count, 0)
 
+        # The number of left elements that paired with previously-seen right
+        # elements.
         right_first_count = max(min(-left_lead, left_count), 0)
         if left_lead >= 0:
             tie_count = max(min(right_count - left_lead, left_count), 0)
@@ -108,6 +110,130 @@ class MultisetSortPair(MultisetOperator[T]):
     @property
     def _dungeonlet_key(self):
         return MultisetSortPair
+
+
+class MultisetSortPairWhile(MultisetOperator[T]):
+
+    def __init__(self,
+                 left: MultisetExpression[T],
+                 right: MultisetExpression[T],
+                 *,
+                 keep: bool = True,
+                 comparison: Literal['==', '!=', '<=', '<', '>=', '>'],
+                 sort_order: Order,
+                 extra: Literal['early', 'late', 'low', 'high', 'equal',
+                                'keep', 'drop']):
+        """
+        
+        Args:
+            left, right: The two multisets to operate on.
+            comparison: The comparision to keep or drop while.
+            sort_order: The order to sort in.
+            keep: If set (default True), elements will be kept as long as the 
+                comparison holds, then the remaining elements will be dropped.
+                Otherwise, elements will be dropped as long as the comparison 
+                holds, then the remaining elements will be kept.
+            extra: If `left` has more elements than `other`, this determines
+                how the extra elements are treated relative to their missing
+                partners.
+        """
+        if sort_order == Order.Any:
+            sort_order = Order.Descending
+        self._children = (left, right)
+        self._keep = keep
+        self._comparison = comparison
+        self._sort_order = sort_order
+        self._extra = extra
+
+    def _initial_state(
+        self, order, outcomes, child_sizes: MutableSequence,
+        source_sizes: Iterator, arg_sizes: Sequence
+    ) -> tuple[tuple[tuple[int, int, int, int] | None, int | None, int | None],
+               int
+               | None]:
+        if order != self._sort_order:
+            raise UnsupportedOrder(
+                'MultisetSortPairWhile must be evaluated in sort order.')
+        left_first, left_extra, tie, right_extra, right_first = compute_lexi_tuple_with_extra(
+            self._comparison, self._sort_order, self._extra)
+        # drop right_extra
+        lexi_tuple = left_first, left_extra, tie, right_first
+        if left_first == left_extra:
+            countdown = None
+        else:
+            left_size, right_size = child_sizes
+            if right_size is None:
+                raise OrderError(
+                    f'The size of the right operand must be inferrable to sort_pair({self._comparison}, extra={self._extra}).'
+                )
+            # After `countdown` elements, the rest are considered to be
+            # extra.
+            countdown = right_size
+        left_lead = 0
+        return (lexi_tuple, left_lead, countdown), None
+
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
+                    arg_counts):
+        lexi_tuple, left_lead, countdown = state
+        left_count, right_count = child_counts
+        if countdown is None:
+            extra_count = 0
+            left_count = max(left_count, 0)
+        else:
+            extra_count = max(left_count - countdown, 0)
+            left_count = min(left_count, countdown)
+            countdown -= left_count
+
+        if lexi_tuple is None:
+            count = 0 if self._keep else left_count
+            return (None, None, countdown), count
+
+        left_first, left_extra, tie, right_first = lexi_tuple
+        right_count = max(right_count, 0)
+
+        # The number of left elements that paired with previously-seen right
+        # elements.
+        right_first_count = max(min(-left_lead, left_count), 0)
+        if left_lead >= 0:
+            tie_count = max(min(right_count - left_lead, left_count), 0)
+        elif left_lead < 0:
+            tie_count = max(min(left_count + left_lead, right_count), 0)
+
+        left_lead += left_count - right_count
+
+        left_first_count = max(min(left_lead, left_count), 0)
+
+        if right_first_count > 0 and not right_first:
+            lexi_tuple = None
+            left_lead = None
+            count = 0
+        elif tie_count > 0 and not tie:
+            lexi_tuple = None
+            left_lead = None
+            count = right_first_count
+        elif left_first_count > 0 and not left_first:
+            lexi_tuple = None
+            left_lead = None
+            count = right_first_count + tie_count
+        elif extra_count > 0 and not left_extra:
+            lexi_tuple = None
+            left_lead = None
+            count = right_first_count + tie_count + left_first_count
+        else:
+            count = left_count + extra_count
+
+        if not self._keep:
+            count = left_count + extra_count - count
+
+        return (lexi_tuple, left_lead, countdown), count
+
+    @property
+    def _expression_key(self):
+        return MultisetSortPairWhile, self._keep, self._comparison, self._sort_order, self._extra
+
+    @property
+    def _dungeonlet_key(self):
+        return MultisetSortPairWhile, self._keep
 
 
 class MultisetMaxPair(MultisetOperator[T]):
