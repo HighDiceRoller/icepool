@@ -11711,7 +11711,7 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 </span><span id="MultisetExpression-94"><a href="#MultisetExpression-94"><span class="linenos">  94</span></a><span class="sd">    | `divide_counts`, `//`       | `count // n`                                |</span>
 </span><span id="MultisetExpression-95"><a href="#MultisetExpression-95"><span class="linenos">  95</span></a><span class="sd">    | `modulo_counts`, `%`        | `count % n`                                 |</span>
 </span><span id="MultisetExpression-96"><a href="#MultisetExpression-96"><span class="linenos">  96</span></a><span class="sd">    | `keep_counts`               | `count if count &gt;= n else 0` etc.           |</span>
-</span><span id="MultisetExpression-97"><a href="#MultisetExpression-97"><span class="linenos">  97</span></a><span class="sd">    | unary `+`                   | same as `keep_counts_ge(0)`                 |</span>
+</span><span id="MultisetExpression-97"><a href="#MultisetExpression-97"><span class="linenos">  97</span></a><span class="sd">    | unary `+`                   | same as `keep_counts(&#39;&gt;=&#39;, 0)`              |</span>
 </span><span id="MultisetExpression-98"><a href="#MultisetExpression-98"><span class="linenos">  98</span></a><span class="sd">    | unary `-`                   | reverses the sign of all counts             |</span>
 </span><span id="MultisetExpression-99"><a href="#MultisetExpression-99"><span class="linenos">  99</span></a><span class="sd">    | `unique`                    | `min(count, n)`                             |</span>
 </span><span id="MultisetExpression-100"><a href="#MultisetExpression-100"><span class="linenos"> 100</span></a><span class="sd">    | `keep_outcomes`             | `count if outcome in t else 0`              |</span>
@@ -12359,7 +12359,7 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 </span><span id="MultisetExpression-742"><a href="#MultisetExpression-742"><span class="linenos"> 742</span></a>                             <span class="n">extra</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;early&#39;</span><span class="p">,</span> <span class="s1">&#39;late&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span>
 </span><span id="MultisetExpression-743"><a href="#MultisetExpression-743"><span class="linenos"> 743</span></a>                                            <span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="s1">&#39;continue&#39;</span><span class="p">,</span>
 </span><span id="MultisetExpression-744"><a href="#MultisetExpression-744"><span class="linenos"> 744</span></a>                                            <span class="s1">&#39;break&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;break&#39;</span><span class="p">):</span>
-</span><span id="MultisetExpression-745"><a href="#MultisetExpression-745"><span class="linenos"> 745</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each,  then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.</span>
+</span><span id="MultisetExpression-745"><a href="#MultisetExpression-745"><span class="linenos"> 745</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.</span>
 </span><span id="MultisetExpression-746"><a href="#MultisetExpression-746"><span class="linenos"> 746</span></a>
 </span><span id="MultisetExpression-747"><a href="#MultisetExpression-747"><span class="linenos"> 747</span></a><span class="sd">        Negative incoming counts are treated as zero counts.</span>
 </span><span id="MultisetExpression-748"><a href="#MultisetExpression-748"><span class="linenos"> 748</span></a>
@@ -12599,9 +12599,9 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 </span><span id="MultisetExpression-982"><a href="#MultisetExpression-982"><span class="linenos"> 982</span></a><span class="sd">                For example, `filter=2` will only produce pairs and better.</span>
 </span><span id="MultisetExpression-983"><a href="#MultisetExpression-983"><span class="linenos"> 983</span></a><span class="sd">                If `None`, no filtering will be done.</span>
 </span><span id="MultisetExpression-984"><a href="#MultisetExpression-984"><span class="linenos"> 984</span></a>
-</span><span id="MultisetExpression-985"><a href="#MultisetExpression-985"><span class="linenos"> 985</span></a><span class="sd">                Why not just place `keep_counts_ge()` before this?</span>
-</span><span id="MultisetExpression-986"><a href="#MultisetExpression-986"><span class="linenos"> 986</span></a><span class="sd">                `keep_counts_ge()` operates by setting counts to zero, so you</span>
-</span><span id="MultisetExpression-987"><a href="#MultisetExpression-987"><span class="linenos"> 987</span></a><span class="sd">                would still need an argument to specify whether you want to</span>
+</span><span id="MultisetExpression-985"><a href="#MultisetExpression-985"><span class="linenos"> 985</span></a><span class="sd">                Why not just place `keep_counts(&#39;&gt;=&#39;)` before this?</span>
+</span><span id="MultisetExpression-986"><a href="#MultisetExpression-986"><span class="linenos"> 986</span></a><span class="sd">                `keep_counts(&#39;&gt;=&#39;)` operates by setting counts to zero, so we</span>
+</span><span id="MultisetExpression-987"><a href="#MultisetExpression-987"><span class="linenos"> 987</span></a><span class="sd">                would still need an argument to specify whether we want to</span>
 </span><span id="MultisetExpression-988"><a href="#MultisetExpression-988"><span class="linenos"> 988</span></a><span class="sd">                output zero counts. So we might as well use the argument to do</span>
 </span><span id="MultisetExpression-989"><a href="#MultisetExpression-989"><span class="linenos"> 989</span></a><span class="sd">                both.</span>
 </span><span id="MultisetExpression-990"><a href="#MultisetExpression-990"><span class="linenos"> 990</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -13016,7 +13016,7 @@ expressions, or to attach a final evaluator.</p>
 </tr>
 <tr>
   <td style="text-align:left;">unary <code>+</code></td>
-  <td style="text-align:left;">same as <code>keep_counts_ge(0)</code></td>
+  <td style="text-align:left;">same as <code>keep_counts('&gt;=', 0)</code></td>
 </tr>
 <tr>
   <td style="text-align:left;">unary <code>-</code></td>
@@ -14196,7 +14196,7 @@ continue to be kept.</li>
 </span><span id="MultisetExpression.sort_pair_drop_while-742"><a href="#MultisetExpression.sort_pair_drop_while-742"><span class="linenos">742</span></a>                             <span class="n">extra</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;early&#39;</span><span class="p">,</span> <span class="s1">&#39;late&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span>
 </span><span id="MultisetExpression.sort_pair_drop_while-743"><a href="#MultisetExpression.sort_pair_drop_while-743"><span class="linenos">743</span></a>                                            <span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="s1">&#39;continue&#39;</span><span class="p">,</span>
 </span><span id="MultisetExpression.sort_pair_drop_while-744"><a href="#MultisetExpression.sort_pair_drop_while-744"><span class="linenos">744</span></a>                                            <span class="s1">&#39;break&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;break&#39;</span><span class="p">):</span>
-</span><span id="MultisetExpression.sort_pair_drop_while-745"><a href="#MultisetExpression.sort_pair_drop_while-745"><span class="linenos">745</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each,  then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.</span>
+</span><span id="MultisetExpression.sort_pair_drop_while-745"><a href="#MultisetExpression.sort_pair_drop_while-745"><span class="linenos">745</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.</span>
 </span><span id="MultisetExpression.sort_pair_drop_while-746"><a href="#MultisetExpression.sort_pair_drop_while-746"><span class="linenos">746</span></a>
 </span><span id="MultisetExpression.sort_pair_drop_while-747"><a href="#MultisetExpression.sort_pair_drop_while-747"><span class="linenos">747</span></a><span class="sd">        Negative incoming counts are treated as zero counts.</span>
 </span><span id="MultisetExpression.sort_pair_drop_while-748"><a href="#MultisetExpression.sort_pair_drop_while-748"><span class="linenos">748</span></a>
@@ -14228,7 +14228,7 @@ continue to be kept.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>EXPERIMENTAL: Sort <code>self</code> and <code>other</code> and make pairs of one element from each,  then go through the pairs and drop elements from <code>self</code> while the <code>comparison</code> holds, keeping the rest.</p>
+            <div class="docstring"><p>EXPERIMENTAL: Sort <code>self</code> and <code>other</code> and make pairs of one element from each, then go through the pairs and drop elements from <code>self</code> while the <code>comparison</code> holds, keeping the rest.</p>
 
 <p>Negative incoming counts are treated as zero counts.</p>
 
@@ -14736,9 +14736,9 @@ performed first. Examples:</p>
 </span><span id="MultisetExpression.all_counts-982"><a href="#MultisetExpression.all_counts-982"><span class="linenos">982</span></a><span class="sd">                For example, `filter=2` will only produce pairs and better.</span>
 </span><span id="MultisetExpression.all_counts-983"><a href="#MultisetExpression.all_counts-983"><span class="linenos">983</span></a><span class="sd">                If `None`, no filtering will be done.</span>
 </span><span id="MultisetExpression.all_counts-984"><a href="#MultisetExpression.all_counts-984"><span class="linenos">984</span></a>
-</span><span id="MultisetExpression.all_counts-985"><a href="#MultisetExpression.all_counts-985"><span class="linenos">985</span></a><span class="sd">                Why not just place `keep_counts_ge()` before this?</span>
-</span><span id="MultisetExpression.all_counts-986"><a href="#MultisetExpression.all_counts-986"><span class="linenos">986</span></a><span class="sd">                `keep_counts_ge()` operates by setting counts to zero, so you</span>
-</span><span id="MultisetExpression.all_counts-987"><a href="#MultisetExpression.all_counts-987"><span class="linenos">987</span></a><span class="sd">                would still need an argument to specify whether you want to</span>
+</span><span id="MultisetExpression.all_counts-985"><a href="#MultisetExpression.all_counts-985"><span class="linenos">985</span></a><span class="sd">                Why not just place `keep_counts(&#39;&gt;=&#39;)` before this?</span>
+</span><span id="MultisetExpression.all_counts-986"><a href="#MultisetExpression.all_counts-986"><span class="linenos">986</span></a><span class="sd">                `keep_counts(&#39;&gt;=&#39;)` operates by setting counts to zero, so we</span>
+</span><span id="MultisetExpression.all_counts-987"><a href="#MultisetExpression.all_counts-987"><span class="linenos">987</span></a><span class="sd">                would still need an argument to specify whether we want to</span>
 </span><span id="MultisetExpression.all_counts-988"><a href="#MultisetExpression.all_counts-988"><span class="linenos">988</span></a><span class="sd">                output zero counts. So we might as well use the argument to do</span>
 </span><span id="MultisetExpression.all_counts-989"><a href="#MultisetExpression.all_counts-989"><span class="linenos">989</span></a><span class="sd">                both.</span>
 </span><span id="MultisetExpression.all_counts-990"><a href="#MultisetExpression.all_counts-990"><span class="linenos">990</span></a><span class="sd">        &quot;&quot;&quot;</span>
@@ -14758,9 +14758,9 @@ performed first. Examples:</p>
 For example, <code>filter=2</code> will only produce pairs and better.
 If <code>None</code>, no filtering will be done.</p>
 
-<p>Why not just place <code>keep_counts_ge()</code> before this?
-<code>keep_counts_ge()</code> operates by setting counts to zero, so you
-would still need an argument to specify whether you want to
+<p>Why not just place <code>keep_counts('&gt;=')</code> before this?
+<code>keep_counts('&gt;=')</code> operates by setting counts to zero, so we
+would still need an argument to specify whether we want to
 output zero counts. So we might as well use the argument to do
 both.</p></li>
 </ul>
