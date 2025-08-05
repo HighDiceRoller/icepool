@@ -93,7 +93,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `divide_counts`, `//`       | `count // n`                                |
     | `modulo_counts`, `%`        | `count % n`                                 |
     | `keep_counts`               | `count if count >= n else 0` etc.           |
-    | unary `+`                   | same as `keep_counts_ge(0)`                 |
+    | unary `+`                   | same as `keep_counts('>=', 0)`              |
     | unary `-`                   | reverses the sign of all counts             |
     | `unique`                    | `min(count, n)`                             |
     | `keep_outcomes`             | `count if outcome in t else 0`              |
@@ -741,7 +741,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                              extra: Literal['early', 'late', 'low', 'high',
                                             'equal', 'continue',
                                             'break'] = 'break'):
-        """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each,  then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.
+        """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.
 
         Negative incoming counts are treated as zero counts.
 
@@ -981,9 +981,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                 For example, `filter=2` will only produce pairs and better.
                 If `None`, no filtering will be done.
 
-                Why not just place `keep_counts_ge()` before this?
-                `keep_counts_ge()` operates by setting counts to zero, so you
-                would still need an argument to specify whether you want to
+                Why not just place `keep_counts('>=')` before this?
+                `keep_counts('>=')` operates by setting counts to zero, so we
+                would still need an argument to specify whether we want to
                 output zero counts. So we might as well use the argument to do
                 both.
         """
