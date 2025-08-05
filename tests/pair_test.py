@@ -2,7 +2,7 @@ import icepool
 import operator
 import pytest
 
-from icepool import d4, d6, d8, Die, Order, map_function, Pool
+from icepool import d4, d6, d8, Die, Order, map_function, Pool, multiset_function
 
 
 def test_sort_pair_example_1():
@@ -179,3 +179,39 @@ def test_max_pair_expand(op, left, right):
 
     expected = compute_expected(left, right)
     assert result == expected
+
+
+@multiset_function
+def sorcerer(win, lose):
+    win_remaining = win.sort_pair_drop_while('==', lose)
+    lose_remaining = lose.sort_pair_drop_while('==', win)
+    return win_remaining.versus_all('>', lose_remaining).size()
+
+
+@pytest.mark.parametrize('win,lose,victories', [
+    ([10, 4, 4, 1], [8, 8, 6, 5, 2, 2], 1),
+    ([10, 8, 8, 4, 3], [2, 2, 2, 1, 1, 1], 5),
+    ([8, 7, 6, 1], [8, 5, 5, 2], 2),
+    ([10, 10, 1], [9, 7, 2, 2], 2),
+    ([10, 6, 6, 4], [6, 5, 4, 3], 1),
+    ([9, 9, 1, 1], [8, 8, 2, 2], 2),
+    ([7, 6, 5, 5], [4, 3, 2, 1], 4),
+    ([10, 10, 8, 7, 7, 5], [10, 5, 5, 5], 4),
+    ([9, 9, 6, 6, 5], [9, 9, 6, 6, 4], 1),
+    ([9, 8, 5, 5, 2], [8, 5, 5, 2, 1], 1),
+])
+def test_sorcerer(win, lose, victories):
+    assert sorcerer(win, lose).probability(victories) == 1
+
+
+@multiset_function
+def donjon(win, lose):
+    return win.versus_all('>', lose.sort_pair_drop_while('==', win)).expand()
+
+
+@pytest.mark.parametrize('win,lose,victories', [
+    ([6, 12, 15, 18], [4, 7, 9, 11, 12], (15, 18)),
+    ([3, 11, 12, 13, 15], [5, 8, 10, 13, 15], (11, 12, 13, 15)),
+])
+def test_donjon(win, lose, victories):
+    assert donjon(win, lose).probability(victories) == 1
