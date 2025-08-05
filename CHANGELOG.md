@@ -1,3 +1,7 @@
+## v2.1.1 - 4 August 2025
+
+* Experimental `sort_pair_keep_while()` and `sort_pair_drop_while()` multiset ops.
+
 ## v2.1.0 - 30 July 2025
 
 * Breaking change: `any()` multiset evaluation renamed and inverted to `empty()`.
