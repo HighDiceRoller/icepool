@@ -785,6 +785,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         This requires that outcomes be evaluated in descending order.
 
+        Negative incoming counts are treated as zero counts.
+
         Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
         3d6. Defender dice can be used to block attacker dice of equal or lesser
         value, and the defender prefers to block the highest attacker dice
@@ -806,7 +808,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         against the 6 and the 4, which would only allow them to block the 4
         and let the 6, 3, and 1 through.
 
-        Negative incoming counts are treated as zero counts.
+        There is no `max_pair` with `'=='` because this would mean the same
+        thing as `+self & +other` (if paired elements are kept), or
+        `+self - +other` (if unpaired elements are kept).
 
         Args:
             comparison: Either `'<='` or `'<'`.
@@ -847,6 +851,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Finally, either the paired or unpaired elements from `self` are kept.
 
         This requires that outcomes be evaluated in ascending order.
+
+        Negative incoming counts are treated as zero counts.
 
         Contrast `sort_pair()`, which first creates pairs in
         sorted order and then filters them by `comparison`.
