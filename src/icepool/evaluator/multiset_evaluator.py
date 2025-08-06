@@ -176,7 +176,7 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
 
     @property
     def next_state_key(self) -> Hashable:
-        """Subclasses may optionally provide key that uniquely identifies the `next_state()` computation.
+        """Subclasses may optionally provide a key that uniquely identifies the `next_state()` computation.
 
         This is used to persistently cache intermediate results between calls
         to `evaluate()`. By default, `next_state_key` is `None`, which only
@@ -187,7 +187,8 @@ class MultisetEvaluator(MultisetEvaluatorBase[T, U_co]):
         only used in other methods, i.e. 
         * `extra_outcomes()`
         * `initial_state()`
-        * `final_outcome()`. 
+        * `final_outcome()`.
+        
         For example, if `next_state()` is a pure function other than being 
         defined by its evaluator class, you can use `type(self)`.
 

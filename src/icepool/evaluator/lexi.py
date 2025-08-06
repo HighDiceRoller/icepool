@@ -69,5 +69,9 @@ class LexiComparisonEvaluator(MultisetEvaluator[Any, int]):
         else:
             return tie
 
+    @property
+    def next_state_key(self):
+        return type(self)
+
 
 lexi_comparison_evaluator = LexiComparisonEvaluator()
