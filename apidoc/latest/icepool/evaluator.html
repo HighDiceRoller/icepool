@@ -397,6 +397,9 @@
                         <li>
                                 <a class="function" href="#LexiComparisonEvaluator.final_outcome">final_outcome</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#LexiComparisonEvaluator.next_state_key">next_state_key</a>
+                        </li>
                 </ul>
 
             </li>
@@ -642,7 +645,7 @@
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#ExpandEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ExpandEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -655,10 +658,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#ExpandEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#ExpandEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#ExpandEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#ExpandEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#ExpandEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#ExpandEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -821,7 +825,7 @@ outside of <code>@multiset_function</code>, return the special value
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#SumEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#SumEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#SumEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#SumEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -834,10 +838,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#SumEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#SumEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#SumEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#SumEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#SumEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#SumEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#SumEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -959,7 +964,7 @@ outside of <code>@multiset_function</code>, return the special value
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#SizeEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#SizeEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#SizeEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#SizeEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -972,10 +977,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#SizeEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#SizeEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#SizeEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#SizeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#SizeEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#SizeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#SizeEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -1231,7 +1237,7 @@ keyword parameters.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#EmptyEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -1244,10 +1250,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#EmptyEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#EmptyEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#EmptyEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#EmptyEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#EmptyEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#EmptyEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -1387,7 +1394,7 @@ outside of <code>@multiset_function</code>, return the special value
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#HighestOutcomeAndCountEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#HighestOutcomeAndCountEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -1400,10 +1407,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#HighestOutcomeAndCountEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#HighestOutcomeAndCountEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#HighestOutcomeAndCountEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#HighestOutcomeAndCountEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#HighestOutcomeAndCountEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#HighestOutcomeAndCountEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -1490,7 +1498,7 @@ outside of <code>@multiset_function</code>, return the special value
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#LargestCountEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestCountEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -1503,10 +1511,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#LargestCountEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#LargestCountEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#LargestCountEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#LargestCountEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#LargestCountEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#LargestCountEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -1593,7 +1602,7 @@ outside of <code>@multiset_function</code>, return the special value
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#LargestCountAndOutcomeEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestCountAndOutcomeEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -1606,10 +1615,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#LargestCountAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#LargestCountAndOutcomeEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#LargestCountAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#LargestCountAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#LargestCountAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#LargestCountAndOutcomeEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -1875,7 +1885,7 @@ keyword parameters.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#CountSubsetEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#CountSubsetEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -1888,10 +1898,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#CountSubsetEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#CountSubsetEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#CountSubsetEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#CountSubsetEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#CountSubsetEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -2082,7 +2093,7 @@ If <code>None</code>, no filtering will be done.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#AllCountsEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#AllCountsEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -2095,10 +2106,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#AllCountsEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#AllCountsEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#AllCountsEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#AllCountsEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#AllCountsEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#AllCountsEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -2356,7 +2368,7 @@ keyword parameters.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#LargestStraightEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestStraightEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -2369,10 +2381,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#LargestStraightEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#LargestStraightEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#LargestStraightEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#LargestStraightEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#LargestStraightEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -2784,7 +2797,7 @@ keyword parameters.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#LargestStraightAndOutcomeEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LargestStraightAndOutcomeEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -2797,10 +2810,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#LargestStraightAndOutcomeEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#LargestStraightAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#LargestStraightAndOutcomeEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#LargestStraightAndOutcomeEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#LargestStraightAndOutcomeEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -3015,7 +3029,7 @@ elements are preferentially assigned to the longer straight.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#AllStraightsEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#AllStraightsEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -3028,10 +3042,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#AllStraightsEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#AllStraightsEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#AllStraightsEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#AllStraightsEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#AllStraightsEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#AllStraightsEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -3462,7 +3477,7 @@ bool are <code>True</code>.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#ComparisonEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ComparisonEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -3475,10 +3490,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#ComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#ComparisonEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#ComparisonEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#ComparisonEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#ComparisonEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#ComparisonEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -4077,6 +4093,10 @@ bool are <code>True</code>.</p>
 </span><span id="LexiComparisonEvaluator-69"><a href="#LexiComparisonEvaluator-69"><span class="linenos">69</span></a>            <span class="k">return</span> <span class="n">right_extra</span>
 </span><span id="LexiComparisonEvaluator-70"><a href="#LexiComparisonEvaluator-70"><span class="linenos">70</span></a>        <span class="k">else</span><span class="p">:</span>
 </span><span id="LexiComparisonEvaluator-71"><a href="#LexiComparisonEvaluator-71"><span class="linenos">71</span></a>            <span class="k">return</span> <span class="n">tie</span>
+</span><span id="LexiComparisonEvaluator-72"><a href="#LexiComparisonEvaluator-72"><span class="linenos">72</span></a>
+</span><span id="LexiComparisonEvaluator-73"><a href="#LexiComparisonEvaluator-73"><span class="linenos">73</span></a>    <span class="nd">@property</span>
+</span><span id="LexiComparisonEvaluator-74"><a href="#LexiComparisonEvaluator-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LexiComparisonEvaluator-75"><a href="#LexiComparisonEvaluator-75"><span class="linenos">75</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -4314,6 +4334,47 @@ keyword parameters.</li>
   <p>A final outcome that will be used as part of constructing the result <code>Die</code>.
   As usual for <code>Die()</code>, this could itself be a <code>Die</code> or <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code>.</p>
 </blockquote>
+</div>
+
+
+                            </div>
+                            <div id="LexiComparisonEvaluator.next_state_key" class="classattr">
+                                        <input id="LexiComparisonEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr variable">
+            <span class="name">next_state_key</span>
+
+                <label class="view-source-button" for="LexiComparisonEvaluator.next_state_key-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#LexiComparisonEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LexiComparisonEvaluator.next_state_key-73"><a href="#LexiComparisonEvaluator.next_state_key-73"><span class="linenos">73</span></a>    <span class="nd">@property</span>
+</span><span id="LexiComparisonEvaluator.next_state_key-74"><a href="#LexiComparisonEvaluator.next_state_key-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="LexiComparisonEvaluator.next_state_key-75"><a href="#LexiComparisonEvaluator.next_state_key-75"><span class="linenos">75</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code> computation.</p>
+
+<p>This is used to persistently cache intermediate results between calls
+to <code><a href="#LexiComparisonEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#LexiComparisonEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+caches if not inside a <code>@multiset_function</code>.</p>
+
+<p>If you do implement this, <code><a href="#LexiComparisonEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+only used in other methods, i.e. </p>
+
+<ul>
+<li><code><a href="#LexiComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#LexiComparisonEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#LexiComparisonEvaluator.final_outcome">final_outcome()</a></code>.</li>
+</ul>
+
+<p>For example, if <code><a href="#LexiComparisonEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
+
+<p>If you want to disable caching between calls to <code><a href="#LexiComparisonEvaluator.evaluate">evaluate()</a></code> even
+outside of <code>@multiset_function</code>, return the special value 
+<code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
 
 
@@ -4628,7 +4689,7 @@ keyword parameters.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#KeepEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#KeepEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#KeepEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#KeepEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -4641,10 +4702,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#KeepEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#KeepEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#KeepEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#KeepEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#KeepEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#KeepEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#KeepEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
@@ -4859,7 +4921,7 @@ keyword parameters.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide key that uniquely identifies the <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
 to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ArgsortEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
@@ -4872,10 +4934,11 @@ only used in other methods, i.e. </p>
 <ul>
 <li><code><a href="#ArgsortEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
 <li><code><a href="#ArgsortEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#ArgsortEvaluator.final_outcome">final_outcome()</a></code>. 
-For example, if <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> is a pure function other than being 
-defined by its evaluator class, you can use <code>type(self)</code>.</li>
+<li><code><a href="#ArgsortEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
+
+<p>For example, if <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
 <p>If you want to disable caching between calls to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
