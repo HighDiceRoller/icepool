@@ -209,8 +209,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         [1, 2, 2, 3] - [1, 2, 4] -> [2, 3]
         ```
 
-        Note that if the right side has more of an element than the left, this
-        will produce negative counts for that element. If you don't want these
+        Note that if the right side has more of an outcome than the left, this
+        will produce negative counts for that outcome. If you don't want these
         counts, you can use the unary `+` operator, e.g. `(+(left - right))`.
 
         If no arguments are given, the result will be an empty multiset, i.e.
