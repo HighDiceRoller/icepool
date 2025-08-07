@@ -209,10 +209,14 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         [1, 2, 2, 3] - [1, 2, 4] -> [2, 3]
         ```
 
+        Note that if the right side has more of an element than the left, this
+        will produce negative counts for that element. If you don't want these
+        counts, you can use the unary `+` operator, e.g. `(+(left - right))`.
+
         If no arguments are given, the result will be an empty multiset, i.e.
         all zero counts.
 
-        Note that, as a multiset operation, this will only cancel elements 1:1.
+        Aas a multiset operation, this will only cancel elements 1:1.
         If you want to drop all elements in a set of outcomes regardless of
         count, either use `drop_outcomes()` instead, or use a large number of
         counts on the right side.
@@ -250,8 +254,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         [1, 2, 2, 3] & [1, 2, 4] -> [1, 2]
         ```
 
-        Note that, as a multiset operation, this will only intersect elements
-        1:1.
+        As a multiset operation, this will only intersect elements 1:1.
         If you want to keep all elements in a set of outcomes regardless of
         count, either use `keep_outcomes()` instead, or use a large number of
         counts on the right side.
@@ -802,7 +805,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         There is no `max_pair` with `'=='` because this would mean the same
         thing as `+self & +other` (if paired elements are kept), or
-        `+self - +other` (if unpaired elements are kept).
+        `+(+self - +other)` (if unpaired elements are kept).
 
         Args:
             comparison: Either `'<='` or `'<'`.
