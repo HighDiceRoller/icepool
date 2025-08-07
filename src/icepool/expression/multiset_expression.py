@@ -171,8 +171,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         Same as `a + b + c + ...`.
 
-        Any resulting counts that would be negative are set to zero.
-
         Example:
         ```python
         [1, 2, 2, 3] + [1, 2, 4] -> [1, 1, 2, 2, 2, 3, 4]
@@ -205,8 +203,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """The elements from the left multiset that are not in any of the others.
 
         Same as `a - b - c - ...`.
-
-        Any resulting counts that would be negative are set to zero.
 
         Example:
         ```python
@@ -249,8 +245,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         Same as `a & b & c & ...`.
 
-        Any resulting counts that would be negative are set to zero.
-
         Example:
         ```python
         [1, 2, 2, 3] & [1, 2, 4] -> [1, 2]
@@ -288,8 +282,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """The most of each outcome that appear in any of the multisets.
 
         Same as `a | b | c | ...`.
-
-        Any resulting counts that would be negative are set to zero.
 
         Example:
         ```python
