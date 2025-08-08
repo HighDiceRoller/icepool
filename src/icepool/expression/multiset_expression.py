@@ -169,6 +169,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     ) -> 'MultisetExpression[T]':
         """The combined elements from all of the multisets.
 
+        Specifically, the counts for each outcome will be summed across the
+        arguments.
+
         Same as `a + b + c + ...`.
 
         Example:
@@ -198,9 +201,13 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             return NotImplemented
 
     def difference(
-        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
-    ) -> 'MultisetExpression[T]':
+            *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+            keep_negative_counts: bool = False) -> 'MultisetExpression[T]':
         """The elements from the left multiset that are not in any of the others.
+
+        Specifically, for each outcome, the count of that outcome is that of
+        the leftmost argument minus the counts from all other arguments.
+        By default, if the result would be negative, it is set to zero.
 
         Same as `a - b - c - ...`.
 
@@ -209,10 +216,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         [1, 2, 2, 3] - [1, 2, 4] -> [2, 3]
         ```
 
-        Note that if the right side has more of an outcome than the left, this
-        will produce negative counts for that outcome. If you don't want these
-        counts, you can use the unary `+` operator, e.g. `(+(left - right))`.
-
         If no arguments are given, the result will be an empty multiset, i.e.
         all zero counts.
 
@@ -220,10 +223,21 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         If you want to drop all elements in a set of outcomes regardless of
         count, either use `drop_outcomes()` instead, or use a large number of
         counts on the right side.
+
+        Args:
+            *args: All but the leftmost argument will subtract their counts
+                from the leftmost argument.
+            keep_negative_counts: If set (default False), negative resultig 
+                counts will be preserved.
         """
         expressions = tuple(
             implicit_convert_to_expression(arg) for arg in args)
-        return icepool.operator.MultisetDifference(*expressions)
+        if keep_negative_counts:
+            return icepool.operator.MultisetDifferenceKeepNegative(
+                *expressions)
+        else:
+            return icepool.operator.MultisetDifferenceDropNegative(
+                *expressions)
 
     def __and__(self,
                 other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
@@ -246,6 +260,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]'
     ) -> 'MultisetExpression[T]':
         """The elements that all the multisets have in common.
+
+        Specifically, the count for each outcome is the minimum count among the
+        arguments.
 
         Same as `a & b & c & ...`.
 
@@ -284,6 +301,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     ) -> 'MultisetExpression[T]':
         """The most of each outcome that appear in any of the multisets.
 
+        Specifically, the count for each outcome is the maximum count among the
+        arguments.
+
         Same as `a | b | c | ...`.
 
         Example:
@@ -318,6 +338,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             other: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
             /) -> 'MultisetExpression[T]':
         """The elements that appear in the left or right multiset but not both.
+
+        Specifically, the count for each outcome is the absolute difference
+        between the counts from the two arguments.
 
         Same as `a ^ b`.
 

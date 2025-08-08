@@ -61,7 +61,18 @@ class MultisetIntersection(MultisetBinaryOperator):
         return '&'
 
 
-class MultisetDifference(MultisetBinaryOperator):
+class MultisetDifferenceDropNegative(MultisetBinaryOperator):
+
+    @staticmethod
+    def merge_counts(left: int, right: int) -> int:
+        return max(left - right, 0)
+
+    @staticmethod
+    def symbol() -> str:
+        return '-'
+
+
+class MultisetDifferenceKeepNegative(MultisetBinaryOperator):
 
     @staticmethod
     def merge_counts(left: int, right: int) -> int:

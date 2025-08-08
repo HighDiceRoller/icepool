@@ -3,7 +3,9 @@ from icepool.operator.adjust_counts import (MultisetMapCounts,
                                             MultisetModuloCounts,
                                             MultisetFloordivCounts,
                                             MultisetKeepCounts, MultisetUnique)
-from icepool.operator.binary import (MultisetIntersection, MultisetDifference,
+from icepool.operator.binary import (MultisetIntersection,
+                                     MultisetDifferenceDropNegative,
+                                     MultisetDifferenceKeepNegative,
                                      MultisetUnion, MultisetAdditiveUnion,
                                      MultisetSymmetricDifference)
 from icepool.operator.filter_outcomes import (MultisetFilterOutcomes,

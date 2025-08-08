@@ -6,9 +6,15 @@ from icepool import d6, Pool, Deck, Die, Order, multiset_function
 
 
 def test_difference():
-    result = (+(d6.pool(3) - d6.pool(1))).size()
+    result = (d6.pool(3) - d6.pool(1)).size()
     expected = icepool.highest(3 @ (d6 != 6), 2)
     assert result.simplify() == expected.simplify()
+
+
+def test_difference_keep_negative_counts():
+    result = d6.pool(3).difference(d6.pool(1),
+                                   keep_negative_counts=True).size()
+    assert result.probability(2) == 1
 
 
 def test_intersection():

@@ -20,8 +20,9 @@ def test_additive_union():
     assert (d6.pool(4).additive_union(d6.pool(2)[-1, -1]).sum() < 0).mean() > 0
 
 
-def test_difference():
-    assert (d6.pool(4).difference(d6.pool(2)).sum() < 0).mean() > 0
+def test_difference_keep_negative():
+    assert (d6.pool(4).difference(d6.pool(2), keep_negative_counts=True).sum()
+            < 0).mean() > 0
 
 
 def test_intersection():
