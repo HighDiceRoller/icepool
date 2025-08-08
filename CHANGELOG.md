@@ -1,3 +1,7 @@
+## v2.1.2 - 7 August 2025
+
+* Breaking change: `difference` (but not other operations) now has `keep_negative_counts` parameter again, which defaults to `False`.
+
 ## v2.1.1 - 4 August 2025
 
 * Experimental `sort_pair_keep_while()` and `sort_pair_drop_while()` multiset ops.
