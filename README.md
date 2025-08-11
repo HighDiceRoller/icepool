@@ -44,6 +44,16 @@ As a backup, you can [open the notebooks in Google Colab.](https://colab.researc
 
 In particular, here is a series of [tutorial notebooks.](https://highdiceroller.github.io/icepool/notebooks/lab?path=tutorial%2Fc00_introduction.ipynb)
 
+## StackExchange answers
+
+* [Call-on traits in *Burning Wheel*](https://rpg.stackexchange.com/a/216021/72732): Success-counting dice pools with explosions and rerolls.
+* [*Vampire the Masquerade V*](https://rpg.stackexchange.com/a/214450/72732)
+* [Roll multiple ability score arrays and pick the one with the highest total. What is the distribution of each ranked score?](https://rpg.stackexchange.com/a/214450/72732)
+* [*Year Zero Engine*](https://rpg.stackexchange.com/a/210217/72732)
+* [*Neon City Overdrive*](https://rpg.stackexchange.com/a/208640/72732)
+* [*Broken Compass* / *Household* / *Outgunned*](https://rpg.stackexchange.com/a/203715/72732)
+* [Probability that 0/4 players is dealt Blackjack](https://math.stackexchange.com/a/4817254/1035142)
+
 ## Web applications
 
 These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps you will find inspiration for your own application.
