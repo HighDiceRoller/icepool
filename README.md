@@ -47,7 +47,7 @@ In particular, here is a series of [tutorial notebooks.](https://highdiceroller.
 ## StackExchange answers
 
 * [Call-on traits in *Burning Wheel*](https://rpg.stackexchange.com/a/216021/72732): Success-counting dice pools with explosions and rerolls.
-* [*Vampire the Masquerade V*](https://rpg.stackexchange.com/a/214450/72732)
+* [*Vampire the Masquerade V*](https://rpg.stackexchange.com/a/209266/72732)
 * [Roll multiple ability score arrays and pick the one with the highest total. What is the distribution of each ranked score?](https://rpg.stackexchange.com/a/214450/72732)
 * [*Year Zero Engine*](https://rpg.stackexchange.com/a/210217/72732)
 * [*Neon City Overdrive*](https://rpg.stackexchange.com/a/208640/72732)
