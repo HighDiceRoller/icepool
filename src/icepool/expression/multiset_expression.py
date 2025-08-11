@@ -224,6 +224,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         count, either use `drop_outcomes()` instead, or use a large number of
         counts on the right side.
 
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
+
         Args:
             *args: All but the leftmost argument will subtract their counts
                 from the leftmost argument.
@@ -680,6 +684,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         In the above example, `max_pair()` would allow the defender to
         assign their 5s to block both the 4 and the 3.
 
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
+
         Negative incoming counts are treated as zero counts.
         
         Args:
@@ -724,6 +732,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         Negative incoming counts are treated as zero counts.
 
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
+
         Args:
             comparison: The comparison for which to continue the "while".
             other: The other multiset to pair elements with.
@@ -762,6 +774,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.
 
         Negative incoming counts are treated as zero counts.
+
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
 
         Args:
             comparison: The comparison for which to continue the "while".
@@ -828,7 +844,11 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         There is no `max_pair` with `'=='` because this would mean the same
         thing as `+self & +other` (if paired elements are kept), or
-        `+(+self - +other)` (if unpaired elements are kept).
+        `self - other` (if unpaired elements are kept).
+
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
 
         Args:
             comparison: Either `'<='` or `'<'`.
@@ -875,6 +895,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Contrast `sort_pair()`, which first creates pairs in
         sorted order and then filters them by `comparison`.
 
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
+
         Args:
             comparison: Either `'>='` or `'>'`.
             other: The other multiset to pair elements with.
@@ -904,6 +928,12 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     def versus_all(self, comparison: Literal['<=', '<', '>=', '>'],
                    other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
         """EXPERIMENTAL: Keeps elements from `self` that fit the comparison against all elements of the other multiset.
+
+        Contrast `versus_any()`.
+
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
         
         Args:
             comparison: One of `'<=', '<', '>=', '>'`.
@@ -921,6 +951,12 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     def versus_any(self, comparison: Literal['<=', '<', '>=', '>'],
                    other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
         """EXPERIMENTAL: Keeps elements from `self` that fit the comparison against any element of the other multiset.
+
+        Contrast `versus_all()`.
+
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
         
         Args:
             comparison: One of `'<=', '<', '>=', '>'`.
@@ -1302,6 +1338,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         Compares the lowest element of each multiset; if they are equal,
         compares the next-lowest element, and so on.
+
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
         
         Args:
             comparison: The comparison to use.
@@ -1328,6 +1368,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         Compares the highest element of each multiset; if they are equal,
         compares the next-highest element, and so on.
+
+        [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
+        gives an overview of several opposed dice pool mechanics, including this
+        one.
         
         Args:
             comparison: The comparison to use.
