@@ -140,6 +140,10 @@ def convert_die_to_raw_result(
     if isinstance(raw_result, MultisetFunctionRawResult):
         return raw_result
     else:
+        if isinstance(raw_result, MultisetExpressionBase):
+            raise TypeError(
+                'The result of a @multiset_function cannot contain expressions without a terminating evaluation.'
+            )
         return MultisetFunctionRawResult(ConstantEvaluator(raw_result), (), {})
 
 
@@ -253,7 +257,9 @@ class MultisetFunctionEvaluator(MultisetEvaluatorBase[T, U_co]):
                 for i, exp in enumerate(input_exps)
             ]
         raw_result = self._wrapped(*multiset_variables, **kwargs)
-        if isinstance(raw_result, (MultisetFunctionRawResult, icepool.Die)):
+        if isinstance(
+                raw_result,
+            (MultisetFunctionRawResult, icepool.Die, MultisetExpressionBase)):
             yield from prepare_multiset_function(input_exps, raw_result)
         else:
             yield from prepare_multiset_joint_function(input_exps, raw_result)
