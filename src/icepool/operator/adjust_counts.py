@@ -67,7 +67,7 @@ class MultisetMultiplyCounts(MultisetCountOperator):
     def __str__(self) -> str:
         return f'({self._children[0]} * {self._constant})'
 
-    def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
+    def _initial_state(self, order, outcomes, child_sizes: Sequence,
                        source_sizes: Iterator, arg_sizes: Sequence):
         child_size = child_sizes[0]
         if child_size is None:

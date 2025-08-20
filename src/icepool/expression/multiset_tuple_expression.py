@@ -112,14 +112,14 @@ class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
         return type(self), self._index
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
-                       child_sizes: MutableSequence, source_sizes: Iterator,
+                       child_sizes: Sequence, source_sizes: Iterator,
                        arg_sizes: Sequence) -> Hashable:
         if child_sizes[0] is None:
             return None
         return None, child_sizes[0][self._index]
 
     def _next_state(self, state: Hashable, order: Order, outcome: T,
-                    child_counts: MutableSequence, source_counts: Iterator,
+                    child_counts: Sequence, source_counts: Iterator,
                     arg_counts: Sequence) -> tuple[Hashable, int]:
         return None, child_counts[0][self._index]
 
@@ -162,14 +162,14 @@ class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
                             self._index.stop)
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
-                       child_sizes: MutableSequence, source_sizes: Iterator,
+                       child_sizes: Sequence, source_sizes: Iterator,
                        arg_sizes: Sequence) -> Hashable:
         if child_sizes[0] is None:
             return None
         return None, child_sizes[0][self._index]
 
     def _next_state(self, state: Hashable, order: Order, outcome: T,
-                    child_counts: MutableSequence, source_counts: Iterator,
+                    child_counts: Sequence, source_counts: Iterator,
                     arg_counts: Sequence) -> tuple[Hashable, int]:
         return None, child_counts[0][self._index]
 

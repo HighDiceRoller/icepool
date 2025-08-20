@@ -25,8 +25,8 @@ class MultisetSortPair(MultisetOperator[T]):
         self._extra = extra
 
     def _initial_state(
-        self, order, outcomes, child_sizes: MutableSequence,
-        source_sizes: Iterator, arg_sizes: Sequence
+        self, order, outcomes, child_sizes: Sequence, source_sizes: Iterator,
+        arg_sizes: Sequence
     ) -> tuple[tuple[tuple[int, int, int, int], bool, int, int | None], int
                | None]:
         left_first, left_extra, tie, right_extra, right_first = compute_lexi_tuple_with_extra(
@@ -146,8 +146,8 @@ class MultisetSortPairWhile(MultisetOperator[T]):
         self._extra = extra
 
     def _initial_state(
-        self, order, outcomes, child_sizes: MutableSequence,
-        source_sizes: Iterator, arg_sizes: Sequence
+        self, order, outcomes, child_sizes: Sequence, source_sizes: Iterator,
+        arg_sizes: Sequence
     ) -> tuple[tuple[tuple[int, int, int, int] | None, int | None, int | None],
                int
                | None]:
@@ -246,7 +246,7 @@ class MultisetMaxPairNarrow(MultisetOperator[T]):
         self._pair_equal = pair_equal
         self._keep = keep
 
-    def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
+    def _initial_state(self, order, outcomes, child_sizes: Sequence,
                        source_sizes: Iterator,
                        arg_sizes: Sequence) -> tuple[int, int | None]:
         """
@@ -294,7 +294,7 @@ class MultisetMaxPairWide(MultisetOperator[T]):
         self._keep = keep
 
     def _initial_state(
-            self, order, outcomes, child_sizes: MutableSequence,
+            self, order, outcomes, child_sizes: Sequence,
             source_sizes: Iterator,
             arg_sizes: Sequence) -> tuple[tuple[int, int], int | None]:
         """

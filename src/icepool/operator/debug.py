@@ -16,7 +16,7 @@ class MultisetForceOrder(MultisetOperator[T]):
         self._children = (child, )
         self._force_order = force_order
 
-    def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
+    def _initial_state(self, order, outcomes, child_sizes: Sequence,
                        source_sizes: Iterator,
                        arg_sizes: Sequence) -> tuple[None, int | None]:
         if self._force_order != Order.Any and order != self._force_order:

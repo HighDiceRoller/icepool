@@ -27,8 +27,8 @@ class MultisetVersus(MultisetOperator[T]):
         self._order = order
 
     def _initial_state(
-        self, order, outcomes, child_sizes: MutableSequence,
-        source_sizes: Iterator, arg_sizes: Sequence
+        self, order, outcomes, child_sizes: Sequence, source_sizes: Iterator,
+        arg_sizes: Sequence
     ) -> tuple[tuple[tuple[int, int, int], int], int | None]:
         """
         State is lexi_order, countdown.

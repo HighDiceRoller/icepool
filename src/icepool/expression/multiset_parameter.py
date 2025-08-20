@@ -94,7 +94,7 @@ class MultisetParameterQuestlet(Questlet[T, Q]):
         self.star_index = star_index
 
     def initial_state(self, order: Order, outcomes: Sequence[T],
-                      child_sizes: MutableSequence, source_sizes: Iterator,
+                      child_sizes: Sequence, source_sizes: Iterator,
                       arg_sizes: Sequence):
         if self.star_index is None:
             return None, arg_sizes[self.arg_index]

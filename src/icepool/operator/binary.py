@@ -104,7 +104,7 @@ class MultisetAdditiveUnion(MultisetBinaryOperator):
     def symbol() -> str:
         return '+'
 
-    def _initial_state(self, order, outcomes, child_sizes: MutableSequence,
+    def _initial_state(self, order, outcomes, child_sizes: Sequence,
                        source_sizes: Iterator, arg_sizes: Sequence):
         left_size, right_size = child_sizes
         if left_size is None or right_size is None:

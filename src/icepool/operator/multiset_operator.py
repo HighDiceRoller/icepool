@@ -20,7 +20,7 @@ class MultisetOperator(MultisetExpression[T]):
 
     @abstractmethod
     def _next_state(self, state: Hashable, order: Order, outcome: T,
-                    child_counts: MutableSequence, source_counts: Iterator,
+                    child_counts: Sequence, source_counts: Iterator,
                     arg_counts: Sequence) -> tuple[Hashable, int]:
         """Advances the state of the dungeonlet.
         
@@ -58,7 +58,7 @@ class MultisetOperator(MultisetExpression[T]):
         return self._expression_key
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
-                       child_sizes: MutableSequence, source_sizes: Iterator,
+                       child_sizes: Sequence, source_sizes: Iterator,
                        arg_sizes: Sequence) -> Hashable:
         """Optional: the initial state of this node.
 

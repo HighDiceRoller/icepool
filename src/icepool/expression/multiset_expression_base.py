@@ -65,7 +65,7 @@ class Dungeonlet(Generic[T, Q], MaybeHashKeyed):
 
     @abstractmethod
     def next_state(self, state: Hashable, order: Order, outcome: T,
-                   child_counts: MutableSequence, source_counts: Iterator,
+                   child_counts: Sequence, source_counts: Iterator,
                    arg_counts: Sequence) -> tuple[Hashable, Q]:
         """Advances the state of this dungeonlet.
         
@@ -172,7 +172,7 @@ class Questlet(Generic[T, Q]):
 
     @abstractmethod
     def initial_state(self, order: Order, outcomes: Sequence[T],
-                      child_sizes: MutableSequence, source_sizes: Iterator,
+                      child_sizes: Sequence, source_sizes: Iterator,
                       arg_sizes: Sequence) -> tuple[Hashable, Q | None]:
         """Optional: the initial state of this node.
 
