@@ -236,7 +236,7 @@ class MultisetSortPairWhile(MultisetOperator[T]):
         return MultisetSortPairWhile, self._keep
 
 
-class MultisetMaxPair(MultisetOperator[T]):
+class MultisetMaxPairNarrow(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *, order: Order,
@@ -280,4 +280,61 @@ class MultisetMaxPair(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetMaxPair, self._order, self._pair_equal, self._keep
+        return MultisetMaxPairNarrow, self._order, self._pair_equal, self._keep
+
+
+class MultisetMaxPairWide(MultisetOperator[T]):
+
+    def __init__(self, left: MultisetExpression[T],
+                 right: MultisetExpression[T], *, order: Order,
+                 pair_equal: bool, keep: bool):
+        self._children = (left, right)
+        self._order = order
+        self._pair_equal = pair_equal
+        self._keep = keep
+
+    def _initial_state(
+            self, order, outcomes, child_sizes: MutableSequence,
+            source_sizes: Iterator,
+            arg_sizes: Sequence) -> tuple[tuple[int, int], int | None]:
+        """
+        
+        Returns:
+            pairable: The number of elements that could be paired.
+        """
+        left_size, right_size = child_sizes
+        if order == self._order:
+            if right_size is None:
+                raise UnsupportedOrder(
+                    'The size of the right operand must be known')
+            # state:
+            # right_unpaired: Number of remaining right elements that haven't
+            #   been paired yet.
+            # right_remaining: Number of remaining right elements overall.
+            return (right_size, right_size), None
+        else:
+            raise UnsupportedOrder()
+
+    def _next_state(self, state, order, outcome, child_counts, source_counts,
+                    arg_counts):
+        left_count, right_count = child_counts
+        left_count = max(left_count, 0)
+        right_count = max(right_count, 0)
+        right_unpaired, right_remaining = state
+        if self._pair_equal:
+            count = min(right_unpaired, left_count)
+            right_unpaired -= count
+            right_remaining -= right_count
+            right_unpaired = min(right_unpaired, right_remaining)
+        else:
+            right_remaining -= right_count
+            right_unpaired = min(right_unpaired, right_remaining)
+            count = min(right_unpaired, left_count)
+            right_unpaired -= count
+        if not self._keep:
+            count = left_count - count
+        return (right_unpaired, right_remaining), count
+
+    @property
+    def _expression_key(self):
+        return MultisetMaxPairWide, self._order, self._pair_equal, self._keep

@@ -12,7 +12,7 @@ from icepool.operator.filter_outcomes import (MultisetFilterOutcomes,
                                               MultisetFilterOutcomesBinary)
 from icepool.operator.keep import MultisetKeep
 from icepool.operator.pair import (MultisetSortPair, MultisetSortPairWhile,
-                                   MultisetMaxPair)
+                                   MultisetMaxPairNarrow, MultisetMaxPairWide)
 from icepool.operator.versus import (
     MultisetVersus, )
 from icepool.operator.debug import (

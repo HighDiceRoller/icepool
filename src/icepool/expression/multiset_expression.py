@@ -806,8 +806,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                       extra=extra)
 
     def max_pair_highest(
-            self, comparison: Literal['<=',
-                                      '<'], other: 'MultisetExpression[T]', /,
+            self, comparison: Literal['==', '<=', '<', '>=',
+                                      '>'], other: 'MultisetExpression[T]', /,
             *, keep: Literal['paired', 'unpaired']) -> 'MultisetExpression[T]':
         """EXPERIMENTAL: Pair the highest elements from `self` with even higher (or equal) elements from `other`.
 
@@ -842,10 +842,6 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         against the 6 and the 4, which would only allow them to block the 4
         and let the 6, 3, and 1 through.
 
-        There is no `max_pair` with `'=='` because this would mean the same
-        thing as `+self & +other` (if paired elements are kept), or
-        `self - other` (if unpaired elements are kept).
-
         [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
         gives an overview of several opposed dice pool mechanics, including this
         one.
@@ -863,21 +859,36 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             raise ValueError(f"keep must be either 'paired' or 'unpaired'")
 
         other = implicit_convert_to_expression(other)
+        cls: Type[icepool.operator.MultisetMaxPairNarrow] | Type[
+            icepool.operator.MultisetMaxPairWide]
         match comparison:
+            case '==':
+                if keep_boolean:
+                    return +self & +other
+                else:
+                    return self - other
             case '<=':
+                cls = icepool.operator.MultisetMaxPairNarrow
                 pair_equal = True
             case '<':
+                cls = icepool.operator.MultisetMaxPairNarrow
+                pair_equal = False
+            case '>=':
+                cls = icepool.operator.MultisetMaxPairWide
+                pair_equal = True
+            case '>':
+                cls = icepool.operator.MultisetMaxPairWide
                 pair_equal = False
             case _:
                 raise ValueError(f'Invalid comparison {comparison}')
-        return icepool.operator.MultisetMaxPair(self,
-                                                other,
-                                                order=Order.Descending,
-                                                pair_equal=pair_equal,
-                                                keep=keep_boolean)
+        return cls(self,
+                   other,
+                   order=Order.Descending,
+                   pair_equal=pair_equal,
+                   keep=keep_boolean)
 
     def max_pair_lowest(
-            self, comparison: Literal['>=',
+            self, comparison: Literal['==', '<=', '<', '>=',
                                       '>'], other: 'MultisetExpression[T]', /,
             *, keep: Literal['paired', 'unpaired']) -> 'MultisetExpression[T]':
         """EXPERIMENTAL: Pair the lowest elements from `self` with even lower (or equal) elements from `other`.
@@ -912,18 +923,33 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             raise ValueError(f"keep must be either 'paired' or 'unpaired'")
 
         other = implicit_convert_to_expression(other)
+        cls: Type[icepool.operator.MultisetMaxPairNarrow] | Type[
+            icepool.operator.MultisetMaxPairWide]
         match comparison:
+            case '==':
+                if keep_boolean:
+                    return +self & +other
+                else:
+                    return self - other
             case '>=':
+                cls = icepool.operator.MultisetMaxPairNarrow
                 pair_equal = True
             case '>':
+                cls = icepool.operator.MultisetMaxPairNarrow
+                pair_equal = False
+            case '<=':
+                cls = icepool.operator.MultisetMaxPairWide
+                pair_equal = True
+            case '<':
+                cls = icepool.operator.MultisetMaxPairWide
                 pair_equal = False
             case _:
                 raise ValueError(f'Invalid comparison {comparison}')
-        return icepool.operator.MultisetMaxPair(self,
-                                                other,
-                                                order=Order.Ascending,
-                                                pair_equal=pair_equal,
-                                                keep=keep_boolean)
+        return cls(self,
+                   other,
+                   order=Order.Ascending,
+                   pair_equal=pair_equal,
+                   keep=keep_boolean)
 
     def versus_all(self, comparison: Literal['<=', '<', '>=', '>'],
                    other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':
