@@ -5,7 +5,7 @@ import icepool
 from icepool.expand import Expandable
 from icepool.expression.multiset_expression_base import Q, Dungeonlet, MultisetExpressionBase
 from icepool.collection.counts import Counts
-from icepool.lexi import compute_lexi_tuple_with_extra, compute_lexi_tuple_with_zero_right_first
+from icepool.lexi import compute_lexi_tuple, compute_lexi_tuple_with_extra, compute_lexi_tuple_with_zero_right_first
 from icepool.order import Order
 from icepool.population.keep import highest_slice, lowest_slice
 
@@ -805,36 +805,40 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                                       sort_order=order,
                                                       extra=extra)
 
-    def max_pair_highest(
-            self, comparison: Literal['==', '<=', '<', '>=',
-                                      '>'], other: 'MultisetExpression[T]', /,
-            *, keep: Literal['paired', 'unpaired']) -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: Pair the highest elements from `self` with even higher (or equal) elements from `other`.
+    def max_pair_keep(self,
+                      comparison: Literal['==', '<=', '<', '>=', '>'],
+                      other: 'MultisetExpression[T]',
+                      priority: Literal['low', 'high'] | None = None,
+                      /) -> 'MultisetExpression[T]':
+        """EXPERIMENTAL: Form as many pairs of elements between self and other fitting the comparator and keep the paired elements from `self`.
 
         This pairs elements of `self` with elements of `other`, such that in
-        each pair the element from `self` fits the `comparision` with the
+        each pair the element from `self` fits the `comparison` with the
         element from `other`. As many such pairs of elements will be created as 
-        possible, preferring the highest pairable elements of `self`.
-        Finally, either the paired or unpaired elements from `self` are kept.
+        possible, prioritizing either the lowest or highest possible elements.
+        Finally, the paired elements are kept.
 
-        This requires that outcomes be evaluated in descending order.
-
-        Negative incoming counts are treated as zero counts.
+        This requires that outcomes be evaluated in descending order if
+        prioritizing high elements, or ascending order if prioritizing low
+        elements.
 
         Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
         3d6. Defender dice can be used to block attacker dice of equal or lesser
         value, and the defender prefers to block the highest attacker dice
-        possible. Which attacker dice were not blocked?
+        possible. Which attacker dice were blocked?
         ```python
-        d6.pool(4).max_pair('<=', d6.pool(3), keep='unpaired').sum()
+        d6.pool(4).max_pair_keep('<=', d6.pool(3), 'high').sum()
         ```
 
         Suppose the attacker rolls 6, 4, 3, 1 and the defender rolls 5, 5.
-        Then the result would be [6, 1].
+        Then the result would be [4, 3].
         ```python
-        d6.pool([6, 4, 3, 1]).max_pair('<=', [5, 5], keep='unpaired')
-        -> [6, 1]
+        Pool([6, 4, 3, 1]).max_pair('<=', [5, 5], 'high')
+        -> [4, 3]
         ```
+
+        The complement of this is `max_pair_drop`, which drops the paired
+        elements from `self` and keeps the rest.
 
         Contrast `sort_pair()`, which first creates pairs in
         sorted order and then filters them by `comparison`.
@@ -847,109 +851,117 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         one.
 
         Args:
-            comparison: Either `'<='` or `'<'`.
+            comparison: The comparison that the pairs must have.
             other: The other multiset to pair elements with.
-            keep: Whether 'paired' or 'unpaired' elements are to be kept.
+            priority: Whether to prioritize pairing low or high elements.
+                This must be provided unless comparision is `'=='`.
         """
-        if keep == 'paired':
-            keep_boolean = True
-        elif keep == 'unpaired':
-            keep_boolean = False
-        else:
-            raise ValueError(f"keep must be either 'paired' or 'unpaired'")
-
         other = implicit_convert_to_expression(other)
+        if comparison == '==':
+            return +self & +other
+
+        match priority:
+            case 'low':
+                order = Order.Ascending
+            case 'high':
+                order = Order.Descending
+            case _:
+                raise ValueError('priority must be "low" or "high".')
+
+        left_first, tie, _ = compute_lexi_tuple(comparison, order)
+
         cls: Type[icepool.operator.MultisetMaxPairNarrow] | Type[
             icepool.operator.MultisetMaxPairWide]
-        match comparison:
-            case '==':
-                if keep_boolean:
-                    return +self & +other
-                else:
-                    return self - other
-            case '<=':
-                cls = icepool.operator.MultisetMaxPairNarrow
-                pair_equal = True
-            case '<':
-                cls = icepool.operator.MultisetMaxPairNarrow
-                pair_equal = False
-            case '>=':
-                cls = icepool.operator.MultisetMaxPairWide
-                pair_equal = True
-            case '>':
-                cls = icepool.operator.MultisetMaxPairWide
-                pair_equal = False
-            case _:
-                raise ValueError(f'Invalid comparison {comparison}')
+
+        if left_first:
+            cls = icepool.operator.MultisetMaxPairWide
+        else:
+            cls = icepool.operator.MultisetMaxPairNarrow
+
         return cls(self,
                    other,
-                   order=Order.Descending,
-                   pair_equal=pair_equal,
-                   keep=keep_boolean)
+                   order=order,
+                   pair_equal=cast(bool, tie),
+                   keep=True)
 
-    def max_pair_lowest(
-            self, comparison: Literal['==', '<=', '<', '>=',
-                                      '>'], other: 'MultisetExpression[T]', /,
-            *, keep: Literal['paired', 'unpaired']) -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: Pair the lowest elements from `self` with even lower (or equal) elements from `other`.
+    def max_pair_drop(self,
+                      comparison: Literal['==', '<=', '<', '>=', '>'],
+                      other: 'MultisetExpression[T]',
+                      priority: Literal['low', 'high'] | None = None,
+                      /) -> 'MultisetExpression[T]':
+        """EXPERIMENTAL: Form as many pairs of elements between self and other fitting the comparator and drop the paired elements from `self`.
 
         This pairs elements of `self` with elements of `other`, such that in
-        each pair the element from `self` fits the `comparision` with the
+        each pair the element from `self` fits the `comparison` with the
         element from `other`. As many such pairs of elements will be created as 
-        possible, preferring the lowest pairable elements of `self`.
-        Finally, either the paired or unpaired elements from `self` are kept.
+        possible, prioritizing either the lowest or highest possible elements.
+        Finally, the paired elements are dropped.
 
-        This requires that outcomes be evaluated in ascending order.
+        This requires that outcomes be evaluated in descending order if
+        prioritizing high elements, or ascending order if prioritizing low
+        elements.
 
-        Negative incoming counts are treated as zero counts.
+        Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
+        3d6. Defender dice can be used to block attacker dice of equal or lesser
+        value, and the defender prefers to block the highest attacker dice
+        possible. Which attacker dice were not blocked?
+        ```python
+        d6.pool(4).max_pair_drop('<=', d6.pool(3), 'high').sum()
+        ```
+
+        Suppose the attacker rolls 6, 4, 3, 1 and the defender rolls 5, 5.
+        Then the result would be [4, 3].
+        ```python
+        Pool([6, 4, 3, 1]).max_pair_drop('<=', [5, 5], 'high')
+        -> [6, 1]
+        ```
+
+        The complement of this is `max_pair_keep`, which keeps the paired
+        elements from `self` and drops the rest.
 
         Contrast `sort_pair()`, which first creates pairs in
         sorted order and then filters them by `comparison`.
+        In the above example, `sort_pair()` would force the defender to pair
+        against the 6 and the 4, which would only allow them to block the 4
+        and let the 6, 3, and 1 through.
 
         [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
         gives an overview of several opposed dice pool mechanics, including this
         one.
 
         Args:
-            comparison: Either `'>='` or `'>'`.
+            comparison: The comparison that the pairs must have.
             other: The other multiset to pair elements with.
-            keep: Whether 'paired' or 'unpaired' elements are to be kept.
+            priority: Whether to prioritize pairing low or high elements.
+                This must be provided unless comparision is `'=='`.
         """
-        if keep == 'paired':
-            keep_boolean = True
-        elif keep == 'unpaired':
-            keep_boolean = False
-        else:
-            raise ValueError(f"keep must be either 'paired' or 'unpaired'")
-
         other = implicit_convert_to_expression(other)
+        if comparison == '==':
+            return self - other
+
+        match priority:
+            case 'low':
+                order = Order.Ascending
+            case 'high':
+                order = Order.Descending
+            case _:
+                raise ValueError('priority must be "low" or "high".')
+
+        left_first, tie, _ = compute_lexi_tuple(comparison, order)
+
         cls: Type[icepool.operator.MultisetMaxPairNarrow] | Type[
             icepool.operator.MultisetMaxPairWide]
-        match comparison:
-            case '==':
-                if keep_boolean:
-                    return +self & +other
-                else:
-                    return self - other
-            case '>=':
-                cls = icepool.operator.MultisetMaxPairNarrow
-                pair_equal = True
-            case '>':
-                cls = icepool.operator.MultisetMaxPairNarrow
-                pair_equal = False
-            case '<=':
-                cls = icepool.operator.MultisetMaxPairWide
-                pair_equal = True
-            case '<':
-                cls = icepool.operator.MultisetMaxPairWide
-                pair_equal = False
-            case _:
-                raise ValueError(f'Invalid comparison {comparison}')
+
+        if left_first:
+            cls = icepool.operator.MultisetMaxPairWide
+        else:
+            cls = icepool.operator.MultisetMaxPairNarrow
+
         return cls(self,
                    other,
-                   order=Order.Ascending,
-                   pair_equal=pair_equal,
-                   keep=keep_boolean)
+                   order=order,
+                   pair_equal=cast(bool, tie),
+                   keep=False)
 
     def versus_all(self, comparison: Literal['<=', '<', '>=', '>'],
                    other: 'MultisetExpression[T]') -> 'MultisetExpression[T]':

@@ -106,28 +106,22 @@ def test_sort_pair_operators_expand(op, left, right):
 
 
 def test_max_pair_example():
-    result = Pool([6, 4, 3, 1]).max_pair_highest('<=', [5, 5],
-                                                 keep='unpaired').expand()
+    result = Pool([6, 4, 3, 1]).max_pair_keep('<=', [5, 5], 'high').expand()
+    assert result.simplify() == Die([(3, 4)])
+    result = Pool([6, 4, 3, 1]).max_pair_drop('<=', [5, 5], 'high').expand()
     assert result.simplify() == Die([(1, 6)])
 
 
-maximum_ops = ['<=', '<', '>=', '>']
+max_pair_ops = ['<=', '<', '>=', '>']
 
 
-@pytest.mark.parametrize('op', maximum_ops)
-def test_max_pair(op):
-    if op in ['<=', '<']:
-        result = d6.pool(3).max_pair_highest(op, d6.pool(2),
-                                             keep='paired').size()
-        complement = d6.pool(3).max_pair_highest(op,
-                                                 d6.pool(2),
-                                                 keep='unpaired').size()
-    else:
-        result = d6.pool(3).max_pair_lowest(op, d6.pool(2),
-                                            keep='paired').size()
-        complement = d6.pool(3).max_pair_lowest(op,
-                                                d6.pool(2),
-                                                keep='unpaired').size()
+@pytest.mark.parametrize('op', max_pair_ops)
+@pytest.mark.parametrize('priority', ['low', 'high'])
+def test_max_pair_keep_size(op, priority):
+    left = d6.pool(3)
+    right = d6.pool(2)
+    result = left.max_pair_keep(op, right, priority).size()
+    complement = left.max_pair_drop(op, right, priority).size()
 
     @map_function
     def compute_expected(left, right):
@@ -146,19 +140,23 @@ def test_max_pair(op):
                 left.pop(0)
         return result
 
-    expected = compute_expected(d6.pool(3), d6.pool(2))
+    expected = compute_expected(left, right)
     assert result == expected
     assert 3 - result == complement
 
 
-@pytest.mark.parametrize('op', maximum_ops)
-@pytest.mark.parametrize('left', [d6.pool(2), d6.pool(3), Pool([d4, d6, d8])])
-@pytest.mark.parametrize('right', [d6.pool(2), Pool([d4, d6])])
-def test_max_pair_expand(op, left, right):
+pools_to_test = [d6.pool(2), d6.pool(3), Pool([d4, d6]), Pool([d4, d6, d8])]
+
+
+@pytest.mark.parametrize('op', max_pair_ops)
+@pytest.mark.parametrize('left', pools_to_test)
+@pytest.mark.parametrize('right', pools_to_test)
+def test_max_pair_expand_narrow(op, left, right):
     if op in ['<=', '<']:
-        result = left.max_pair_highest(op, right, keep='paired').expand()
+        priority = 'high'
     else:
-        result = left.max_pair_lowest(op, right, keep='paired').expand()
+        priority = 'low'
+    result = left.max_pair_keep(op, right, priority).expand()
 
     @map_function
     def compute_expected(left, right):
@@ -176,6 +174,35 @@ def test_max_pair_expand(op, left, right):
             else:
                 left.pop(0)
         return tuple(sorted(result))
+
+    expected = compute_expected(left, right)
+    assert result == expected
+
+
+@pytest.mark.parametrize('op', max_pair_ops)
+@pytest.mark.parametrize('left', pools_to_test)
+@pytest.mark.parametrize('right', pools_to_test)
+def test_max_pair_expand_wide(op, left, right):
+    if op in ['<=', '<']:
+        priority = 'low'
+    else:
+        priority = 'high'
+    result = left.max_pair_keep(op, right, priority).expand()
+
+    @map_function
+    def compute_expected(left, right):
+        if op in ['>=', '>']:
+            left = reversed(left)
+            right = reversed(right)
+        left = list(left)
+        right = list(right)
+        for size in range(min(len(left), len(right)), 0, -1):
+            left_sublist = left[:size]
+            right_sublist = right[-size:]
+            if all(operators[op](l, r)
+                   for l, r in zip(left_sublist, right_sublist)):
+                return tuple(sorted(left_sublist))
+        return ()
 
     expected = compute_expected(left, right)
     assert result == expected
