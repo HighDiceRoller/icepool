@@ -678,7 +678,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Pool([6, 4, 3]).sort_pair('>', [5, 5], extra='keep') -> [6, 3]
         ```
 
-        Contrast `max_pair_lowest()` and `max_pair_highest()`, which first 
+        Contrast `max_pair_keep()` and `max_pair_drop()`, which first 
         create the maximum number of pairs that fit the comparison, not
         necessarily in sorted order.
         In the above example, `max_pair()` would allow the defender to
@@ -688,7 +688,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         gives an overview of several opposed dice pool mechanics, including this
         one.
 
-        Negative incoming counts are treated as zero counts.
+        This is not designed for use with negative counts.
         
         Args:
             comparison: The comparison to filter by. If you want to drop rather
@@ -730,7 +730,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                             'break'] = 'break'):
         """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and keep elements from `self` while the `comparison` holds, dropping the rest.
 
-        Negative incoming counts are treated as zero counts.
+        This is not designed for use with negative counts.
 
         [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
         gives an overview of several opposed dice pool mechanics, including this
@@ -773,7 +773,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                                             'break'] = 'break'):
         """EXPERIMENTAL: Sort `self` and `other` and make pairs of one element from each, then go through the pairs and drop elements from `self` while the `comparison` holds, keeping the rest.
 
-        Negative incoming counts are treated as zero counts.
+        This is not designed for use with negative counts.
 
         [This infographic](https://github.com/HighDiceRoller/icepool/blob/main/images/opposed_pools.png?raw=true)
         gives an overview of several opposed dice pool mechanics, including this
@@ -810,17 +810,19 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                       other: 'MultisetExpression[T]',
                       priority: Literal['low', 'high'] | None = None,
                       /) -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: Form as many pairs of elements between self and other fitting the comparator and keep the paired elements from `self`.
+        """EXPERIMENTAL: Form as many pairs of elements between `self` and `other` fitting the comparison, then keep the paired elements from `self`.
 
         This pairs elements of `self` with elements of `other`, such that in
         each pair the element from `self` fits the `comparison` with the
         element from `other`. As many such pairs of elements will be created as 
         possible, prioritizing either the lowest or highest possible elements.
-        Finally, the paired elements are kept.
+        Finally, the paired elements from `self` are kept, dropping the rest.
 
         This requires that outcomes be evaluated in descending order if
         prioritizing high elements, or ascending order if prioritizing low
         elements.
+
+        This is not designed for use with negative counts.
 
         Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
         3d6. Defender dice can be used to block attacker dice of equal or lesser
@@ -851,7 +853,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         one.
 
         Args:
-            comparison: The comparison that the pairs must have.
+            comparison: The comparison that the pairs must satisfy.
+                `'=='` is the same as `+self & +other`.
             other: The other multiset to pair elements with.
             priority: Whether to prioritize pairing low or high elements.
                 This must be provided unless comparision is `'=='`.
@@ -866,7 +869,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             case 'high':
                 order = Order.Descending
             case _:
-                raise ValueError('priority must be "low" or "high".')
+                raise ValueError("priority must be 'low' or 'high'.")
 
         left_first, tie, _ = compute_lexi_tuple(comparison, order)
 
@@ -889,22 +892,24 @@ class MultisetExpression(MultisetExpressionBase[T, int],
                       other: 'MultisetExpression[T]',
                       priority: Literal['low', 'high'] | None = None,
                       /) -> 'MultisetExpression[T]':
-        """EXPERIMENTAL: Form as many pairs of elements between self and other fitting the comparator and drop the paired elements from `self`.
+        """EXPERIMENTAL: Form as many pairs of elements between `self` and `other` fitting the comparison, then drop the paired elements from `self`.
 
         This pairs elements of `self` with elements of `other`, such that in
         each pair the element from `self` fits the `comparison` with the
         element from `other`. As many such pairs of elements will be created as 
         possible, prioritizing either the lowest or highest possible elements.
-        Finally, the paired elements are dropped.
+        Finally, the paired elements from `self` are dropped, keeping the rest.
 
         This requires that outcomes be evaluated in descending order if
         prioritizing high elements, or ascending order if prioritizing low
         elements.
 
+        This is not designed for use with negative counts.
+
         Example: An attacker rolls a pool of 4d6 and a defender rolls a pool of 
         3d6. Defender dice can be used to block attacker dice of equal or lesser
         value, and the defender prefers to block the highest attacker dice
-        possible. Which attacker dice were not blocked?
+        possible. Which attacker dice were NOT blocked?
         ```python
         d6.pool(4).max_pair_drop('<=', d6.pool(3), 'high').sum()
         ```
@@ -930,7 +935,8 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         one.
 
         Args:
-            comparison: The comparison that the pairs must have.
+            comparison: The comparison that the pairs must satisfy.
+                `'=='` is the same as `self - other`.
             other: The other multiset to pair elements with.
             priority: Whether to prioritize pairing low or high elements.
                 This must be provided unless comparision is `'=='`.
@@ -945,7 +951,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             case 'high':
                 order = Order.Descending
             case _:
-                raise ValueError('priority must be "low" or "high".')
+                raise ValueError("priority must be 'low' or 'high'.")
 
         left_first, tie, _ = compute_lexi_tuple(comparison, order)
 
@@ -1077,7 +1083,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         Args:
             filter: Any counts below this value will not be in the output.
                 For example, `filter=2` will only produce pairs and better.
-                If `None`, no filtering will be done.
+                If `'all'`, no filtering will be done.
 
                 Why not just place `keep_counts('>=')` before this?
                 `keep_counts('>=')` operates by setting counts to zero, so we

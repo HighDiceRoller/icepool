@@ -258,7 +258,14 @@ class MultisetMaxPairNarrow(MultisetOperator[T]):
         if order == self._order:
             return 0, None
         else:
-            raise UnsupportedOrder()
+            if self._order > 0:
+                raise UnsupportedOrder(
+                    "max_pair methods with priority='low' must be evaluated in ascending order."
+                )
+            else:
+                raise UnsupportedOrder(
+                    "max_pair methods with priority='high' must be evaluated in descending order."
+                )
 
     def _next_state(self, prev_pairable, order, outcome, child_counts,
                     source_counts, arg_counts):
@@ -297,23 +304,25 @@ class MultisetMaxPairWide(MultisetOperator[T]):
             self, order, outcomes, child_sizes: Sequence,
             source_sizes: Iterator,
             arg_sizes: Sequence) -> tuple[tuple[int, int], int | None]:
-        """
-        
-        Returns:
-            pairable: The number of elements that could be paired.
-        """
         left_size, right_size = child_sizes
         if order == self._order:
             if right_size is None:
                 raise UnsupportedOrder(
-                    'The size of the right operand must be known')
+                    'The size of the right operand must be inferrable.')
             # state:
             # right_unpaired: Number of remaining right elements that haven't
             #   been paired yet.
             # right_remaining: Number of remaining right elements overall.
             return (right_size, right_size), None
         else:
-            raise UnsupportedOrder()
+            if self._order > 0:
+                raise UnsupportedOrder(
+                    "max_pair methods with priority='low' must be evaluated in ascending order."
+                )
+            else:
+                raise UnsupportedOrder(
+                    "max_pair methods with priority='high' must be evaluated in descending order."
+                )
 
     def _next_state(self, state, order, outcome, child_counts, source_counts,
                     arg_counts):
