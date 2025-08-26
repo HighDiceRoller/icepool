@@ -1128,7 +1128,7 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
         Raises:
             ZeroDivisionError: If the divisor may be empty and 
-                empty_divisor_outcome is not set.
+                `empty_divisor` is not set.
         """
         divisor = implicit_convert_to_expression(divisor)
         return icepool.evaluator.CountSubsetEvaluator(
