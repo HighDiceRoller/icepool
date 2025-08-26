@@ -1051,7 +1051,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         max_rerolls: int | Literal['inf'],
         star: bool | None = None,
         depth: int | Literal['inf'] = 1,
-        mode: Literal['random', 'lowest', 'highest', 'drop'] = 'random'
+        mode: Literal['random', 'low', 'high', 'drop'] = 'random'
     ) -> 'icepool.MultisetExpression[T_co]':
         """EXPERIMENTAL: Applies a limited number of rerolls shared across a pool.
 
@@ -1078,8 +1078,8 @@ class Die(Population[T_co], MaybeHashKeyed):
                 dice than `max_rerolls`. Options:
                 * `'random'` (default): Eligible dice will be chosen uniformly
                     at random.
-                * `'lowest'`: The lowest eligible dice will be rerolled.
-                * `'highest'`: The highest eligible dice will be rerolled.
+                * `'low'`: The lowest eligible dice will be rerolled.
+                * `'high'`: The highest eligible dice will be rerolled.
                 * `'drop'`: All dice that ended up on an outcome selected by 
                     `which` will be dropped. This includes both dice that rolled
                     into `which` initially and were not rerolled, and dice that
@@ -1161,17 +1161,17 @@ class Die(Population[T_co], MaybeHashKeyed):
             match mode:
                 case 'random':
                     return common + rerollable_die.pool(rerolls_ran_out)
-                case 'lowest':
+                case 'low':
                     return common + rerollable_die.pool(rerollable).highest(
                         rerolls_ran_out)
-                case 'highest':
+                case 'high':
                     return common + rerollable_die.pool(rerollable).lowest(
                         rerolls_ran_out)
                 case 'drop':
                     return not_rerollable_die.pool(not_rerollable)
                 case _:
                     raise ValueError(
-                        f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'lowest', 'highest', 'drop'."
+                        f"Invalid reroll_priority '{mode}'. Allowed values are 'random', 'low', 'high', 'drop'."
                     )
 
         return pool_composition.map_to_pool(make_pool, star=True)
