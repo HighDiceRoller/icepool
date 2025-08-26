@@ -217,7 +217,7 @@ row_height = sqrt(3) / 2
 stroke_color = svgwrite.rgb(217, 238, 252)  # svgwrite.rgb(234, 248, 255)
 stroke_width = 1.0
 
-draw = svgwrite.Drawing('misc/dice_twitter_wallpaper.svg',
+draw = svgwrite.Drawing('dice_twitter_wallpaper.svg',
                         size=(width * 25.4, height * 25.4),
                         profile='tiny')
 
@@ -245,7 +245,7 @@ stroke_color = svgwrite.rgb(217, 238, 252)
 
 for path_func, scale in choices:
     name = path_func.__name__
-    draw = svgwrite.Drawing(f'misc/{name}.svg',
+    draw = svgwrite.Drawing(f'{name}.svg',
                             size=(25.4, 25.4),
                             profile='tiny')
     die = path_func(scale)
