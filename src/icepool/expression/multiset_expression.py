@@ -856,30 +856,38 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             comparison: The comparison that the pairs must satisfy.
                 `'=='` is the same as `+self & +other`.
             other: The other multiset to pair elements with.
-            priority: Whether to prioritize pairing low or high elements.
-                This must be provided unless comparision is `'=='`.
+            priority: Optional paramter to prioritize pairing `'low'` or
+                `'high'` elements. Note that this does not change the number of
+                elements that are paired.
         """
         other = implicit_convert_to_expression(other)
         if comparison == '==':
             return +self & +other
 
-        match priority:
-            case 'low':
-                order = Order.Ascending
-            case 'high':
+        cls: Type[icepool.operator.MultisetMaxPairLate] | Type[
+            icepool.operator.MultisetMaxPairEarly]
+
+        if priority is None:
+            order = Order.Ascending
+            left_first, tie, _ = compute_lexi_tuple(comparison, order)
+            if left_first:
                 order = Order.Descending
-            case _:
-                raise ValueError("priority must be 'low' or 'high'.")
-
-        left_first, tie, _ = compute_lexi_tuple(comparison, order)
-
-        cls: Type[icepool.operator.MultisetMaxPairNarrow] | Type[
-            icepool.operator.MultisetMaxPairWide]
-
-        if left_first:
-            cls = icepool.operator.MultisetMaxPairWide
+            cls = icepool.operator.MultisetMaxPairLate
         else:
-            cls = icepool.operator.MultisetMaxPairNarrow
+            match priority:
+                case 'low':
+                    order = Order.Ascending
+                case 'high':
+                    order = Order.Descending
+                case _:
+                    raise ValueError("priority must be 'low' or 'high'.")
+
+            left_first, tie, _ = compute_lexi_tuple(comparison, order)
+
+            if left_first:
+                cls = icepool.operator.MultisetMaxPairEarly
+            else:
+                cls = icepool.operator.MultisetMaxPairLate
 
         return cls(self,
                    other,
@@ -938,30 +946,38 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             comparison: The comparison that the pairs must satisfy.
                 `'=='` is the same as `self - other`.
             other: The other multiset to pair elements with.
-            priority: Whether to prioritize pairing low or high elements.
-                This must be provided unless comparision is `'=='`.
+            priority: Optional paramter to prioritize pairing `'low'` or
+                `'high'` elements. Note that this does not change the number of
+                elements that are paired.
         """
         other = implicit_convert_to_expression(other)
         if comparison == '==':
             return self - other
 
-        match priority:
-            case 'low':
-                order = Order.Ascending
-            case 'high':
+        cls: Type[icepool.operator.MultisetMaxPairLate] | Type[
+            icepool.operator.MultisetMaxPairEarly]
+
+        if priority is None:
+            order = Order.Ascending
+            left_first, tie, _ = compute_lexi_tuple(comparison, order)
+            if left_first:
                 order = Order.Descending
-            case _:
-                raise ValueError("priority must be 'low' or 'high'.")
-
-        left_first, tie, _ = compute_lexi_tuple(comparison, order)
-
-        cls: Type[icepool.operator.MultisetMaxPairNarrow] | Type[
-            icepool.operator.MultisetMaxPairWide]
-
-        if left_first:
-            cls = icepool.operator.MultisetMaxPairWide
+            cls = icepool.operator.MultisetMaxPairLate
         else:
-            cls = icepool.operator.MultisetMaxPairNarrow
+            match priority:
+                case 'low':
+                    order = Order.Ascending
+                case 'high':
+                    order = Order.Descending
+                case _:
+                    raise ValueError("priority must be 'low' or 'high'.")
+
+            left_first, tie, _ = compute_lexi_tuple(comparison, order)
+
+            if left_first:
+                cls = icepool.operator.MultisetMaxPairEarly
+            else:
+                cls = icepool.operator.MultisetMaxPairLate
 
         return cls(self,
                    other,

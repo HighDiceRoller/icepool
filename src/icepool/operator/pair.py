@@ -236,7 +236,7 @@ class MultisetSortPairWhile(MultisetOperator[T]):
         return MultisetSortPairWhile, self._keep
 
 
-class MultisetMaxPairNarrow(MultisetOperator[T]):
+class MultisetMaxPairLate(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *, order: Order,
@@ -287,10 +287,10 @@ class MultisetMaxPairNarrow(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetMaxPairNarrow, self._order, self._pair_equal, self._keep
+        return MultisetMaxPairLate, self._order, self._pair_equal, self._keep
 
 
-class MultisetMaxPairWide(MultisetOperator[T]):
+class MultisetMaxPairEarly(MultisetOperator[T]):
 
     def __init__(self, left: MultisetExpression[T],
                  right: MultisetExpression[T], *, order: Order,
@@ -346,4 +346,4 @@ class MultisetMaxPairWide(MultisetOperator[T]):
 
     @property
     def _expression_key(self):
-        return MultisetMaxPairWide, self._order, self._pair_equal, self._keep
+        return MultisetMaxPairEarly, self._order, self._pair_equal, self._keep

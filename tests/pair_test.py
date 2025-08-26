@@ -151,7 +151,7 @@ pools_to_test = [d6.pool(2), d6.pool(3), Pool([d4, d6]), Pool([d4, d6, d8])]
 @pytest.mark.parametrize('op', max_pair_ops)
 @pytest.mark.parametrize('left', pools_to_test)
 @pytest.mark.parametrize('right', pools_to_test)
-def test_max_pair_expand_narrow(op, left, right):
+def test_max_pair_expand_late(op, left, right):
     if op in ['<=', '<']:
         priority = 'high'
     else:
@@ -182,7 +182,7 @@ def test_max_pair_expand_narrow(op, left, right):
 @pytest.mark.parametrize('op', max_pair_ops)
 @pytest.mark.parametrize('left', pools_to_test)
 @pytest.mark.parametrize('right', pools_to_test)
-def test_max_pair_expand_wide(op, left, right):
+def test_max_pair_expand_early(op, left, right):
     if op in ['<=', '<']:
         priority = 'low'
     else:
@@ -206,6 +206,13 @@ def test_max_pair_expand_wide(op, left, right):
 
     expected = compute_expected(left, right)
     assert result == expected
+
+
+# The default priority should succeed even when pool sizes are not inferrable.
+@pytest.mark.parametrize('op', max_pair_ops)
+def test_max_pair_default_priority(op):
+    pool = d6.pool(3)
+    (pool & pool).max_pair_keep(op, pool & pool)
 
 
 @multiset_function
