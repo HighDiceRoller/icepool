@@ -519,7 +519,7 @@ class Die(Population[T_co], MaybeHashKeyed):
     def time_to_sum(self: 'Die[int]',
                     target: int,
                     /,
-                    max_time: int,
+                    max_time: int | None = None,
                     dnf: 'int|icepool.RerollType|None' = None) -> 'Die[int]':
         """The number of rolls until the cumulative sum is greater or equal to the target.
         
@@ -534,6 +534,13 @@ class Die(Population[T_co], MaybeHashKeyed):
         """
         if target <= 0:
             return Die([0])
+
+        if max_time is None:
+            if self.min_outcome() <= 0:
+                raise ValueError(
+                    'max_time must be provided if not all outcomes are positive.'
+                )
+            max_time = (target + self.min_outcome() - 1) // self.min_outcome()
 
         if dnf is None:
             dnf = max_time

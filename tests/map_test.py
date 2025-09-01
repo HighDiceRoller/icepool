@@ -168,6 +168,10 @@ def test_time_to_sum_d6():
     assert d6.mean_time_to_sum(10) == d6.time_to_sum(10, 11).mean()
 
 
+def test_time_to_sum_d6_auto_max_time():
+    assert d6.mean_time_to_sum(10) == d6.time_to_sum(10).mean()
+
+
 def test_mean_time_to_sum_z6():
     cdf = []
     for i in range(11):
