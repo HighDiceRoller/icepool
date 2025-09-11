@@ -244,9 +244,13 @@ class Vector(Outcome, Sequence[T_co]):
                     (op(x, y, *args, **kwargs) for x, y in zip(self, other)),
                     truth_value=truth_value)
             else:
-                raise IndexError(
-                    f'Binary operators on Vectors are only valid if both are the same length ({len(self)} vs. {len(other)}).'
-                )
+                if compare_for_truth:
+                    truth_value = cast(bool, op(self._data, other._data))
+                    return icepool.VectorWithTruthOnly(truth_value)
+                else:
+                    raise IndexError(
+                        f'Binary operators on Vectors are only valid if both are the same length ({len(self)} vs. {len(other)}).'
+                    )
         elif isinstance(other, (icepool.Population, icepool.AgainExpression)):
             return NotImplemented  # delegate to the other
         else:

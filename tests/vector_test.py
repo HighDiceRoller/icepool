@@ -183,3 +183,12 @@ def test_deck_sequence_with_dups():
         (1, 0): 4,
         (1, 1): 2,
     })
+
+
+def test_unequal_length_comparison():
+    a = Vector([0])
+    b = Vector([0, 1])
+    result = a < b
+    assert result
+    with pytest.raises(ValueError):
+        len(result)
