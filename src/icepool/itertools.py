@@ -7,8 +7,30 @@ from collections import defaultdict
 from fractions import Fraction
 from functools import partial, update_wrapper
 
-from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
+from typing import Any, Callable, Generic, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
 from icepool.typing import Outcome, T, infer_star
+
+
+class Break(Generic[T]):
+    """Wrapper around a return value for triggering an early exit from `map(repeat)`."""
+
+    def __init__(self, outcome: T | None = None):
+        """Constructor.
+        
+        Args:
+            outcome: The wrapped outcome. If not provided, the outcome is
+                considered to be equal to the input to the `map`ped function.
+        """
+        self.outcome = outcome
+
+    def __hash__(self) -> int:
+        return hash((Break, self.outcome))
+
+    def __repr__(self) -> str:
+        return f'Break({repr(self.outcome)})'
+
+    def __str__(self) -> str:
+        return f'Break({str(self.outcome)})'
 
 
 def _canonicalize_transition_function(repl: 'Callable | Mapping',
@@ -32,6 +54,16 @@ def _canonicalize_transition_function(repl: 'Callable | Mapping',
         return lambda o: mapping.get(o, o)
     else:
         raise TypeError('repl must be a callable or a mapping.')
+
+
+def _map_single(
+    transition_function: Callable[..., T | icepool.Die[T] | icepool.RerollType
+                                  | icepool.AgainExpression | Break], /, *args:
+    'Outcome | icepool.Die | icepool.MultisetExpression'
+) -> tuple[Sequence[T | icepool.Die[T] | icepool.RerollType
+                    | icepool.AgainExpression | Break], Sequence[int]]:
+    """A single internal iteration for map()."""
+    raise NotImplementedError()
 
 
 def map(
