@@ -53,9 +53,9 @@ NoCache: Final = NoCacheType.NoCache
 from icepool.function import (d, z, __getattr__, coin, stochastic_round,
                               one_hot, from_cumulative, from_rv, pointwise_max,
                               pointwise_min, min_outcome, max_outcome,
-                              consecutive, sorted_union, commonize_denominator,
-                              reduce, accumulate, map, map_function,
-                              map_and_time, mean_time_to_absorb, map_to_pool)
+                              consecutive, sorted_union, commonize_denominator)
+from icepool.itertools import (reduce, accumulate, map, map_function,
+                               map_and_time, mean_time_to_absorb, map_to_pool)
 
 from icepool.population.base import Population
 from icepool.population.die import implicit_convert_to_die, Die
