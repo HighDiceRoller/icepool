@@ -18,3 +18,9 @@ class Break(Generic[T]):
 
     def __hash__(self) -> int:
         return hash((Break, self.outcome))
+
+    def __repr__(self) -> str:
+        return f'Break({repr(self.outcome)})'
+
+    def __str__(self) -> str:
+        return f'Break({str(self.outcome)})'
