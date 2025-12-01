@@ -26,10 +26,10 @@ jobs:
           pip install -r notebook_requirements.txt
       - name: Build JupyterLite Site
         run: |
-          jupyter lite build --contents notebooks --output_dir dist
+          mkdir -p dist/
+          jupyter lite build --contents notebooks --output-dir dist
       - name: Copy Favicon
         run: |
-          mkdir -p dist/
           cp favicon.* dist/
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.4.1
