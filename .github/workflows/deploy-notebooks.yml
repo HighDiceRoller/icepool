@@ -26,7 +26,7 @@ jobs:
           pip install -r notebook_requirements.txt
       - name: Build JupyterLite Site
         run: |
-          jupyter lite build --contents notebooks --output_dir dist --ignore_sys_prefix
+          jupyter lite build --contents notebooks --output_dir dist
       - name: Copy Favicon
         run: |
           mkdir -p dist/
