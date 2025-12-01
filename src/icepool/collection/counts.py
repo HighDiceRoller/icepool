@@ -26,6 +26,7 @@ class Counts(Mapping[T, int]):
             sort_key: If provided, keys will be sorted using the result of this
                 function.
         """
+        mapping: MutableMapping[T, int] = {}
 
         try:
             items = sorted(items)
@@ -40,7 +41,6 @@ class Counts(Mapping[T, int]):
                 'a sequence of dice into a die with sequence outcomes\n'
                 'according to the Cartesian product.')
 
-        mapping: MutableMapping[T, int] = {}
         for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid key.')
