@@ -23,12 +23,10 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jupyterlab_server pkginfo
-          pip install --pre jupyterlite-core
-          pip install --pre jupyterlite-pyodide-kernel
+          pip install -r notebook_requirements.txt
       - name: Build JupyterLite Site
         run: |
-          jupyter lite build
+          jupyter lite build --contents notebooks --output_dir dist --ignore_sys_prefix
       - name: Copy Favicon
         run: |
           mkdir -p dist/
