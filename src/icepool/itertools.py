@@ -563,12 +563,15 @@ def map_to_pool(
         ValueError: If `denominator` cannot be made consistent with the 
             resulting mixture of pools.
     """
-    transition_function = _transition_and_star(repl, len(args), star)
+    transition_function, star = _transition_and_star(repl, len(args), star)
 
     data: 'MutableMapping[icepool.MultisetExpression[T], int]' = defaultdict(
         int)
     for outcomes, quantity in icepool.iter_cartesian_product(*args):
-        pool = transition_function(*outcomes, **kwargs)
+        if star:
+            pool = transition_function(*outcomes[0], *outcomes[1:], **kwargs)
+        else:
+            pool = transition_function(*outcomes, **kwargs)
         if pool is icepool.Reroll:
             continue
         elif isinstance(pool, icepool.MultisetExpression):
