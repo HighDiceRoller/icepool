@@ -156,12 +156,7 @@ def map(
         result: 'icepool.Die[T]'
 
         result, _ = icepool.itertools.markov_chain.absorbing_markov_chain(
-            icepool.Die([first_arg]),
-            transition,
-            first_arg,
-            *extra_args,
-            star=star,
-            **kwargs)
+            transition, first_arg, *extra_args, star=star, **kwargs)
         return result
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
@@ -426,12 +421,7 @@ def mean_time_to_absorb(
     # T_co and U should be the same in this case.
 
     _, result = icepool.itertools.markov_chain.absorbing_markov_chain(
-        icepool.Die([initial_state]),
-        transition,
-        initial_state,
-        *extra_args,
-        star=star,
-        **kwargs)
+        transition, initial_state, *extra_args, star=star, **kwargs)
     return result
 
 

@@ -76,10 +76,9 @@ class SparseVector(MutableMapping[T, int]):
 
 
 def absorbing_markov_chain(
-    die: 'icepool.Die[T]',
     function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType | Break]',
     /,
-    first_arg: 'Outcome | icepool.Die',
+    initial_state: 'T | icepool.Die[T]',
     *extra_args: 'Outcome | icepool.Die',
     star: bool,
     **kwargs,
@@ -104,40 +103,40 @@ def absorbing_markov_chain(
     # The outcomes of the Die are (is_absorbing, outcome)
     transients: MutableMapping[T, icepool.Die[tuple[bool, T]]] = {}
 
-    frontier = set(die.outcomes())
+    initial_die: 'icepool.Die' = icepool.Die([initial_state])
+    frontier = set(initial_die.outcomes())
     while frontier:
         outcome = frontier.pop()
         next_outcomes = []
         next_quantities = []
-        for (first_outcome,
-             *extra_outcomes), quantity in icepool.iter_cartesian_product(
-                 first_arg, *extra_args):
+        for extra_outcomes, quantity in icepool.iter_cartesian_product(
+                *extra_args):
             if star:
-                raw_outcome = function(*first_outcome, *extra_outcomes,
-                                       **kwargs)
+                raw_outcome = function(*outcome, *extra_outcomes, **kwargs)
             else:
-                raw_outcome = function(first_outcome, *extra_outcomes,
-                                       **kwargs)
-            special, next_outcome = outcome_special(raw_outcome, first_outcome)
+                raw_outcome = function(outcome, *extra_outcomes, **kwargs)
+            special, next_outcome = outcome_special(raw_outcome, outcome)
             match special:
                 case OutcomeSpecial.NORMAL:
                     next_outcomes.append((False, next_outcome))
                     next_quantities.append(quantity)
-                    if next_outcome not in transients:
-                        frontier.add(next_outcome)
                 case OutcomeSpecial.REROLL:
+                    # TODO: different reroll types?
                     continue
                 case OutcomeSpecial.BREAK:
                     next_outcomes.append((True, next_outcome))
                     next_quantities.append(quantity)
-            transients[outcome] = icepool.Die(next_outcomes, next_quantities)
+        transients[outcome] = icepool.Die(next_outcomes, next_quantities)
+        for is_absorbing, next_outcome in transients[outcome]:
+            if not is_absorbing and next_outcome not in transients:
+                frontier.add(next_outcome)
 
     # Create the transient matrix to be solved.
     t = len(transients)
 
     if t == 0:
         # No transients; everything is absorbed immediately.
-        return die.simplify(), Fraction(0, 1)
+        return initial_die.simplify(), Fraction(0, 1)
 
     outcome_to_index = {
         outcome: i
@@ -161,7 +160,7 @@ def absorbing_markov_chain(
                 dst_index = outcome_to_index[dst]
                 fundamental_solve[dst_index][src] -= quantity
     for src_index, src in enumerate(transients.keys()):
-        fundamental_solve[src_index][Visit] = die.quantity(src)
+        fundamental_solve[src_index][Visit] = initial_die.quantity(src)
 
     # Solve the matrix using Gaussian elimination.
 

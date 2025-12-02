@@ -32,6 +32,9 @@ def iter_cartesian_product(
     Yields:
         Tuples containing one outcome per arg and the joint quantity.
     """
+    if len(args) == 0:
+        yield (), 1
+        return
 
     def arg_items(arg) -> Sequence[tuple[Any, int]]:
         items = getattr(arg, '_items_for_cartesian_product', None)
