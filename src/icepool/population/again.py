@@ -239,7 +239,7 @@ class AgainExpression(MaybeHashKeyed):
 
 
 def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
-    """Returns True iff the outcome (recursively) contains any instances of Again."""
+    """Returns True iff outcomes contains any instances of Again."""
     if isinstance(outcomes, icepool.Die):
         # Dice should already have flattened out any Agains.
         return False
