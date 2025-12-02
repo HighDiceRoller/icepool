@@ -150,6 +150,7 @@ def map(
         again_count: int | None = None,
         again_depth: int | None = None,
         again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
+        _append_time: bool = False,
         **kwargs) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, returning a Die.
 
@@ -213,11 +214,14 @@ def map(
     if len(args) == 0:
         if repeat != 1:
             raise ValueError('If no arguments are given, repeat must be 1.')
+        if isinstance(repl, Mapping):
+            raise ValueError(
+                'If no arguments are given, repl must be a Mapping.')
+        return icepool.Die([repl(**kwargs)])
 
     transition, star = _transition_and_star(repl, len(args), star)
 
     # Here len(args) is at least 1.
-
     die_args: 'Sequence[T | icepool.Die[T]]' = [
         (
             arg.expand() if isinstance(arg, icepool.MultisetExpression) else
@@ -232,6 +236,7 @@ def map(
         repeat = time_limit
 
     if repeat == 'inf':
+        # TODO: update this
         # Infinite repeat.
         # T_co and U should be the same in this case.
         def unary_transition_function(state):
@@ -258,42 +263,46 @@ def map(
         total_non_break_weight = 1
         total_break_die: 'icepool.Die[T]' = icepool.Die([])
         total_break_weight = 0
-        non_break_outcomes: 'list[T | icepool.Die[T] | icepool.AgainExpression]'
-        break_outcomes: 'list[T | icepool.Die[T] | icepool.AgainExpression]'
+        non_break_outcomes: list
+        break_outcomes: list
         # TODO: repeat vs. time_limit
-        for _ in range(repeat):
+        for i in range(repeat):
             non_break_outcomes, non_break_quantities, break_outcomes, break_quantities, reroll_quantity = _map_single(
                 transition,
                 total_non_break_die,
                 *extra_args,
                 star=star,
                 **kwargs)
+            if _append_time:
+                break_outcomes = [(outcome, i) for outcome in break_outcomes]
             non_break_denominator = sum(non_break_quantities)
             break_denominator = sum(break_quantities)
             # TODO: reroll one level versus restart
             denominator = non_break_denominator + break_denominator + reroll_quantity
-            break_outcomes.append(total_break_die)
-            break_quantities.append(total_break_weight * denominator)
-            total_break_die = icepool.Die(break_outcomes, break_quantities)
-            total_break_weight = total_break_weight * (
-                denominator // total_non_break_weight) + break_denominator
-            if non_break_denominator > 0:
-                # problem: having two separate dice means Again may not be able to reach the outcomes on the other side
-                # maybe restrict Again to repeat = 1
-                print(non_break_outcomes, non_break_quantities)
+            if non_break_denominator > 0 and i < repeat - 1:
+                break_outcomes.append(total_break_die)
+                break_quantities.append(total_break_weight * denominator)
+                total_break_die = icepool.Die(break_outcomes, break_quantities)
+                total_break_weight = total_break_weight * (
+                    denominator // total_non_break_weight) + break_denominator
                 total_non_break_die = icepool.Die(non_break_outcomes,
                                                   non_break_quantities)
                 total_non_break_weight = non_break_denominator
             else:
-                total_non_break_die = icepool.Die([])
-                total_non_break_weight = 0
-                break
+                if _append_time:
+                    non_break_outcomes = [(outcome, i)
+                                          for outcome in non_break_outcomes]
+                break_outcomes += non_break_outcomes
+                break_quantities += non_break_quantities
+                break_outcomes.append(total_break_die)
+                break_quantities.append(total_break_weight * denominator)
+                return icepool.Die(break_outcomes,
+                                   break_quantities,
+                                   again_count=again_count,
+                                   again_depth=again_depth,
+                                   again_end=again_end)
 
-        return icepool.Die([total_non_break_die, total_break_die],
-                           [total_non_break_weight, total_break_weight],
-                           again_count=again_count,
-                           again_depth=again_depth,
-                           again_end=again_end)
+        raise RuntimeError('Should not be reached.')
 
 
 @overload
@@ -454,28 +463,15 @@ def map_and_time(
     Returns:
         The `Die` after the modification.
     """
-    transition_function = _transition_and_star(repl, 1 + len(extra_args), star)
-
-    result: 'icepool.Die[tuple[T, int]]' = map(lambda x: (x, 0), initial_state)
-
-    # Note that we don't expand extra_args during the outer map.
-    # This is needed to correctly evaluate whether each outcome is absorbing.
-    def transition_with_steps(outcome_and_steps, extra_args):
-        outcome, steps = outcome_and_steps
-        next_outcome = map(transition_function,
-                           outcome,
-                           *extra_args,
-                           star=False,
-                           **kwargs)
-        if icepool.population.markov_chain.is_absorbing(outcome, next_outcome):
-            return outcome, steps
-        else:
-            return icepool.tupleize(next_outcome, steps + 1)
-
-    return map(transition_with_steps,
-               result,
-               extra_args,
-               time_limit=time_limit)
+    # Use hidden _append_time argument.
+    return map(
+        repl,  # type: ignore
+        initial_state,
+        *extra_args,
+        star=star,
+        time_limit=time_limit,
+        _append_time=True,
+        **kwargs)
 
 
 def mean_time_to_absorb(
