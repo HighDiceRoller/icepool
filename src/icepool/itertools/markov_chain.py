@@ -1,10 +1,14 @@
+__docformat__ = 'google'
+
 import icepool
+from icepool.itertools.common import (Break, OutcomeSpecial,
+                                      transition_and_star, outcome_special)
 
 import enum
 import math
 from collections import defaultdict
 
-from icepool.typing import T
+from icepool.typing import Outcome, T
 from fractions import Fraction
 from typing import Callable, MutableMapping
 
@@ -71,18 +75,14 @@ class SparseVector(MutableMapping[T, int]):
         return str(self._data)
 
 
-def is_absorbing(outcome, next_outcome) -> bool:
-    if outcome == next_outcome:
-        return True
-    if isinstance(next_outcome, icepool.Die) and next_outcome.quantity(
-            outcome) == next_outcome.denominator():
-        return True
-    return False
-
-
 def absorbing_markov_chain(
     die: 'icepool.Die[T]',
-    function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType]'
+    function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType | Break]',
+    /,
+    first_arg: 'Outcome | icepool.Die',
+    *extra_args: 'Outcome | icepool.Die',
+    star: bool,
+    **kwargs,
 ) -> 'tuple[icepool.Die[T], Fraction]':
     """Computes the absorption distribution of an absorbing Markov chain.
 
@@ -101,17 +101,36 @@ def absorbing_markov_chain(
     # Find all reachable states.
 
     # outcome -> Die representing the next distribution
-    transients: MutableMapping[T, icepool.Die] = {}
+    # The outcomes of the Die are (is_absorbing, outcome)
+    transients: MutableMapping[T, icepool.Die[tuple[bool, T]]] = {}
 
-    frontier = list(die.outcomes())
+    frontier = set(die.outcomes())
     while frontier:
         outcome = frontier.pop()
-        next_outcome: icepool.Die[T] = icepool.Die([function(outcome)])
-        if is_absorbing(outcome, next_outcome):
-            continue
-        if outcome not in transients:
-            transients[outcome] = icepool.Die([next_outcome]).simplify()
-            frontier += list(next_outcome.outcomes())
+        next_outcomes = []
+        next_quantities = []
+        for (first_outcome,
+             *extra_outcomes), quantity in icepool.iter_cartesian_product(
+                 first_arg, *extra_args):
+            if star:
+                raw_outcome = function(*first_outcome, *extra_outcomes,
+                                       **kwargs)
+            else:
+                raw_outcome = function(first_outcome, *extra_outcomes,
+                                       **kwargs)
+            special, next_outcome = outcome_special(raw_outcome, first_outcome)
+            match special:
+                case OutcomeSpecial.NORMAL:
+                    next_outcomes.append((False, next_outcome))
+                    next_quantities.append(quantity)
+                    if next_outcome not in transients:
+                        frontier.add(next_outcome)
+                case OutcomeSpecial.REROLL:
+                    continue
+                case OutcomeSpecial.BREAK:
+                    next_outcomes.append((True, next_outcome))
+                    next_quantities.append(quantity)
+            transients[outcome] = icepool.Die(next_outcomes, next_quantities)
 
     # Create the transient matrix to be solved.
     t = len(transients)
@@ -135,12 +154,12 @@ def absorbing_markov_chain(
     ]
     for src_index, (src, transition) in enumerate(transients.items()):
         fundamental_solve[src_index][src] += transition.denominator()
-        for dst, quantity in transition.items():
-            if dst in transients:
+        for (is_absorbing, dst), quantity in transition.items():
+            if is_absorbing:
+                absorption_matrix[src_index][dst] = quantity
+            else:
                 dst_index = outcome_to_index[dst]
                 fundamental_solve[dst_index][src] -= quantity
-            else:
-                absorption_matrix[src_index][dst] = quantity
     for src_index, src in enumerate(transients.keys()):
         fundamental_solve[src_index][Visit] = die.quantity(src)
 

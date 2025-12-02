@@ -1,112 +1,26 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.population.markov_chain
+import icepool.itertools.markov_chain
+from icepool.itertools.common import (Break, OutcomeSpecial,
+                                      transition_and_star, outcome_special)
 
 from collections import defaultdict
-from enum import Enum
 from fractions import Fraction
 from functools import partial, update_wrapper
 
 from typing import Any, Callable, Generic, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
-from icepool.typing import Outcome, T, infer_star
-
-
-class Break(Generic[T]):
-    """Wrapper around a return value for triggering an early exit from `map(repeat)`."""
-
-    def __init__(self, outcome: T | None = None):
-        """Constructor.
-        
-        Args:
-            outcome: The wrapped outcome. If `None`, it is considered to be
-                equal to the first argument to the current iteration of `map()`.
-        """
-        self.outcome = outcome
-
-    def __hash__(self) -> int:
-        return hash((Break, self.outcome))
-
-    def __repr__(self) -> str:
-        return f'Break({repr(self.outcome)})'
-
-    def __str__(self) -> str:
-        return f'Break({str(self.outcome)})'
-
-
-def _transition_and_star(repl: 'Callable | Mapping', arg_count: int,
-                         star: bool | None) -> 'tuple[Callable, bool]':
-    """Expresses repl as a function and infers star."""
-    if callable(repl):
-        if star is None:
-            star = infer_star(repl, arg_count)
-        return repl, star
-    elif isinstance(repl, Mapping):
-        if arg_count != 1:
-            raise ValueError(
-                'If a mapping is provided for repl, len(args) must be 1.')
-        mapping = cast(Mapping, repl)
-        return lambda o: mapping.get(o, o), False
-    else:
-        raise TypeError('repl must be a callable or a mapping.')
-
-
-class OutcomeSpecial(Enum):
-    NORMAL = 0
-    REROLL = -1
-    BREAK = 1
-
-
-@overload
-def _outcome_special(
-    outcome: 'T | icepool.Die[T] | icepool.AgainExpression | Break[T]',
-    first_arg
-) -> 'tuple[OutcomeSpecial, T | icepool.Die[T] | icepool.AgainExpression]':
-    ...
-
-
-@overload
-def _outcome_special(
-        outcome: icepool.RerollType,
-        first_arg) -> 'tuple[Literal[OutcomeSpecial.REROLL], None]':
-    ...
-
-
-@overload
-def _outcome_special(
-        outcome:
-    'T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression | Break[T]',
-        first_arg) -> 'tuple[OutcomeSpecial, T | icepool.Die[T] | None]':
-    ...
-
-
-def _outcome_special(
-    outcome:
-    'T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression | Break[T]',
-    first_arg
-) -> 'tuple[OutcomeSpecial, T | icepool.Die[T] | icepool.AgainExpression | None]':
-    """Determines any special treatment to perform on the outcome, and the effective outcome.
-    
-    If the outcome is == first_arg, it is treated as a BREAK.
-    """
-    if outcome is icepool.Reroll:
-        return OutcomeSpecial.REROLL, None
-    elif outcome == first_arg:
-        return OutcomeSpecial.BREAK, outcome  # type: ignore
-    elif isinstance(outcome, Break):
-        if outcome.outcome is None:
-            return OutcomeSpecial.BREAK, first_arg
-        else:
-            return OutcomeSpecial.BREAK, outcome.outcome
-    else:
-        return OutcomeSpecial.NORMAL, outcome
+from icepool.typing import Outcome, T
 
 
 def _map_single(
     transition_function:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression | Break[T]]',
-    /, first_arg: 'Outcome | icepool.Die', *extra_args:
-    'Outcome | icepool.Die', star: bool, **kwargs
+    /,
+    first_arg: 'Outcome | icepool.Die',
+    *extra_args: 'Outcome | icepool.Die',
+    star: bool,
+    **kwargs,
 ) -> 'tuple[list[T | icepool.Die[T] | icepool.AgainExpression], list[int],  list[T | icepool.Die[T] | icepool.AgainExpression], list[int], int]':
     """A single internal iteration for map().
 
@@ -126,7 +40,7 @@ def _map_single(
         else:
             raw_outcome = transition_function(first_outcome, *extra_outcomes,
                                               **kwargs)
-        special, outcome = _outcome_special(raw_outcome, first_outcome)
+        special, outcome = outcome_special(raw_outcome, first_outcome)
         match special:
             case OutcomeSpecial.NORMAL:
                 non_break_outcomes.append(outcome)  # type: ignore
@@ -219,7 +133,7 @@ def map(
                 'If no arguments are given, repl must be a Mapping.')
         return icepool.Die([repl(**kwargs)])
 
-    transition, star = _transition_and_star(repl, len(args), star)
+    transition, star = transition_and_star(repl, len(args), star)
 
     # Here len(args) is at least 1.
     die_args: 'Sequence[T | icepool.Die[T]]' = [
@@ -236,23 +150,18 @@ def map(
         repeat = time_limit
 
     if repeat == 'inf':
-        # TODO: update this
         # Infinite repeat.
         # T_co and U should be the same in this case.
-        def unary_transition_function(state):
-            return map(transition,
-                       state,
-                       *extra_args,
-                       star=False,
-                       again_count=again_count,
-                       again_depth=again_depth,
-                       again_end=again_end,
-                       **kwargs)
 
         result: 'icepool.Die[T]'
 
-        result, _ = icepool.population.markov_chain.absorbing_markov_chain(
-            icepool.Die([first_arg]), unary_transition_function)
+        result, _ = icepool.itertools.markov_chain.absorbing_markov_chain(
+            icepool.Die([first_arg]),
+            transition,
+            first_arg,
+            *extra_args,
+            star=star,
+            **kwargs)
         return result
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
@@ -511,19 +420,18 @@ def mean_time_to_absorb(
     Returns:
         The mean time to absorption.
     """
-    transition_function = _transition_and_star(repl, 1 + len(extra_args), star)
+    transition, star = transition_and_star(repl, 1 + len(extra_args), star)
 
     # Infinite repeat.
     # T_co and U should be the same in this case.
-    def unary_transition_function(state):
-        return map(transition_function,
-                   state,
-                   *extra_args,
-                   star=False,
-                   **kwargs)
 
-    _, result = icepool.population.markov_chain.absorbing_markov_chain(
-        icepool.Die([initial_state]), unary_transition_function)
+    _, result = icepool.itertools.markov_chain.absorbing_markov_chain(
+        icepool.Die([initial_state]),
+        transition,
+        initial_state,
+        *extra_args,
+        star=star,
+        **kwargs)
     return result
 
 
@@ -563,7 +471,7 @@ def map_to_pool(
         ValueError: If `denominator` cannot be made consistent with the 
             resulting mixture of pools.
     """
-    transition_function, star = _transition_and_star(repl, len(args), star)
+    transition_function, star = transition_and_star(repl, len(args), star)
 
     data: 'MutableMapping[icepool.MultisetExpression[T], int]' = defaultdict(
         int)
