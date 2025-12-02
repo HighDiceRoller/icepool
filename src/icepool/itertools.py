@@ -281,7 +281,8 @@ def map(
             denominator = non_break_denominator + break_denominator + reroll_quantity
             if non_break_denominator > 0 and i < repeat - 1:
                 break_outcomes.append(total_break_die)
-                break_quantities.append(total_break_weight * denominator)
+                break_quantities.append(total_break_weight * denominator //
+                                        total_non_break_weight)
                 total_break_die = icepool.Die(break_outcomes, break_quantities)
                 total_break_weight = total_break_weight * (
                     denominator // total_non_break_weight) + break_denominator
@@ -295,7 +296,8 @@ def map(
                 break_outcomes += non_break_outcomes
                 break_quantities += non_break_quantities
                 break_outcomes.append(total_break_die)
-                break_quantities.append(total_break_weight * denominator)
+                break_quantities.append(total_break_weight * denominator //
+                                        total_non_break_weight)
                 return icepool.Die(break_outcomes,
                                    break_quantities,
                                    again_count=again_count,

@@ -69,7 +69,7 @@ def test_map_and_time() -> None:
     initial: icepool.Die[int] = icepool.Die([0])
     result = initial.map_and_time(lambda x: x if x >= 2 else x + coin(1, 2),
                                   time_limit=100)
-    assert result.marginals[1].mean() == pytest.approx(4.0)
+    assert float(result.marginals[1].mean()) == pytest.approx(4.0)
 
 
 def test_mean_time_to_absorb() -> None:
