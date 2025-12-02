@@ -92,7 +92,7 @@ def _outcome_special(
     if outcome is icepool.Reroll:
         return OutcomeSpecial.REROLL, None
     elif outcome == first_arg:
-        return OutcomeSpecial.BREAK, first_arg
+        return OutcomeSpecial.BREAK, outcome  # type: ignore
     elif isinstance(outcome, Break):
         if outcome.outcome is None:
             return OutcomeSpecial.BREAK, first_arg
