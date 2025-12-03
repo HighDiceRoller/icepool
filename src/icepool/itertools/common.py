@@ -1,9 +1,11 @@
 __docformat__ = 'google'
 
 import icepool
+
+import itertools
 from enum import Enum
 
-from typing import Any, Callable, Generic, Literal, Mapping, cast, overload
+from typing import Any, Callable, Generic, Literal, Mapping, MutableMapping, cast, overload
 from icepool.typing import T, infer_star
 
 
@@ -46,57 +48,177 @@ def transition_and_star(repl: 'Callable | Mapping', arg_count: int,
         raise TypeError('repl must be a callable or a mapping.')
 
 
-class OutcomeSpecial(Enum):
-    NORMAL = 0
-    REROLL = -1
-    BREAK = 1
+class TransitionCache(Generic[T]):
 
+    _cache: MutableMapping[Any, tuple]
+    _is_pure_self_loop: MutableMapping[T, bool]
 
-@overload
-def outcome_special(
-    outcome: 'T | icepool.Die[T] | icepool.AgainExpression | Break[T]',
-    first_arg
-) -> 'tuple[OutcomeSpecial, T | icepool.Die[T] | icepool.AgainExpression]':
-    ...
+    def __init__(
+            self, repl:
+        'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+            *extra_args, star: bool | None, **kwargs):
+        self._cache = {}
+        self._is_pure_self_loop = {}
+        self._extra_args = extra_args
+        self._kwargs = kwargs
+        self._transition, self._star = transition_and_star(
+            repl,
+            len(extra_args) + 1, star)
 
-
-@overload
-def outcome_special(
-        outcome: icepool.RerollType,
-        first_arg) -> 'tuple[Literal[OutcomeSpecial.REROLL], None]':
-    ...
-
-
-@overload
-def outcome_special(
-        outcome:
-    'T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression | Break[T]',
-        first_arg) -> 'tuple[OutcomeSpecial, T | icepool.Die[T] | None]':
-    ...
-
-
-def outcome_special(
-    outcome:
-    'T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression | Break[T]',
-    first_arg
-) -> 'tuple[OutcomeSpecial, T | icepool.Die[T] | icepool.AgainExpression | None]':
-    """Determines any special treatment to perform on the outcome, and the effective outcome.
-    
-    If the outcome is == first_arg, it is treated as a BREAK.
-    """
-    if outcome is icepool.Reroll:
-        return OutcomeSpecial.REROLL, None
-    elif outcome == first_arg:
-        return OutcomeSpecial.BREAK, outcome  # type: ignore
-    elif isinstance(outcome, icepool.Die):
-        if outcome.probability(first_arg) == 1:
-            return OutcomeSpecial.BREAK, outcome
+    def is_pure_self_loop(self,
+                          curr_state_or_die: 'T | icepool.Die[T]') -> bool:
+        """Determines whether the given state is a self-loop.
+        
+        This only works if the input is the same as the output type.
+        """
+        if isinstance(curr_state_or_die, icepool.Die):
+            if len(curr_state_or_die) != 1:
+                return False
+            curr_state = curr_state_or_die.outcomes()[0]
         else:
-            return OutcomeSpecial.NORMAL, outcome
-    elif isinstance(outcome, Break):
-        if outcome.outcome is None:
-            return OutcomeSpecial.BREAK, first_arg
-        else:
-            return OutcomeSpecial.BREAK, outcome.outcome
-    else:
-        return OutcomeSpecial.NORMAL, outcome
+            curr_state = curr_state_or_die
+
+        if curr_state in self._is_pure_self_loop:
+            return self._is_pure_self_loop[curr_state]
+
+        result = True
+        for extra_outcomes, quantity in icepool.iter_cartesian_product(
+                *self._extra_args):
+            if self._star:
+                next_state = self._transition(
+                    *curr_state,  # type: ignore
+                    *extra_outcomes,
+                    **self._kwargs)
+            else:
+                next_state = self._transition(curr_state, *extra_outcomes,
+                                              **self._kwargs)
+            if next_state is icepool.Reroll:
+                result = False  # Might restart, therefore not a self-loop
+                break
+            elif isinstance(next_state, Break):
+                # Unwrap Breaks.
+                if next_state.outcome is None:
+                    # Breaks to the current outcome
+                    continue
+                else:
+                    next_state = next_state.outcome
+
+            if isinstance(next_state, icepool.Die):
+                if next_state.probability(curr_state) == 1:
+                    continue
+            else:
+                if next_state == curr_state:
+                    continue
+            result = False
+            break
+
+        self._is_pure_self_loop[curr_state] = result
+        return result
+
+    def step_state(
+        self, curr_state: T
+    ) -> 'tuple[list[T | icepool.Die[T]], list[int], list[T | icepool.Die[T]], list[int], int]':
+        """Computes and caches a single step of the transition function.
+
+        This only works if the input is the same as the output type.
+
+        Returns:
+            A tuple with the following elements:
+            * `non_break_states`: A list of all non-break states.
+            * `non_break_quantities`: A list of corresponding `int` quantities.
+            * `break_states`: A list of break states. These comprise the
+                following:
+                * Explicit `Break()`s.
+                * Pure self-loops, i.e. the state transitions to itself with
+                    probability 1 and no chance of `Reroll`.
+            * `break_quantities`: A list of corresponding `int` quantities.
+            * `reroll_quantity`: An `int` representing the total quantity of
+                `Reroll`.
+        """
+        if curr_state in self._cache:
+            return self._cache[curr_state]
+        non_break_states: list[T | icepool.Die[T]] = []
+        non_break_quantities: list[int] = []
+        break_states: list[T | icepool.Die[T]] = []
+        break_quantities: list[int] = []
+        reroll_quantity = 0
+        for extra_outcomes, quantity in icepool.iter_cartesian_product(
+                *self._extra_args):
+            if self._star:
+                next_state = self._transition(
+                    *curr_state,  # type: ignore
+                    *extra_outcomes,
+                    **self._kwargs)
+            else:
+                next_state = self._transition(curr_state, *extra_outcomes,
+                                              **self._kwargs)
+            if next_state is icepool.Reroll:
+                reroll_quantity += quantity
+            elif isinstance(next_state, Break):
+                if next_state.outcome is None:
+                    break_states.append(curr_state)
+                    break_quantities.append(quantity)
+                else:
+                    break_states.append(next_state.outcome)
+                    break_quantities.append(quantity)
+            elif self.is_pure_self_loop(next_state):
+                break_states.append(next_state)
+                break_quantities.append(quantity)
+            else:
+                non_break_states.append(next_state)
+                non_break_quantities.append(quantity)
+        result = (non_break_states, non_break_quantities, break_states,
+                  break_quantities, reroll_quantity)
+        self._cache[curr_state] = result
+        return result
+
+    def step_die(self, curr_die: 'icepool.Die[T]'):
+        result_non_break_states: list[T | icepool.Die[T]] = []
+        result_non_break_quantities: list[int] = []
+        result_break_states: list[T | icepool.Die[T]] = []
+        result_break_quantities: list[int] = []
+        result_reroll_quantity = 0
+        for curr_state, quantity in curr_die.items():
+            (non_break_states, non_break_quantities, break_states,
+             break_quantities, reroll_quantity) = self.step_state(curr_state)
+            result_non_break_states += non_break_states
+            result_non_break_quantities += [
+                quantity * q for q in non_break_quantities
+            ]
+            result_break_states += break_states
+            result_break_quantities += [quantity * q for q in break_quantities]
+            result_reroll_quantity += reroll_quantity * quantity
+        return (result_non_break_states, result_non_break_quantities,
+                result_break_states, result_break_quantities,
+                result_reroll_quantity)
+
+    def step_last(
+        self, curr_die: 'icepool.Die[T]'
+    ) -> 'tuple[ list[T | icepool.Die[T]], list[int], int]':
+        final_states: list[T | icepool.Die[T]] = []
+        final_quantites: list[int] = []
+        reroll_quantity = 0
+        for (curr_state,
+             *extra_outcomes), quantity in icepool.iter_cartesian_product(
+                 curr_die, *self._extra_args):
+            if self._star:
+                final_state = self._transition(
+                    *curr_state,  # type: ignore
+                    *extra_outcomes,
+                    **self._kwargs)
+            else:
+                final_state = self._transition(curr_state, *extra_outcomes,
+                                               **self._kwargs)
+            if final_state is icepool.Reroll:
+                reroll_quantity += quantity
+            elif isinstance(final_state, Break):
+                if final_state.outcome is None:
+                    final_states.append(curr_state)
+                    final_quantites.append(quantity)
+                else:
+                    final_states.append(final_state.outcome)
+                    final_quantites.append(quantity)
+            else:
+                final_states.append(final_state)
+                final_quantites.append(quantity)
+        return (final_states, final_quantites, reroll_quantity)

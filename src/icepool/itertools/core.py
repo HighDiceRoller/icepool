@@ -2,55 +2,14 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.itertools.markov_chain
-from icepool.itertools.common import (Break, OutcomeSpecial,
-                                      transition_and_star, outcome_special)
+from icepool.itertools.common import (TransitionCache, transition_and_star)
 
 from collections import defaultdict
 from fractions import Fraction
 from functools import partial, update_wrapper
 
-from typing import Any, Callable, Generic, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
+from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
 from icepool.typing import Outcome, T
-
-
-def _map_single(
-    transition_function:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression | Break[T]]',
-    /,
-    first_arg: 'Outcome | icepool.Die',
-    *extra_args: 'Outcome | icepool.Die',
-    star: bool,
-    **kwargs,
-) -> 'tuple[list[T | icepool.Die[T] | icepool.AgainExpression], list[int],  list[T | icepool.Die[T] | icepool.AgainExpression], list[int], int]':
-    """A single internal iteration for map().
-
-    Returns: non-Break outcomes, non-Break quantities, Break outcomes, Break quantities.
-    """
-    non_break_outcomes: list[T | icepool.Die[T] | icepool.AgainExpression] = []
-    non_break_quantities: list[int] = []
-    break_outcomes: list[T | icepool.Die[T] | icepool.AgainExpression] = []
-    break_quantities: list[int] = []
-    reroll_quantity = 0
-    for (first_outcome,
-         *extra_outcomes), quantity in icepool.iter_cartesian_product(
-             first_arg, *extra_args):
-        if star:
-            raw_outcome = transition_function(*first_outcome, *extra_outcomes,
-                                              **kwargs)
-        else:
-            raw_outcome = transition_function(first_outcome, *extra_outcomes,
-                                              **kwargs)
-        special, outcome = outcome_special(raw_outcome, first_outcome)
-        match special:
-            case OutcomeSpecial.NORMAL:
-                non_break_outcomes.append(outcome)  # type: ignore
-                non_break_quantities.append(quantity)
-            case OutcomeSpecial.REROLL:
-                reroll_quantity += quantity
-            case OutcomeSpecial.BREAK:
-                break_outcomes.append(outcome)  # type: ignore
-                break_quantities.append(quantity)
-    return non_break_outcomes, non_break_quantities, break_outcomes, break_quantities, reroll_quantity
 
 
 def map(
@@ -133,8 +92,6 @@ def map(
                 'If no arguments are given, repl must be a Mapping.')
         return icepool.Die([repl(**kwargs)])
 
-    transition, star = transition_and_star(repl, len(args), star)
-
     # Here len(args) is at least 1.
     die_args: 'Sequence[T | icepool.Die[T]]' = [
         (
@@ -146,6 +103,8 @@ def map(
     first_arg = die_args[0]
     extra_args = die_args[1:]
 
+    transition_cache = TransitionCache(repl, *extra_args, star=star, **kwargs)
+
     if time_limit is not None:
         repeat = time_limit
 
@@ -156,7 +115,7 @@ def map(
         result: 'icepool.Die[T]'
 
         result, _ = icepool.itertools.markov_chain.absorbing_markov_chain(
-            transition, first_arg, *extra_args, star=star, **kwargs)
+            transition_cache, first_arg)
         return result
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
@@ -171,39 +130,61 @@ def map(
         break_outcomes: list
         # TODO: repeat vs. time_limit
         for i in range(repeat):
-            non_break_outcomes, non_break_quantities, break_outcomes, break_quantities, reroll_quantity = _map_single(
-                transition,
-                total_non_break_die,
-                *extra_args,
-                star=star,
-                **kwargs)
-            if _append_time:
-                break_outcomes = [(outcome, i) for outcome in break_outcomes]
-            non_break_denominator = sum(non_break_quantities)
-            break_denominator = sum(break_quantities)
-            # TODO: reroll one level versus restart
-            denominator = non_break_denominator + break_denominator + reroll_quantity
-            if non_break_denominator > 0 and i < repeat - 1:
-                break_outcomes.append(total_break_die)
-                break_quantities.append(total_break_weight * denominator //
-                                        total_non_break_weight)
-                total_break_die = icepool.Die(break_outcomes, break_quantities)
-                total_break_weight = total_break_weight * (
-                    denominator // total_non_break_weight) + break_denominator
-                total_non_break_die = icepool.Die(non_break_outcomes,
-                                                  non_break_quantities)
-                total_non_break_weight = non_break_denominator
-            else:
+            if i < repeat - 1:
+                (non_break_outcomes, non_break_quantities, break_outcomes,
+                 break_quantities, reroll_quantity
+                 ) = transition_cache.step_die(total_non_break_die)
                 if _append_time:
-                    non_break_outcomes = [(outcome, i)
-                                          for outcome in non_break_outcomes]
-                break_outcomes += non_break_outcomes
-                break_quantities += non_break_quantities
-                break_outcomes.append(total_break_die)
-                break_quantities.append(total_break_weight * denominator //
-                                        total_non_break_weight)
-                return icepool.Die(break_outcomes,
-                                   break_quantities,
+                    break_outcomes = [
+                        icepool.tupleize(outcome, i)
+                        for outcome in break_outcomes
+                    ]
+                non_break_denominator = sum(non_break_quantities)
+                break_denominator = sum(break_quantities)
+                # TODO: reroll one level versus restart
+                denominator = non_break_denominator + break_denominator + reroll_quantity
+                if non_break_denominator > 0:
+                    break_outcomes.append(total_break_die)
+                    break_quantities.append(total_break_weight * denominator //
+                                            total_non_break_weight)
+                    total_break_die = icepool.Die(break_outcomes,
+                                                  break_quantities)
+                    total_break_weight = total_break_weight * (
+                        denominator //
+                        total_non_break_weight) + break_denominator
+                    total_non_break_die = icepool.Die(non_break_outcomes,
+                                                      non_break_quantities)
+                    total_non_break_weight = non_break_denominator
+                else:
+                    if _append_time:
+                        non_break_outcomes = [
+                            icepool.tupleize(outcome, i)
+                            for outcome in non_break_outcomes
+                        ]
+                    break_outcomes += non_break_outcomes
+                    break_quantities += non_break_quantities
+                    break_outcomes.append(total_break_die)
+                    break_quantities.append(total_break_weight * denominator //
+                                            total_non_break_weight)
+                    return icepool.Die(break_outcomes,
+                                       break_quantities,
+                                       again_count=again_count,
+                                       again_depth=again_depth,
+                                       again_end=again_end)
+            else:
+                (final_outcomes, final_quantites, reroll_quantity
+                 ) = transition_cache.step_last(total_non_break_die)
+                if _append_time:
+                    final_outcomes = [
+                        icepool.tupleize(outcome, i)  # type: ignore
+                        for outcome in final_outcomes
+                    ]
+                denominator = sum(final_quantites) + reroll_quantity
+                final_outcomes.append(total_break_die)
+                final_quantites.append(total_break_weight * denominator //
+                                       total_non_break_weight)
+                return icepool.Die(final_outcomes,
+                                   final_quantites,
                                    again_count=again_count,
                                    again_depth=again_depth,
                                    again_end=again_end)
@@ -415,13 +396,13 @@ def mean_time_to_absorb(
     Returns:
         The mean time to absorption.
     """
-    transition, star = transition_and_star(repl, 1 + len(extra_args), star)
+    transition_cache = TransitionCache(repl, *extra_args, star=star, **kwargs)
 
     # Infinite repeat.
     # T_co and U should be the same in this case.
 
     _, result = icepool.itertools.markov_chain.absorbing_markov_chain(
-        transition, initial_state, *extra_args, star=star, **kwargs)
+        transition_cache, initial_state)
     return result
 
 

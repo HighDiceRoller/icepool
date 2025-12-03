@@ -1,8 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.itertools.common import (Break, OutcomeSpecial,
-                                      transition_and_star, outcome_special)
+from icepool.itertools.common import (Break, TransitionCache)
 
 import enum
 import math
@@ -76,12 +75,8 @@ class SparseVector(MutableMapping[T, int]):
 
 
 def absorbing_markov_chain(
-    function: 'Callable[..., T | icepool.Die[T] | icepool.RerollType | Break]',
-    /,
+    transition_cache: TransitionCache[T],
     initial_state: 'T | icepool.Die[T]',
-    *extra_args: 'Outcome | icepool.Die',
-    star: bool,
-    **kwargs,
 ) -> 'tuple[icepool.Die[T], Fraction]':
     """Computes the absorption distribution of an absorbing Markov chain.
 
@@ -106,28 +101,16 @@ def absorbing_markov_chain(
     initial_die: 'icepool.Die' = icepool.Die([initial_state])
     frontier = set(initial_die.outcomes())
     while frontier:
-        outcome = frontier.pop()
-        next_outcomes = []
-        next_quantities = []
-        for extra_outcomes, quantity in icepool.iter_cartesian_product(
-                *extra_args):
-            if star:
-                raw_outcome = function(*outcome, *extra_outcomes, **kwargs)
-            else:
-                raw_outcome = function(outcome, *extra_outcomes, **kwargs)
-            special, next_outcome = outcome_special(raw_outcome, outcome)
-            match special:
-                case OutcomeSpecial.NORMAL:
-                    next_outcomes.append((False, next_outcome))
-                    next_quantities.append(quantity)
-                case OutcomeSpecial.REROLL:
-                    # TODO: different reroll types?
-                    continue
-                case OutcomeSpecial.BREAK:
-                    next_outcomes.append((True, next_outcome))
-                    next_quantities.append(quantity)
-        transients[outcome] = icepool.Die(next_outcomes, next_quantities)
-        for is_absorbing, next_outcome in transients[outcome]:
+        curr_state = frontier.pop()
+        (non_break_states, non_break_quantities, break_states,
+         break_quantities,
+         reroll_quantity) = transition_cache.step_state(curr_state)
+        next_states = [
+            icepool.tupleize(False, state) for state in non_break_states
+        ] + [icepool.tupleize(True, state) for state in break_states]
+        next_quantities = non_break_quantities + break_quantities
+        transients[curr_state] = icepool.Die(next_states, next_quantities)
+        for is_absorbing, next_outcome in transients[curr_state]:
             if not is_absorbing and next_outcome not in transients:
                 frontier.add(next_outcome)
 
