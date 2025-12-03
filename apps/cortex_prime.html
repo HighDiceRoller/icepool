@@ -605,6 +605,12 @@ def total_data(die, selected_dist):
             js.totalChart.data.datasets[4].data = total_data(d12_effect, selected_dist)
             js.totalChart.data.datasets[5].data = total_data(beyond_effect, selected_dist)
             js.totalChart.data.datasets[6].data = total_data(opposition, 'pmf')
+            if opposition.mean() > 0:
+                js.totalChart.data.datasets[6].hidden = pyodide.ffi.to_js(False)
+            else:
+                js.totalChart.data.datasets[6].hidden = pyodide.ffi.to_js(True)
+                js.totalChart.options.scales.y1.display = pyodide.ffi.to_js(False);
+            
             
             heroic = js.document.getElementById('heroic').checked;
             
