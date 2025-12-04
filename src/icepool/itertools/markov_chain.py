@@ -102,14 +102,9 @@ def absorbing_markov_chain(
     frontier = set(initial_die.outcomes())
     while frontier:
         curr_state = frontier.pop()
-        (non_break_states, non_break_quantities, break_states,
-         break_quantities,
+        (break_and_next_state,
          reroll_quantity) = transition_cache.step_state(curr_state)
-        next_states = [
-            icepool.tupleize(False, state) for state in non_break_states
-        ] + [icepool.tupleize(True, state) for state in break_states]
-        next_quantities = non_break_quantities + break_quantities
-        transients[curr_state] = icepool.Die(next_states, next_quantities)
+        transients[curr_state] = break_and_next_state
         for is_absorbing, next_outcome in transients[curr_state]:
             if not is_absorbing and next_outcome not in transients:
                 frontier.add(next_outcome)

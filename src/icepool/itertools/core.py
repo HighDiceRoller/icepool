@@ -8,7 +8,7 @@ from collections import defaultdict
 from fractions import Fraction
 from functools import partial, update_wrapper
 
-from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, cast, overload
+from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, MutableMapping, Sequence, overload
 from icepool.typing import Outcome, T
 
 
@@ -122,6 +122,7 @@ def map(
     elif repeat == 0:
         return icepool.Die([first_arg])
     else:
+        # TODO: starting states that are already absorbing
         total_non_break_die: 'icepool.Die[T]' = icepool.Die([first_arg])
         total_non_break_weight = 1
         total_break_die: 'icepool.Die[T]' = icepool.Die([])
@@ -173,7 +174,7 @@ def map(
                                        again_end=again_end)
             else:
                 (final_outcomes, final_quantites, reroll_quantity
-                 ) = transition_cache.step_last(total_non_break_die)
+                 ) = transition_cache.step_final(total_non_break_die)
                 if _append_time:
                     final_outcomes = [
                         icepool.tupleize(outcome, i)  # type: ignore
