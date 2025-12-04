@@ -53,7 +53,8 @@ NoCache: Final = NoCacheType.NoCache
 from icepool.function import (d, z, __getattr__, coin, stochastic_round,
                               one_hot, from_cumulative, from_rv, pointwise_max,
                               pointwise_min, min_outcome, max_outcome,
-                              consecutive, sorted_union, commonize_denominator)
+                              consecutive, sorted_union,
+                              harmonize_denominators)
 from icepool.itertools.core import (reduce, accumulate, map, map_function,
                                     map_and_time, mean_time_to_absorb,
                                     map_to_pool)
@@ -163,7 +164,7 @@ __all__ = [
     'CountsKeysView', 'CountsValuesView', 'CountsItemsView', 'from_cumulative',
     'from_rv', 'pointwise_max', 'pointwise_min', 'lowest', 'highest', 'middle',
     'min_outcome', 'max_outcome', 'consecutive', 'sorted_union',
-    'commonize_denominator', 'reduce', 'accumulate', 'map', 'map_function',
+    'harmonize_denominators', 'reduce', 'accumulate', 'map', 'map_function',
     'map_and_time', 'mean_time_to_absorb', 'map_to_pool', 'Reroll',
     'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',
     'MultisetExpression', 'MultisetEvaluator', 'Order',

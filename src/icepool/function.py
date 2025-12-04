@@ -165,7 +165,7 @@ def from_cumulative(outcomes: Sequence[T],
     d = {}
 
     if isinstance(cumulative[0], icepool.Die):
-        cumulative = commonize_denominator(cumulative)
+        cumulative = harmonize_denominators(cumulative)
         for outcome, die in zip(outcomes, cumulative):
             d[outcome] = die.quantity('!=', False) - prev
             prev = die.quantity('!=', False)
@@ -272,7 +272,7 @@ def pointwise_max(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
         args = arg0
     else:
         args = (arg0, ) + more_args
-    args = commonize_denominator(args)
+    args = harmonize_denominators(args)
     outcomes = sorted_union(*args)
     cumulative = [
         min(die.quantity('<=', outcome) for die in args)
@@ -319,7 +319,7 @@ def pointwise_min(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
         args = arg0
     else:
         args = (arg0, ) + more_args
-    args = commonize_denominator(args)
+    args = harmonize_denominators(args)
     outcomes = sorted_union(*args)
     cumulative = [
         max(die.quantity('<=', outcome) for die in args)
@@ -382,15 +382,16 @@ def sorted_union(*args: Iterable[T]) -> tuple[T, ...]:
     return tuple(sorted(set.union(*(set(arg) for arg in args))))
 
 
-def commonize_denominator(dice: 'Sequence[T | icepool.Die[T]]',
-                          weights: Sequence[int] | None = None,
-                          /) -> tuple['icepool.Die[T]', ...]:
+def harmonize_denominators(dice: 'Sequence[T | icepool.Die[T]]',
+                           weights: Sequence[int] | None = None,
+                           /) -> tuple['icepool.Die[T]', ...]:
     """Scale the quantities of the dice so that the denominators are proportional to given weights.
 
     Args:
         dice: Any number of dice or single outcomes convertible to dice.
         weights: The target relative denominators of the dice. If not provided,
-            all dice will be scaled to the same denominator.
+            all dice will be scaled to the same denominator, the same as
+            `weights = [1] * len(dice)`.
 
     Returns:
         A tuple of dice with the adjusted denominators.
