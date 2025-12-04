@@ -1,3 +1,12 @@
+## v2.1.3 - 3 December 2025
+
+* Change `max_pair_lowest()` and `max_pair_highest()` to `max_pair_keep()` and `max_pair_drop()`.
+* Add remaining operators to the `max_pair` methods.
+* Rename `reroll_to_pool(mode)` options from 'highest' to 'high'.
+* Allow `max_time` argument to be omitted from `time_to_sum` if all outcomes are positive.
+* Allow lexicographic comparison between `Vector`s of different length.
+* Prevent unevaluated expressions from being returned from a `@multiset_function`.
+
 ## v2.1.2 - 7 August 2025
 
 * Breaking change: `difference` (but not other operations) now has `keep_negative_counts` parameter again, which defaults to `False`.
