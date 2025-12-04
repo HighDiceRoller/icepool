@@ -1,7 +1,9 @@
 __docformat__ = 'google'
 
+import math
+
 from fractions import Fraction
-from typing import Iterator, MutableMapping
+from typing import Iterator, MutableMapping, Sequence
 
 # b -> list of rows
 comb_row_cache: MutableMapping[int, list[tuple[int, ...]]] = {}
@@ -54,6 +56,20 @@ def iter_hypergeom(deck: tuple[int, ...],
         weight = comb(draws, count)
         for tail_count, tail_weight in iter_hypergeom(deck[1:], draws - count):
             yield (count, ) + tail_count, weight * tail_weight
+
+
+def weighted_lcm(denominators: Sequence[int],
+                 weights: Sequence[int]) -> Sequence[int]:
+    """Computes a minimal scale factor for each denominator so that they are in the ratio given by the weights.
+    
+    If a denominator or its corresponding weight is 0, the corresponding result
+    is 0.
+    """
+    denominator_lcm = math.lcm(*(d // math.gcd(d, w)
+                                 for d, w in zip(denominators, weights)
+                                 if d > 0 and w > 0))
+    return [(denominator_lcm * w // d if d > 0 else 0)
+            for d, w in zip(denominators, weights)]
 
 
 def try_fraction(numerator, denominator) -> Fraction | float:

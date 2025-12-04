@@ -2,6 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 from icepool.collection.counts import Counts
+from icepool.math import weighted_lcm
 
 import math
 from collections import defaultdict
@@ -92,21 +93,14 @@ def merge_weights_lcm(subdatas: Sequence[Mapping[T, int]],
         raise ValueError('weights cannot be negative.')
 
     subdata_denominators = [sum(subdata.values()) for subdata in subdatas]
-
-    denominator_lcm = math.lcm(*(d // math.gcd(d, w)
-                                 for d, w in zip(subdata_denominators, weights)
-                                 if d > 0 and w > 0))
+    scale_factors = weighted_lcm(subdata_denominators, weights)
 
     data: MutableMapping[Any, int] = defaultdict(int)
-    for subdata, subdata_denominator, w in zip(subdatas, subdata_denominators,
-                                               weights):
-        if subdata_denominator == 0 or w == 0:
+    for subdata, scale_factor in zip(subdatas, scale_factors):
+        if scale_factor == 0:
             continue
-        factor = denominator_lcm * w // subdata_denominator
         for outcome, weight in subdata.items():
-            if weight == 0:
-                continue
-            data[outcome] += weight * factor
+            data[outcome] += weight * scale_factor
     return data
 
 

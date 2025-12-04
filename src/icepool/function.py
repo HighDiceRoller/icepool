@@ -3,6 +3,7 @@
 __docformat__ = 'google'
 
 import icepool
+from icepool.math import weighted_lcm
 from icepool.typing import T
 
 from fractions import Fraction
@@ -164,7 +165,7 @@ def from_cumulative(outcomes: Sequence[T],
     d = {}
 
     if isinstance(cumulative[0], icepool.Die):
-        cumulative = commonize_denominator(*cumulative)
+        cumulative = commonize_denominator(cumulative)
         for outcome, die in zip(outcomes, cumulative):
             d[outcome] = die.quantity('!=', False) - prev
             prev = die.quantity('!=', False)
@@ -271,7 +272,7 @@ def pointwise_max(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
         args = arg0
     else:
         args = (arg0, ) + more_args
-    args = commonize_denominator(*args)
+    args = commonize_denominator(args)
     outcomes = sorted_union(*args)
     cumulative = [
         min(die.quantity('<=', outcome) for die in args)
@@ -318,7 +319,7 @@ def pointwise_min(arg0, /, *more_args: 'icepool.Die[T]') -> 'icepool.Die[T]':
         args = arg0
     else:
         args = (arg0, ) + more_args
-    args = commonize_denominator(*args)
+    args = commonize_denominator(args)
     outcomes = sorted_union(*args)
     cumulative = [
         max(die.quantity('<=', outcome) for die in args)
@@ -381,22 +382,24 @@ def sorted_union(*args: Iterable[T]) -> tuple[T, ...]:
     return tuple(sorted(set.union(*(set(arg) for arg in args))))
 
 
-def commonize_denominator(
-        *dice: 'T | icepool.Die[T]') -> tuple['icepool.Die[T]', ...]:
-    """Scale the quantities of the dice so that all of them have the same denominator.
-
-    The denominator is the LCM of the denominators of the arguments.
+def commonize_denominator(dice: 'Sequence[T | icepool.Die[T]]',
+                          weights: Sequence[int] | None = None,
+                          /) -> tuple['icepool.Die[T]', ...]:
+    """Scale the quantities of the dice so that the denominators are proportional to given weights.
 
     Args:
-        *dice: Any number of dice or single outcomes convertible to dice.
+        dice: Any number of dice or single outcomes convertible to dice.
+        weights: The target relative denominators of the dice. If not provided,
+            all dice will be scaled to the same denominator.
 
     Returns:
-        A tuple of dice with the same denominator.
+        A tuple of dice with the adjusted denominators.
     """
+    if weights is None:
+        weights = [1] * len(dice)
     converted_dice = [icepool.implicit_convert_to_die(die) for die in dice]
-    denominator_lcm = math.lcm(*(die.denominator() for die in converted_dice
-                                 if die.denominator() > 0))
+    scale_factors = weighted_lcm([d.denominator() for d in converted_dice],
+                                 weights)
     return tuple(
-        die.multiply_quantities(denominator_lcm //
-                                die.denominator() if die.denominator() >
-                                0 else 1) for die in converted_dice)
+        die.multiply_quantities(scale_factor)
+        for die, scale_factor in zip(converted_dice, scale_factors))
