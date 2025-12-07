@@ -4,7 +4,7 @@ import icepool
 
 import itertools
 import math
-from typing import Any, Iterator, Protocol, Sequence, Type
+from typing import Any, Iterator, Protocol, Sequence, Type, overload
 
 from icepool.typing import A_co, Outcome, S, T
 
@@ -92,6 +92,20 @@ def cartesian_product(
         return population_type(data)
 
 
+@overload
+def tupleize(
+    *args: 'T | icepool.Population[T]'
+) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]]':
+    ...
+
+
+@overload
+def tupleize(
+    *args: 'T | icepool.Population[T] | icepool.RerollType'
+) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]] | icepool.RerollType':
+    ...
+
+
 def tupleize(
     *args: 'T | icepool.Population[T] | icepool.RerollType'
 ) -> 'tuple[T, ...] | icepool.Population[tuple[T, ...]] | icepool.RerollType':
@@ -116,6 +130,20 @@ def tupleize(
         `tuple`s with one element per argument.
     """
     return cartesian_product(*args, outcome_type=tuple)
+
+
+@overload
+def vectorize(
+    *args: 'T | icepool.Population[T]'
+) -> 'icepool.Vector[T] | icepool.Population[icepool.Vector[T]]':
+    ...
+
+
+@overload
+def vectorize(
+    *args: 'T | icepool.Population[T] | icepool.RerollType'
+) -> 'icepool.Vector[T] | icepool.Population[icepool.Vector[T]] | icepool.RerollType':
+    ...
 
 
 def vectorize(
