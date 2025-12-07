@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.itertools.common import (Break, TransitionCache)
+from icepool.itertools.common import (TransitionType, TransitionCache)
 
 import enum
 import math
@@ -96,15 +96,17 @@ def absorbing_markov_chain(
 
     # outcome -> Die representing the next distribution
     # The outcomes of the Die are (is_absorbing, outcome)
-    transients: MutableMapping[T, icepool.Die[tuple[bool, T]]] = {}
+    transients: MutableMapping[T, icepool.Die[tuple[TransitionType, T]]] = {}
 
     initial_die: 'icepool.Die' = icepool.Die([initial_state])
-    frontier = set(initial_die.outcomes())
+    frontier = set()
+    for outcome in initial_die:
+        if not transition_cache.is_pure_self_loop(outcome):
+            frontier.add(outcome)
     while frontier:
         curr_state = frontier.pop()
-        (break_and_next_state,
-         reroll_quantity) = transition_cache.step_state(curr_state)
-        transients[curr_state] = break_and_next_state
+        transients[curr_state] = transition_cache.step_state(
+            curr_state, include_reroll=False)
         for is_absorbing, next_outcome in transients[curr_state]:
             if not is_absorbing and next_outcome not in transients:
                 frontier.add(next_outcome)
@@ -114,6 +116,7 @@ def absorbing_markov_chain(
 
     if t == 0:
         # No transients; everything is absorbed immediately.
+        # TODO: what if we partially start on absorbing states?
         return initial_die.simplify(), Fraction(0, 1)
 
     outcome_to_index = {
@@ -131,8 +134,8 @@ def absorbing_markov_chain(
     ]
     for src_index, (src, transition) in enumerate(transients.items()):
         fundamental_solve[src_index][src] += transition.denominator()
-        for (is_absorbing, dst), quantity in transition.items():
-            if is_absorbing:
+        for (transition_type, dst), quantity in transition.items():
+            if transition_type is TransitionType.BREAK:
                 absorption_matrix[src_index][dst] = quantity
             else:
                 dst_index = outcome_to_index[dst]

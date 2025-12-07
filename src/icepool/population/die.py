@@ -452,7 +452,7 @@ class Die(Population[T_co], MaybeHashKeyed):
             /,
             *extra_args,
             star: bool | None = None,
-            repeat: int | Literal['inf'] = 1,
+            repeat: int | Literal['inf'] | None = None,
             time_limit: int | Literal['inf'] | None = None,
             again_count: int | None = None,
             again_depth: int | None = None,
