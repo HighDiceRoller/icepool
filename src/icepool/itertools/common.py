@@ -8,6 +8,12 @@ from typing import Any, Callable, Generic, Literal, Mapping, MutableMapping, cas
 from icepool.typing import T, infer_star
 
 
+class TransitionType(enum.IntEnum):
+    DEFAULT = 0
+    BREAK = 1
+    REROLL = 2
+
+
 class Break(Generic[T]):
     """Wrapper around a return value for triggering an early exit from `map(repeat)`."""
 
@@ -91,38 +97,33 @@ def map_simple(
                        again_end=again_end)
 
 
-class TransitionType(enum.IntEnum):
-    DEFAULT = 0
-    BREAK = 1
-    REROLL = 2
-
-
 class TransitionCache(Generic[T]):
 
     _cache: 'MutableMapping[T, icepool.Die[tuple[TransitionType, T]]]'
-    _is_pure_self_loop: MutableMapping[T, bool]
+    # state -> DEFAULT or BREAK
+    _self_loop_cache: MutableMapping[T, TransitionType]
 
     def __init__(
             self, repl:
         'Callable[..., T | icepool.Die[T] | icepool.RerollType] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType]',
             *extra_args, star: bool | None, **kwargs):
         self._cache = {}
-        self._is_pure_self_loop = {}
+        self._self_loop_cache = {}
         self._extra_args = extra_args
         self._kwargs = kwargs
         self._transition, self._star = transition_and_star(
             repl,
             len(extra_args) + 1, star)
 
-    def is_pure_self_loop(self, curr_state: T) -> bool:
+    def self_loop_type(self, curr_state: T) -> TransitionType:
         """Determines whether the given state is a self-loop.
         
         This only works if the input is the same as the output type.
         """
-        if curr_state in self._is_pure_self_loop:
-            return self._is_pure_self_loop[curr_state]
+        if curr_state in self._self_loop_cache:
+            return self._self_loop_cache[curr_state]
 
-        result = True
+        result = TransitionType.BREAK
         for extra_outcomes, quantity in icepool.iter_cartesian_product(
                 *self._extra_args):
             if self._star:
@@ -134,7 +135,7 @@ class TransitionCache(Generic[T]):
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
             if next_state is icepool.Reroll:
-                result = False  # Might restart, therefore not a self-loop
+                result = TransitionType.DEFAULT  # Might restart, therefore not a self-loop
                 break
             elif isinstance(next_state, Break):
                 # Unwrap Break
@@ -150,10 +151,10 @@ class TransitionCache(Generic[T]):
             else:
                 if next_state == curr_state:
                     continue
-            result = False
+            result = TransitionType.DEFAULT
             break
 
-        self._is_pure_self_loop[curr_state] = result
+        self._self_loop_cache[curr_state] = result
         return result
 
     def step_state(
@@ -196,15 +197,14 @@ class TransitionCache(Generic[T]):
                     next_states.append(
                         (TransitionType.BREAK, next_state.outcome))
             elif isinstance(next_state, icepool.Die):
-                # if the next state is a die, we need to conditionally break
-                sub_states = [
-                    (TransitionType.BREAK if self.is_pure_self_loop(o) else
-                     TransitionType.DEFAULT, o) for o in next_state.outcomes()
-                ]
+                # If the next state is a die, we need to conditionally break.
+                sub_states = [(self.self_loop_type(o), o)
+                              for o in next_state.outcomes()]
                 next_states.append(
                     icepool.Die(sub_states, next_state.quantities()))
             else:
-                next_states.append((TransitionType.DEFAULT, next_state))
+                next_states.append(
+                    (self.self_loop_type(next_state), next_state))
             next_quantities.append(quantity)
         result: 'icepool.Die[tuple[TransitionType, T]]' = icepool.Die(
             next_states, next_quantities)

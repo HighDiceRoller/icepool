@@ -101,7 +101,7 @@ def absorbing_markov_chain(
     initial_die: 'icepool.Die' = icepool.Die([initial_state])
     frontier = set()
     for outcome in initial_die:
-        if not transition_cache.is_pure_self_loop(outcome):
+        if not transition_cache.self_loop_type(outcome):
             frontier.add(outcome)
     while frontier:
         curr_state = frontier.pop()
