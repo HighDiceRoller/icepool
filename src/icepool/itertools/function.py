@@ -138,8 +138,7 @@ def map(
             if not any(transition_type == TransitionType.DEFAULT
                        for transition_type, _ in transition_die):
                 break
-        return icepool.Die(transition_die.marginals[1],
-                           transition_die.quantities())
+        return transition_die.marginals[1]
 
 
 @overload
@@ -254,7 +253,7 @@ def map_function(
 
 def map_and_time(
         repl:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType]',
         initial_state: 'T | icepool.Die[T]',
         /,
         *extra_args,
@@ -300,15 +299,25 @@ def map_and_time(
     Returns:
         The `Die` after the modification.
     """
-    # Use hidden _append_time argument.
-    return map(
-        repl,  # type: ignore
-        initial_state,
-        *extra_args,
-        star=star,
-        repeat=repeat,
-        _append_time=True,
-        **kwargs)
+    # Here len(args) is at least 1.
+    extra_dice: 'Sequence[T | icepool.Die[T]]' = [
+        (
+            arg.expand() if isinstance(arg, icepool.MultisetExpression) else
+            arg  # type: ignore
+        ) for arg in extra_args
+    ]
+
+    transition_cache = TransitionCache(repl, *extra_dice, star=star, **kwargs)
+
+    transition_die = transition_cache.self_loop_die_with_zero_time(
+        icepool.Die([initial_state]))
+    for i in range(repeat):
+        transition_die = transition_cache.step_transition_die_with_time(
+            transition_die)
+        if not any(transition_type == TransitionType.DEFAULT
+                   for transition_type, state, time in transition_die):
+            break
+    return transition_die.marginals[1:]
 
 
 def mean_time_to_absorb(

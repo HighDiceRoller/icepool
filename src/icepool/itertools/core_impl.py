@@ -120,6 +120,13 @@ class TransitionCache(Generic[T]):
         return icepool.Die([(self.is_self_loop(o), o) for o in die.outcomes()],
                            die.quantities())
 
+    def self_loop_die_with_zero_time(
+            self, die: 'icepool.Die[T]',
+            /) -> 'icepool.Die[tuple[TransitionType, T, int]]':
+        """As self_loop_die, but also appends a zero time."""
+        return icepool.Die([(self.is_self_loop(o), o, 0)
+                            for o in die.outcomes()], die.quantities())
+
     def step_state(self, curr_state: T,
                    /) -> 'icepool.Die[tuple[TransitionType, T]]':
         """Computes and caches a single step of the transition function for a single state.
@@ -176,7 +183,7 @@ class TransitionCache(Generic[T]):
     def step_transition_die(self,
                             curr_die: 'icepool.Die[tuple[TransitionType, T]]',
                             /) -> 'icepool.Die[tuple[TransitionType, T]]':
-        """
+        """Advances the (transition_type, state) by one time step.
         
         Args:
             curr_die: The current distribution as a die whose outcomes are
@@ -190,4 +197,16 @@ class TransitionCache(Generic[T]):
                         if transition_type == TransitionType.DEFAULT else
                         (transition_type, curr_state))
                        for transition_type, curr_state in curr_die.outcomes()]
+        return icepool.Die(next_states, curr_die.quantities())
+
+    def step_transition_die_with_time(
+            self, curr_die: 'icepool.Die[tuple[TransitionType, T, int]]',
+            /) -> 'icepool.Die[tuple[TransitionType, T, int]]':
+        """As step_transition_die, but keeps track of the break time in the last element."""
+        next_states = [
+            (self.step_state(curr_state) +
+             (time + 1, ) if transition_type == TransitionType.DEFAULT else
+             (transition_type, curr_state, time))
+            for transition_type, curr_state, time in curr_die.outcomes()
+        ]
         return icepool.Die(next_states, curr_die.quantities())
