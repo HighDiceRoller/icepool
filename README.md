@@ -54,6 +54,8 @@ In particular, here is a series of [tutorial notebooks.](https://highdiceroller.
 * [*Broken Compass* / *Household* / *Outgunned*](https://rpg.stackexchange.com/a/203715/72732)
 * [Probability that 0/4 players is dealt Blackjack](https://math.stackexchange.com/a/4817254/1035142)
 
+[Here is a full search of answers in which I mention Icepool.](https://rpg.stackexchange.com/search?q=user%3A72732+icepool)
+
 ## Web applications
 
 These are all client-side, powered by [Pyodide](https://pyodide.org/). Perhaps you will find inspiration for your own application.
