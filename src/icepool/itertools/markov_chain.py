@@ -1,7 +1,8 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.itertools.common import (TransitionType, TransitionCache)
+from icepool.itertools.common import TransitionType
+from icepool.itertools.core_impl import TransitionCache
 
 import enum
 import math
@@ -105,8 +106,7 @@ def absorbing_markov_chain(
             frontier.add(outcome)
     while frontier:
         curr_state = frontier.pop()
-        transients[curr_state] = transition_cache.step_state(
-            curr_state, include_reroll=False)
+        transients[curr_state] = transition_cache.step_state(curr_state)
         for is_absorbing, next_outcome in transients[curr_state]:
             if not is_absorbing and next_outcome not in transients:
                 frontier.add(next_outcome)

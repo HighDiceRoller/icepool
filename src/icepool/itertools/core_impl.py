@@ -91,6 +91,8 @@ class TransitionCache(Generic[T]):
             if next_state is icepool.Reroll:
                 # Might restart, therefore not a self-loop
                 result = TransitionType.DEFAULT
+                raise NotImplementedError(
+                    'Reroll not implemented for map(repeat).')
                 break
             elif isinstance(next_state, Break):
                 # Unwrap Break
@@ -118,9 +120,8 @@ class TransitionCache(Generic[T]):
         return icepool.Die([(self.is_self_loop(o), o) for o in die.outcomes()],
                            die.quantities())
 
-    def step_state(
-            self, curr_state: T, /, *,
-            include_reroll: bool) -> 'icepool.Die[tuple[TransitionType, T]]':
+    def step_state(self, curr_state: T,
+                   /) -> 'icepool.Die[tuple[TransitionType, T]]':
         """Computes and caches a single step of the transition function for a single state.
 
         This only works if the input is the same as the output type.
@@ -149,11 +150,10 @@ class TransitionCache(Generic[T]):
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
             if next_state is icepool.Reroll:
-                # TODO: what about the cache?
-                if not include_reroll:
-                    continue
                 next_states.append(
                     (TransitionType.REROLL, None))  # type: ignore
+                raise NotImplementedError(
+                    'Reroll not implemented for map(repeat).')
             elif isinstance(next_state, Break):
                 if next_state.outcome is None:
                     next_states.append((TransitionType.BREAK, curr_state))
@@ -173,9 +173,9 @@ class TransitionCache(Generic[T]):
         self._cache[curr_state] = result
         return result
 
-    def step_transition_die(
-            self, curr_die: 'icepool.Die[tuple[TransitionType, T]]', /, *,
-            include_reroll: bool) -> 'icepool.Die[tuple[TransitionType, T]]':
+    def step_transition_die(self,
+                            curr_die: 'icepool.Die[tuple[TransitionType, T]]',
+                            /) -> 'icepool.Die[tuple[TransitionType, T]]':
         """
         
         Args:
@@ -186,10 +186,8 @@ class TransitionCache(Generic[T]):
             The next state distribution as a die whose outcomes are
             `(transition_type, next_state)`.
         """
-        next_states = [
-            (self.step_state(curr_state, include_reroll=include_reroll)
-             if transition_type == TransitionType.DEFAULT else
-             (transition_type, curr_state))
-            for transition_type, curr_state in curr_die.outcomes()
-        ]
+        next_states = [(self.step_state(curr_state)
+                        if transition_type == TransitionType.DEFAULT else
+                        (transition_type, curr_state))
+                       for transition_type, curr_state in curr_die.outcomes()]
         return icepool.Die(next_states, curr_die.quantities())

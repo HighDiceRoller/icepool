@@ -135,15 +135,15 @@ def map(
         return result
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
-    elif repeat == 0:
-        return icepool.Die([first_arg])
     else:
-        # TODO: starting states that are already absorbing
-        non_break_die: 'icepool.Die[T]' = icepool.Die([first_arg])
-        # If _append_time is True, the times will be appended.
-        break_die: 'icepool.Die' = icepool.Die([])
-        # TODO: repeat vs. time_limit
-        return icepool.Die([])
+        transition_die = transition_cache.self_loop_die(
+            icepool.Die([first_arg]))
+        for i in range(repeat):
+            # TODO: _append_time
+            transition_die = transition_cache.step_transition_die(
+                transition_die)
+        return icepool.Die(transition_die.marginals[1],
+                           transition_die.quantities())
 
 
 @overload
