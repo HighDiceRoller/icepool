@@ -83,7 +83,7 @@ def map(
     """
 
     if len(args) == 0:
-        if repeat != 1:
+        if repeat is not None:
             raise ValueError(
                 'If no arguments are given, repeat cannot be used.')
         if isinstance(repl, Mapping):
