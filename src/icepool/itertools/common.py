@@ -2,7 +2,9 @@ __docformat__ = 'google'
 
 import icepool
 
-from typing import Any, Callable, Generic, Mapping, MutableMapping, cast
+import enum
+
+from typing import Any, Callable, Generic, Literal, Mapping, MutableMapping, cast
 from icepool.typing import T, infer_star
 
 
@@ -45,9 +47,15 @@ def transition_and_star(repl: 'Callable | Mapping', arg_count: int,
         raise TypeError('repl must be a callable or a mapping.')
 
 
+class TransitionType(enum.Enum):
+    DEFAULT = 0
+    BREAK = 1
+    REROLL = 2
+
+
 class TransitionCache(Generic[T]):
 
-    _cache: 'MutableMapping[T, tuple[icepool.Die[tuple[bool, T]], int]]'
+    _cache: 'MutableMapping[T, icepool.Die[tuple[TransitionType, T]]]'
     _is_pure_self_loop: MutableMapping[T, bool]
 
     def __init__(
@@ -85,9 +93,9 @@ class TransitionCache(Generic[T]):
                 result = False  # Might restart, therefore not a self-loop
                 break
             elif isinstance(next_state, Break):
-                # Unwrap Breaks.
+                # Unwrap Break
                 if next_state.outcome is None:
-                    # Breaks to the current outcome
+                    # Break to the current outcome
                     continue
                 else:
                     next_state = next_state.outcome
@@ -105,22 +113,20 @@ class TransitionCache(Generic[T]):
         return result
 
     def step_state(self,
-                   curr_state: T) -> 'tuple[icepool.Die[tuple[bool, T]], int]':
-        """Computes and caches a single step of the transition function.
+                   curr_state: T) -> 'icepool.Die[tuple[TransitionType, T]]':
+        """Computes and caches a single step of the transition function for a single state.
 
         This only works if the input is the same as the output type.
 
         Returns:
-            A tuple with the following elements:
-            * `break_and_next_state`: A die whose outcomes are (break, next_state).
-            * `reroll_quantity`: An `int` representing the total quantity of
-                `Reroll`. This is relative to the denominator of the main result.
+            A die whose outcomes are `(transition_type, next_state)`.
         """
         if curr_state in self._cache:
             return self._cache[curr_state]
-        next_states: list[tuple[bool, T] | icepool.Die[tuple[bool, T]]] = []
+        next_state: T | icepool.Die[T]
+        next_states: list[tuple[TransitionType, T]
+                          | icepool.Die[tuple[TransitionType, T]]] = []
         next_quantities: list[int] = []
-        reroll_quantity = 0
         for extra_outcomes, quantity in icepool.iter_cartesian_product(
                 *self._extra_args):
             if self._star:
@@ -132,60 +138,48 @@ class TransitionCache(Generic[T]):
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
             if next_state is icepool.Reroll:
-                reroll_quantity += quantity
+                next_states.append((TransitionType.REROLL, ))  # type: ignore
             elif isinstance(next_state, Break):
                 if next_state.outcome is None:
-                    next_states.append((True, curr_state))
-                    next_quantities.append(quantity)
+                    next_states.append((TransitionType.BREAK, curr_state))
                 else:
                     next_states.append(
-                        icepool.tupleize(True, next_state.outcome))
-                    next_quantities.append(quantity)
+                        (TransitionType.BREAK, next_state.outcome))
             elif isinstance(next_state, icepool.Die):
                 # if the next state is a die, we need to conditionally break
+                sub_states = [
+                    (TransitionType.BREAK if self.is_pure_self_loop(o) else
+                     TransitionType.DEFAULT, o) for o in next_state.outcomes()
+                ]
                 next_states.append(
-                    next_state.map(lambda o: (self.is_pure_self_loop(o), o)))
-                next_quantities.append(quantity)
+                    icepool.Die(sub_states, next_state.quantities()))
             else:
-                next_states.append((False, next_state))
-                next_quantities.append(quantity)
-        break_and_next_state: 'icepool.Die[tuple[bool, T]]' = icepool.Die(
+                next_states.append((TransitionType.DEFAULT, next_state))
+            next_quantities.append(quantity)
+        result: 'icepool.Die[tuple[TransitionType, T]]' = icepool.Die(
             next_states, next_quantities)
-        reroll_quantity *= break_and_next_state.denominator() // sum(
-            next_quantities)
-        result = (break_and_next_state, reroll_quantity)
         self._cache[curr_state] = result
         return result
 
-    # TODO: how to merge different denominators + rerolls?
-    def step_die(self, curr_die: 'icepool.Die[T]'):
-        result_non_break_states: list[T | icepool.Die[T]] = []
-        result_non_break_quantities: list[int] = []
-        result_break_states: list[T | icepool.Die[T]] = []
-        result_break_quantities: list[int] = []
-        result_reroll_quantity = 0
-        for curr_state, quantity in curr_die.items():
-            (non_break_states, non_break_quantities, break_states,
-             break_quantities, reroll_quantity) = self.step_state(curr_state)
-            result_non_break_states += non_break_states
-            result_non_break_quantities += [
-                quantity * q for q in non_break_quantities
-            ]
-            result_break_states += break_states
-            result_break_quantities += [quantity * q for q in break_quantities]
-            result_reroll_quantity += reroll_quantity * quantity
-        return (result_non_break_states, result_non_break_quantities,
-                result_break_states, result_break_quantities,
-                result_reroll_quantity)
+    def step_die(
+            self, curr_die: 'icepool.Die[T]'
+    ) -> 'icepool.Die[tuple[TransitionType, T]]':
+        """Computes and caches a single step of the transition function for a die representing the current state distribution.
 
-    def step_final(
-        self, curr_die: 'icepool.Die[T]'
-    ) -> 'tuple[list[T | icepool.Die[T]], list[int], int]':
+        This only works if the input is the same as the output type.
+
+        Returns:
+            A die whose outcomes are `(transition_type, next_state)`.
         """
+        next_states = [self.step_state(curr_state) for curr_state in curr_die]
+        return icepool.Die(next_states, curr_die.quantities())
+
+    def step_simple(
+            self, curr_die: 'icepool.Die[T]') -> 'tuple[icepool.Die[T], int]':
+        """Computes a single step of the transition function with no distinction between breaking and non-breaking outcomes.
         
         Returns:
-            * `final_states`
-            * `final_quantites`
+            * `final_die` with outcomes of type `T`
             * `reroll_quantity`
         """
         final_states: list[T | icepool.Die[T]] = []
@@ -214,4 +208,9 @@ class TransitionCache(Generic[T]):
             else:
                 final_states.append(final_state)
                 final_quantites.append(quantity)
-        return (final_states, final_quantites, reroll_quantity)
+        if not final_states:
+            return icepool.Die([]), reroll_quantity
+        final_die: 'icepool.Die[T]' = icepool.Die(final_states,
+                                                  final_quantites)
+        reroll_quantity *= final_die.denominator() // sum(final_quantites)
+        return final_die, reroll_quantity
