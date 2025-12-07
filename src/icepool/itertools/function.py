@@ -2,8 +2,8 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.itertools.markov_chain
-from icepool.itertools.common import (TransitionCache, transition_and_star,
-                                      map_simple)
+from icepool.itertools.common import transition_and_star
+from icepool.itertools.core_impl import TransitionCache, map_simple
 
 from collections import defaultdict
 from fractions import Fraction
@@ -317,7 +317,7 @@ def map_and_time(
 
 def mean_time_to_absorb(
         repl:
-    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType]',
         initial_state: 'T | icepool.Die[T]',
         /,
         *extra_args,
