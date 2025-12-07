@@ -68,7 +68,7 @@ def test_map_and_time() -> None:
     # How many coin flips until two heads?
     initial: icepool.Die[int] = icepool.Die([0])
     result = initial.map_and_time(lambda x: x if x >= 2 else x + coin(1, 2),
-                                  time_limit=100)
+                                  repeat=100)
     assert float(result.marginals[1].mean()) == pytest.approx(4.0)
 
 
@@ -198,7 +198,7 @@ def test_map_and_time_extra_args():
     def test_function(current, roll):
         return min(current + roll, 10)
 
-    result = Die([0]).map_and_time(test_function, d6, time_limit=10)
+    result = Die([0]).map_and_time(test_function, d6, repeat=10)
     assert result.marginals[1].mean() == d6.mean_time_to_sum(10)
 
 
@@ -207,7 +207,7 @@ def test_map_and_time_extra_args_with_self_loops():
     def test_function(current, roll):
         return min(current + roll, 10)
 
-    result = Die([0]).map_and_time(test_function, (d6 - 1), time_limit=100)
+    result = Die([0]).map_and_time(test_function, (d6 - 1), repeat=100)
     assert result.marginals[1].mean() == pytest.approx(
         (d6 - 1).mean_time_to_sum(10))
 
@@ -218,9 +218,9 @@ def test_map_time_limit():
         return min(current + roll, 10)
 
     assert Die([0]).map(test_function, d6,
-                        time_limit=10) == Die([0]).map(test_function,
-                                                       d6,
-                                                       time_limit=20)
+                        repeat=10) == Die([0]).map(test_function,
+                                                   d6,
+                                                   repeat=20)
 
 
 def test_group_by():

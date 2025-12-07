@@ -453,7 +453,6 @@ class Die(Population[T_co], MaybeHashKeyed):
             *extra_args,
             star: bool | None = None,
             repeat: int | Literal['inf'] | None = None,
-            time_limit: int | Literal['inf'] | None = None,
             again_count: int | None = None,
             again_depth: int | None = None,
             again_end: 'U | Die[U] | icepool.RerollType | None' = None,
@@ -469,7 +468,6 @@ class Die(Population[T_co], MaybeHashKeyed):
                            *extra_args,
                            star=star,
                            repeat=repeat,
-                           time_limit=time_limit,
                            again_count=again_count,
                            again_depth=again_depth,
                            again_end=again_end,
@@ -482,7 +480,7 @@ class Die(Population[T_co], MaybeHashKeyed):
             /,
             *extra_args,
             star: bool | None = None,
-            time_limit: int,
+            repeat: int,
             **kwargs) -> 'Die[tuple[T_co, int]]':
         """Repeatedly map outcomes of the state to other outcomes, while also
         counting timesteps.
@@ -495,7 +493,7 @@ class Die(Population[T_co], MaybeHashKeyed):
                                     self,
                                     *extra_args,
                                     star=star,
-                                    time_limit=time_limit,
+                                    repeat=repeat,
                                     **kwargs)
 
     def mean_time_to_absorb(
@@ -548,8 +546,9 @@ class Die(Population[T_co], MaybeHashKeyed):
         def step(total, roll):
             return min(total + roll, target)
 
-        result: 'Die[tuple[int, int]]' = Die([0]).map_and_time(
-            step, self, time_limit=max_time)
+        result: 'Die[tuple[int, int]]' = Die([0]).map_and_time(step,
+                                                               self,
+                                                               repeat=max_time)
 
         def get_time(total, time):
             if total < target:

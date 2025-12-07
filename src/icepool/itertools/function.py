@@ -2,7 +2,7 @@ __docformat__ = 'google'
 
 import icepool
 import icepool.itertools.markov_chain
-from icepool.itertools.common import transition_and_star
+from icepool.itertools.common import TransitionType, transition_and_star
 from icepool.itertools.core_impl import TransitionCache, map_simple
 
 from collections import defaultdict
@@ -20,11 +20,9 @@ def map(
         *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
         star: bool | None = None,
         repeat: int | Literal['inf'] | None = None,
-        time_limit: int | Literal['inf'] | None = None,
         again_count: int | None = None,
         again_depth: int | None = None,
         again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
-        _append_time: bool = False,
         **kwargs) -> 'icepool.Die[T]':
     """Applies `func(outcome_of_die_0, outcome_of_die_1, ...)` for all joint outcomes, returning a Die.
 
@@ -77,9 +75,6 @@ def map(
             EXPERIMENTAL: If set to `'inf'`, the result will be as if this
             were repeated an infinite number of times. In this case, the
             result will be in simplest form.
-        time_limit: Similar to `repeat`, but will return early if a fixed point
-            is reached. If both `repeat` and `time_limit` are provided
-            (not recommended), `time_limit` takes priority.
         again_count, again_depth, again_end: Forwarded to the final die constructor.
         **kwargs: Keyword-only arguments can be forwarded to a callable `repl`.
             Unlike *args, outcomes will not be expanded, i.e. `Die` and
@@ -121,9 +116,6 @@ def map(
     repl = cast('Callable[..., T | icepool.Die[T] | icepool.RerollType]', repl)
     transition_cache = TransitionCache(repl, *extra_args, star=star, **kwargs)
 
-    if time_limit is not None:
-        repeat = time_limit
-
     if repeat == 'inf':
         # Infinite repeat.
         # T_co and U should be the same in this case.
@@ -135,13 +127,17 @@ def map(
         return result
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
+    elif repeat == 0:
+        return icepool.Die([first_arg])
     else:
         transition_die = transition_cache.self_loop_die(
             icepool.Die([first_arg]))
         for i in range(repeat):
-            # TODO: _append_time
             transition_die = transition_cache.step_transition_die(
                 transition_die)
+            if not any(transition_type == TransitionType.DEFAULT
+                       for transition_type, _ in transition_die):
+                break
         return icepool.Die(transition_die.marginals[1],
                            transition_die.quantities())
 
@@ -263,7 +259,7 @@ def map_and_time(
         /,
         *extra_args,
         star: bool | None = None,
-        time_limit: int,
+        repeat: int,
         **kwargs) -> 'icepool.Die[tuple[T, int]]':
     """Repeatedly map outcomes of the state to other outcomes, while also
     counting timesteps.
@@ -294,7 +290,7 @@ def map_and_time(
             them to `func`.
             If not provided, it will be guessed based on the signature of `func`
             and the number of arguments.
-        time_limit: This will be repeated with the same arguments on the result
+        repeat: This will be repeated with the same arguments on the result
             up to this many times.
         **kwargs: Keyword-only arguments can be forwarded to a callable `repl`.
             Unlike *args, outcomes will not be expanded, i.e. `Die` and
@@ -310,7 +306,7 @@ def map_and_time(
         initial_state,
         *extra_args,
         star=star,
-        time_limit=time_limit,
+        repeat=repeat,
         _append_time=True,
         **kwargs)
 
