@@ -13,6 +13,14 @@ from typing import Any, Callable, Iterable, Iterator, Literal, Mapping, MutableM
 from icepool.typing import Outcome, T
 
 
+def final_map(transition_type: TransitionType,
+              outcome: T) -> T | icepool.RerollType:
+    if transition_type in [TransitionType.DEFAULT, TransitionType.BREAK]:
+        return outcome
+    else:
+        return icepool.Reroll
+
+
 def map(
         repl:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
@@ -138,7 +146,7 @@ def map(
             if not any(transition_type == TransitionType.DEFAULT
                        for transition_type, _ in transition_die):
                 break
-        return transition_die.marginals[1]
+        return transition_die.map(final_map, star=True)
 
 
 @overload

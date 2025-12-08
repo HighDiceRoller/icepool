@@ -88,16 +88,17 @@ class TransitionCache(Generic[T]):
             else:
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
-            if next_state in icepool.REROLL_TYPES:
-                # Might restart, therefore not a self-loop
+            if next_state is icepool.Reroll:
+                # Ignored.
+                continue
+            elif next_state is icepool.Restart:
+                # Might restart, therefore not a self-loop.
                 result = TransitionType.DEFAULT
-                raise NotImplementedError(
-                    'Reroll not implemented for map(repeat).')
                 break
             elif isinstance(next_state, Break):
-                # Unwrap Break
+                # Unwrap Break.
                 if next_state.outcome is None:
-                    # Break to the current outcome
+                    # Break to the current outcome.
                     continue
                 else:
                     next_state = next_state.outcome
@@ -156,11 +157,11 @@ class TransitionCache(Generic[T]):
             else:
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
-            if next_state in icepool.REROLL_TYPES:
-                next_states.append(
-                    (TransitionType.REROLL, None))  # type: ignore
-                raise NotImplementedError(
-                    'Reroll not implemented for map(repeat).')
+            if next_state is icepool.Reroll:
+                continue  # Pruned immediately.
+            elif next_state is icepool.Restart:
+                # Will prune at end.
+                next_states.append((TransitionType.RESTART, None))
             elif isinstance(next_state, Break):
                 if next_state.outcome is None:
                     next_states.append((TransitionType.BREAK, curr_state))

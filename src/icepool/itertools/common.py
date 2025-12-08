@@ -11,7 +11,8 @@ from icepool.typing import T, infer_star
 class TransitionType(enum.IntEnum):
     DEFAULT = 0
     BREAK = 1
-    REROLL = 2
+    # Reroll gets pruned immediately, so doesn't get a transition type.
+    RESTART = 2
 
 
 class Break(Generic[T]):
