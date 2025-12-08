@@ -70,7 +70,7 @@ def expand_arg(
 ) -> Mapping[T, int]:
     if isinstance(arg, icepool.Population):
         return arg
-    elif arg is icepool.Reroll:
+    elif arg in icepool.REROLL_TYPES:
         return {}
     elif type(arg) == tuple:
         arg = cast('T | icepool.Population[T]',
@@ -80,7 +80,7 @@ def expand_arg(
         else:  # converted to Population
             return arg  # type: ignore
     else:
-        return {arg: 1}
+        return {arg: 1}  # type: ignore
 
 
 def merge_weights_lcm(subdatas: Sequence[Mapping[T, int]],

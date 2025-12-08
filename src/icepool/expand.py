@@ -70,8 +70,8 @@ def cartesian_product(
     """
     population_type: Type | None = None
     for arg in args:
-        if arg is icepool.Reroll:
-            return icepool.Reroll
+        if arg in icepool.REROLL_TYPES:
+            return arg  # type: ignore
         new_type = getattr(arg, '_new_type', None)
         if new_type is not None and hasattr(arg,
                                             '_items_for_cartesian_product'):

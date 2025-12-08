@@ -44,7 +44,7 @@ class Counts(Mapping[T, int]):
         for key, value in items:
             if key is None:
                 raise TypeError('None is not a valid key.')
-            if key is icepool.Reroll:
+            if key in icepool.REROLL_TYPES:
                 raise TypeError(str(key) + ' is not a valid key.')
             if not isinstance(value, int):
                 raise ValueError('Values must be ints, got ' +

@@ -29,9 +29,9 @@ U_co = TypeVar('U_co', bound='Outcome', covariant=True)
 
 
 class RerollType(enum.Enum):
-    """The type of the Reroll singleton."""
+    """The type of the Reroll and Restart singletons."""
     Reroll = 'Reroll'
-    """Indicates an outcome should be rerolled (with unlimited depth)."""
+    Restart = 'Restart'
 
 
 class NoCacheType(enum.Enum):

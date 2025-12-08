@@ -274,7 +274,7 @@ class Dungeon(Generic[T], MaybeHashKeyed):
                     for prev_state_main, prev_weight in prev_main.items():
                         state_main = self.next_state_main(
                             prev_state_main, eval_order, outcome, *count_tree)
-                        if state_main is not icepool.Reroll:
+                        if state_main not in icepool.REROLL_TYPES:
                             subresult[state_main] += prev_weight * weight
         cache[room] = result
         return result
@@ -320,7 +320,7 @@ class Dungeon(Generic[T], MaybeHashKeyed):
                 next_state_main = self.next_state_main(room.initial_state_main,
                                                        pop_order, outcome,
                                                        *count_tree)
-                if next_state_main is not icepool.Reroll:
+                if next_state_main not in icepool.REROLL_TYPES:
                     next_room = Room(next_outcomes, next_sources,
                                      next_statelet_tree, next_state_main)
                     final = self.evaluate_forward(pop_order, next_room)
@@ -433,7 +433,7 @@ class Quest(Generic[T, U_co]):
                         "None is not a valid final outcome.\n"
                         "This may have been a result of not supplying any input with an outcome."
                     )
-                if outcome is not icepool.Reroll:
+                if outcome not in icepool.REROLL_TYPES:
                     final_outcomes.append(outcome)
                     final_weights.append(weight)
 

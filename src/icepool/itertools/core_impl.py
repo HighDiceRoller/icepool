@@ -88,7 +88,7 @@ class TransitionCache(Generic[T]):
             else:
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
-            if next_state is icepool.Reroll:
+            if next_state in icepool.REROLL_TYPES:
                 # Might restart, therefore not a self-loop
                 result = TransitionType.DEFAULT
                 raise NotImplementedError(
@@ -156,7 +156,7 @@ class TransitionCache(Generic[T]):
             else:
                 next_state = self._transition(curr_state, *extra_outcomes,
                                               **self._kwargs)
-            if next_state is icepool.Reroll:
+            if next_state in icepool.REROLL_TYPES:
                 next_states.append(
                     (TransitionType.REROLL, None))  # type: ignore
                 raise NotImplementedError(

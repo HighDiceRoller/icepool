@@ -251,7 +251,7 @@ def compute_not_again_die(outcomes: Sequence,
     """Returns a Die with the Again expressions filtered out."""
     filtered = ((outcome, quantity)
                 for outcome, quantity in zip(outcomes, times)
-                if outcome is not icepool.Reroll
+                if outcome not in icepool.REROLL_TYPES
                 and not isinstance(outcome, AgainExpression))
     return icepool.Die(*zip(*filtered))
 
@@ -289,6 +289,8 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
         again += add_again
         index += 1
         if index + again > again_count + 1:
+            # TODO: Reroll vs Restart
+            # Use again_end?
             return icepool.Reroll
         return flat, terminal, again, index
 
@@ -315,7 +317,8 @@ def evaluate_agains_using_depth(outcomes: Sequence, times: Sequence[int],
 
     def replace_again(outcome):
         if isinstance(outcome, AgainExpression):
-            if again_end is icepool.Reroll:
+            if again_end in icepool.REROLL_TYPES:
+                # TODO: Reroll vs Restart
                 return icepool.Reroll
             else:
                 return outcome._evaluate(again_end)

@@ -410,7 +410,7 @@ def map_to_pool(
             pool = transition_function(*outcomes[0], *outcomes[1:], **kwargs)
         else:
             pool = transition_function(*outcomes, **kwargs)
-        if pool is icepool.Reroll:
+        if pool in icepool.REROLL_TYPES:
             continue
         elif isinstance(pool, icepool.MultisetExpression):
             data[pool] += quantity

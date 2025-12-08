@@ -416,8 +416,8 @@ class MultisetFunctionJointDungeon(Dungeon[T]):
                 state, self.inner_dungeons, arg_counts):
             next_inner_state = inner_dungeon.next_state_main(
                 inner_state, order, outcome, *inner_arg_tree)
-            if next_inner_state is icepool.Reroll:
-                return icepool.Reroll
+            if next_inner_state in icepool.REROLL_TYPES:
+                return icepool.Restart
             next_state.append(next_inner_state)
         return tuple(next_state)
 

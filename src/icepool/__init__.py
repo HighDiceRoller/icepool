@@ -27,9 +27,6 @@ from icepool.order import Order, ConflictingOrderError, UnsupportedOrder
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
 
-This can be used in place of outcomes in many places. See individual function
-and method descriptions for details.
-
 This effectively removes the outcome from the probability space, along with its
 contribution to the denominator.
 
@@ -38,12 +35,31 @@ consistent with the given observations.
 
 Operation in specific cases:
 
-* When used with `Again`, only that stage is rerolled, not the entire `Again`
-    tree.
+* If sent to the constructor of `Die`, it and the corresponding quantity is
+    dropped.
+* When used with `Again` or `map(repeat)`, only that stage is rerolled, not the 
+    entire rolling process.
 * To reroll with limited depth, use `Die.reroll()`, or `Again` with no
     modification.
-* When used with `MultisetEvaluator`, the entire evaluation is rerolled.
+* When used with `MultisetEvaluator`, this currently has the same meaning as
+    `Restart`. Prefer using `Restart` in this case.
 """
+Restart: Final = RerollType.Restart
+"""Indicates that a rolling process should be restarted (with unlimited depth).
+
+This effectively removes the sequence of events from the probability space,
+along with its contribution to the denominator.
+
+This can be used for conditional probability by removing all sequences of events
+not consistent with the given observations.
+
+This can be used with `Again`, `map(repeat)`, or `MultisetEvaluator`. When
+sent to the constructor of `Die`, it has the same effect as `Reroll`; prefer
+using `Reroll` in this case.
+"""
+
+REROLL_TYPES: Final = (Reroll, Restart)
+"""Explicitly defined since Enum.__contains__ requires that the queried value be hashable."""
 
 NoCache: Final = NoCacheType.NoCache
 """Indicates that caching should not be performed. Exact meaning depends on context."""
@@ -111,7 +127,7 @@ for each occurence of `Again`. For other values of `again_depth`, the result for
 `again_depth-1` is substituted for each occurence of `Again`.
 
 If `again_end=icepool.Reroll`, then any `AgainExpression`s in the final depth
-are rerolled.
+are rerolled. TODO: update this
 
 #### Rerolls
 
@@ -122,6 +138,7 @@ If `again_end=icepool.Reroll`:
 * Count mode: Any result that would cause the number of rolls to exceed
     `again_count` is rerolled.
 * Depth mode: Any `AgainExpression`s in the final depth level are rerolled.
+TODO: update this
 """
 
 from icepool.population.die_with_truth import DieWithTruth

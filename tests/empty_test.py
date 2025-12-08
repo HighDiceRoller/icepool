@@ -4,7 +4,12 @@ import pytest
 Tests empty dice.
 """
 
-empty_dice = [icepool.Die([]), icepool.Die([icepool.Reroll]), icepool.Die({})]
+empty_dice = [
+    icepool.Die([]),
+    icepool.Die([icepool.Reroll]),
+    icepool.Die([icepool.Restart]),
+    icepool.Die({})
+]
 
 
 @pytest.mark.parametrize('die', empty_dice)
