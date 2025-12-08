@@ -291,7 +291,7 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
         if index + again > again_count + 1:
             # TODO: Reroll vs Restart
             # Use again_end?
-            return icepool.Reroll
+            return icepool.Restart
         return flat, terminal, again, index
 
     initial_state: icepool.Die = icepool.Die([(zero, 0, 1, 0)])

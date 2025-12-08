@@ -107,8 +107,8 @@ def absorbing_markov_chain(
     while frontier:
         curr_state = frontier.pop()
         transients[curr_state] = transition_cache.step_state(curr_state)
-        for is_absorbing, next_outcome in transients[curr_state]:
-            if not is_absorbing and next_outcome not in transients:
+        for transition_type, next_outcome in transients[curr_state]:
+            if transition_type is TransitionType.DEFAULT and next_outcome not in transients:
                 frontier.add(next_outcome)
 
     # Create the transient matrix to be solved.
@@ -137,6 +137,8 @@ def absorbing_markov_chain(
         for (transition_type, dst), quantity in transition.items():
             if transition_type is TransitionType.BREAK:
                 absorption_matrix[src_index][dst] = quantity
+            elif transition_type is TransitionType.RESTART:
+                pass  # transition to nowhere
             else:
                 dst_index = outcome_to_index[dst]
                 fundamental_solve[dst_index][src] -= quantity

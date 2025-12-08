@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import Again, d, d6, Die, Reroll
+from icepool import Again, d, d6, Die, Reroll, Restart
 
 import math
 
@@ -64,12 +64,12 @@ def test_again_plus_again_depth_1():
 
 
 def test_again_reroll_depth_0():
-    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=0, again_end=Reroll)
+    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=0, again_end=Restart)
     assert die == d(5)
 
 
 def test_again_reroll_depth_1():
-    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=1, again_end=Reroll)
+    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=1, again_end=Restart)
     assert die == d6.map({6: 6 + d(5)})
 
 
