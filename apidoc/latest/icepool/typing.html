@@ -58,6 +58,9 @@
                         <li>
                                 <a class="variable" href="#RerollType.Reroll">Reroll</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#RerollType.Restart">Restart</a>
+                        </li>
                 </ul>
 
             </li>
@@ -158,9 +161,9 @@
 </span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
 </span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>
 </span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="k">class</span><span class="w"> </span><span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll and Restart singletons.&quot;&quot;&quot;</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>    <span class="n">Restart</span> <span class="o">=</span> <span class="s1">&#39;Restart&#39;</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="k">class</span><span class="w"> </span><span class="nc">NoCacheType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
@@ -365,13 +368,13 @@
     </div>
     <a class="headerlink" href="#RerollType"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="RerollType-32"><a href="#RerollType-32"><span class="linenos">32</span></a><span class="k">class</span><span class="w"> </span><span class="nc">RerollType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-</span><span id="RerollType-33"><a href="#RerollType-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll singleton.&quot;&quot;&quot;</span>
+</span><span id="RerollType-33"><a href="#RerollType-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of the Reroll and Restart singletons.&quot;&quot;&quot;</span>
 </span><span id="RerollType-34"><a href="#RerollType-34"><span class="linenos">34</span></a>    <span class="n">Reroll</span> <span class="o">=</span> <span class="s1">&#39;Reroll&#39;</span>
-</span><span id="RerollType-35"><a href="#RerollType-35"><span class="linenos">35</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicates an outcome should be rerolled (with unlimited depth).&quot;&quot;&quot;</span>
+</span><span id="RerollType-35"><a href="#RerollType-35"><span class="linenos">35</span></a>    <span class="n">Restart</span> <span class="o">=</span> <span class="s1">&#39;Restart&#39;</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>The type of the Reroll singleton.</p>
+            <div class="docstring"><p>The type of the Reroll and Restart singletons.</p>
 </div>
 
 
@@ -384,9 +387,19 @@
     </div>
     <a class="headerlink" href="#RerollType.Reroll"></a>
     
-            <div class="docstring"><p>Indicates an outcome should be rerolled (with unlimited depth).</p>
-</div>
+    
 
+                            </div>
+                            <div id="RerollType.Restart" class="classattr">
+                                <div class="attr variable">
+            <span class="name">Restart</span>        =
+<span class="default_value">&lt;<a href="#RerollType.Restart">RerollType.Restart</a>: &#39;Restart&#39;&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#RerollType.Restart"></a>
+    
+    
 
                             </div>
                 </section>
