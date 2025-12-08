@@ -64,12 +64,12 @@ def test_again_plus_again_depth_1():
 
 
 def test_again_reroll_depth_0():
-    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=0, again_end=Restart)
+    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=0, again_end=Reroll)
     assert die == d(5)
 
 
 def test_again_reroll_depth_1():
-    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=1, again_end=Restart)
+    die = Die([1, 2, 3, 4, 5, 6 + Again], again_depth=1, again_end=Reroll)
     assert die == d6.map({6: 6 + d(5)})
 
 

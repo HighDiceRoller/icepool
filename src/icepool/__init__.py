@@ -47,15 +47,17 @@ Operation in specific cases:
 Restart: Final = RerollType.Restart
 """Indicates that a rolling process should be restarted (with unlimited depth).
 
-This effectively removes the sequence of events from the probability space,
+`Restart` effectively removes the sequence of events from the probability space,
 along with its contribution to the denominator.
 
-This can be used for conditional probability by removing all sequences of events
-not consistent with the given observations.
+`Restart` can be used for conditional probability by removing all sequences of 
+events not consistent with the given observations.
 
-This can be used with `Again`, `map(repeat)`, or `MultisetEvaluator`. When
-sent to the constructor of `Die`, it has the same effect as `Reroll`; prefer
-using `Reroll` in this case.
+`Restart` can be used with `again_count`, `map(repeat)`, or `MultisetEvaluator`. 
+When sent to the constructor of `Die`, it has the same effect as `Reroll`; 
+prefer using `Reroll` in this case.
+
+`Restart` can NOT be used with `again_depth`, but `Reroll` can.
 """
 
 REROLL_TYPES: Final = (Reroll, Restart)

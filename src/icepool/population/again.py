@@ -317,9 +317,10 @@ def evaluate_agains_using_depth(outcomes: Sequence, times: Sequence[int],
 
     def replace_again(outcome):
         if isinstance(outcome, AgainExpression):
-            if again_end in icepool.REROLL_TYPES:
-                # TODO: Reroll vs Restart
+            if again_end is icepool.Reroll:
                 return icepool.Reroll
+            elif again_end is icepool.Restart:
+                raise ValueError('Restart is not compatible with again_depth.')
             else:
                 return outcome._evaluate(again_end)
         else:
