@@ -100,10 +100,23 @@ def absorbing_markov_chain(
     transients: MutableMapping[T, icepool.Die[tuple[TransitionType, T]]] = {}
 
     initial_die: 'icepool.Die' = icepool.Die([initial_state])
+    initial_transition_types = transition_cache.self_loop_die(
+        initial_die).group_by[0]
+    if TransitionType.DEFAULT in initial_transition_types:
+        initial_transient = initial_transition_types[
+            TransitionType.DEFAULT].marginals[1]
+    else:
+        # No transients; everything is absorbed immediately.
+        return initial_die.simplify(), Fraction(0, 1)
+    if TransitionType.BREAK in initial_transition_types:
+        initial_absorb = initial_transition_types[
+            TransitionType.BREAK].marginals[1]
+    else:
+        initial_absorb = icepool.Die([])
+
     frontier = set()
-    for outcome in initial_die:
-        if not transition_cache.is_self_loop(outcome):
-            frontier.add(outcome)
+    for outcome in initial_transient:
+        frontier.add(outcome)
     while frontier:
         curr_state = frontier.pop()
         transients[curr_state] = transition_cache.step_state(curr_state)
@@ -113,11 +126,6 @@ def absorbing_markov_chain(
 
     # Create the transient matrix to be solved.
     t = len(transients)
-
-    if t == 0:
-        # No transients; everything is absorbed immediately.
-        # TODO: what if we partially start on absorbing states?
-        return initial_die.simplify(), Fraction(0, 1)
 
     outcome_to_index = {
         outcome: i
@@ -143,7 +151,7 @@ def absorbing_markov_chain(
                 dst_index = outcome_to_index[dst]
                 fundamental_solve[dst_index][src] -= quantity
     for src_index, src in enumerate(transients.keys()):
-        fundamental_solve[src_index][Visit] = initial_die.quantity(src)
+        fundamental_solve[src_index][Visit] = initial_transient.quantity(src)
 
     # Solve the matrix using Gaussian elimination.
 
@@ -178,6 +186,7 @@ def absorbing_markov_chain(
 
     mean_absorption_time = Fraction(0, 1)
 
+    # [pivot] -> absorption row, denominator
     results = {}
     for pivot_index, (pivot, absorption_row) in enumerate(
             zip(transients.keys(), absorption_matrix)):
@@ -199,5 +208,15 @@ def absorbing_markov_chain(
             normalized_results[outcome] += quantity * results_denominator // d
 
     # Inference to Die[T] seems to fail here.
-    return icepool.Die(
-        normalized_results).simplify(), mean_absorption_time  # type: ignore
+    transient_absorb: 'icepool.Die' = icepool.Die(
+        normalized_results).simplify()
+    result: 'icepool.Die' = icepool.Die(
+        [initial_absorb, transient_absorb],
+        [initial_absorb.denominator(),
+         initial_transient.denominator()]).simplify()
+
+    # TODO: Probably missing a divisor here.
+    mean_absorption_time *= Fraction(initial_transient.denominator(),
+                                     initial_die.denominator())
+
+    return result, mean_absorption_time

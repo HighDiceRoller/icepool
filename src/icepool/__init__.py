@@ -23,6 +23,7 @@ from typing import Final
 
 from icepool.typing import Outcome, RerollType, NoCacheType
 from icepool.order import Order, ConflictingOrderError, UnsupportedOrder
+from icepool.itertools.common import Break
 
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
@@ -178,8 +179,8 @@ __all__ = [
     'from_rv', 'pointwise_max', 'pointwise_min', 'lowest', 'highest', 'middle',
     'min_outcome', 'max_outcome', 'consecutive', 'sorted_union',
     'harmonize_denominators', 'reduce', 'accumulate', 'map', 'map_function',
-    'map_and_time', 'mean_time_to_absorb', 'map_to_pool', 'Reroll',
-    'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',
+    'map_and_time', 'mean_time_to_absorb', 'map_to_pool', 'Reroll', 'Restart',
+    'Break', 'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',
     'MultisetExpression', 'MultisetEvaluator', 'Order',
     'ConflictingOrderError', 'UnsupportedOrder', 'Deck', 'Deal', 'MultiDeal',
     'multiset_function', 'MultisetParameter', 'MultisetTupleParameter',
