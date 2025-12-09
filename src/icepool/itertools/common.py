@@ -16,7 +16,7 @@ class TransitionType(enum.IntEnum):
 
 
 class Break(Generic[T]):
-    """Wrapper around a return value for triggering an early exit from `map(repeat)`."""
+    """EXPERIMENTAL: Wrapper around a return value for triggering an early exit from `map(repeat)`."""
 
     def __init__(self, outcome: T | None = None):
         """Constructor.
