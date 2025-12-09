@@ -1,3 +1,13 @@
+## v2.2.0
+
+Major modifications to `map(repeat)` process flow.
+
+* Now requires Python >= 3.12 (from 3.10).
+* `Reroll` split into separate `Reroll` and `Restart` symbols with different meanings in `map(repeat)` and `Again`.
+  * In `map(repeat)`, `Reroll` rerolls only the current stage, while `Restart` restarts the entire process.
+  * With `again_count`, `Reroll` rerolls any dice over the limit until they don't roll `Again`, while `Restart` restarts the entire process.
+  * With `again_depth`, `Reroll` rerolls the last depth if going over the limit, while `Restart` cannot be used with `again_depth`.
+
 ## v2.1.3 - 3 December 2025
 
 * Change `max_pair_lowest()` and `max_pair_highest()` to `max_pair_keep()` and `max_pair_drop()`.
