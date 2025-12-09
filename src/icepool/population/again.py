@@ -7,7 +7,7 @@ import operator
 
 from typing import Any, Callable, Mapping, Sequence
 
-from icepool.typing import MaybeHashKeyed
+from icepool.typing import MaybeHashKeyed, T
 
 
 class AgainExpression(MaybeHashKeyed):
@@ -246,8 +246,10 @@ def contains_again(outcomes: Mapping[Any, int] | Sequence) -> bool:
     return any(isinstance(x, icepool.AgainExpression) for x in outcomes)
 
 
-def compute_not_again_die(outcomes: Sequence,
-                          times: Sequence[int]) -> 'icepool.Die':
+def compute_not_again_die(
+        outcomes:
+    'Sequence[T | icepool.Die[T] | icepool.RerollType | AgainExpression]',
+        times: Sequence[int]) -> 'icepool.Die[T]':
     """Returns a Die with the Again expressions filtered out."""
     filtered = ((outcome, quantity)
                 for outcome, quantity in zip(outcomes, times)
@@ -256,8 +258,12 @@ def compute_not_again_die(outcomes: Sequence,
     return icepool.Die(*zip(*filtered))
 
 
-def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
-                                again_count: int) -> 'icepool.Die':
+def evaluate_agains_using_count(
+    outcomes:
+    'Sequence[T | icepool.Die[T] | icepool.RerollType | AgainExpression]',
+    times: Sequence[int], again_count: int,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None'
+) -> 'icepool.Die[T]':
     if again_count < 0:
         raise ValueError('again_count cannot be negative.')
 
@@ -265,8 +271,16 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
 
     zero = not_again_die.zero_outcome()
 
-    def make_step_outcome(outcome, zero):
-        """add_flat, add_terminal, add_again"""
+    if again_end is None:
+        again_end = zero
+    elif again_end is icepool.Reroll:
+        again_end = not_again_die
+
+    if again_end is not icepool.Restart:
+        again_end_die: icepool.Die[T] = icepool.Die([again_end])
+
+    def make_step_outcome(outcome):
+        """add_flat, add_not_again, add_again"""
         if isinstance(outcome, AgainExpression):
             if not outcome.is_additive:
                 raise ValueError(
@@ -278,21 +292,22 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
             return icepool.tupleize(zero, 1, -1)
 
     step_die: icepool.Die = icepool.Die(
-        [make_step_outcome(outcome, zero) for outcome in outcomes], times)
+        [make_step_outcome(outcome) for outcome in outcomes], times)
 
-    def step(flat, terminal, again, index, roll):
+    def step(flat, not_again, again, index, roll):
         if again == 0:
-            return flat, terminal, again, index
-        add_flat, add_terminal, add_again = roll
-        flat += add_flat
-        terminal += add_terminal
-        again += add_again
-        index += 1
-        if index + again > again_count + 1:
-            # TODO: Reroll vs Restart
-            # Use again_end?
-            return icepool.Restart
-        return flat, terminal, again, index
+            return flat, not_again, again, index
+        elif index < again_count + 1:
+            add_flat, add_not_again, add_again = roll
+            flat += add_flat
+            not_again += add_not_again
+            again += add_again
+            index += 1
+            if again_end is icepool.Restart:
+                if index + again > (again_count + 1):
+                    return icepool.Restart
+
+        return flat, not_again, again, index
 
     initial_state: icepool.Die = icepool.Die([(zero, 0, 1, 0)])
 
@@ -301,14 +316,24 @@ def evaluate_agains_using_count(outcomes: Sequence, times: Sequence[int],
                                                  star=True,
                                                  repeat=again_count + 1)
 
-    def finalize(flat, terminal, again, index):
-        return flat + terminal @ not_again_die
+    if again_end is icepool.Restart:
+
+        def finalize(flat, terminal, again, index):
+            return flat + terminal @ not_again_die
+    else:
+
+        def finalize(flat, terminal, again, index):
+            return flat + terminal @ not_again_die + again @ again_end_die
 
     return final_state.map(finalize, star=True)
 
 
-def evaluate_agains_using_depth(outcomes: Sequence, times: Sequence[int],
-                                again_depth: int, again_end) -> 'icepool.Die':
+def evaluate_agains_using_depth(
+        outcomes:
+    'Sequence[T | icepool.Die[T] | icepool.RerollType | AgainExpression]',
+        times: Sequence[int], again_depth: int,
+        again_end: 'T | icepool.Die[T] | icepool.RerollType'
+) -> 'icepool.Die[T]':
     if again_depth < 0:
         raise ValueError('again_depth cannot be negative.')
 

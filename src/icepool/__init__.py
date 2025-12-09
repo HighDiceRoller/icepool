@@ -107,10 +107,15 @@ For finer control over rolling processes, use e.g. `Die.map()` instead.
 
 When `again_count` is provided, we start with one roll queued and execute one 
 roll at a time. For every `Again` we roll, we queue another roll.
-If we run out of rolls, we sum the rolls to find the result. If the total number
-of rolls (not including the initial roll) would exceed `again_count`, we reroll
-the entire process, effectively conditioning the process on not rolling more
-than `again_count` extra dice.
+If we run out of rolls, we sum the rolls to find the result. We evaluate up to
+`again_count` extra rolls. If, at this point, there are still dice remaining:
+
+* `Restart`: If there would be dice over the limit, we restart the entire 
+    process from the beginning, effectively conditioning the process against
+    this sequence of events.
+* `Reroll`: Any remaining dice can't produce more `Again`s.
+* `outcome`: Any remaining dice are each treated as the given outcome.
+* `None`: Any remaining dice are treated as zero.
 
 This mode only allows "additive" expressions to be used with `Again`, which
 means that only the following operators are allowed:
@@ -128,19 +133,8 @@ When `again_depth=0`, `again_end` is directly substituted
 for each occurence of `Again`. For other values of `again_depth`, the result for
 `again_depth-1` is substituted for each occurence of `Again`.
 
-If `again_end=icepool.Reroll`, then any `AgainExpression`s in the final depth
-are rerolled. TODO: update this
-
-#### Rerolls
-
-`Reroll` only rerolls that particular die, not the entire process. Any such
-rerolls do not count against the `again_count` or `again_depth` limit.
-
-If `again_end=icepool.Reroll`:
-* Count mode: Any result that would cause the number of rolls to exceed
-    `again_count` is rerolled.
-* Depth mode: Any `AgainExpression`s in the final depth level are rerolled.
-TODO: update this
+If `again_end=Reroll`, then any `AgainExpression`s in the final depth
+are rerolled. `Restart` cannot be used with `again_depth`.
 """
 
 from icepool.population.die_with_truth import DieWithTruth

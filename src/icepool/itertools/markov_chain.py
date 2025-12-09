@@ -186,7 +186,6 @@ def absorbing_markov_chain(
             continue
         d = fundamental_solve[pivot_index][pivot]
 
-        # TODO: Is this right?
         mean_absorption_time += Fraction(n,
                                          d) * transients[pivot].denominator()
 

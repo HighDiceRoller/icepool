@@ -142,11 +142,8 @@ class Die(Population[T_co], MaybeHashKeyed):
                     raise ValueError(
                         'At most one of again_count and again_depth may be used.'
                     )
-                if again_end is not None:
-                    raise ValueError(
-                        'again_end cannot be used with again_count.')
                 return icepool.population.again.evaluate_agains_using_count(
-                    outcomes, times, again_count)
+                    outcomes, times, again_count, again_end)
             else:
                 if again_depth is None:
                     again_depth = 1
@@ -499,7 +496,7 @@ class Die(Population[T_co], MaybeHashKeyed):
     def mean_time_to_absorb(
             self,
             repl:
-        'Callable[..., T_co | icepool.Die[T_co] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T_co | icepool.Die[T_co] | icepool.RerollType | icepool.AgainExpression]',
+        'Callable[..., T_co | icepool.Die[T_co] | icepool.RerollType] | Mapping[Any, T_co | icepool.Die[T_co] | icepool.RerollType]',
             /,
             *extra_args,
             star: bool | None = None,
