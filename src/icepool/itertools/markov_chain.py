@@ -73,10 +73,10 @@ class SparseVector(MutableMapping[T, int]):
         return str(self._data)
 
 
-def absorbing_markov_chain(
+def absorbing_markov_chain_impl(
     transition_cache: TransitionCache[T],
     initial_state: 'T | icepool.Die[T]',
-) -> 'tuple[icepool.Die[T], Fraction]':
+) -> 'tuple[icepool.Die[T], Fraction | None]':
     """Computes the absorption distribution of an absorbing Markov chain.
 
     Zero-weight outcomes will not be preserved.
@@ -151,6 +151,7 @@ def absorbing_markov_chain(
     absorption_matrix: list[SparseVector[T]] = [
         SparseVector() for _ in transients.keys()
     ]
+    has_restart = False
     for src_index, (src, transition) in enumerate(transients.items()):
         # The identity term.
         fundamental_solve[src_index][src] += transition.denominator()
@@ -158,7 +159,8 @@ def absorbing_markov_chain(
             if transition_type is TransitionType.BREAK:
                 absorption_matrix[src_index][dst] = quantity
             elif transition_type is TransitionType.RESTART:
-                pass  # transition to nowhere
+                # transition to nowhere
+                has_restart = True
             else:
                 # Minus Q.
                 dst_index = outcome_to_index[dst]
@@ -234,7 +236,28 @@ def absorbing_markov_chain(
         [initial_absorb.denominator(),
          initial_transient.denominator()]).simplify()
 
-    # The starting vector `s` was not normalized, so we divide it out here.
-    mean_absorption_time /= initial_die.denominator()
+    if has_restart:
+        mean_absorption_time = None  # type: ignore
+    else:
+        # The starting vector `s` was not normalized, so we divide it out here.
+        mean_absorption_time /= initial_die.denominator()
 
     return result, mean_absorption_time
+
+
+def absorbing_markov_chain_die(
+    transition_cache: TransitionCache[T],
+    initial_state: 'T | icepool.Die[T]',
+) -> 'icepool.Die[T]':
+    return absorbing_markov_chain_impl(transition_cache, initial_state)[0]
+
+
+def absorbing_markov_chain_mean_absorption_time(
+    transition_cache: TransitionCache[T],
+    initial_state: 'T | icepool.Die[T]',
+) -> Fraction:
+    time = absorbing_markov_chain_impl(transition_cache, initial_state)[1]
+    if time is None:
+        raise NotImplementedError(
+            'Restart not implemented for mean_time_to_absorb.')
+    return time

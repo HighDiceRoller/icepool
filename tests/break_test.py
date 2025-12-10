@@ -91,16 +91,3 @@ def test_restart_break():
 
     result = map(repl, 0, d(3), repeat='inf')
     assert result == icepool.Die({0: 9, 1: 3, 2: 1, 3: 1})
-
-
-def test_restart_mean_time_to_absorb():
-
-    def repl(x, y):
-        if x == 10:
-            return Break()
-        elif y == 1:
-            return Restart
-        else:
-            return x + 1
-
-    assert mean_time_to_absorb(repl, 0, d(2)) == 10

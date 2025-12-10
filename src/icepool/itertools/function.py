@@ -130,9 +130,8 @@ def map(
 
         result: 'icepool.Die[T]'
 
-        result, _ = icepool.itertools.markov_chain.absorbing_markov_chain(
+        return icepool.itertools.markov_chain.absorbing_markov_chain_die(
             transition_cache, first_arg)
-        return result
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
     elif repeat == 0:
@@ -346,7 +345,8 @@ def mean_time_to_absorb(
             * A mapping from old outcomes to new outcomes.
                 Unmapped old outcomes stay the same.
             The new outcomes may be dice rather than just single outcomes.
-            The special value `icepool.Reroll` will reroll that old outcome.
+            The special value `Reroll` will reroll that old outcome.
+            Currently, `mean_time_to_absorb` does not support `Restart`.
         initial_state: The initial state of the process, which could be a
             single state or a `Die`.
         extra_args: Extra arguments to use, as per `map`. Note that these are
@@ -368,9 +368,8 @@ def mean_time_to_absorb(
     # Infinite repeat.
     # T_co and U should be the same in this case.
 
-    _, result = icepool.itertools.markov_chain.absorbing_markov_chain(
+    return icepool.itertools.markov_chain.absorbing_markov_chain_mean_absorption_time(
         transition_cache, initial_state)
-    return result
 
 
 def map_to_pool(
