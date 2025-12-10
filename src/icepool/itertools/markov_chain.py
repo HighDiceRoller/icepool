@@ -15,11 +15,9 @@ from typing import Callable, MutableMapping
 
 class SpecialValue(enum.Enum):
     Visit = 'Visit'
-
-
-Visit = SpecialValue.Visit
-"""Special value for indicating the numerator of the number of visits to a
-particular state."""
+    """Indicates the numerator of the number of visits to a particular state."""
+    Restart = 'Restart'
+    """Indicates that a Restart was triggered."""
 
 
 class SparseVector(MutableMapping[T, int]):
@@ -139,9 +137,9 @@ def absorbing_markov_chain(
     ```
     with the state vector on the right, then `fundamental_solve` is solving
     the equation
-    `(I - Q) x = s`
-    where `s` is the starting state vector, and `x` is the "exit" vector which
-    gives the probability of each transient state being the last one visited.
+    `(I - Q) v = s`
+    where `s` is the starting state vector, and `v` is the visit vector which
+    gives the number of visits to each transient state.
     We solve this in unnormalized form, so instead of being 1, `I` is equal to
     the denominator of the transition from the source state.
     """
@@ -167,7 +165,8 @@ def absorbing_markov_chain(
                 fundamental_solve[dst_index][src] -= quantity
     for src_index, src in enumerate(transients.keys()):
         # Setting `s`.
-        fundamental_solve[src_index][Visit] = initial_transient.quantity(src)
+        fundamental_solve[src_index][
+            SpecialValue.Visit] = initial_transient.quantity(src)
 
     # Solve the matrix using Gaussian elimination.
 
@@ -192,7 +191,7 @@ def absorbing_markov_chain(
                 pivot] - pivot_row * fundamental_solve[i][pivot]
             fundamental_solve[i].simplify()
 
-    # Solve for the exit vector `x`.
+    # Solve for the visit vector `v`.
     for pivot_index, pivot in reversed(list(enumerate(transients.keys()))):
         pivot_row = fundamental_solve[pivot_index]
         for i in range(pivot_index):
@@ -205,8 +204,8 @@ def absorbing_markov_chain(
     results = {}
     for pivot_index, (pivot, absorption_row) in enumerate(
             zip(transients.keys(), absorption_matrix)):
-        # n / d is an element of the exit vector `x`.
-        n = fundamental_solve[pivot_index][Visit]
+        # n / d is an element of the visit vector `v`.
+        n = fundamental_solve[pivot_index][SpecialValue.Visit]
         if n == 0:
             continue
         d = fundamental_solve[pivot_index][pivot]
@@ -223,8 +222,9 @@ def absorbing_markov_chain(
     results_denominator = math.lcm(*(d for _, d in results.values()))
     normalized_results: MutableMapping[T, int] = defaultdict(int)
     for row, d in results.values():
+        factor = results_denominator // d
         for outcome, quantity in row.items():
-            normalized_results[outcome] += quantity * results_denominator // d
+            normalized_results[outcome] += quantity * factor
 
     # Inference to Die[T] seems to fail here.
     transient_absorb: 'icepool.Die' = icepool.Die(
