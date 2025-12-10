@@ -131,7 +131,20 @@ def absorbing_markov_chain(
         outcome: i
         for i, outcome in enumerate(transients.keys())
     }
-
+    """Supposing the transition matrix has the form
+    
+    ```
+    Q 0
+    A I
+    ```
+    with the state vector on the right, then `fundamental_solve` is solving
+    the equation
+    `(I - Q) x = s`
+    where `s` is the starting state vector, and `x` is the "exit" vector which
+    gives the probability of each transient state being the last one visited.
+    We solve this in unnormalized form, so instead of being 1, `I` is equal to
+    the denominator of the transition from the source state.
+    """
     # [dst_index][src]
     fundamental_solve: list[SparseVector[T]] = [
         SparseVector() for _ in transients.keys()
@@ -141,6 +154,7 @@ def absorbing_markov_chain(
         SparseVector() for _ in transients.keys()
     ]
     for src_index, (src, transition) in enumerate(transients.items()):
+        # The identity term.
         fundamental_solve[src_index][src] += transition.denominator()
         for (transition_type, dst), quantity in transition.items():
             if transition_type is TransitionType.BREAK:
@@ -148,9 +162,11 @@ def absorbing_markov_chain(
             elif transition_type is TransitionType.RESTART:
                 pass  # transition to nowhere
             else:
+                # Minus Q.
                 dst_index = outcome_to_index[dst]
                 fundamental_solve[dst_index][src] -= quantity
     for src_index, src in enumerate(transients.keys()):
+        # Setting `s`.
         fundamental_solve[src_index][Visit] = initial_transient.quantity(src)
 
     # Solve the matrix using Gaussian elimination.
@@ -176,7 +192,7 @@ def absorbing_markov_chain(
                 pivot] - pivot_row * fundamental_solve[i][pivot]
             fundamental_solve[i].simplify()
 
-    # Solve for the exit variables.
+    # Solve for the exit vector `x`.
     for pivot_index, pivot in reversed(list(enumerate(transients.keys()))):
         pivot_row = fundamental_solve[pivot_index]
         for i in range(pivot_index):
@@ -186,15 +202,18 @@ def absorbing_markov_chain(
 
     mean_absorption_time = Fraction(0, 1)
 
-    # [pivot] -> absorption row, denominator
     results = {}
     for pivot_index, (pivot, absorption_row) in enumerate(
             zip(transients.keys(), absorption_matrix)):
+        # n / d is an element of the exit vector `x`.
         n = fundamental_solve[pivot_index][Visit]
         if n == 0:
             continue
         d = fundamental_solve[pivot_index][pivot]
 
+        # Compared to the normalized formula, I and Q were scaled up by a
+        # factor transients[pivot].denominator() so (I - Q)^-1 was reduced
+        # by the same factor. So we put the factor back here.
         mean_absorption_time += Fraction(n,
                                          d) * transients[pivot].denominator()
 
@@ -215,8 +234,7 @@ def absorbing_markov_chain(
         [initial_absorb.denominator(),
          initial_transient.denominator()]).simplify()
 
-    # TODO: Probably missing a divisor here.
-    mean_absorption_time *= Fraction(initial_transient.denominator(),
-                                     initial_die.denominator())
+    # The starting vector `s` was not normalized, so we divide it out here.
+    mean_absorption_time /= initial_die.denominator()
 
     return result, mean_absorption_time
