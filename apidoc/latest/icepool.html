@@ -558,9 +558,6 @@
                                 <a class="function" href="#Pool.additive_union">additive_union</a>
                         </li>
                         <li>
-                                <a class="function" href="#Pool.weightless">weightless</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#Pool.hash_key">hash_key</a>
                         </li>
                 </ul>
@@ -572,6 +569,9 @@
             <li>
                     <a class="class" href="#MultisetGenerator">MultisetGenerator</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MultisetGenerator.weightless">weightless</a>
+                        </li>
                 </ul>
 
             </li>
@@ -829,9 +829,6 @@
                         </li>
                         <li>
                                 <a class="function" href="#Deal.denominator">denominator</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Deal.weightless">weightless</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Deal.hash_key">hash_key</a>
@@ -11585,22 +11582,15 @@ equal to the first argument to the current iteration of <code><a href="#map">map
 </span><span id="Pool-195"><a href="#Pool-195"><span class="linenos">195</span></a>                <span class="k">return</span> <span class="n">Pool</span><span class="o">.</span><span class="n">_new_from_mapping</span><span class="p">(</span><span class="n">dice</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">keep_tuple</span><span class="p">)</span>
 </span><span id="Pool-196"><a href="#Pool-196"><span class="linenos">196</span></a>        <span class="k">return</span> <span class="n">KeepGenerator</span><span class="o">.</span><span class="n">additive_union</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 </span><span id="Pool-197"><a href="#Pool-197"><span class="linenos">197</span></a>
-</span><span id="Pool-198"><a href="#Pool-198"><span class="linenos">198</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
-</span><span id="Pool-199"><a href="#Pool-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.</span>
-</span><span id="Pool-200"><a href="#Pool-200"><span class="linenos">200</span></a><span class="sd">        </span>
-</span><span id="Pool-201"><a href="#Pool-201"><span class="linenos">201</span></a><span class="sd">        This may not work with pools with keeps or mixed dice.</span>
-</span><span id="Pool-202"><a href="#Pool-202"><span class="linenos">202</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool-203"><a href="#Pool-203"><span class="linenos">203</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Pool-204"><a href="#Pool-204"><span class="linenos">204</span></a>
-</span><span id="Pool-205"><a href="#Pool-205"><span class="linenos">205</span></a>    <span class="nd">@property</span>
-</span><span id="Pool-206"><a href="#Pool-206"><span class="linenos">206</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Pool-207"><a href="#Pool-207"><span class="linenos">207</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
-</span><span id="Pool-208"><a href="#Pool-208"><span class="linenos">208</span></a>
-</span><span id="Pool-209"><a href="#Pool-209"><span class="linenos">209</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Pool-210"><a href="#Pool-210"><span class="linenos">210</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="Pool-211"><a href="#Pool-211"><span class="linenos">211</span></a>            <span class="sa">f</span><span class="s1">&#39;Pool of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_size</span><span class="p">()</span><span class="si">}</span><span class="s1"> dice with keep_tuple=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_tuple</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="Pool-212"><a href="#Pool-212"><span class="linenos">212</span></a>            <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="si">}</span><span class="s1"> : </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">,</span><span class="se">\n</span><span class="s1">&#39;</span>
-</span><span id="Pool-213"><a href="#Pool-213"><span class="linenos">213</span></a>                      <span class="k">for</span> <span class="n">die</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="p">))</span>
+</span><span id="Pool-198"><a href="#Pool-198"><span class="linenos">198</span></a>    <span class="nd">@property</span>
+</span><span id="Pool-199"><a href="#Pool-199"><span class="linenos">199</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Pool-200"><a href="#Pool-200"><span class="linenos">200</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
+</span><span id="Pool-201"><a href="#Pool-201"><span class="linenos">201</span></a>
+</span><span id="Pool-202"><a href="#Pool-202"><span class="linenos">202</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Pool-203"><a href="#Pool-203"><span class="linenos">203</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="Pool-204"><a href="#Pool-204"><span class="linenos">204</span></a>            <span class="sa">f</span><span class="s1">&#39;Pool of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_size</span><span class="p">()</span><span class="si">}</span><span class="s1"> dice with keep_tuple=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_tuple</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="Pool-205"><a href="#Pool-205"><span class="linenos">205</span></a>            <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="si">}</span><span class="s1"> : </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">,</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="Pool-206"><a href="#Pool-206"><span class="linenos">206</span></a>                      <span class="k">for</span> <span class="n">die</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -11779,33 +11769,6 @@ arguments.</p>
 
 
                             </div>
-                            <div id="Pool.weightless" class="classattr">
-                                        <input id="Pool.weightless-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">weightless</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetGenerator">MultisetGenerator</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="Pool.weightless-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Pool.weightless"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.weightless-198"><a href="#Pool.weightless-198"><span class="linenos">198</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
-</span><span id="Pool.weightless-199"><a href="#Pool.weightless-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.</span>
-</span><span id="Pool.weightless-200"><a href="#Pool.weightless-200"><span class="linenos">200</span></a><span class="sd">        </span>
-</span><span id="Pool.weightless-201"><a href="#Pool.weightless-201"><span class="linenos">201</span></a><span class="sd">        This may not work with pools with keeps or mixed dice.</span>
-</span><span id="Pool.weightless-202"><a href="#Pool.weightless-202"><span class="linenos">202</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Pool.weightless-203"><a href="#Pool.weightless-203"><span class="linenos">203</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.</p>
-
-<p>This may not work with pools with keeps or mixed dice.</p>
-</div>
-
-
-                            </div>
                             <div id="Pool.hash_key" class="classattr">
                                         <input id="Pool.hash_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
@@ -11815,9 +11778,9 @@ arguments.</p>
 
     </div>
     <a class="headerlink" href="#Pool.hash_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.hash_key-205"><a href="#Pool.hash_key-205"><span class="linenos">205</span></a>    <span class="nd">@property</span>
-</span><span id="Pool.hash_key-206"><a href="#Pool.hash_key-206"><span class="linenos">206</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Pool.hash_key-207"><a href="#Pool.hash_key-207"><span class="linenos">207</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.hash_key-198"><a href="#Pool.hash_key-198"><span class="linenos">198</span></a>    <span class="nd">@property</span>
+</span><span id="Pool.hash_key-199"><a href="#Pool.hash_key-199"><span class="linenos">199</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Pool.hash_key-200"><a href="#Pool.hash_key-200"><span class="linenos">200</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
 </span></pre></div>
 
 
@@ -11849,24 +11812,24 @@ arguments.</p>
 
     </div>
     <a class="headerlink" href="#standard_pool"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="standard_pool-351"><a href="#standard_pool-351"><span class="linenos">351</span></a><span class="k">def</span><span class="w"> </span><span class="nf">standard_pool</span><span class="p">(</span>
-</span><span id="standard_pool-352"><a href="#standard_pool-352"><span class="linenos">352</span></a>        <span class="n">die_sizes</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Pool[int]&#39;</span><span class="p">:</span>
-</span><span id="standard_pool-353"><a href="#standard_pool-353"><span class="linenos">353</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `Pool` of standard dice (e.g. d6, d8...).</span>
-</span><span id="standard_pool-354"><a href="#standard_pool-354"><span class="linenos">354</span></a>
-</span><span id="standard_pool-355"><a href="#standard_pool-355"><span class="linenos">355</span></a><span class="sd">    Args:</span>
-</span><span id="standard_pool-356"><a href="#standard_pool-356"><span class="linenos">356</span></a><span class="sd">        die_sizes: A collection of die sizes, which will put one die of that</span>
-</span><span id="standard_pool-357"><a href="#standard_pool-357"><span class="linenos">357</span></a><span class="sd">            sizes in the pool for each element.</span>
-</span><span id="standard_pool-358"><a href="#standard_pool-358"><span class="linenos">358</span></a><span class="sd">            Or, a mapping of die sizes to how many dice of that size to put</span>
-</span><span id="standard_pool-359"><a href="#standard_pool-359"><span class="linenos">359</span></a><span class="sd">            into the pool.</span>
-</span><span id="standard_pool-360"><a href="#standard_pool-360"><span class="linenos">360</span></a><span class="sd">            If empty, the pool will be considered to consist of zero zeros.</span>
-</span><span id="standard_pool-361"><a href="#standard_pool-361"><span class="linenos">361</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="standard_pool-362"><a href="#standard_pool-362"><span class="linenos">362</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">die_sizes</span><span class="p">:</span>
-</span><span id="standard_pool-363"><a href="#standard_pool-363"><span class="linenos">363</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="p">({</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="mi">0</span><span class="p">]):</span> <span class="mi">0</span><span class="p">})</span>
-</span><span id="standard_pool-364"><a href="#standard_pool-364"><span class="linenos">364</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
-</span><span id="standard_pool-365"><a href="#standard_pool-365"><span class="linenos">365</span></a>        <span class="n">die_sizes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-</span><span id="standard_pool-366"><a href="#standard_pool-366"><span class="linenos">366</span></a>            <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span>
-</span><span id="standard_pool-367"><a href="#standard_pool-367"><span class="linenos">367</span></a>                                          <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
-</span><span id="standard_pool-368"><a href="#standard_pool-368"><span class="linenos">368</span></a>    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="standard_pool-344"><a href="#standard_pool-344"><span class="linenos">344</span></a><span class="k">def</span><span class="w"> </span><span class="nf">standard_pool</span><span class="p">(</span>
+</span><span id="standard_pool-345"><a href="#standard_pool-345"><span class="linenos">345</span></a>        <span class="n">die_sizes</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Pool[int]&#39;</span><span class="p">:</span>
+</span><span id="standard_pool-346"><a href="#standard_pool-346"><span class="linenos">346</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A `Pool` of standard dice (e.g. d6, d8...).</span>
+</span><span id="standard_pool-347"><a href="#standard_pool-347"><span class="linenos">347</span></a>
+</span><span id="standard_pool-348"><a href="#standard_pool-348"><span class="linenos">348</span></a><span class="sd">    Args:</span>
+</span><span id="standard_pool-349"><a href="#standard_pool-349"><span class="linenos">349</span></a><span class="sd">        die_sizes: A collection of die sizes, which will put one die of that</span>
+</span><span id="standard_pool-350"><a href="#standard_pool-350"><span class="linenos">350</span></a><span class="sd">            sizes in the pool for each element.</span>
+</span><span id="standard_pool-351"><a href="#standard_pool-351"><span class="linenos">351</span></a><span class="sd">            Or, a mapping of die sizes to how many dice of that size to put</span>
+</span><span id="standard_pool-352"><a href="#standard_pool-352"><span class="linenos">352</span></a><span class="sd">            into the pool.</span>
+</span><span id="standard_pool-353"><a href="#standard_pool-353"><span class="linenos">353</span></a><span class="sd">            If empty, the pool will be considered to consist of zero zeros.</span>
+</span><span id="standard_pool-354"><a href="#standard_pool-354"><span class="linenos">354</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="standard_pool-355"><a href="#standard_pool-355"><span class="linenos">355</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">die_sizes</span><span class="p">:</span>
+</span><span id="standard_pool-356"><a href="#standard_pool-356"><span class="linenos">356</span></a>        <span class="k">return</span> <span class="n">Pool</span><span class="p">({</span><span class="n">icepool</span><span class="o">.</span><span class="n">Die</span><span class="p">([</span><span class="mi">0</span><span class="p">]):</span> <span class="mi">0</span><span class="p">})</span>
+</span><span id="standard_pool-357"><a href="#standard_pool-357"><span class="linenos">357</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">die_sizes</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+</span><span id="standard_pool-358"><a href="#standard_pool-358"><span class="linenos">358</span></a>        <span class="n">die_sizes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+</span><span id="standard_pool-359"><a href="#standard_pool-359"><span class="linenos">359</span></a>            <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">([</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span>
+</span><span id="standard_pool-360"><a href="#standard_pool-360"><span class="linenos">360</span></a>                                          <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+</span><span id="standard_pool-361"><a href="#standard_pool-361"><span class="linenos">361</span></a>    <span class="k">return</span> <span class="n">Pool</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">icepool</span><span class="o">.</span><span class="n">d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">die_sizes</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -11896,44 +11859,53 @@ If empty, the pool will be considered to consist of zero zeros.</li>
 
     </div>
     <a class="headerlink" href="#MultisetGenerator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetGenerator-17"><a href="#MultisetGenerator-17"><span class="linenos">17</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetGenerator</span><span class="p">(</span><span class="n">MultisetExpression</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-</span><span id="MultisetGenerator-18"><a href="#MultisetGenerator-18"><span class="linenos">18</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for generating multisets.</span>
-</span><span id="MultisetGenerator-19"><a href="#MultisetGenerator-19"><span class="linenos">19</span></a>
-</span><span id="MultisetGenerator-20"><a href="#MultisetGenerator-20"><span class="linenos">20</span></a><span class="sd">    These include dice pools (`Pool`) and card deals (`Deal`). Most likely you</span>
-</span><span id="MultisetGenerator-21"><a href="#MultisetGenerator-21"><span class="linenos">21</span></a><span class="sd">    will be using one of these two rather than writing your own subclass of</span>
-</span><span id="MultisetGenerator-22"><a href="#MultisetGenerator-22"><span class="linenos">22</span></a><span class="sd">    `MultisetGenerator`.</span>
-</span><span id="MultisetGenerator-23"><a href="#MultisetGenerator-23"><span class="linenos">23</span></a>
-</span><span id="MultisetGenerator-24"><a href="#MultisetGenerator-24"><span class="linenos">24</span></a><span class="sd">    The multisets are incrementally generated one outcome at a time.</span>
-</span><span id="MultisetGenerator-25"><a href="#MultisetGenerator-25"><span class="linenos">25</span></a><span class="sd">    For each outcome, a `count` and `weight` are generated, along with a</span>
-</span><span id="MultisetGenerator-26"><a href="#MultisetGenerator-26"><span class="linenos">26</span></a><span class="sd">    smaller generator to produce the rest of the multiset.</span>
-</span><span id="MultisetGenerator-27"><a href="#MultisetGenerator-27"><span class="linenos">27</span></a>
-</span><span id="MultisetGenerator-28"><a href="#MultisetGenerator-28"><span class="linenos">28</span></a><span class="sd">    You can perform simple evaluations using built-in operators and methods in</span>
-</span><span id="MultisetGenerator-29"><a href="#MultisetGenerator-29"><span class="linenos">29</span></a><span class="sd">    this class.</span>
-</span><span id="MultisetGenerator-30"><a href="#MultisetGenerator-30"><span class="linenos">30</span></a><span class="sd">    For more complex evaluations and better performance, particularly when</span>
-</span><span id="MultisetGenerator-31"><a href="#MultisetGenerator-31"><span class="linenos">31</span></a><span class="sd">    multiple generators are involved, you will want to write your own subclass</span>
-</span><span id="MultisetGenerator-32"><a href="#MultisetGenerator-32"><span class="linenos">32</span></a><span class="sd">    of `MultisetEvaluator`.</span>
-</span><span id="MultisetGenerator-33"><a href="#MultisetGenerator-33"><span class="linenos">33</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="MultisetGenerator-34"><a href="#MultisetGenerator-34"><span class="linenos">34</span></a>
-</span><span id="MultisetGenerator-35"><a href="#MultisetGenerator-35"><span class="linenos">35</span></a>    <span class="n">_children</span> <span class="o">=</span> <span class="p">()</span>
-</span><span id="MultisetGenerator-36"><a href="#MultisetGenerator-36"><span class="linenos">36</span></a>
-</span><span id="MultisetGenerator-37"><a href="#MultisetGenerator-37"><span class="linenos">37</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="MultisetGenerator-38"><a href="#MultisetGenerator-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_make_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetSource&#39;</span><span class="p">:</span>
-</span><span id="MultisetGenerator-39"><a href="#MultisetGenerator-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a source from this generator.&quot;&quot;&quot;</span>
-</span><span id="MultisetGenerator-40"><a href="#MultisetGenerator-40"><span class="linenos">40</span></a>
-</span><span id="MultisetGenerator-41"><a href="#MultisetGenerator-41"><span class="linenos">41</span></a>    <span class="nd">@property</span>
-</span><span id="MultisetGenerator-42"><a href="#MultisetGenerator-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_has_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="MultisetGenerator-43"><a href="#MultisetGenerator-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="kc">False</span>
-</span><span id="MultisetGenerator-44"><a href="#MultisetGenerator-44"><span class="linenos">44</span></a>
-</span><span id="MultisetGenerator-45"><a href="#MultisetGenerator-45"><span class="linenos">45</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
-</span><span id="MultisetGenerator-46"><a href="#MultisetGenerator-46"><span class="linenos">46</span></a>        <span class="bp">self</span>
-</span><span id="MultisetGenerator-47"><a href="#MultisetGenerator-47"><span class="linenos">47</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;tuple[Dungeonlet[T, Any], ...]&#39;</span><span class="p">,</span>
-</span><span id="MultisetGenerator-48"><a href="#MultisetGenerator-48"><span class="linenos">48</span></a>                        <span class="s1">&#39;tuple[Questlet[T, Any], ...]&#39;</span><span class="p">,</span>
-</span><span id="MultisetGenerator-49"><a href="#MultisetGenerator-49"><span class="linenos">49</span></a>                        <span class="s1">&#39;tuple[MultisetSourceBase[T, Any], ...]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
-</span><span id="MultisetGenerator-50"><a href="#MultisetGenerator-50"><span class="linenos">50</span></a>        <span class="n">dungeonlets</span> <span class="o">=</span> <span class="p">(</span><span class="n">MultisetFreeVariable</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">](),</span> <span class="p">)</span>
-</span><span id="MultisetGenerator-51"><a href="#MultisetGenerator-51"><span class="linenos">51</span></a>        <span class="n">questlets</span> <span class="o">=</span> <span class="p">(</span><span class="n">MultisetGeneratorQuestlet</span><span class="p">[</span><span class="n">T</span><span class="p">](),</span> <span class="p">)</span>
-</span><span id="MultisetGenerator-52"><a href="#MultisetGenerator-52"><span class="linenos">52</span></a>        <span class="n">sources</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_source</span><span class="p">(),</span> <span class="p">)</span>
-</span><span id="MultisetGenerator-53"><a href="#MultisetGenerator-53"><span class="linenos">53</span></a>        <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span id="MultisetGenerator-54"><a href="#MultisetGenerator-54"><span class="linenos">54</span></a>        <span class="k">yield</span> <span class="n">dungeonlets</span><span class="p">,</span> <span class="n">questlets</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">weight</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetGenerator-18"><a href="#MultisetGenerator-18"><span class="linenos">18</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MultisetGenerator</span><span class="p">(</span><span class="n">MultisetExpression</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+</span><span id="MultisetGenerator-19"><a href="#MultisetGenerator-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for generating multisets.</span>
+</span><span id="MultisetGenerator-20"><a href="#MultisetGenerator-20"><span class="linenos">20</span></a>
+</span><span id="MultisetGenerator-21"><a href="#MultisetGenerator-21"><span class="linenos">21</span></a><span class="sd">    These include dice pools (`Pool`) and card deals (`Deal`). Most likely you</span>
+</span><span id="MultisetGenerator-22"><a href="#MultisetGenerator-22"><span class="linenos">22</span></a><span class="sd">    will be using one of these two rather than writing your own subclass of</span>
+</span><span id="MultisetGenerator-23"><a href="#MultisetGenerator-23"><span class="linenos">23</span></a><span class="sd">    `MultisetGenerator`.</span>
+</span><span id="MultisetGenerator-24"><a href="#MultisetGenerator-24"><span class="linenos">24</span></a>
+</span><span id="MultisetGenerator-25"><a href="#MultisetGenerator-25"><span class="linenos">25</span></a><span class="sd">    The multisets are incrementally generated one outcome at a time.</span>
+</span><span id="MultisetGenerator-26"><a href="#MultisetGenerator-26"><span class="linenos">26</span></a><span class="sd">    For each outcome, a `count` and `weight` are generated, along with a</span>
+</span><span id="MultisetGenerator-27"><a href="#MultisetGenerator-27"><span class="linenos">27</span></a><span class="sd">    smaller generator to produce the rest of the multiset.</span>
+</span><span id="MultisetGenerator-28"><a href="#MultisetGenerator-28"><span class="linenos">28</span></a>
+</span><span id="MultisetGenerator-29"><a href="#MultisetGenerator-29"><span class="linenos">29</span></a><span class="sd">    You can perform simple evaluations using built-in operators and methods in</span>
+</span><span id="MultisetGenerator-30"><a href="#MultisetGenerator-30"><span class="linenos">30</span></a><span class="sd">    this class.</span>
+</span><span id="MultisetGenerator-31"><a href="#MultisetGenerator-31"><span class="linenos">31</span></a><span class="sd">    For more complex evaluations and better performance, particularly when</span>
+</span><span id="MultisetGenerator-32"><a href="#MultisetGenerator-32"><span class="linenos">32</span></a><span class="sd">    multiple generators are involved, you will want to write your own subclass</span>
+</span><span id="MultisetGenerator-33"><a href="#MultisetGenerator-33"><span class="linenos">33</span></a><span class="sd">    of `MultisetEvaluator`.</span>
+</span><span id="MultisetGenerator-34"><a href="#MultisetGenerator-34"><span class="linenos">34</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="MultisetGenerator-35"><a href="#MultisetGenerator-35"><span class="linenos">35</span></a>
+</span><span id="MultisetGenerator-36"><a href="#MultisetGenerator-36"><span class="linenos">36</span></a>    <span class="n">_children</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="MultisetGenerator-37"><a href="#MultisetGenerator-37"><span class="linenos">37</span></a>
+</span><span id="MultisetGenerator-38"><a href="#MultisetGenerator-38"><span class="linenos">38</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="MultisetGenerator-39"><a href="#MultisetGenerator-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_make_source</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetSource&#39;</span><span class="p">:</span>
+</span><span id="MultisetGenerator-40"><a href="#MultisetGenerator-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a source from this generator.&quot;&quot;&quot;</span>
+</span><span id="MultisetGenerator-41"><a href="#MultisetGenerator-41"><span class="linenos">41</span></a>
+</span><span id="MultisetGenerator-42"><a href="#MultisetGenerator-42"><span class="linenos">42</span></a>    <span class="nd">@property</span>
+</span><span id="MultisetGenerator-43"><a href="#MultisetGenerator-43"><span class="linenos">43</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_has_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="MultisetGenerator-44"><a href="#MultisetGenerator-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="kc">False</span>
+</span><span id="MultisetGenerator-45"><a href="#MultisetGenerator-45"><span class="linenos">45</span></a>
+</span><span id="MultisetGenerator-46"><a href="#MultisetGenerator-46"><span class="linenos">46</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span>
+</span><span id="MultisetGenerator-47"><a href="#MultisetGenerator-47"><span class="linenos">47</span></a>        <span class="bp">self</span>
+</span><span id="MultisetGenerator-48"><a href="#MultisetGenerator-48"><span class="linenos">48</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="s1">&#39;tuple[Dungeonlet[T, Any], ...]&#39;</span><span class="p">,</span>
+</span><span id="MultisetGenerator-49"><a href="#MultisetGenerator-49"><span class="linenos">49</span></a>                        <span class="s1">&#39;tuple[Questlet[T, Any], ...]&#39;</span><span class="p">,</span>
+</span><span id="MultisetGenerator-50"><a href="#MultisetGenerator-50"><span class="linenos">50</span></a>                        <span class="s1">&#39;tuple[MultisetSourceBase[T, Any], ...]&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+</span><span id="MultisetGenerator-51"><a href="#MultisetGenerator-51"><span class="linenos">51</span></a>        <span class="n">dungeonlets</span> <span class="o">=</span> <span class="p">(</span><span class="n">MultisetFreeVariable</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">](),</span> <span class="p">)</span>
+</span><span id="MultisetGenerator-52"><a href="#MultisetGenerator-52"><span class="linenos">52</span></a>        <span class="n">questlets</span> <span class="o">=</span> <span class="p">(</span><span class="n">MultisetGeneratorQuestlet</span><span class="p">[</span><span class="n">T</span><span class="p">](),</span> <span class="p">)</span>
+</span><span id="MultisetGenerator-53"><a href="#MultisetGenerator-53"><span class="linenos">53</span></a>        <span class="n">sources</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_source</span><span class="p">(),</span> <span class="p">)</span>
+</span><span id="MultisetGenerator-54"><a href="#MultisetGenerator-54"><span class="linenos">54</span></a>        <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="MultisetGenerator-55"><a href="#MultisetGenerator-55"><span class="linenos">55</span></a>        <span class="k">yield</span> <span class="n">dungeonlets</span><span class="p">,</span> <span class="n">questlets</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="n">weight</span>
+</span><span id="MultisetGenerator-56"><a href="#MultisetGenerator-56"><span class="linenos">56</span></a>
+</span><span id="MultisetGenerator-57"><a href="#MultisetGenerator-57"><span class="linenos">57</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
+</span><span id="MultisetGenerator-58"><a href="#MultisetGenerator-58"><span class="linenos">58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this generator in which each possible multiset is equally weighted.</span>
+</span><span id="MultisetGenerator-59"><a href="#MultisetGenerator-59"><span class="linenos">59</span></a><span class="sd">        </span>
+</span><span id="MultisetGenerator-60"><a href="#MultisetGenerator-60"><span class="linenos">60</span></a><span class="sd">        This requires that each call to the underlying source.pop() does not </span>
+</span><span id="MultisetGenerator-61"><a href="#MultisetGenerator-61"><span class="linenos">61</span></a><span class="sd">        yield duplicate count values; if so, the evaluation will raise</span>
+</span><span id="MultisetGenerator-62"><a href="#MultisetGenerator-62"><span class="linenos">62</span></a><span class="sd">        `UnsupportedOrder`. Keeps and mixed pools usually fail this.</span>
+</span><span id="MultisetGenerator-63"><a href="#MultisetGenerator-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetGenerator-64"><a href="#MultisetGenerator-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -11955,6 +11927,37 @@ of <code><a href="#MultisetEvaluator">MultisetEvaluator</a></code>.</p>
 </div>
 
 
+                            <div id="MultisetGenerator.weightless" class="classattr">
+                                        <input id="MultisetGenerator.weightless-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">weightless</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetGenerator">MultisetGenerator</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="MultisetGenerator.weightless-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MultisetGenerator.weightless"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MultisetGenerator.weightless-57"><a href="#MultisetGenerator.weightless-57"><span class="linenos">57</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
+</span><span id="MultisetGenerator.weightless-58"><a href="#MultisetGenerator.weightless-58"><span class="linenos">58</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this generator in which each possible multiset is equally weighted.</span>
+</span><span id="MultisetGenerator.weightless-59"><a href="#MultisetGenerator.weightless-59"><span class="linenos">59</span></a><span class="sd">        </span>
+</span><span id="MultisetGenerator.weightless-60"><a href="#MultisetGenerator.weightless-60"><span class="linenos">60</span></a><span class="sd">        This requires that each call to the underlying source.pop() does not </span>
+</span><span id="MultisetGenerator.weightless-61"><a href="#MultisetGenerator.weightless-61"><span class="linenos">61</span></a><span class="sd">        yield duplicate count values; if so, the evaluation will raise</span>
+</span><span id="MultisetGenerator.weightless-62"><a href="#MultisetGenerator.weightless-62"><span class="linenos">62</span></a><span class="sd">        `UnsupportedOrder`. Keeps and mixed pools usually fail this.</span>
+</span><span id="MultisetGenerator.weightless-63"><a href="#MultisetGenerator.weightless-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MultisetGenerator.weightless-64"><a href="#MultisetGenerator.weightless-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>EXPERIMENTAL: Produces a version of this generator in which each possible multiset is equally weighted.</p>
+
+<p>This requires that each call to the underlying source.pop() does not 
+yield duplicate count values; if so, the evaluation will raise
+<code><a href="#UnsupportedOrder">UnsupportedOrder</a></code>. Keeps and mixed pools usually fail this.</p>
+</div>
+
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -17808,27 +17811,20 @@ order, use <code><a href="#Deck.deal">deal()</a></code> instead.</p>
 </span><span id="Deal-74"><a href="#Deal-74"><span class="linenos">74</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">denominator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Deal-75"><a href="#Deal-75"><span class="linenos">75</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">())</span>
 </span><span id="Deal-76"><a href="#Deal-76"><span class="linenos">76</span></a>
-</span><span id="Deal-77"><a href="#Deal-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
-</span><span id="Deal-78"><a href="#Deal-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.</span>
-</span><span id="Deal-79"><a href="#Deal-79"><span class="linenos">79</span></a><span class="sd">        </span>
-</span><span id="Deal-80"><a href="#Deal-80"><span class="linenos">80</span></a><span class="sd">        This may not work on deals with keeps.</span>
-</span><span id="Deal-81"><a href="#Deal-81"><span class="linenos">81</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deal-82"><a href="#Deal-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="Deal-83"><a href="#Deal-83"><span class="linenos">83</span></a>
-</span><span id="Deal-84"><a href="#Deal-84"><span class="linenos">84</span></a>    <span class="nd">@property</span>
-</span><span id="Deal-85"><a href="#Deal-85"><span class="linenos">85</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Deal-86"><a href="#Deal-86"><span class="linenos">86</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
-</span><span id="Deal-87"><a href="#Deal-87"><span class="linenos">87</span></a>
-</span><span id="Deal-88"><a href="#Deal-88"><span class="linenos">88</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Deal-89"><a href="#Deal-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
-</span><span id="Deal-90"><a href="#Deal-90"><span class="linenos">90</span></a>            <span class="bp">self</span>
-</span><span id="Deal-91"><a href="#Deal-91"><span class="linenos">91</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
-</span><span id="Deal-92"><a href="#Deal-92"><span class="linenos">92</span></a>
-</span><span id="Deal-93"><a href="#Deal-93"><span class="linenos">93</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Deal-94"><a href="#Deal-94"><span class="linenos">94</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
-</span><span id="Deal-95"><a href="#Deal-95"><span class="linenos">95</span></a>            <span class="bp">self</span>
-</span><span id="Deal-96"><a href="#Deal-96"><span class="linenos">96</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; of hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-</span><span id="Deal-97"><a href="#Deal-97"><span class="linenos">97</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
+</span><span id="Deal-77"><a href="#Deal-77"><span class="linenos">77</span></a>    <span class="nd">@property</span>
+</span><span id="Deal-78"><a href="#Deal-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Deal-79"><a href="#Deal-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
+</span><span id="Deal-80"><a href="#Deal-80"><span class="linenos">80</span></a>
+</span><span id="Deal-81"><a href="#Deal-81"><span class="linenos">81</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Deal-82"><a href="#Deal-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+</span><span id="Deal-83"><a href="#Deal-83"><span class="linenos">83</span></a>            <span class="bp">self</span>
+</span><span id="Deal-84"><a href="#Deal-84"><span class="linenos">84</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span><span class="si">}</span><span class="s1">, hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+</span><span id="Deal-85"><a href="#Deal-85"><span class="linenos">85</span></a>
+</span><span id="Deal-86"><a href="#Deal-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Deal-87"><a href="#Deal-87"><span class="linenos">87</span></a>        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span>
+</span><span id="Deal-88"><a href="#Deal-88"><span class="linenos">88</span></a>            <span class="bp">self</span>
+</span><span id="Deal-89"><a href="#Deal-89"><span class="linenos">89</span></a>        <span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; of hand_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hand_size</span><span class="p">()</span><span class="si">}</span><span class="s1"> from deck:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+</span><span id="Deal-90"><a href="#Deal-90"><span class="linenos">90</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">deck</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -17984,33 +17980,6 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
     
 
                             </div>
-                            <div id="Deal.weightless" class="classattr">
-                                        <input id="Deal.weightless-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">weightless</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n"><a href="#MultisetGenerator">MultisetGenerator</a></span><span class="p">[</span><span class="o">~</span><span class="n">T</span><span class="p">]</span>:</span></span>
-
-                <label class="view-source-button" for="Deal.weightless-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Deal.weightless"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deal.weightless-77"><a href="#Deal.weightless-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
-</span><span id="Deal.weightless-78"><a href="#Deal.weightless-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.</span>
-</span><span id="Deal.weightless-79"><a href="#Deal.weightless-79"><span class="linenos">79</span></a><span class="sd">        </span>
-</span><span id="Deal.weightless-80"><a href="#Deal.weightless-80"><span class="linenos">80</span></a><span class="sd">        This may not work on deals with keeps.</span>
-</span><span id="Deal.weightless-81"><a href="#Deal.weightless-81"><span class="linenos">81</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Deal.weightless-82"><a href="#Deal.weightless-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.</p>
-
-<p>This may not work on deals with keeps.</p>
-</div>
-
-
-                            </div>
                             <div id="Deal.hash_key" class="classattr">
                                         <input id="Deal.hash_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
@@ -18020,9 +17989,9 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 
     </div>
     <a class="headerlink" href="#Deal.hash_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Deal.hash_key-84"><a href="#Deal.hash_key-84"><span class="linenos">84</span></a>    <span class="nd">@property</span>
-</span><span id="Deal.hash_key-85"><a href="#Deal.hash_key-85"><span class="linenos">85</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Deal.hash_key-86"><a href="#Deal.hash_key-86"><span class="linenos">86</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Deal.hash_key-77"><a href="#Deal.hash_key-77"><span class="linenos">77</span></a>    <span class="nd">@property</span>
+</span><span id="Deal.hash_key-78"><a href="#Deal.hash_key-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Deal.hash_key-79"><a href="#Deal.hash_key-79"><span class="linenos">79</span></a>        <span class="k">return</span> <span class="n">Deal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deck</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keep_tuple</span>
 </span></pre></div>
 
 
