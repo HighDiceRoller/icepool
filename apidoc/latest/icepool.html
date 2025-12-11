@@ -11586,9 +11586,9 @@ equal to the first argument to the current iteration of <code><a href="#map">map
 </span><span id="Pool-196"><a href="#Pool-196"><span class="linenos">196</span></a>        <span class="k">return</span> <span class="n">KeepGenerator</span><span class="o">.</span><span class="n">additive_union</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 </span><span id="Pool-197"><a href="#Pool-197"><span class="linenos">197</span></a>
 </span><span id="Pool-198"><a href="#Pool-198"><span class="linenos">198</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
-</span><span id="Pool-199"><a href="#Pool-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this Pool in which each possible multiset is equally weighted.</span>
+</span><span id="Pool-199"><a href="#Pool-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.</span>
 </span><span id="Pool-200"><a href="#Pool-200"><span class="linenos">200</span></a><span class="sd">        </span>
-</span><span id="Pool-201"><a href="#Pool-201"><span class="linenos">201</span></a><span class="sd">        This is not compatible with non-positive keep.</span>
+</span><span id="Pool-201"><a href="#Pool-201"><span class="linenos">201</span></a><span class="sd">        This may not work with pools with keeps or mixed dice.</span>
 </span><span id="Pool-202"><a href="#Pool-202"><span class="linenos">202</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Pool-203"><a href="#Pool-203"><span class="linenos">203</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Pool-204"><a href="#Pool-204"><span class="linenos">204</span></a>
@@ -11791,17 +11791,17 @@ arguments.</p>
     </div>
     <a class="headerlink" href="#Pool.weightless"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Pool.weightless-198"><a href="#Pool.weightless-198"><span class="linenos">198</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
-</span><span id="Pool.weightless-199"><a href="#Pool.weightless-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this Pool in which each possible multiset is equally weighted.</span>
+</span><span id="Pool.weightless-199"><a href="#Pool.weightless-199"><span class="linenos">199</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.</span>
 </span><span id="Pool.weightless-200"><a href="#Pool.weightless-200"><span class="linenos">200</span></a><span class="sd">        </span>
-</span><span id="Pool.weightless-201"><a href="#Pool.weightless-201"><span class="linenos">201</span></a><span class="sd">        This is not compatible with non-positive keep.</span>
+</span><span id="Pool.weightless-201"><a href="#Pool.weightless-201"><span class="linenos">201</span></a><span class="sd">        This may not work with pools with keeps or mixed dice.</span>
 </span><span id="Pool.weightless-202"><a href="#Pool.weightless-202"><span class="linenos">202</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Pool.weightless-203"><a href="#Pool.weightless-203"><span class="linenos">203</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>EXPERIMENTAL: Produces a version of this Pool in which each possible multiset is equally weighted.</p>
+            <div class="docstring"><p>EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.</p>
 
-<p>This is not compatible with non-positive keep.</p>
+<p>This may not work with pools with keeps or mixed dice.</p>
 </div>
 
 
@@ -17811,7 +17811,7 @@ order, use <code><a href="#Deck.deal">deal()</a></code> instead.</p>
 </span><span id="Deal-77"><a href="#Deal-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
 </span><span id="Deal-78"><a href="#Deal-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.</span>
 </span><span id="Deal-79"><a href="#Deal-79"><span class="linenos">79</span></a><span class="sd">        </span>
-</span><span id="Deal-80"><a href="#Deal-80"><span class="linenos">80</span></a><span class="sd">        This is not compatible with non-positive keep.</span>
+</span><span id="Deal-80"><a href="#Deal-80"><span class="linenos">80</span></a><span class="sd">        This may not work on deals with keeps.</span>
 </span><span id="Deal-81"><a href="#Deal-81"><span class="linenos">81</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deal-82"><a href="#Deal-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Deal-83"><a href="#Deal-83"><span class="linenos">83</span></a>
@@ -17998,7 +17998,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Deal.weightless-77"><a href="#Deal.weightless-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">weightless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MultisetGenerator[T]&#39;</span><span class="p">:</span>
 </span><span id="Deal.weightless-78"><a href="#Deal.weightless-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.</span>
 </span><span id="Deal.weightless-79"><a href="#Deal.weightless-79"><span class="linenos">79</span></a><span class="sd">        </span>
-</span><span id="Deal.weightless-80"><a href="#Deal.weightless-80"><span class="linenos">80</span></a><span class="sd">        This is not compatible with non-positive keep.</span>
+</span><span id="Deal.weightless-80"><a href="#Deal.weightless-80"><span class="linenos">80</span></a><span class="sd">        This may not work on deals with keeps.</span>
 </span><span id="Deal.weightless-81"><a href="#Deal.weightless-81"><span class="linenos">81</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Deal.weightless-82"><a href="#Deal.weightless-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">icepool</span><span class="o">.</span><span class="n">WeightlessGenerator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span></pre></div>
@@ -18006,7 +18006,7 @@ Prefer to use the name <code><a href="#Deal.outcomes">outcomes</a></code>.</p>
 
             <div class="docstring"><p>EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.</p>
 
-<p>This is not compatible with non-positive keep.</p>
+<p>This may not work on deals with keeps.</p>
 </div>
 
 
