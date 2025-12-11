@@ -114,10 +114,11 @@ class MultisetExpression(MultisetExpressionBase[T, int],
     | `!=`                           | Whether the left side has any different counts to the right side           |
     | `expand`                       | All elements in ascending order                                            |
     | `sum`                          | Sum of all elements                                                        |
-    | `count`                        | The number of elements                                                     |
-    | `any`                          | Whether there is at least 1 element                                        |
-    | `highest_outcome_and_count`    | The highest outcome and how many of that outcome                           |
+    | `size`                         | The number of elements                                                     |
+    | `empty`                        | Whether all counts are zero                                                |
     | `all_counts`                   | All counts in descending order                                             |
+    | `product_of_counts`            | The product of all counts                                                  |
+    | `highest_outcome_and_count`    | The highest outcome and how many of that outcome                           |
     | `largest_count`                | The single largest count, aka x-of-a-kind                                  |
     | `largest_count_and_outcome`    | Same but also with the corresponding outcome                               |
     | `count_subset`, `//`           | The number of times the right side is contained in the left side           |
@@ -1077,6 +1078,11 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             self) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
         """Evaluation: Whether the multiset contains only zero counts."""
         return icepool.evaluator.empty_evaluator.evaluate(self)
+
+    def product_of_counts(
+        self, ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
+        """Evaluation: The product of counts in the multiset."""
+        return icepool.evaluator.product_of_counts_evaluator.evaluate(self)
 
     def highest_outcome_and_count(
         self

@@ -91,15 +91,18 @@ sum_evaluator: Final = SumEvaluator()
 
 
 class SizeEvaluator(MultisetEvaluator[Any, int]):
-    """Returns the total number of elements.
+    """Returns the total number of elements, i.e. the sum of all counts.
 
     Usually not very interesting unless the counts are adjusted by
     `unique` etc.
     """
 
+    def initial_state(self, order, outcomes, /, *sizes):
+        return 0
+
     def next_state(self, state, order, outcome, count):
         """Implementation."""
-        return (state or 0) + count
+        return state + count
 
     def final_outcome(  # type: ignore
             self, final_state, order, outcomes, size) -> int:
@@ -112,6 +115,24 @@ class SizeEvaluator(MultisetEvaluator[Any, int]):
 
 
 size_evaluator: Final = SizeEvaluator()
+"""Shared instance for caching."""
+
+
+class ProductOfCountsEvaluator(MultisetEvaluator[Any, int]):
+    """Returns the product of all counts."""
+
+    def initial_state(self, order, outcomes, /, *sizes):
+        return 1
+
+    def next_state(self, state, order, outcome, count):
+        return state * count
+
+    @property
+    def next_state_key(self):
+        return type(self)
+
+
+product_of_counts_evaluator: Final = ProductOfCountsEvaluator()
 """Shared instance for caching."""
 
 
