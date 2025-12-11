@@ -194,13 +194,6 @@ class Pool(KeepGenerator[T]):
                 return Pool._new_from_mapping(dice, outcomes, keep_tuple)
         return KeepGenerator.additive_union(*args)
 
-    def weightless(self) -> 'MultisetGenerator[T]':
-        """EXPERIMENTAL: Produces a version of this pool in which each possible multiset is equally weighted.
-        
-        This may not work with pools with keeps or mixed dice.
-        """
-        return icepool.WeightlessGenerator(self)
-
     @property
     def hash_key(self):
         return Pool, self._dice, self._keep_tuple

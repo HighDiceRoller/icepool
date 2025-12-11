@@ -1,5 +1,6 @@
 __docformat__ = 'google'
 
+import icepool
 from icepool.expression.multiset_expression_base import Dungeonlet, MultisetFreeVariable, Questlet, MultisetSourceBase
 from icepool.expression.multiset_expression import MultisetExpression
 from icepool.typing import T
@@ -51,6 +52,15 @@ class MultisetGenerator(MultisetExpression[T]):
         sources = (self._make_source(), )
         weight = 1
         yield dungeonlets, questlets, sources, weight
+
+    def weightless(self) -> 'MultisetGenerator[T]':
+        """EXPERIMENTAL: Produces a version of this generator in which each possible multiset is equally weighted.
+        
+        This requires that each call to the underlying source.pop() does not 
+        yield duplicate count values; if so, the evaluation will raise
+        `UnsupportedOrder`. Keeps and mixed pools usually fail this.
+        """
+        return icepool.WeightlessGenerator(self)
 
 
 class MultisetSource(MultisetSourceBase[T, int]):

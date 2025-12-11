@@ -73,13 +73,6 @@ class Deal(KeepGenerator[T]):
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self.hand_size())
 
-    def weightless(self) -> 'MultisetGenerator[T]':
-        """EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.
-        
-        This may not work on deals with keeps.
-        """
-        return icepool.WeightlessGenerator(self)
-
     @property
     def hash_key(self):
         return Deal, self._deck, self._keep_tuple

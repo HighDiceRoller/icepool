@@ -1,7 +1,6 @@
 __docformat__ = 'google'
 
 from icepool.generator.multiset_generator import MultisetGenerator, MultisetSource
-from icepool.generator.keep import KeepGenerator
 
 from icepool.order import UnsupportedOrder
 from icepool.typing import ImplicitConversionError, T
@@ -14,7 +13,7 @@ class WeightlessGenerator(MultisetGenerator[T]):
     to the same output multiset.
     """
 
-    def __init__(self, base: KeepGenerator[T]):
+    def __init__(self, base: MultisetGenerator[T]):
         self._base = base
 
     def _make_source(self):
