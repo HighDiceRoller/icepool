@@ -224,6 +224,21 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             case _:
                 raise ValueError(f'Invalid comparison {comparison}')
 
+    def quantity_where(self,
+                       which: Callable[..., bool],
+                       /,
+                       star: bool | None = None) -> int:
+        """The quantity fulfilling a boolean condition."""
+        if star is None:
+            star = infer_star(which)
+        if star:
+            return sum(quantity  # type: ignore
+                       for outcome, quantity in self.items()
+                       if which(*outcome))  # type: ignore
+        else:
+            return sum(quantity for outcome, quantity in self.items()
+                       if which(outcome))
+
     @overload
     def quantities(self, /) -> CountsValuesView:
         """All quantities in sorted order."""
@@ -459,6 +474,35 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         result = Fraction(self.quantity(comparison, outcome),
                           self.denominator())
         return result * 100.0 if percent else result
+
+    @overload
+    def probability_where(self, which: Callable[...,
+                                                bool], /, star: bool | None,
+                          percent: Literal[False]) -> Fraction:
+        ...
+
+    @overload
+    def probability_where(self, which: Callable[..., bool], /,
+                          star: bool | None, percent: Literal[True]) -> float:
+        ...
+
+    @overload
+    def probability_where(self, which: Callable[...,
+                                                bool], /, star: bool | None,
+                          percent: bool) -> Fraction | float:
+        ...
+
+    def probability_where(self,
+                          which: Callable[..., bool],
+                          /,
+                          star: bool | None = None,
+                          percent: bool = False) -> Fraction | float:
+        """The probability fulfilling a boolean condition."""
+        numerator = self.quantity_where(which, star=star)
+        if percent:
+            return 100.0 * numerator / self.denominator()
+        else:
+            return Fraction(numerator, self.denominator())
 
     @overload
     def probabilities(self, /, *,
