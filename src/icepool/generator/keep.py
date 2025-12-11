@@ -53,6 +53,10 @@ class KeepGenerator(MultisetGenerator[T]):
         """Whether any element of the keep tuple is negative."""
         return any(x < 0 for x in self._keep_tuple)
 
+    def has_zero_keeps(self) -> bool:
+        """Whether any element of the keep tuple is zero."""
+        return any(x == 0 for x in self._keep_tuple)
+
     @property
     def _static_keepable(self) -> bool:
         return True
