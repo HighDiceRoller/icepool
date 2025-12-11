@@ -150,6 +150,7 @@ from icepool.generator.compound_keep import CompoundKeepGenerator
 
 from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.multiset_tuple_generator import MultisetTupleGenerator
+from icepool.generator.weightless import WeightlessGenerator
 from icepool.evaluator.multiset_evaluator import MultisetEvaluator
 
 from icepool.population.deck import Deck

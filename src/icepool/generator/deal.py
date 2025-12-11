@@ -1,7 +1,9 @@
 __docformat__ = 'google'
 
 import icepool
+import icepool.math
 import icepool.order
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.collection.counts import CountsKeysView
 from icepool.order import Order, OrderReason
@@ -70,6 +72,13 @@ class Deal(KeepGenerator[T]):
 
     def denominator(self) -> int:
         return icepool.math.comb(self.deck().size(), self.hand_size())
+
+    def weightless(self) -> 'MultisetGenerator[T]':
+        """EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.
+        
+        This is not compatible with non-positive keep.
+        """
+        return icepool.WeightlessGenerator(self)
 
     @property
     def hash_key(self):

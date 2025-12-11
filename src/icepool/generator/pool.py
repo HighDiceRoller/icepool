@@ -5,6 +5,7 @@ import icepool.expression.multiset_expression
 import icepool.math
 import icepool.creation_args
 import icepool.order
+from icepool.generator.multiset_generator import MultisetGenerator
 from icepool.generator.keep import KeepGenerator, KeepSource, pop_max_from_keep_tuple, pop_min_from_keep_tuple
 from icepool.order import Order, OrderReason
 
@@ -192,6 +193,13 @@ class Pool(KeepGenerator[T]):
                                                   for pool in pools))
                 return Pool._new_from_mapping(dice, outcomes, keep_tuple)
         return KeepGenerator.additive_union(*args)
+
+    def weightless(self) -> 'MultisetGenerator[T]':
+        """EXPERIMENTAL: Produces a version of this Pool in which each possible multiset is equally weighted.
+        
+        This is not compatible with non-positive keep.
+        """
+        return icepool.WeightlessGenerator(self)
 
     @property
     def hash_key(self):
