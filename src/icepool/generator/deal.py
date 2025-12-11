@@ -76,7 +76,7 @@ class Deal(KeepGenerator[T]):
     def weightless(self) -> 'MultisetGenerator[T]':
         """EXPERIMENTAL: Produces a version of this Deal in which each possible multiset is equally weighted.
         
-        This is not compatible with non-positive keep.
+        This may not work on deals with keeps.
         """
         return icepool.WeightlessGenerator(self)
 

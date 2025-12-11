@@ -3,6 +3,7 @@ __docformat__ = 'google'
 from icepool.generator.multiset_generator import MultisetGenerator, MultisetSource
 from icepool.generator.keep import KeepGenerator
 
+from icepool.order import UnsupportedOrder
 from icepool.typing import ImplicitConversionError, T
 
 
@@ -14,10 +15,6 @@ class WeightlessGenerator(MultisetGenerator[T]):
     """
 
     def __init__(self, base: KeepGenerator[T]):
-        if base.has_negative_keeps() or base.has_zero_keeps():
-            raise ValueError(
-                'Generators with non-positive keeps cannot be made weightless.'
-            )
         self._base = base
 
     def _make_source(self):
@@ -41,7 +38,13 @@ class WeightlessSource(MultisetSource[T]):
         return self._base.outcomes()
 
     def pop(self, order, outcome):
+        seen_counts = set()
         for source, count, weight in self._base.pop(order, outcome):
+            if count in seen_counts:
+                raise UnsupportedOrder(
+                    'weightless cannot handle calls to pop() that produce the same count multiple times.'
+                )
+            seen_counts.add(count)
             yield WeightlessSource(source), count, 1
 
     def size(self):
