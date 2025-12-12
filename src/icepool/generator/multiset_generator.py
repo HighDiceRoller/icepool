@@ -60,6 +60,8 @@ class MultisetGenerator(MultisetExpression[T]):
         yield duplicate count values; if so, the evaluation will raise
         `UnsupportedOrder`. Keeps and mixed pools usually fail this.
         """
+        if isinstance(self, icepool.WeightlessGenerator):
+            return self
         return icepool.WeightlessGenerator(self)
 
 
