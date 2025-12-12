@@ -1,12 +1,21 @@
-## v2.2.0
+## v2.2.0 - 11 December 2025
 
-Major modifications to `map(repeat)` process flow.
+Major modifications to `map(repeat)` Markov process flow.
 
 * Now requires Python >= 3.12 (from 3.10).
 * `Reroll` split into separate `Reroll` and `Restart` symbols with different meanings in `map(repeat)` and `Again`.
   * In `map(repeat)`, `Reroll` rerolls only the current stage, while `Restart` restarts the entire process.
   * With `again_count`, `Reroll` rerolls any dice over the limit until they don't roll `Again`, while `Restart` restarts the entire process.
   * With `again_depth`, `Reroll` rerolls the last depth if going over the limit, while `Restart` cannot be used with `again_depth`.
+* `Break` outcome wrapper that can be returned from a function sent to `map(repeat)` in order to immediately terminate the Markov process.
+* `map(repeat)` now defaults to `repeat=None`; `repeat` is now explicitly incompatible with `Again`.
+* Remove separate `time_limit` parameter to `map()`; `repeat` now always returns early if fully absorbed.
+* `again_end` can now be used with `again_count`.
+* `.weightless()` method for multiset generators that sets the quantity for all possible multisets to 1.
+* New `product_of_counts()` multiset evaluation.
+* More specific overloads for `map`, `tupleize`, `vectorize`.
+* Rename `commonize_denominator()` to `harmonize_denominator()` and add optional weight parameter.
+* Fix immediate absorption case for `map(repeat='inf')`.
 
 ## v2.1.3 - 3 December 2025
 
