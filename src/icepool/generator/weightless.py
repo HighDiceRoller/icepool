@@ -13,11 +13,11 @@ class WeightlessGenerator(MultisetGenerator[T]):
     to the same output multiset.
     """
 
-    def __init__(self, base: MultisetGenerator[T]):
-        self._base = base
+    def __init__(self, wrapped: MultisetGenerator[T], /):
+        self._wrapped = wrapped
 
     def _make_source(self):
-        return WeightlessSource(self._base._make_source())
+        return WeightlessSource(self._wrapped._make_source())
 
     @property
     def _static_keepable(self) -> bool:
@@ -25,20 +25,20 @@ class WeightlessGenerator(MultisetGenerator[T]):
 
     @property
     def hash_key(self):
-        return WeightlessGenerator, self._base.hash_key
+        return WeightlessGenerator, self._wrapped.hash_key
 
 
 class WeightlessSource(MultisetSource[T]):
 
-    def __init__(self, base: MultisetSource[T]):
-        self._base = base
+    def __init__(self, wrapped: MultisetSource[T], /):
+        self._wrapped = wrapped
 
     def outcomes(self):
-        return self._base.outcomes()
+        return self._wrapped.outcomes()
 
     def pop(self, order, outcome):
         seen_counts = set()
-        for source, count, weight in self._base.pop(order, outcome):
+        for source, count, weight in self._wrapped.pop(order, outcome):
             if count in seen_counts:
                 raise UnsupportedOrder(
                     'weightless cannot handle calls to pop() that produce the same count multiple times.'
@@ -47,14 +47,14 @@ class WeightlessSource(MultisetSource[T]):
             yield WeightlessSource(source), count, 1
 
     def size(self):
-        return self._base.size()
+        return self._wrapped.size()
 
     def order_preference(self):
-        return self._base.order_preference()
+        return self._wrapped.order_preference()
 
     def is_resolvable(self):
-        return self._base.is_resolvable()
+        return self._wrapped.is_resolvable()
 
     @property
     def hash_key(self):
-        return WeightlessSource, self._base.hash_key
+        return WeightlessSource, self._wrapped.hash_key

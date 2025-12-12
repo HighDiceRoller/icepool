@@ -54,10 +54,21 @@ class MultisetGenerator(MultisetExpression[T]):
         yield dungeonlets, questlets, sources, weight
 
     def weightless(self) -> 'MultisetGenerator[T]':
-        """EXPERIMENTAL: Produces a version of this generator in which each possible multiset is equally weighted.
+        """EXPERIMENTAL: Produces a wrapped generator in which each possible multiset is equally weighted.
+
+        In other words, given a generator `g`,
+        ```python
+        g.expand()
+        g.weightless().expand()
+        ```
+        have the same set of outcomes, but the weightless version has every
+        outcome with quantity 1. Other operators and evaluations can be
+        attached to the result of `weightless()` as usual, in which case the
+        quantity of each outcome the number of *unique* multisets producing that
+        given outcome, rather than the ordinary probabilistic weighting.
         
-        This requires that each call to the underlying source.pop() does not 
-        yield duplicate count values; if so, the evaluation will raise
+        `weightless()` requires that each call to the underlying `source.pop()`  
+        does not yield duplicate count values; if so, the evaluation will raise
         `UnsupportedOrder`. Keeps and mixed pools usually fail this.
         """
         if isinstance(self, icepool.WeightlessGenerator):

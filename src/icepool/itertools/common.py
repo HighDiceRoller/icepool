@@ -25,7 +25,7 @@ class Break(Generic[T]):
             return Break()  # same as Break(total)
         else:
             return total + new_roll
-    map(example, 0, d6)
+    map(example, 0, d(6))
     ```
     """
 
