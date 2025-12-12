@@ -20,17 +20,19 @@ def test_self_loop_types():
 
 
 def test_self_loop_types_mean_type_to_absorb():
-    """Test three different types of self-loop."""
+    """Test four different types of self-loop."""
 
     def repl(x, y):
         if y == 1:
             return Break()
         elif y == 2:
             return x
+        elif y == 3:
+            return Break(x)
         else:
             return Reroll
 
-    assert mean_time_to_absorb(repl, 0, d(3)) == 0
+    assert mean_time_to_absorb(repl, 0, d(4)) == 0
 
 
 def test_break_value_repeat():

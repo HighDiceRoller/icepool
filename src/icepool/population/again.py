@@ -329,10 +329,10 @@ def evaluate_agains_using_count(
 
 
 def evaluate_agains_using_depth(
-        outcomes:
+    outcomes:
     'Sequence[T | icepool.Die[T] | icepool.RerollType | AgainExpression]',
-        times: Sequence[int], again_depth: int,
-        again_end: 'T | icepool.Die[T] | icepool.RerollType'
+    times: Sequence[int], again_depth: int,
+    again_end: 'T | icepool.Die[T] | icepool.RerollType | None'
 ) -> 'icepool.Die[T]':
     if again_depth < 0:
         raise ValueError('again_depth cannot be negative.')

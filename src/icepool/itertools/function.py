@@ -21,6 +21,33 @@ def final_map(transition_type: TransitionType,
         return icepool.Reroll
 
 
+@overload
+def map(
+        repl:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+        /,
+        *args: 'Outcome | icepool.Die | icepool.MultisetExpression',
+        star: bool | None = None,
+        repeat: None = None,
+        again_count: int | None = None,
+        again_depth: int | None = None,
+        again_end: 'T | icepool.Die[T] | icepool.RerollType | None' = None,
+        **kwargs) -> 'icepool.Die[T]':
+    ...
+
+
+@overload
+def map(
+        repl:
+    'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
+        /,
+        *args: 'T | icepool.Die[T] | icepool.MultisetExpression[T]',
+        star: bool | None = None,
+        repeat: int | Literal['inf'],
+        **kwargs) -> 'icepool.Die[T]':
+    ...
+
+
 def map(
         repl:
     'Callable[..., T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression] | Mapping[Any, T | icepool.Die[T] | icepool.RerollType | icepool.AgainExpression]',
@@ -69,16 +96,21 @@ def map(
             them to `repl`.
             If not provided, it will be inferred based on the signature of `repl`
             and the number of arguments.
-        repeat: If provided will be repeated with the same arguments on the
-            result this many times, except the first of `args` will be replaced
-            by the result of the previous iteration.
+        repeat: If provided, `map` will be repeated with the same arguments on 
+            the result this many times, except the first of `args` will be 
+            replaced by the result of the previous iteration. In other words,
+            this produces the result of a Markov process.
 
-            Not compatible with `Again`.
+            `map(repeat)` will stop early if the entire state distribution has
+            converged to absorbing states. You can force an absorption to a 
+            desired state using `Break(state)`. Furthermore, if a state only
+            leads to itself, reaching that state is considered an absorption.
 
-            Note that returning `Reroll` from `repl` will effectively reroll all
-            arguments, including the first argument which represents the result
-            of the process up to this point. If you only want to reroll the
-            current stage, you can nest another `map` inside `repl`.
+            `Reroll` can be used to reroll the current stage, while `Restart`
+            restarts the process from the beginning, effectively conditioning
+            against that sequence of state transitions.
+
+            `repeat` is not compatible with `Again`.
 
             EXPERIMENTAL: If set to `'inf'`, the result will be as if this
             were repeated an infinite number of times. In this case, the
@@ -127,9 +159,6 @@ def map(
     if repeat == 'inf':
         # Infinite repeat.
         # T_co and U should be the same in this case.
-
-        result: 'icepool.Die[T]'
-
         return icepool.itertools.markov_chain.absorbing_markov_chain_die(
             transition_cache, first_arg)
     elif repeat < 0:

@@ -63,7 +63,7 @@ class Die(Population[T_co], MaybeHashKeyed):
         *,
         again_count: int | None = None,
         again_depth: int | None = None,
-        again_end: 'Outcome | Die | icepool.RerollType | None' = None
+        again_end: 'T_co | Die[T_co] | icepool.RerollType | None' = None
     ) -> 'Die[T_co]':
         """Constructor for a `Die`.
 
@@ -441,6 +441,32 @@ class Die(Population[T_co], MaybeHashKeyed):
         return self._popped_max
 
     # Processes.
+    @overload
+    def map(
+            self,
+            repl:
+        'Callable[..., U | Die[U] | icepool.RerollType | icepool.AgainExpression] | Mapping[T_co, U | Die[U] | icepool.RerollType | icepool.AgainExpression]',
+            /,
+            *extra_args,
+            star: bool | None = None,
+            repeat: None = None,
+            again_count: int | None = None,
+            again_depth: int | None = None,
+            again_end: 'U | Die[U] | icepool.RerollType | None' = None,
+            **kwargs) -> 'Die[U]':
+        ...
+
+    @overload
+    def map(
+            self,
+            repl:
+        'Callable[..., T_co | Die[T_co] | icepool.RerollType | icepool.AgainExpression] | Mapping[T_co, T_co | Die[T_co] | icepool.RerollType | icepool.AgainExpression]',
+            /,
+            *extra_args,
+            star: bool | None = None,
+            repeat: int | Literal['inf'],
+            **kwargs) -> 'Die[T_co]':
+        ...
 
     def map(
             self,
@@ -460,15 +486,16 @@ class Die(Population[T_co], MaybeHashKeyed):
 
         As `icepool.map(repl, self, ...)`.
         """
-        return icepool.map(repl,
-                           self,
-                           *extra_args,
-                           star=star,
-                           repeat=repeat,
-                           again_count=again_count,
-                           again_depth=again_depth,
-                           again_end=again_end,
-                           **kwargs)
+        return icepool.map(
+            repl,
+            self,
+            *extra_args,
+            star=star,
+            repeat=repeat,  # type:ignore
+            again_count=again_count,
+            again_depth=again_depth,
+            again_end=again_end,
+            **kwargs)  # type:ignore
 
     def map_and_time(
             self,
