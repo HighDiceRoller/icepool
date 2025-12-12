@@ -93,3 +93,15 @@ def test_restart_break():
 
     result = map(repl, 0, d(3), repeat='inf')
     assert result == icepool.Die({0: 9, 1: 3, 2: 1, 3: 1})
+
+
+def test_break_example():
+
+    def example(total, new_roll):
+        if total >= 10:
+            return Break()  # same as Break(total)
+        else:
+            return total + new_roll
+
+    result = map(example, 0, d(6), repeat=20)
+    assert set(result.outcomes()) == {10, 11, 12, 13, 14, 15}

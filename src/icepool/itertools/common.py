@@ -16,7 +16,18 @@ class TransitionType(enum.IntEnum):
 
 
 class Break(Generic[T]):
-    """EXPERIMENTAL: Wrapper around a return value for triggering an early exit from `map(repeat)`."""
+    """EXPERIMENTAL: Wrapper around a return value for triggering an early exit from `map(repeat)`.
+    
+    For example, to add successive dice until the total reaches 10:
+    ```python
+    def example(total, new_roll):
+        if total >= 10:
+            return Break()  # same as Break(total)
+        else:
+            return total + new_roll
+    map(example, 0, d6)
+    ```
+    """
 
     def __init__(self, outcome: T | None = None):
         """Constructor.
