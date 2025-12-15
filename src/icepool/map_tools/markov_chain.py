@@ -1,8 +1,8 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.itertools.common import TransitionType
-from icepool.itertools.core_impl import TransitionCache
+from icepool.map_tools.common import TransitionType
+from icepool.map_tools.core_impl import TransitionCache
 
 import enum
 import math

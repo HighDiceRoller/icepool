@@ -1,9 +1,9 @@
 __docformat__ = 'google'
 
 import icepool
-import icepool.itertools.markov_chain
-from icepool.itertools.common import TransitionType, transition_and_star
-from icepool.itertools.core_impl import TransitionCache, map_simple
+import icepool.map_tools.markov_chain
+from icepool.map_tools.common import TransitionType, transition_and_star
+from icepool.map_tools.core_impl import TransitionCache, map_simple
 
 from collections import defaultdict
 from fractions import Fraction
@@ -159,7 +159,7 @@ def map(
     if repeat == 'inf':
         # Infinite repeat.
         # T_co and U should be the same in this case.
-        return icepool.itertools.markov_chain.absorbing_markov_chain_die(
+        return icepool.map_tools.markov_chain.absorbing_markov_chain_die(
             transition_cache, first_arg)
     elif repeat < 0:
         raise ValueError('repeat cannot be negative.')
@@ -397,7 +397,7 @@ def mean_time_to_absorb(
     # Infinite repeat.
     # T_co and U should be the same in this case.
 
-    return icepool.itertools.markov_chain.absorbing_markov_chain_mean_absorption_time(
+    return icepool.map_tools.markov_chain.absorbing_markov_chain_mean_absorption_time(
         transition_cache, initial_state)
 
 

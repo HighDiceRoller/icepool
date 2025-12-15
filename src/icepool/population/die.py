@@ -5,7 +5,7 @@ import icepool
 import icepool.population.again
 import icepool.population.format
 import icepool.creation_args
-import icepool.itertools.markov_chain
+import icepool.map_tools.markov_chain
 from icepool.collection.counts import Counts, CountsKeysView, CountsValuesView, CountsItemsView
 from icepool.population.base import Population
 from icepool.population.keep import lowest_slice, highest_slice, canonical_slice

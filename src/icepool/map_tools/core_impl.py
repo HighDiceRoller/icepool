@@ -1,7 +1,7 @@
 __docformat__ = 'google'
 
 import icepool
-from icepool.itertools.common import Break, TransitionType, transition_and_star
+from icepool.map_tools.common import Break, TransitionType, transition_and_star
 
 import enum
 

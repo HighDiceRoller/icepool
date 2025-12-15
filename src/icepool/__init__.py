@@ -23,7 +23,7 @@ from typing import Final
 
 from icepool.typing import Outcome, RerollType, NoCacheType
 from icepool.order import Order, ConflictingOrderError, UnsupportedOrder
-from icepool.itertools.common import Break
+from icepool.map_tools.common import Break
 
 Reroll: Final = RerollType.Reroll
 """Indicates that an outcome should be rerolled (with unlimited depth).
@@ -74,7 +74,7 @@ from icepool.function import (d, z, __getattr__, coin, stochastic_round,
                               pointwise_min, min_outcome, max_outcome,
                               consecutive, sorted_union,
                               harmonize_denominators)
-from icepool.itertools.function import (reduce, accumulate, map, map_function,
+from icepool.map_tools.function import (reduce, accumulate, map, map_function,
                                         map_and_time, mean_time_to_absorb,
                                         map_to_pool)
 
