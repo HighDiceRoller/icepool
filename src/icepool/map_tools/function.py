@@ -70,7 +70,7 @@ def map(
     `MultisetEvaluator`s. Even `Pool.expand()` (which sorts rolls) is more
     efficient than using `map` on the dice in order.
 
-    `Again` can be used but is not recommended with `repeat` other than 1.
+    `Again` can be used but can't be combined with `repeat`.
 
     Args:
         repl: One of the following:
