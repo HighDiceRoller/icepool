@@ -12,6 +12,7 @@ from icepool.order import Order, OrderReason
 import itertools
 import math
 import operator
+import warnings
 from collections import defaultdict
 from functools import cache, cached_property, reduce
 
@@ -340,8 +341,7 @@ class PoolSource(KeepSource[T]):
         return PoolSource, self.dice, self.keep_tuple
 
 
-def standard_pool(
-        die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool[int]':
+def d_pool(die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool[int]':
     """A `Pool` of standard dice (e.g. d6, d8...).
 
     Args:
@@ -358,6 +358,33 @@ def standard_pool(
             itertools.chain.from_iterable([k] * v
                                           for k, v in die_sizes.items()))
     return Pool(list(icepool.d(x) for x in die_sizes))
+
+
+def standard_pool(
+        die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool[int]':
+    """Deprecated name for `d_pool`."""
+    warnings.warn("Deprecated function name. Use d_pool instead.",
+                  DeprecationWarning)
+    return d_pool(die_sizes)
+
+
+def z_pool(die_sizes: Collection[int] | Mapping[int, int]) -> 'Pool[int]':
+    """A `Pool` of zero-indexed dice (e.g. z6, z8...).
+    
+    Args:
+        die_sizes: A collection of die sizes, which will put one die of that
+            sizes in the pool for each element.
+            Or, a mapping of die sizes to how many dice of that size to put
+            into the pool.
+            If empty, the pool will be considered to consist of zero zeros.
+    """
+    if not die_sizes:
+        return Pool({icepool.Die([0]): 0})
+    if isinstance(die_sizes, Mapping):
+        die_sizes = list(
+            itertools.chain.from_iterable([k] * v
+                                          for k, v in die_sizes.items()))
+    return Pool(list(icepool.z(x) for x in die_sizes))
 
 
 def iter_die_pop_min(

@@ -37,4 +37,4 @@ def test_map_empty():
 
 
 def test_zero_die_standard_pool():
-    assert icepool.standard_pool([]).sum() == icepool.Die([0])
+    assert icepool.d_pool([]).sum() == icepool.Die([0])

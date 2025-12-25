@@ -16,7 +16,7 @@ def test_deck_sample():
 
 @pytest.mark.skip(reason="sampling expressions not supported for now")
 def test_pool_sample():
-    result = icepool.standard_pool([6, 6, 6, 8])[:-1].sample()
+    result = icepool.d_pool([6, 6, 6, 8])[:-1].sample()
     assert all(x >= 1 for x in result)
     assert all(x <= 6 for x in result)
 

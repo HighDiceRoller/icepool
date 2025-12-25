@@ -56,16 +56,16 @@ def sum_dice_func(state, outcome, count):
 
 
 def test_standard_pool():
-    result = icepool.standard_pool([8, 8, 6, 6, 6]).sum()
+    result = icepool.d_pool([8, 8, 6, 6, 6]).sum()
     expected = 3 @ icepool.d6 + 2 @ icepool.d8
     assert result.equals(expected)
 
-    result_dict = icepool.standard_pool({8: 2, 6: 3}).sum()
+    result_dict = icepool.d_pool({8: 2, 6: 3}).sum()
     assert result.equals(result_dict)
 
 
 def test_standard_pool_zero_dice():
-    result = icepool.standard_pool([]).sum()
+    result = icepool.d_pool([]).sum()
     expected = icepool.Die([0])
     assert result.equals(expected)
 
@@ -78,7 +78,7 @@ class LargestStraightAndOutcomeEvaluatorDescending(
 
 
 def test_runs():
-    pool = icepool.standard_pool([12, 10, 8])
+    pool = icepool.d_pool([12, 10, 8])
     result = icepool.evaluator.LargestStraightAndOutcomeEvaluator('high')(pool)
 
     def function(*outcomes):
@@ -103,9 +103,9 @@ def test_runs():
 
 
 def test_runs_low():
-    pool = icepool.standard_pool([12, 10, 8])
+    pool = icepool.d_pool([12, 10, 8])
     result = icepool.evaluator.LargestStraightAndOutcomeEvaluator('low')(
-        icepool.standard_pool([12, 10, 8]))
+        icepool.d_pool([12, 10, 8]))
 
     def function(*outcomes):
         outcomes = sorted(outcomes)
@@ -158,11 +158,11 @@ class SumFixedOrderDescending(icepool.MultisetEvaluator):
 
 
 test_pools = [
-    icepool.standard_pool([6, 6, 6]),
-    icepool.standard_pool([6, 6, 6, 6])[0, 0, 0, 1],
-    icepool.standard_pool([6, 6, 6, 6])[0, 1, 1, 1],
-    icepool.standard_pool([6, 6, 6, 6])[-1, 0, 0, 1],
-    icepool.standard_pool([12, 10, 8, 8, 6, 6, 6, 4]),
+    icepool.d_pool([6, 6, 6]),
+    icepool.d_pool([6, 6, 6, 6])[0, 0, 0, 1],
+    icepool.d_pool([6, 6, 6, 6])[0, 1, 1, 1],
+    icepool.d_pool([6, 6, 6, 6])[-1, 0, 0, 1],
+    icepool.d_pool([12, 10, 8, 8, 6, 6, 6, 4]),
     icepool.Pool([-d6, -d8, -d10]),
     (3 @ icepool.d6).pool(12)[-6:],
 ]

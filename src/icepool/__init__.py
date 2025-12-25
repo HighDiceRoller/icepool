@@ -144,7 +144,7 @@ from icepool.collection.counts import CountsKeysView, CountsValuesView, CountsIt
 
 from icepool.population.keep import lowest, highest, middle
 
-from icepool.generator.pool import Pool, standard_pool
+from icepool.generator.pool import Pool, standard_pool, d_pool, z_pool
 from icepool.generator.keep import KeepGenerator
 from icepool.generator.compound_keep import CompoundKeepGenerator
 
@@ -181,7 +181,7 @@ __all__ = [
     'min_outcome', 'max_outcome', 'consecutive', 'sorted_union',
     'harmonize_denominators', 'reduce', 'accumulate', 'map', 'map_function',
     'map_and_time', 'mean_time_to_absorb', 'map_to_pool', 'Reroll', 'Restart',
-    'Break', 'RerollType', 'Pool', 'standard_pool', 'MultisetGenerator',
+    'Break', 'RerollType', 'Pool', 'd_pool', 'z_pool', 'MultisetGenerator',
     'MultisetExpression', 'MultisetEvaluator', 'Order',
     'ConflictingOrderError', 'UnsupportedOrder', 'Deck', 'Deal', 'MultiDeal',
     'multiset_function', 'MultisetParameter', 'MultisetTupleParameter',

@@ -4,12 +4,12 @@ import pytest
 from icepool import d4, d6, d8, d10, d12
 
 test_pools = [
-    icepool.standard_pool([4, 4]),
-    icepool.standard_pool([6, 6, 6]),
-    icepool.standard_pool([6, 6, 6, 6])[0, 0, 0, 1],
-    icepool.standard_pool([6, 6, 6, 6])[0, 1, 1, 1],
-    icepool.standard_pool([6, 6, 6, 6])[-1, 0, 0, 1],
-    icepool.standard_pool([12, 10, 8, 6, 6, 4]),
+    icepool.d_pool([4, 4]),
+    icepool.d_pool([6, 6, 6]),
+    icepool.d_pool([6, 6, 6, 6])[0, 0, 0, 1],
+    icepool.d_pool([6, 6, 6, 6])[0, 1, 1, 1],
+    icepool.d_pool([6, 6, 6, 6])[-1, 0, 0, 1],
+    icepool.d_pool([12, 10, 8, 6, 6, 4]),
     icepool.Pool([-d6, -d8, -d10]),
     (3 @ icepool.d6).pool(6)[-3:],
 ]
