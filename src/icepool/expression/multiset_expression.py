@@ -1117,9 +1117,28 @@ class MultisetExpression(MultisetExpressionBase[T, int],
             filter=filter).evaluate(self)
 
     def largest_count(
-            self) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
-        """Evaluation: The size of the largest matching set among the elements."""
-        return icepool.evaluator.largest_count_evaluator.evaluate(self)
+        self,
+        *,
+        wild: Callable[[T], bool] | Collection[T] | None = None,
+        wild_low: Callable[[T], bool] | Collection[T] | None = None,
+        wild_high: Callable[[T], bool] | Collection[T] | None = None,
+    ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':
+        """Evaluation: The size of the largest matching set among the elements.
+        
+        Args:
+            wild: If provided, the counts of these outcomes will be combined
+                with the counts of any other outcomes.
+            wild_low: These wilds can only be combined with outcomes that they
+                are lower than.
+            wild_high: These wilds can only be combined with outcomes that they
+                are higher than.
+        """
+        if wild is None and wild_low is None and wild_high is None:
+            return icepool.evaluator.largest_count_evaluator.evaluate(self)
+        else:
+            return icepool.evaluator.LargestCountWithWildEvaluator(
+                wild=wild, wild_low=wild_low,
+                wild_high=wild_high).evaluate(self)
 
     def largest_count_and_outcome(
         self

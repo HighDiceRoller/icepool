@@ -2,8 +2,10 @@ from typing import Collection
 import icepool
 import pytest
 
-from icepool import d, Die, Order, Pool
+from icepool import d, Die, Order, Pool, z_pool, map
 from icepool.expression.multiset_expression import MultisetExpression
+
+from collections import Counter
 
 targets_to_test = [
     (),
@@ -37,9 +39,68 @@ def test_drop_outcomes_size():
     assert Pool([1, 1, 2, 4, 4]).drop_outcomes([1, 2]).size() == Die([2])
 
 
-def test_largest_matching_set():
+def test_largest_count():
     result = Pool([1, 1, 2, 4, 4]).largest_count().simplify()
     expected = Die([2])
+    assert result == expected
+
+
+@pytest.mark.parametrize('order', [Order.Ascending, Order.Descending])
+@pytest.mark.parametrize('wild', range(8))
+def test_largest_count_wild(order, wild):
+    pool = z_pool([6, 6, 8, 8])
+    result = pool.force_order(order).largest_count(wild=[wild])
+
+    def expected_map(rolls):
+        c = Counter(rolls)
+        wilds = c[wild]
+        c[wild] = 0
+        _, n = c.most_common(1)[0]
+        return n + wilds
+
+    expected = map(expected_map, pool)
+    assert result == expected
+
+
+@pytest.mark.parametrize('order', [Order.Ascending, Order.Descending])
+@pytest.mark.parametrize('wild', range(8))
+def test_largest_count_wild_low(order, wild):
+    pool = z_pool([6, 6, 8, 8])
+    result = pool.force_order(order).largest_count(wild_low=[wild])
+
+    def expected_map(rolls):
+        counts = [0] * 8
+        for x in rolls:
+            counts[x] += 1
+        wilds = counts[wild]
+        if wild == 7:
+            return max(counts)
+        max_low = max(counts[:wild + 1])
+        max_high = max(counts[wild + 1:]) + wilds
+        return max(max_low, max_high)
+
+    expected = map(expected_map, pool)
+    assert result == expected
+
+
+@pytest.mark.parametrize('order', [Order.Ascending, Order.Descending])
+@pytest.mark.parametrize('wild', range(8))
+def test_largest_count_wild_high(order, wild):
+    pool = z_pool([6, 6, 8, 8])
+    result = pool.force_order(order).largest_count(wild_high=[wild])
+
+    def expected_map(rolls):
+        counts = [0] * 9
+        for x in rolls:
+            counts[x] += 1
+        wilds = counts[wild]
+        if wild == 0:
+            return max(counts)
+        max_low = max(counts[:wild]) + wilds
+        max_high = max(counts[wild:])
+        return max(max_low, max_high)
+
+    expected = map(expected_map, pool)
     assert result == expected
 
 

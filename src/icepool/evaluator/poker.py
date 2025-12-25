@@ -9,6 +9,18 @@ import operator
 from typing import Any, Callable, Collection, Final, Literal, Sequence
 
 
+def make_select_function(
+        which: Callable[[Any], bool] | Collection | None
+) -> Callable[[Any], bool]:
+    if which is None:
+        return lambda outcome: False
+    elif callable(which):
+        return which
+    else:
+        which = frozenset(which)
+        return lambda outcome: outcome in which
+
+
 class HighestOutcomeAndCountEvaluator(MultisetEvaluator[Any, tuple[Any, int]]):
     """The highest outcome that has positive count, along with that count.
 
@@ -98,6 +110,41 @@ class LargestCountEvaluator(MultisetEvaluator[Any, int]):
 
 largest_count_evaluator: Final = LargestCountEvaluator()
 """Shared instance for caching."""
+
+
+class LargestCountWithWildEvaluator(MultisetEvaluator[Any, int]):
+
+    def __init__(self, wild: Callable[[Any], bool] | Collection | None,
+                 wild_low: Callable[[Any], bool] | Collection | None,
+                 wild_high: Callable[[Any], bool] | Collection | None):
+        self._wild = make_select_function(wild)
+        self._wild_low = make_select_function(wild_low)
+        self._wild_high = make_select_function(wild_high)
+
+    def next_state(self, state, order, outcome, count):
+        is_wild = self._wild(outcome)
+        if order > 0:
+            is_wild_early = is_wild or self._wild_low(outcome)
+            is_wild_late = is_wild or self._wild_high(outcome)
+        else:
+            is_wild_early = is_wild or self._wild_high(outcome)
+            is_wild_late = is_wild or self._wild_low(outcome)
+        if state is None:
+            if is_wild_early:
+                return count, count
+            else:
+                return count, 0
+        best, total_wild_early = state
+        if is_wild_late:
+            best += count
+        best = max(best, count + total_wild_early)
+        if is_wild_early:
+            total_wild_early += count
+        return best, total_wild_early
+
+    def final_outcome(  # type: ignore
+            self, final_state, order, outcomes, size) -> int:
+        return final_state[0]
 
 
 class LargestCountAndOutcomeEvaluator(MultisetEvaluator[Any, tuple[int, Any]]):
