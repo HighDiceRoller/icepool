@@ -1,3 +1,8 @@
+## v2.2.1 - 25 December 2025
+
+* Added `wild`, `wild_low`, and `wild_high` options to `largest_count()` evaluation. These allow specifying outcomes as wild, combining with any outcomes, outcomes that they are lower than, and outcomes that they are higher than respectively.
+* `standard_pool` renamed to `d_pool`, leaving a deprecation warning.
+
 ## v2.2.0 - 11 December 2025
 
 Major modifications to `map(repeat)` Markov process flow.
