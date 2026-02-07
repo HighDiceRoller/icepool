@@ -64,7 +64,7 @@ class SumEvaluator(MultisetEvaluator[Any, Any]):
             map_dict = {k: v for k, v in map.items()}
 
             def map_func(outcome):
-                return map_dict[outcome]
+                return map_dict.get(outcome, outcome)
 
             self._map = map_func
             self._next_state_key = None

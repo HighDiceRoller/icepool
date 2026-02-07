@@ -1055,7 +1055,12 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         self,
         map: Callable[[T], U] | Mapping[T, U] | None = None
     ) -> 'icepool.Die[U] | MultisetFunctionRawResult[T, U]':
-        """Evaluation: The sum of all elements."""
+        """Evaluation: The sum of all elements.
+        
+        Args:
+            map: If provided, this will be used to map outcomes before summing
+                the elements. For a mapping, unmapped outcomes are left as-is.
+        """
         if map is None:
             return icepool.evaluator.sum_evaluator.evaluate(self)
         else:
