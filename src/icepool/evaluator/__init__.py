@@ -23,7 +23,10 @@ from icepool.evaluator.comparison import (
     IsNotEqualSetEvaluator, IsDisjointSetEvaluator)
 from icepool.evaluator.lexi import LexiComparisonEvaluator, lexi_comparison_evaluator
 from icepool.evaluator.keep import KeepEvaluator, keep_evaluator
-from icepool.evaluator.argsort import ArgsortEvaluator
+from icepool.evaluator.argsort import (ArgsortEvaluatorDrop,
+                                       ArgsortEvaluatorLeft,
+                                       ArgsortEvaluatorRight,
+                                       ArgsortGroupedEvaluator)
 from icepool.evaluator.multiset_function import MultisetFunctionEvaluator
 
 __all__ = [
@@ -43,5 +46,5 @@ __all__ = [
     'IsSupersetEvaluator', 'IsProperSupersetEvaluator', 'IsEqualSetEvaluator',
     'IsNotEqualSetEvaluator', 'IsDisjointSetEvaluator',
     'LexiComparisonEvaluator', 'lexi_comparison_evaluator', 'KeepEvaluator',
-    'keep_evaluator', 'ArgsortEvaluator', 'MultisetFunctionEvaluator'
+    'keep_evaluator', 'ArgsortGroupedEvaluator', 'MultisetFunctionEvaluator'
 ]

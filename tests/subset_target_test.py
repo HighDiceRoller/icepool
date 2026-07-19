@@ -2,7 +2,7 @@ from typing import Collection
 import icepool
 import pytest
 
-from icepool import d, Die, Order, Pool, z_pool, map
+from icepool import d, Die, Order, Pool, z_pool, map, multiset_function
 from icepool.expression.multiset_expression import MultisetExpression
 
 from collections import Counter
@@ -155,8 +155,64 @@ def test_all_straights_reduce_counts():
     assert result == expected
 
 
-def test_argsort():
-    result = MultisetExpression.argsort([10, 9, 5], [9, 9])
+def test_argsort_drop():
+    result = MultisetExpression.argsort([10, 9, 5], [9, 9], tie='drop')
+    expected = Die([(0, 1, 0)])
+    assert result == expected
+
+
+def test_argsort_drop_nco():
+    action = d(6).pool(3)
+    danger = d(6).pool(2) + [0, 0]
+    result = MultisetExpression.argsort(action, danger, limit=2, tie='drop')
+
+    @multiset_function
+    def two_side_difference(a, b):
+        return (a - b).expand(Order.Descending), (b - a).expand(
+            Order.Descending)
+
+    def compute_expected(a, b):
+        if a[0] < b[0]:
+            return (1, a[0] < b[1])
+        else:
+            return (0, a[1] < b[0])
+
+    expected = two_side_difference(action + [-1, -1],
+                                   danger).map(compute_expected)
+    assert result == expected
+
+
+def test_argsort_drop_3_args():
+    result = MultisetExpression.argsort([10, 9, 5], [9, 9, 9, 9], [9, 9],
+                                        tie='drop')
+    expected = Die([(0, 1, 1, 0)])
+    assert result == expected
+
+
+def test_argsort_drop_3_args_limit():
+    result = MultisetExpression.argsort([10, 9, 5], [9, 9, 9, 9], [9, 9],
+                                        tie='drop',
+                                        limit=2)
+    expected = Die([(0, 1)])
+    assert result == expected
+
+
+def test_argsort_left_3_args():
+    result = MultisetExpression.argsort([10, 9, 5], [9, 9, 9, 9], [9, 9],
+                                        tie='left')
+    expected = Die([(0, 0, 1, 1, 1, 1, 2, 2, 0)])
+    assert result == expected
+
+
+def test_argsort_right_3_args():
+    result = MultisetExpression.argsort([10, 9, 5], [9, 9, 9, 9], [9, 9],
+                                        tie='right')
+    expected = Die([(0, 2, 2, 1, 1, 1, 1, 0, 0)])
+    assert result == expected
+
+
+def test_argsort_grouped():
+    result = MultisetExpression.argsort_grouped([10, 9, 5], [9, 9])
     expected = Die([((0, ), (0, 1, 1), (0, ))])
     assert result == expected
 

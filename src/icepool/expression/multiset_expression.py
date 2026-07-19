@@ -1240,10 +1240,35 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         return icepool.evaluator.AllStraightsReduceCountsEvaluator(
             reducer=reducer).evaluate(self)
 
-    def argsort(self: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
-                *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
-                order: Order = Order.Descending,
-                limit: int | None = None):
+    def argsort(
+        self: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        order: Order = Order.Descending,
+        limit: int | None = None,
+        tie: Literal['drop', 'left', 'right']
+    ) -> 'icepool.Die[tuple[int, ...]] | MultisetFunctionRawResult[T, tuple[int, ...]]':
+        """Experimental: Returns the indexes of the originating multisets for each rank in their additive union.
+
+        """
+        self = implicit_convert_to_expression(self)
+        converted_args = [implicit_convert_to_expression(arg) for arg in args]
+        if tie == 'drop':
+            return icepool.evaluator.ArgsortEvaluatorDrop(
+                order=order, limit=limit).evaluate(self, *converted_args)
+        elif tie == 'left':
+            return icepool.evaluator.ArgsortEvaluatorLeft(
+                order=order, limit=limit).evaluate(self, *converted_args)
+        elif tie == 'right':
+            return icepool.evaluator.ArgsortEvaluatorRight(
+                order=order, limit=limit).evaluate(self, *converted_args)
+        raise ValueError('tie must be "drop", "left", or "right".')
+
+    def argsort_grouped(
+        self: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
+        order: Order = Order.Descending,
+        limit: int | None = None
+    ) -> 'icepool.Die[tuple[tuple[int, ...], ...]] | MultisetFunctionRawResult[T, tuple[tuple[int, ...], ...]]':
         """Experimental: Returns the indexes of the originating multisets for each rank in their additive union.
 
         Example:
@@ -1264,9 +1289,10 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         """
         self = implicit_convert_to_expression(self)
         converted_args = [implicit_convert_to_expression(arg) for arg in args]
-        return icepool.evaluator.ArgsortEvaluator(order=order,
-                                                  limit=limit).evaluate(
-                                                      self, *converted_args)
+        return icepool.evaluator.ArgsortGroupedEvaluator(order=order,
+                                                         limit=limit).evaluate(
+                                                             self,
+                                                             *converted_args)
 
     # Comparators.
 

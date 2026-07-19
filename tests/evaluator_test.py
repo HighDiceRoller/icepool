@@ -22,26 +22,21 @@ def test_reroll():
     assert result.equals(expected)
 
 
-class SumPoolDescending(icepool.evaluator.SumEvaluator):
-
-    def order(self):
-        return -1
-
-
 def test_sum_descending():
-    result = SumPoolDescending().evaluate(icepool.d6.pool(3))
+    result = icepool.d6.pool(3).force_order(Order.Descending).sum()
     expected = 3 @ icepool.d6
     assert result.equals(expected)
 
 
 def test_sum_descending_limit_outcomes():
-    result = -SumPoolDescending().evaluate(Pool([-icepool.d8, -icepool.d6]))
+    result = -Pool([-icepool.d8, -icepool.d6]).force_order(
+        Order.Descending).sum()
     expected = icepool.d6 + icepool.d8
     assert result.equals(expected)
 
 
 def test_sum_descending_keep_highest():
-    result = SumPoolDescending().evaluate(icepool.d6.pool([0, 1, 1, 1]))
+    result = icepool.d6.pool([0, 1, 1, 1]).force_order(Order.Descending).sum()
     expected = icepool.d6.highest(4, 3)
     assert result.equals(expected)
 
