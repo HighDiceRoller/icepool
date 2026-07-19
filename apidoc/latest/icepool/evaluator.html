@@ -464,22 +464,19 @@
                     <a class="variable" href="#keep_evaluator">keep_evaluator</a>
             </li>
             <li>
-                    <a class="class" href="#ArgsortEvaluator">ArgsortEvaluator</a>
+                    <a class="class" href="#ArgsortGroupedEvaluator">ArgsortGroupedEvaluator</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#ArgsortEvaluator.__init__">ArgsortEvaluator</a>
+                                <a class="function" href="#ArgsortGroupedEvaluator.__init__">ArgsortGroupedEvaluator</a>
                         </li>
                         <li>
-                                <a class="function" href="#ArgsortEvaluator.next_state">next_state</a>
+                                <a class="function" href="#ArgsortGroupedEvaluator.initial_state">initial_state</a>
                         </li>
                         <li>
-                                <a class="function" href="#ArgsortEvaluator.final_outcome">final_outcome</a>
+                                <a class="function" href="#ArgsortGroupedEvaluator.next_state">next_state</a>
                         </li>
                         <li>
-                                <a class="function" href="#ArgsortEvaluator.order">order</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#ArgsortEvaluator.next_state_key">next_state_key</a>
+                                <a class="variable" href="#ArgsortGroupedEvaluator.next_state_key">next_state_key</a>
                         </li>
                 </ul>
 
@@ -541,28 +538,31 @@
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">IsNotEqualSetEvaluator</span><span class="p">,</span> <span class="n">IsDisjointSetEvaluator</span><span class="p">)</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.lexi</span><span class="w"> </span><span class="kn">import</span> <span class="n">LexiComparisonEvaluator</span><span class="p">,</span> <span class="n">lexi_comparison_evaluator</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.keep</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeepEvaluator</span><span class="p">,</span> <span class="n">keep_evaluator</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.argsort</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgsortEvaluator</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.multiset_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetFunctionEvaluator</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SizeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="s1">&#39;size_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ProductOfCountsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="s1">&#39;product_of_counts_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;EmptyEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;empty_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;highest_outcome_and_count_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;largest_count_evaluator&#39;</span><span class="p">,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="s1">&#39;LargestCountWithWildEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="s1">&#39;largest_count_and_outcome_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;CountSubsetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s1">&#39;largest_straight_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_low&#39;</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_high&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="s1">&#39;all_straights_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsReduceCountsEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="s1">&#39;LexiComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;lexi_comparison_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;KeepEvaluator&#39;</span><span class="p">,</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="s1">&#39;keep_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ArgsortEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetFunctionEvaluator&#39;</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="p">]</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.argsort</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ArgsortEvaluatorDrop</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>                                       <span class="n">ArgsortEvaluatorLeft</span><span class="p">,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>                                       <span class="n">ArgsortEvaluatorRight</span><span class="p">,</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>                                       <span class="n">ArgsortGroupedEvaluator</span><span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">icepool.evaluator.multiset_function</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultisetFunctionEvaluator</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="s1">&#39;ExpandEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SumEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;sum_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;SizeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="s1">&#39;size_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ProductOfCountsEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="s1">&#39;product_of_counts_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;EmptyEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;empty_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="s1">&#39;HighestOutcomeAndCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;highest_outcome_and_count_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="s1">&#39;LargestCountEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;largest_count_evaluator&#39;</span><span class="p">,</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="s1">&#39;LargestCountWithWildEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestCountAndOutcomeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="s1">&#39;largest_count_and_outcome_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;CountSubsetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="s1">&#39;AllCountsEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="s1">&#39;largest_straight_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;LargestStraightAndOutcomeEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_low&#39;</span><span class="p">,</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="s1">&#39;largest_straight_and_outcome_evaluator_high&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="s1">&#39;all_straights_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;AllStraightsReduceCountsEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="s1">&#39;ComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsSubsetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSubsetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="s1">&#39;IsSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsProperSupersetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsEqualSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="s1">&#39;IsNotEqualSetEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;IsDisjointSetEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="s1">&#39;LexiComparisonEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;lexi_comparison_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;KeepEvaluator&#39;</span><span class="p">,</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="s1">&#39;keep_evaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;ArgsortGroupedEvaluator&#39;</span><span class="p">,</span> <span class="s1">&#39;MultisetFunctionEvaluator&#39;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -1238,7 +1238,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#ProductOfCountsEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -1450,7 +1450,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#EmptyEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -1987,7 +1987,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#LargestCountWithWildEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -2314,7 +2314,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#CountSubsetEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -2747,7 +2747,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#LargestStraightEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -3177,7 +3177,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#LargestStraightAndOutcomeEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -4777,7 +4777,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#LexiComparisonEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -5119,7 +5119,7 @@ order. In this case, the opposite order will then be attempted
 If there are multiple inputs, the set of outcomes is at 
 least the union of the outcomes of the invididual inputs. 
 You can use <code><a href="#KeepEvaluator.extra_outcomes">extra_outcomes()</a></code> to add extra outcomes.</li>
-<li><strong>*counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
+<li>*<strong>counts:</strong>  One value (usually an <code>int</code>) for each input indicating how
 many of the current outcome were produced. You may replace this
 with a fixed series of parameters.</li>
 </ul>
@@ -5256,129 +5256,105 @@ outside of <code>@multiset_function</code>, return the special value
     
 
                 </section>
-                <section id="ArgsortEvaluator">
-                            <input id="ArgsortEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="ArgsortGroupedEvaluator">
+                            <input id="ArgsortGroupedEvaluator-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">ArgsortEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[typing.Any, tuple[tuple[int, ...], ...]]</span>):
+    <span class="name">ArgsortGroupedEvaluator</span><wbr>(<span class="base">icepool.evaluator.multiset_evaluator.MultisetEvaluator[typing.Any, tuple[tuple[int, ...], ...]]</span>):
 
-                <label class="view-source-button" for="ArgsortEvaluator-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ArgsortGroupedEvaluator-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ArgsortEvaluator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator-10"><a href="#ArgsortEvaluator-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ArgsortEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]]):</span>
-</span><span id="ArgsortEvaluator-11"><a href="#ArgsortEvaluator-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the indexes of the originating multisets for each rank in their additive union.&quot;&quot;&quot;</span>
-</span><span id="ArgsortEvaluator-12"><a href="#ArgsortEvaluator-12"><span class="linenos">12</span></a>
-</span><span id="ArgsortEvaluator-13"><a href="#ArgsortEvaluator-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="ArgsortEvaluator-14"><a href="#ArgsortEvaluator-14"><span class="linenos">14</span></a>                 <span class="o">*</span><span class="p">,</span>
-</span><span id="ArgsortEvaluator-15"><a href="#ArgsortEvaluator-15"><span class="linenos">15</span></a>                 <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
-</span><span id="ArgsortEvaluator-16"><a href="#ArgsortEvaluator-16"><span class="linenos">16</span></a>                 <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator-17"><a href="#ArgsortEvaluator-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="ArgsortEvaluator-18"><a href="#ArgsortEvaluator-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">limit</span>
-</span><span id="ArgsortEvaluator-19"><a href="#ArgsortEvaluator-19"><span class="linenos">19</span></a>
-</span><span id="ArgsortEvaluator-20"><a href="#ArgsortEvaluator-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator-21"><a href="#ArgsortEvaluator-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="ArgsortEvaluator-22"><a href="#ArgsortEvaluator-22"><span class="linenos">22</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ArgsortEvaluator-23"><a href="#ArgsortEvaluator-23"><span class="linenos">23</span></a>            <span class="n">state</span> <span class="o">=</span> <span class="p">()</span>
-</span><span id="ArgsortEvaluator-24"><a href="#ArgsortEvaluator-24"><span class="linenos">24</span></a>        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
-</span><span id="ArgsortEvaluator-25"><a href="#ArgsortEvaluator-25"><span class="linenos">25</span></a>                <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator-26"><a href="#ArgsortEvaluator-26"><span class="linenos">26</span></a>            <span class="n">to_append</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">i</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">counts</span><span class="p">)),</span>
-</span><span id="ArgsortEvaluator-27"><a href="#ArgsortEvaluator-27"><span class="linenos">27</span></a>                            <span class="n">start</span><span class="o">=</span><span class="p">())</span>
-</span><span id="ArgsortEvaluator-28"><a href="#ArgsortEvaluator-28"><span class="linenos">28</span></a>            <span class="n">state</span> <span class="o">+=</span> <span class="p">(</span><span class="n">to_append</span><span class="p">,</span> <span class="p">)</span>
-</span><span id="ArgsortEvaluator-29"><a href="#ArgsortEvaluator-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">state</span>
-</span><span id="ArgsortEvaluator-30"><a href="#ArgsortEvaluator-30"><span class="linenos">30</span></a>
-</span><span id="ArgsortEvaluator-31"><a href="#ArgsortEvaluator-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">*</span><span class="n">sizes</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator-32"><a href="#ArgsortEvaluator-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="p">()</span>
-</span><span id="ArgsortEvaluator-33"><a href="#ArgsortEvaluator-33"><span class="linenos">33</span></a>
-</span><span id="ArgsortEvaluator-34"><a href="#ArgsortEvaluator-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator-35"><a href="#ArgsortEvaluator-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
-</span><span id="ArgsortEvaluator-36"><a href="#ArgsortEvaluator-36"><span class="linenos">36</span></a>
-</span><span id="ArgsortEvaluator-37"><a href="#ArgsortEvaluator-37"><span class="linenos">37</span></a>    <span class="nd">@property</span>
-</span><span id="ArgsortEvaluator-38"><a href="#ArgsortEvaluator-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator-39"><a href="#ArgsortEvaluator-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
+    <a class="headerlink" href="#ArgsortGroupedEvaluator"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortGroupedEvaluator-136"><a href="#ArgsortGroupedEvaluator-136"><span class="linenos">136</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ArgsortGroupedEvaluator</span><span class="p">(</span><span class="n">MultisetEvaluator</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+</span><span id="ArgsortGroupedEvaluator-137"><a href="#ArgsortGroupedEvaluator-137"><span class="linenos">137</span></a>                                                           <span class="o">...</span><span class="p">]]):</span>
+</span><span id="ArgsortGroupedEvaluator-138"><a href="#ArgsortGroupedEvaluator-138"><span class="linenos">138</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the indexes of the originating multisets for each rank in their additive union.</span>
+</span><span id="ArgsortGroupedEvaluator-139"><a href="#ArgsortGroupedEvaluator-139"><span class="linenos">139</span></a><span class="sd">    </span>
+</span><span id="ArgsortGroupedEvaluator-140"><a href="#ArgsortGroupedEvaluator-140"><span class="linenos">140</span></a><span class="sd">    This version groups all ties together, returning a tuple for each rank</span>
+</span><span id="ArgsortGroupedEvaluator-141"><a href="#ArgsortGroupedEvaluator-141"><span class="linenos">141</span></a><span class="sd">    rather than a single `int`.</span>
+</span><span id="ArgsortGroupedEvaluator-142"><a href="#ArgsortGroupedEvaluator-142"><span class="linenos">142</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="ArgsortGroupedEvaluator-143"><a href="#ArgsortGroupedEvaluator-143"><span class="linenos">143</span></a>
+</span><span id="ArgsortGroupedEvaluator-144"><a href="#ArgsortGroupedEvaluator-144"><span class="linenos">144</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="ArgsortGroupedEvaluator-145"><a href="#ArgsortGroupedEvaluator-145"><span class="linenos">145</span></a>                 <span class="o">*</span><span class="p">,</span>
+</span><span id="ArgsortGroupedEvaluator-146"><a href="#ArgsortGroupedEvaluator-146"><span class="linenos">146</span></a>                 <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
+</span><span id="ArgsortGroupedEvaluator-147"><a href="#ArgsortGroupedEvaluator-147"><span class="linenos">147</span></a>                 <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator-148"><a href="#ArgsortGroupedEvaluator-148"><span class="linenos">148</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="ArgsortGroupedEvaluator-149"><a href="#ArgsortGroupedEvaluator-149"><span class="linenos">149</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">limit</span>
+</span><span id="ArgsortGroupedEvaluator-150"><a href="#ArgsortGroupedEvaluator-150"><span class="linenos">150</span></a>
+</span><span id="ArgsortGroupedEvaluator-151"><a href="#ArgsortGroupedEvaluator-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">*</span><span class="n">sizes</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator-152"><a href="#ArgsortGroupedEvaluator-152"><span class="linenos">152</span></a>        <span class="k">if</span> <span class="n">order</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">:</span>
+</span><span id="ArgsortGroupedEvaluator-153"><a href="#ArgsortGroupedEvaluator-153"><span class="linenos">153</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrder</span><span class="p">(</span>
+</span><span id="ArgsortGroupedEvaluator-154"><a href="#ArgsortGroupedEvaluator-154"><span class="linenos">154</span></a>                <span class="s1">&#39;argsort_grouped must be evaluated in the given order.&#39;</span><span class="p">)</span>
+</span><span id="ArgsortGroupedEvaluator-155"><a href="#ArgsortGroupedEvaluator-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="p">()</span>
+</span><span id="ArgsortGroupedEvaluator-156"><a href="#ArgsortGroupedEvaluator-156"><span class="linenos">156</span></a>
+</span><span id="ArgsortGroupedEvaluator-157"><a href="#ArgsortGroupedEvaluator-157"><span class="linenos">157</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator-158"><a href="#ArgsortGroupedEvaluator-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="ArgsortGroupedEvaluator-159"><a href="#ArgsortGroupedEvaluator-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+</span><span id="ArgsortGroupedEvaluator-160"><a href="#ArgsortGroupedEvaluator-160"><span class="linenos">160</span></a>                <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator-161"><a href="#ArgsortGroupedEvaluator-161"><span class="linenos">161</span></a>            <span class="n">to_append</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">i</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">counts</span><span class="p">)),</span>
+</span><span id="ArgsortGroupedEvaluator-162"><a href="#ArgsortGroupedEvaluator-162"><span class="linenos">162</span></a>                            <span class="n">start</span><span class="o">=</span><span class="p">())</span>
+</span><span id="ArgsortGroupedEvaluator-163"><a href="#ArgsortGroupedEvaluator-163"><span class="linenos">163</span></a>            <span class="n">state</span> <span class="o">+=</span> <span class="p">(</span><span class="n">to_append</span><span class="p">,</span> <span class="p">)</span>
+</span><span id="ArgsortGroupedEvaluator-164"><a href="#ArgsortGroupedEvaluator-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">state</span>
+</span><span id="ArgsortGroupedEvaluator-165"><a href="#ArgsortGroupedEvaluator-165"><span class="linenos">165</span></a>
+</span><span id="ArgsortGroupedEvaluator-166"><a href="#ArgsortGroupedEvaluator-166"><span class="linenos">166</span></a>    <span class="nd">@property</span>
+</span><span id="ArgsortGroupedEvaluator-167"><a href="#ArgsortGroupedEvaluator-167"><span class="linenos">167</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator-168"><a href="#ArgsortGroupedEvaluator-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Returns the indexes of the originating multisets for each rank in their additive union.</p>
+
+<p>This version groups all ties together, returning a tuple for each rank
+rather than a single <code>int</code>.</p>
 </div>
 
 
-                            <div id="ArgsortEvaluator.__init__" class="classattr">
-                                        <input id="ArgsortEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ArgsortGroupedEvaluator.__init__" class="classattr">
+                                        <input id="ArgsortGroupedEvaluator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">ArgsortEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">order</span><span class="p">:</span> <span class="n"><a href="../icepool.html#Order">icepool.Order</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
+        <span class="name">ArgsortGroupedEvaluator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">order</span><span class="p">:</span> <span class="n"><a href="../icepool.html#Order">icepool.Order</a></span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span>)</span>
 
-                <label class="view-source-button" for="ArgsortEvaluator.__init__-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ArgsortGroupedEvaluator.__init__-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ArgsortEvaluator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.__init__-13"><a href="#ArgsortEvaluator.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span id="ArgsortEvaluator.__init__-14"><a href="#ArgsortEvaluator.__init__-14"><span class="linenos">14</span></a>                 <span class="o">*</span><span class="p">,</span>
-</span><span id="ArgsortEvaluator.__init__-15"><a href="#ArgsortEvaluator.__init__-15"><span class="linenos">15</span></a>                 <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
-</span><span id="ArgsortEvaluator.__init__-16"><a href="#ArgsortEvaluator.__init__-16"><span class="linenos">16</span></a>                 <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.__init__-17"><a href="#ArgsortEvaluator.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
-</span><span id="ArgsortEvaluator.__init__-18"><a href="#ArgsortEvaluator.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">limit</span>
+    <a class="headerlink" href="#ArgsortGroupedEvaluator.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortGroupedEvaluator.__init__-144"><a href="#ArgsortGroupedEvaluator.__init__-144"><span class="linenos">144</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span id="ArgsortGroupedEvaluator.__init__-145"><a href="#ArgsortGroupedEvaluator.__init__-145"><span class="linenos">145</span></a>                 <span class="o">*</span><span class="p">,</span>
+</span><span id="ArgsortGroupedEvaluator.__init__-146"><a href="#ArgsortGroupedEvaluator.__init__-146"><span class="linenos">146</span></a>                 <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">Descending</span><span class="p">,</span>
+</span><span id="ArgsortGroupedEvaluator.__init__-147"><a href="#ArgsortGroupedEvaluator.__init__-147"><span class="linenos">147</span></a>                 <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator.__init__-148"><a href="#ArgsortGroupedEvaluator.__init__-148"><span class="linenos">148</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
+</span><span id="ArgsortGroupedEvaluator.__init__-149"><a href="#ArgsortGroupedEvaluator.__init__-149"><span class="linenos">149</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="o">=</span> <span class="n">limit</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="ArgsortEvaluator.next_state" class="classattr">
-                                        <input id="ArgsortEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ArgsortGroupedEvaluator.initial_state" class="classattr">
+                                        <input id="ArgsortGroupedEvaluator.initial_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="o">*</span><span class="n">counts</span></span><span class="return-annotation">):</span></span>
+        <span class="name">initial_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcomes</span>, </span><span class="param"><span class="o">*</span><span class="n">sizes</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="ArgsortEvaluator.next_state-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ArgsortGroupedEvaluator.initial_state-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ArgsortEvaluator.next_state"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.next_state-20"><a href="#ArgsortEvaluator.next_state-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.next_state-21"><a href="#ArgsortEvaluator.next_state-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
-</span><span id="ArgsortEvaluator.next_state-22"><a href="#ArgsortEvaluator.next_state-22"><span class="linenos">22</span></a>        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ArgsortEvaluator.next_state-23"><a href="#ArgsortEvaluator.next_state-23"><span class="linenos">23</span></a>            <span class="n">state</span> <span class="o">=</span> <span class="p">()</span>
-</span><span id="ArgsortEvaluator.next_state-24"><a href="#ArgsortEvaluator.next_state-24"><span class="linenos">24</span></a>        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
-</span><span id="ArgsortEvaluator.next_state-25"><a href="#ArgsortEvaluator.next_state-25"><span class="linenos">25</span></a>                <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.next_state-26"><a href="#ArgsortEvaluator.next_state-26"><span class="linenos">26</span></a>            <span class="n">to_append</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">i</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">counts</span><span class="p">)),</span>
-</span><span id="ArgsortEvaluator.next_state-27"><a href="#ArgsortEvaluator.next_state-27"><span class="linenos">27</span></a>                            <span class="n">start</span><span class="o">=</span><span class="p">())</span>
-</span><span id="ArgsortEvaluator.next_state-28"><a href="#ArgsortEvaluator.next_state-28"><span class="linenos">28</span></a>            <span class="n">state</span> <span class="o">+=</span> <span class="p">(</span><span class="n">to_append</span><span class="p">,</span> <span class="p">)</span>
-</span><span id="ArgsortEvaluator.next_state-29"><a href="#ArgsortEvaluator.next_state-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">state</span>
+    <a class="headerlink" href="#ArgsortGroupedEvaluator.initial_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortGroupedEvaluator.initial_state-151"><a href="#ArgsortGroupedEvaluator.initial_state-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">*</span><span class="n">sizes</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator.initial_state-152"><a href="#ArgsortGroupedEvaluator.initial_state-152"><span class="linenos">152</span></a>        <span class="k">if</span> <span class="n">order</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">:</span>
+</span><span id="ArgsortGroupedEvaluator.initial_state-153"><a href="#ArgsortGroupedEvaluator.initial_state-153"><span class="linenos">153</span></a>            <span class="k">raise</span> <span class="n">UnsupportedOrder</span><span class="p">(</span>
+</span><span id="ArgsortGroupedEvaluator.initial_state-154"><a href="#ArgsortGroupedEvaluator.initial_state-154"><span class="linenos">154</span></a>                <span class="s1">&#39;argsort_grouped must be evaluated in the given order.&#39;</span><span class="p">)</span>
+</span><span id="ArgsortGroupedEvaluator.initial_state-155"><a href="#ArgsortGroupedEvaluator.initial_state-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="p">()</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Implementation.</p>
-</div>
+            <div class="docstring"><p>Optional method to produce an initial evaluation state.</p>
 
-
-                            </div>
-                            <div id="ArgsortEvaluator.final_outcome" class="classattr">
-                                        <input id="ArgsortEvaluator.final_outcome-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">final_outcome</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">final_state</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcomes</span>, </span><span class="param"><span class="o">*</span><span class="n">sizes</span></span><span class="return-annotation">):</span></span>
-
-                <label class="view-source-button" for="ArgsortEvaluator.final_outcome-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#ArgsortEvaluator.final_outcome"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.final_outcome-31"><a href="#ArgsortEvaluator.final_outcome-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">final_outcome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final_state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="o">*</span><span class="n">sizes</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.final_outcome-32"><a href="#ArgsortEvaluator.final_outcome-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="n">final_state</span> <span class="ow">or</span> <span class="p">()</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Optional method to generate a final output outcome from a final state.</p>
-
-<p>By default, the final outcome is equal to the final state.
-Note that <code>None</code> is not a valid outcome for a <code>Die</code>,
-and if there are no outcomes, <code><a href="#ArgsortEvaluator.final_outcome">final_outcome</a></code> will be immediately
-be callled with <code>final_state=None</code>.
-Subclasses that want to handle this case should explicitly define what
-happens.</p>
+<p>If not overriden, the initial state is <code>None</code>. Note that this is not a
+valid <code><a href="#ArgsortGroupedEvaluator.final_outcome">final_outcome()</a></code>.</p>
 
 <p>All non-keyword arguments will be given positionally, so you are free
 to:</p>
@@ -5393,82 +5369,88 @@ about them.</li>
 <h6 id="arguments">Arguments:</h6>
 
 <ul>
-<li><strong>final_state:</strong>  A state after all outcomes have been processed.</li>
-<li><strong>order:</strong>  The order in which outcomes were seen by <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code>.</li>
-<li><strong>outcomes:</strong>  All outcomes that were seen by <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>order:</strong>  The order in which outcomes will be seen by <code><a href="#ArgsortGroupedEvaluator.next_state">next_state()</a></code>.</li>
+<li><strong>outcomes:</strong>  All outcomes that will be seen by <code><a href="#ArgsortGroupedEvaluator.next_state">next_state()</a></code>.</li>
 <li><strong>sizes:</strong>  The sizes of the input multisets, provided
 that the multiset has inferrable size with non-negative
 counts. If not, the corresponding size is None.</li>
-<li><strong>kwargs:</strong>  Non-multiset arguments that were provided to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code>.
+<li><strong>kwargs:</strong>  Non-multiset arguments that were provided to <code><a href="#ArgsortGroupedEvaluator.evaluate">evaluate()</a></code>.
 You may replace <code>**kwargs</code> with a fixed set of keyword
-parameters; <code><a href="#ArgsortEvaluator.initial_state">initial_state()</a></code> should take the same set of
+parameters; <code><a href="#ArgsortGroupedEvaluator.final_outcome">final_outcome()</a></code> should take the same set of
 keyword parameters.</li>
 </ul>
 
-<h6 id="returns">Returns:</h6>
+<h6 id="raises">Raises:</h6>
 
-<blockquote>
-  <p>A final outcome that will be used as part of constructing the result <code>Die</code>.
-  As usual for <code>Die()</code>, this could itself be a <code>Die</code> or <code><a href="../icepool.html#Reroll">icepool.Reroll</a></code>.</p>
-</blockquote>
+<ul>
+<li>UnsupportedOrder if the given order is not supported.</li>
+</ul>
 </div>
 
 
                             </div>
-                            <div id="ArgsortEvaluator.order" class="classattr">
-                                        <input id="ArgsortEvaluator.order-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ArgsortGroupedEvaluator.next_state" class="classattr">
+                                        <input id="ArgsortGroupedEvaluator.next_state-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">order</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+        <span class="name">next_state</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">state</span>, </span><span class="param"><span class="n">order</span>, </span><span class="param"><span class="n">outcome</span>, </span><span class="param"><span class="o">*</span><span class="n">counts</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="ArgsortEvaluator.order-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ArgsortGroupedEvaluator.next_state-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ArgsortEvaluator.order"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.order-34"><a href="#ArgsortEvaluator.order-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.order-35"><a href="#ArgsortEvaluator.order-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+    <a class="headerlink" href="#ArgsortGroupedEvaluator.next_state"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortGroupedEvaluator.next_state-157"><a href="#ArgsortGroupedEvaluator.next_state-157"><span class="linenos">157</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="o">*</span><span class="n">counts</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-158"><a href="#ArgsortGroupedEvaluator.next_state-158"><span class="linenos">158</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Implementation.&quot;&quot;&quot;</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-159"><a href="#ArgsortGroupedEvaluator.next_state-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_limit</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-160"><a href="#ArgsortGroupedEvaluator.next_state-160"><span class="linenos">160</span></a>                <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-161"><a href="#ArgsortGroupedEvaluator.next_state-161"><span class="linenos">161</span></a>            <span class="n">to_append</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(((</span><span class="n">i</span><span class="p">,</span> <span class="p">)</span> <span class="o">*</span> <span class="n">count</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">counts</span><span class="p">)),</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-162"><a href="#ArgsortGroupedEvaluator.next_state-162"><span class="linenos">162</span></a>                            <span class="n">start</span><span class="o">=</span><span class="p">())</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-163"><a href="#ArgsortGroupedEvaluator.next_state-163"><span class="linenos">163</span></a>            <span class="n">state</span> <span class="o">+=</span> <span class="p">(</span><span class="n">to_append</span><span class="p">,</span> <span class="p">)</span>
+</span><span id="ArgsortGroupedEvaluator.next_state-164"><a href="#ArgsortGroupedEvaluator.next_state-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">state</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Implementation.</p>
+</div>
+
 
                             </div>
-                            <div id="ArgsortEvaluator.next_state_key" class="classattr">
-                                        <input id="ArgsortEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="ArgsortGroupedEvaluator.next_state_key" class="classattr">
+                                        <input id="ArgsortGroupedEvaluator.next_state_key-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr variable">
             <span class="name">next_state_key</span>
 
-                <label class="view-source-button" for="ArgsortEvaluator.next_state_key-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="ArgsortGroupedEvaluator.next_state_key-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#ArgsortEvaluator.next_state_key"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortEvaluator.next_state_key-37"><a href="#ArgsortEvaluator.next_state_key-37"><span class="linenos">37</span></a>    <span class="nd">@property</span>
-</span><span id="ArgsortEvaluator.next_state_key-38"><a href="#ArgsortEvaluator.next_state_key-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="ArgsortEvaluator.next_state_key-39"><a href="#ArgsortEvaluator.next_state_key-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
+    <a class="headerlink" href="#ArgsortGroupedEvaluator.next_state_key"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ArgsortGroupedEvaluator.next_state_key-166"><a href="#ArgsortGroupedEvaluator.next_state_key-166"><span class="linenos">166</span></a>    <span class="nd">@property</span>
+</span><span id="ArgsortGroupedEvaluator.next_state_key-167"><a href="#ArgsortGroupedEvaluator.next_state_key-167"><span class="linenos">167</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">next_state_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ArgsortGroupedEvaluator.next_state_key-168"><a href="#ArgsortGroupedEvaluator.next_state_key-168"><span class="linenos">168</span></a>        <span class="k">return</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> computation.</p>
+            <div class="docstring"><p>Subclasses may optionally provide a key that uniquely identifies the <code><a href="#ArgsortGroupedEvaluator.next_state">next_state()</a></code> computation.</p>
 
 <p>This is used to persistently cache intermediate results between calls
-to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ArgsortEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
+to <code><a href="#ArgsortGroupedEvaluator.evaluate">evaluate()</a></code>. By default, <code><a href="#ArgsortGroupedEvaluator.next_state_key">next_state_key</a></code> is <code>None</code>, which only
 caches if not inside a <code>@multiset_function</code>.</p>
 
-<p>If you do implement this, <code><a href="#ArgsortEvaluator.next_state_key">next_state_key</a></code> should include any members 
-used in <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
+<p>If you do implement this, <code><a href="#ArgsortGroupedEvaluator.next_state_key">next_state_key</a></code> should include any members 
+used in <code><a href="#ArgsortGroupedEvaluator.next_state">next_state()</a></code> but does NOT need to include members that are 
 only used in other methods, i.e. </p>
 
 <ul>
-<li><code><a href="#ArgsortEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
-<li><code><a href="#ArgsortEvaluator.initial_state">initial_state()</a></code></li>
-<li><code><a href="#ArgsortEvaluator.final_outcome">final_outcome()</a></code>.</li>
+<li><code><a href="#ArgsortGroupedEvaluator.extra_outcomes">extra_outcomes()</a></code></li>
+<li><code><a href="#ArgsortGroupedEvaluator.initial_state">initial_state()</a></code></li>
+<li><code><a href="#ArgsortGroupedEvaluator.final_outcome">final_outcome()</a></code>.</li>
 </ul>
 
-<p>For example, if <code><a href="#ArgsortEvaluator.next_state">next_state()</a></code> is a pure function other than being 
+<p>For example, if <code><a href="#ArgsortGroupedEvaluator.next_state">next_state()</a></code> is a pure function other than being 
 defined by its evaluator class, you can use <code>type(self)</code>.</p>
 
-<p>If you want to disable caching between calls to <code><a href="#ArgsortEvaluator.evaluate">evaluate()</a></code> even
+<p>If you want to disable caching between calls to <code><a href="#ArgsortGroupedEvaluator.evaluate">evaluate()</a></code> even
 outside of <code>@multiset_function</code>, return the special value 
 <code><a href="../icepool.html#NoCache">icepool.NoCache</a></code>.</p>
 </div>
