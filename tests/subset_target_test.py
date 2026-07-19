@@ -163,8 +163,12 @@ def test_argsort_drop():
 
 def test_argsort_drop_nco():
     action = d(6).pool(3)
-    danger = d(6).pool(2) + [0, 0]
-    result = MultisetExpression.argsort(action, danger, limit=2, tie='drop')
+    danger = d(6).pool(2)
+    result = MultisetExpression.argsort(action,
+                                        danger,
+                                        limit=2,
+                                        limit_pad=1,
+                                        tie='drop')
 
     @multiset_function
     def two_side_difference(a, b):
@@ -178,7 +182,7 @@ def test_argsort_drop_nco():
             return (0, a[1] < b[0])
 
     expected = two_side_difference(action + [-1, -1],
-                                   danger).map(compute_expected)
+                                   danger + [0, 0]).map(compute_expected)
     assert result == expected
 
 

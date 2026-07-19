@@ -1245,22 +1245,39 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         *args: 'MultisetExpression[T] | Mapping[T, int] | Sequence[T]',
         order: Order = Order.Descending,
         limit: int | None = None,
+        limit_pad: int | None = None,
         tie: Literal['drop', 'left', 'right']
     ) -> 'icepool.Die[tuple[int, ...]] | MultisetFunctionRawResult[T, tuple[int, ...]]':
         """Experimental: Returns the indexes of the originating multisets for each rank in their additive union.
 
+        Args:
+            self, *args: The multiset expressions to be evaluated.
+            order: Which order the ranks are to be emitted in. Default is descending.
+            limit: How many ranks to emit.
+            limit_pad: If `limit` is also set and there are not enough elements 
+                to reach it, the result is padded with `limit_pad`. The result
+                will therefore always have length exactly equal to `limit`.
+            tie: What to do with ties. Options are:
+            * `'drop'`: Any outcomes existing in more than one multiset are
+                dropped on a 1:1:1... basis until there are no more ties.
+            * `'left'`: The leftmost multiset (lower indexes) is ranked first.
+            * `'right'`: The rightmost multiset (higher indexes) is ranked
+                first.
         """
         self = implicit_convert_to_expression(self)
         converted_args = [implicit_convert_to_expression(arg) for arg in args]
         if tie == 'drop':
             return icepool.evaluator.ArgsortEvaluatorDrop(
-                order=order, limit=limit).evaluate(self, *converted_args)
+                order=order, limit=limit,
+                limit_pad=limit_pad).evaluate(self, *converted_args)
         elif tie == 'left':
             return icepool.evaluator.ArgsortEvaluatorLeft(
-                order=order, limit=limit).evaluate(self, *converted_args)
+                order=order, limit=limit,
+                limit_pad=limit_pad).evaluate(self, *converted_args)
         elif tie == 'right':
             return icepool.evaluator.ArgsortEvaluatorRight(
-                order=order, limit=limit).evaluate(self, *converted_args)
+                order=order, limit=limit,
+                limit_pad=limit_pad).evaluate(self, *converted_args)
         raise ValueError('tie must be "drop", "left", or "right".')
 
     def argsort_grouped(
@@ -1282,9 +1299,9 @@ class MultisetExpression(MultisetExpressionBase[T, int],
         
         Args:
             self, *args: The multiset expressions to be evaluated.
-            order: Which order the ranks are to be emitted. Default is descending.
-            limit: How many ranks to emit. Default will emit all ranks, which
-                makes the length of each outcome equal to
+            order: Which order the ranks are to be emitted in. Default is descending.
+            limit: How many ranks (unique input outcomes) to emit. Default will  
+                emit all ranks, which makes the length of each outcome equal to
                 `additive_union(+self, +arg1, +arg2, ...).unique().size()`
         """
         self = implicit_convert_to_expression(self)

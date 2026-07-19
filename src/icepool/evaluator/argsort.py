@@ -6,7 +6,21 @@ from icepool.order import Order, UnsupportedOrder
 from typing import Any, Literal
 
 
-class ArgsortEvaluatorDrop(MultisetEvaluator[Any, tuple[int, ...]]):
+class ArgsortEvaluatorBase(MultisetEvaluator[Any, tuple[int, ...]]):
+
+    def final_outcome(self, final_state, order, outcomes, /, *sizes):
+        if self._limit is not None and self._limit_pad is not None:
+            append_count = self._limit - len(final_state)
+            if append_count > 0:
+                final_state += (self._limit_pad, ) * append_count
+        return final_state
+
+    @property
+    def next_state_key(self):
+        return (type(self), self._order, self._limit, self._limit_pad)
+
+
+class ArgsortEvaluatorDrop(ArgsortEvaluatorBase):
     """Returns the indexes of the originating multisets for each rank in their additive union.
     
     In this version, if the same outcome appears in more than one multiset,
@@ -17,12 +31,15 @@ class ArgsortEvaluatorDrop(MultisetEvaluator[Any, tuple[int, ...]]):
     def __init__(self,
                  *,
                  order: Order = Order.Descending,
-                 limit: int | None = None):
+                 limit: int | None = None,
+                 limit_pad: int | None = None):
         self._order = order
         self._limit = limit
+        self._limit_pad = limit_pad
 
     def initial_state(self, order, outcomes, *sizes):
         if order != self._order:
+            # TODO: implement reverse order?
             raise UnsupportedOrder(
                 'argsort must be evaluated in the given order.')
         return ()
@@ -46,15 +63,8 @@ class ArgsortEvaluatorDrop(MultisetEvaluator[Any, tuple[int, ...]]):
                 return state + (max_index, ) * append_count
         return state
 
-    def order(self):
-        return self._order
 
-    @property
-    def next_state_key(self):
-        return (type(self), self._order, self._limit)
-
-
-class ArgsortEvaluatorLeft(MultisetEvaluator[Any, tuple[int, ...]]):
+class ArgsortEvaluatorLeft(ArgsortEvaluatorBase):
     """Returns the indexes of the originating multisets for each rank in their additive union.
     
     In this version, if the same outcome appears in more than one multiset,
@@ -65,12 +75,15 @@ class ArgsortEvaluatorLeft(MultisetEvaluator[Any, tuple[int, ...]]):
     def __init__(self,
                  *,
                  order: Order = Order.Descending,
-                 limit: int | None = None):
+                 limit: int | None = None,
+                 limit_pad: int | None = None):
         self._order = order
         self._limit = limit
+        self._limit_pad = limit_pad
 
     def initial_state(self, order, outcomes, *sizes):
         if order != self._order:
+            # TODO: implement reverse order?
             raise UnsupportedOrder(
                 'argsort must be evaluated in the given order.')
         return ()
@@ -88,12 +101,8 @@ class ArgsortEvaluatorLeft(MultisetEvaluator[Any, tuple[int, ...]]):
                     return state
         return state
 
-    @property
-    def next_state_key(self):
-        return (type(self), self._order, self._limit)
 
-
-class ArgsortEvaluatorRight(MultisetEvaluator[Any, tuple[int, ...]]):
+class ArgsortEvaluatorRight(ArgsortEvaluatorBase):
     """Returns the indexes of the originating multisets for each rank in their additive union.
     
     In this version, if the same outcome appears in more than one multiset,
@@ -104,12 +113,15 @@ class ArgsortEvaluatorRight(MultisetEvaluator[Any, tuple[int, ...]]):
     def __init__(self,
                  *,
                  order: Order = Order.Descending,
-                 limit: int | None = None):
+                 limit: int | None = None,
+                 limit_pad: int | None = None):
         self._order = order
         self._limit = limit
+        self._limit_pad = limit_pad
 
     def initial_state(self, order, outcomes, *sizes):
         if order != self._order:
+            # TODO: implement reverse order?
             raise UnsupportedOrder(
                 'argsort must be evaluated in the given order.')
         return ()
@@ -126,10 +138,6 @@ class ArgsortEvaluatorRight(MultisetEvaluator[Any, tuple[int, ...]]):
                 if len(state) == self._limit:
                     return state
         return state
-
-    @property
-    def next_state_key(self):
-        return (type(self), self._order, self._limit)
 
 
 class ArgsortGroupedEvaluator(MultisetEvaluator[Any, tuple[tuple[int, ...],
@@ -149,6 +157,7 @@ class ArgsortGroupedEvaluator(MultisetEvaluator[Any, tuple[tuple[int, ...],
 
     def initial_state(self, order, outcomes, *sizes):
         if order != self._order:
+            # TODO: implement reverse order?
             raise UnsupportedOrder(
                 'argsort_grouped must be evaluated in the given order.')
         return ()
