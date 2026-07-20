@@ -1,3 +1,8 @@
+## v2.2.2 - 19 July 2026
+
+* `MultisetExpression.sum()` now keeps unmapped outcomes as-is.
+* Experimental: Rename `MultisetExpression.argsort()` to `argsort_grouped()` and add a new `argsort()` that always breaks ties.
+
 ## v2.2.1 - 25 December 2025
 
 * Added `wild`, `wild_low`, and `wild_high` options to `largest_count()` evaluation. These allow specifying outcomes as wild, combining with any outcomes, outcomes that they are lower than, and outcomes that they are higher than respectively.
