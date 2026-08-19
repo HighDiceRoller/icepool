@@ -569,6 +569,10 @@ if (document.getElementById('ls').checked) {
     chart.options.scales.y.ticks.callback = (val) => (val.toExponential());
 }
 
+if (document.getElementById('t').checked) {
+    chart.options.scales.x.title.text = 'Series';
+}
+
 function setLoadingText(text) {
     console.log(text);
     let loadingText = text.match(/Loading \w+/);
@@ -637,6 +641,16 @@ function updateLogScale() {
     chart.update();
 }
 
+function updateTranspose() {
+    if (document.getElementById('t').checked) {
+        chart.options.scales.x.title.text = 'Series'
+    } else {
+        chart.options.scales.x.title.text = 'Outcome'
+    }
+    
+    runCode();
+}
+
 function updateSearchQuery() {
     let searchParams = $("form").serialize();
     history.replaceState(null, "", "?" + searchParams + "&v=" + icepool_version + "&c=" + LZString.compressToEncodedURIComponent(lastRunCode));
@@ -655,7 +669,7 @@ document.getElementById("eq").addEventListener("change", runCode);
 document.getElementById("ge").addEventListener("change", runCode);
 document.getElementById("le").addEventListener("change", runCode);
 document.getElementById("ls").addEventListener("change", updateLogScale);
-document.getElementById("t").addEventListener("change", runCode);
+document.getElementById("t").addEventListener("change", updateTranspose);
 
 document.getElementById("copy_url").addEventListener("click", function (e) {
     navigator.clipboard.writeText(window.location.href);
