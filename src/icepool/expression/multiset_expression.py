@@ -1081,8 +1081,18 @@ class MultisetExpression(MultisetExpressionBase[T, int],
 
     def empty(
             self) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
-        """Evaluation: Whether the multiset contains only zero counts."""
+        """Evaluation: Whether the multiset contains only zero counts.
+        
+        The opposite of `any()`.
+        """
         return icepool.evaluator.empty_evaluator.evaluate(self)
+
+    def any(self) -> 'icepool.Die[bool] | MultisetFunctionRawResult[T, bool]':
+        """Evaluation: Whether the multiset contains any nonzero count.
+        
+        The opposite of `empty()`.
+        """
+        return icepool.evaluator.empty_evaluator.evaluate(self, any=True)
 
     def product_of_counts(
         self, ) -> 'icepool.Die[int] | MultisetFunctionRawResult[T, int]':

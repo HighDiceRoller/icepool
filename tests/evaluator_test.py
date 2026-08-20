@@ -232,3 +232,5 @@ def test_contains_subset_vs_intersection_size():
 def test_empty():
     result = (d6.pool(1) & d6.pool(1)).empty()
     assert result == (d6 != d6)
+    result_any = (d6.pool(1) & d6.pool(1)).any()
+    assert result.mean() + result_any.mean() == 1

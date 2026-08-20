@@ -139,15 +139,18 @@ product_of_counts_evaluator: Final = ProductOfCountsEvaluator()
 class EmptyEvaluator(MultisetEvaluator[Any, bool]):
     """Returns `True` iff the multiset contains only zero counts."""
 
-    def initial_state(self, order, outcomes, /, *sizes):
+    def initial_state(self, order, outcomes, /, size, any=False):
         return True
 
     def next_state(self, state, order, outcome, count):
         return state and (count == 0)
 
     def final_outcome(  # type: ignore
-            self, final_state, order, outcomes, size) -> bool:
-        return final_state
+            self, final_state, order, outcomes, size, any=False) -> bool:
+        if any:
+            return not final_state
+        else:
+            return final_state
 
     @property
     def next_state_key(self):
