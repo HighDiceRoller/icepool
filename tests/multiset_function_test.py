@@ -1,7 +1,7 @@
 import icepool
 import pytest
 
-from icepool import multiset_function, d6, MultisetExpression, Deck
+from icepool import multiset_function, d6, Die, MultisetExpression, Deck
 from icepool.expand import tupleize
 
 
@@ -104,3 +104,16 @@ def test_nested_call_branch():
         return x.sum(), inner(x)
 
     assert outer(d6.pool(3)) == (3 @ d6).map(lambda x: (x, x))
+
+
+def test_joint_mixture():
+
+    @multiset_function
+    def evaluator(x):
+        return x.sum(), x.size()
+
+    mixture = icepool.MultisetMixture([d6.pool(1), d6.pool(2)])
+    result = evaluator(mixture)
+    expected = Die([tupleize(d6, 1), tupleize(2 @ d6, 2)])
+
+    assert result.equals(expected, simplify=True)

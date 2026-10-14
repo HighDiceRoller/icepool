@@ -360,6 +360,10 @@ def prepare_multiset_joint_function(
     'tuple[MultisetFunctionRawResult[T, Any] | icepool.Die[U_co], ...]',
 ) -> Iterator[tuple['Dungeon[T]', 'Quest[T, Any]',
                     'tuple[MultisetSourceBase[T, Any], ...]', int]]:
+    converted_raws = tuple(
+        convert_die_to_raw_result(raw) for raw in raw_results)
+    inner_kwargses = tuple(raw.inner_kwargs for raw in converted_raws)
+
     for outer in itertools.product(*(exp._prepare() for exp in outer_exps)):
         if outer:
             outer_dungeonlet_flats, outer_questlet_flats, outer_sources, outer_weights = zip(
@@ -372,22 +376,18 @@ def prepare_multiset_joint_function(
         outer_sources = tuple(itertools.chain.from_iterable(outer_sources))
         outer_weight = math.prod(outer_weights)
 
-    converted_raws = tuple(
-        convert_die_to_raw_result(raw) for raw in raw_results)
-
-    inner_kwargses = tuple(raw.inner_kwargs for raw in converted_raws)
-    for inner in itertools.product(*(raw.prepare_inner()
-                                     for raw in converted_raws)):
-        (inner_dungeons, inner_quests, all_inner_sources,
-         inner_weights) = zip(*inner)
-        dungeon = MultisetFunctionJointDungeon(outer_dungeonlet_flats,
-                                               inner_dungeons)
-        quest = MultisetFunctionJointQuest(outer_questlet_flats, inner_quests,
-                                           inner_kwargses)
-        sources = outer_sources + tuple(
-            itertools.chain.from_iterable(all_inner_sources))
-        weight = outer_weight * math.prod(inner_weights)
-        yield dungeon, quest, sources, weight
+        for inner in itertools.product(*(raw.prepare_inner()
+                                         for raw in converted_raws)):
+            (inner_dungeons, inner_quests, all_inner_sources,
+             inner_weights) = zip(*inner)
+            dungeon = MultisetFunctionJointDungeon(outer_dungeonlet_flats,
+                                                   inner_dungeons)
+            quest = MultisetFunctionJointQuest(outer_questlet_flats,
+                                               inner_quests, inner_kwargses)
+            sources = outer_sources + tuple(
+                itertools.chain.from_iterable(all_inner_sources))
+            weight = outer_weight * math.prod(inner_weights)
+            yield dungeon, quest, sources, weight
 
 
 class MultisetFunctionJointDungeon(Dungeon[T]):
