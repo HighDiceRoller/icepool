@@ -106,11 +106,10 @@ class MultisetAdditiveUnion(MultisetBinaryOperator):
 
     def _initial_state(self, order, outcomes, child_sizes: Sequence,
                        source_sizes: Iterator, arg_sizes: Sequence):
-        left_size, right_size = child_sizes
-        if left_size is None or right_size is None:
+        if any(size is None for size in child_sizes):
             return None, None
         else:
-            return None, child_sizes[0] + child_sizes[1]
+            return None, sum(child_sizes)
 
 
 class MultisetSymmetricDifference(MultisetBinaryOperator):

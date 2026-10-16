@@ -122,10 +122,10 @@ class Symbols(Mapping[str, int]):
 
     def __getitem__(self, key: str) -> 'int | Symbols':  # type: ignore
         if len(key) == 1:
-            return self._data[key]
+            return self._data.get(key, 0)
         else:
             return Symbols._new_raw(
-                defaultdict(int, {s: self._data[s]
+                defaultdict(int, {s: self._data.get(s, 0)
                                   for s in key}))
 
     def __getattr__(self, key: str) -> 'int | Symbols':
@@ -253,7 +253,7 @@ class Symbols(Mapping[str, int]):
             divisor = Counter(divisor)
         result = None
         for s, count in divisor.items():
-            current = self._data[s] // count
+            current = self._data.get(s, 0) // count
             if result is None or current < result:
                 result = current
         if result is None:

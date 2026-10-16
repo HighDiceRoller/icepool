@@ -35,6 +35,13 @@ def test_multiple_union():
     assert result == expected
 
 
+def test_multiple_additive_union():
+    # The difference keeps the left side from being merged into a single pool.
+    result = (d6.pool(1) - [7]).additive_union([1], [2]).sum()
+    expected = d6 + 3
+    assert result == expected
+
+
 def test_multiple_intersection():
     result = d6.pool(1).intersection([d6], [d6]).sum()
     expected = (2 @ d6 == 12) * d6

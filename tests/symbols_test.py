@@ -58,3 +58,16 @@ def test_ordering():
     assert Symbols('a') > Symbols('bb')
     assert Symbols('-a') < Symbols('bb')
     assert Symbols('a') < Symbols('ab')
+
+
+def test_getitem_missing_does_not_add_symbol():
+    symbols = Symbols('a')
+    assert symbols['b'] == 0
+    assert symbols['ab'] == Symbols('a')
+    assert list(symbols) == ['a']
+
+
+def test_count_subset_missing_does_not_add_symbol():
+    symbols = Symbols('a')
+    assert symbols.count_subset('b') == 0
+    assert list(symbols) == ['a']
