@@ -1,5 +1,5 @@
 import pytest
-from icepool import Deck, multiset_function
+from icepool import Deck, Die, MultisetMixture, multiset_function
 
 
 def test_bare_expression():
@@ -28,3 +28,16 @@ def test_union_size():
 
     deck = Deck(range(20))
     assert union_size(deck.deal((5, 5))).probability(10) == 1
+
+
+def test_hands_of_different_deals_are_not_equal():
+    a = Deck([1, 2]).deal((1, 1))[0]
+    b = Deck([5, 6]).deal((1, 1))[0]
+    assert not a.equals(b)
+    assert MultisetMixture([a, b]).sum().equals(Die([1, 2, 5, 6]))
+
+
+def test_hand_slices_of_different_deals_are_not_equal():
+    a = Deck([1, 2]).deal((1, 1))
+    b = Deck([5, 6]).deal((1, 1))
+    assert not a[0:1].equals(b[0:1])
