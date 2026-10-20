@@ -368,7 +368,8 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
         if new_quantity > 0:
             data[outcome] = new_quantity
         elif new_quantity == 0:
-            del data[outcome]
+            # The outcome may not have been present in the first place.
+            data.pop(outcome, None)
         else:
             raise ValueError(
                 f'Padding to denominator of {denominator} would require a negative quantity of {new_quantity} for {outcome}'
