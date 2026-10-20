@@ -197,6 +197,9 @@ class KeepGenerator(MultisetGenerator[T]):
         if keep < 0:
             raise ValueError(f'keep={keep} cannot be negative.')
 
+        # Keeping more than the current keep_size keeps all of them.
+        keep = min(keep, self.keep_size())
+
         if keep % 2 == self.keep_size() % 2:
             # The "good" case.
             start = (self.keep_size() - keep) // 2
