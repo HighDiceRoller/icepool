@@ -77,6 +77,9 @@ def expand_arg(
                    icepool.cartesian_product(*arg, outcome_type=tuple))
         if type(arg) == tuple:
             return {arg: 1}  # type: ignore
+        elif arg in icepool.REROLL_TYPES:
+            # The Cartesian product is Reroll if any element is.
+            return {}
         else:  # converted to Population
             return arg  # type: ignore
     else:
