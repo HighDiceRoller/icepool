@@ -288,6 +288,11 @@ def evaluate_agains_using_count(
                 )
             return icepool.tupleize(outcome._evaluate(zero), 0,
                                     outcome._again_count() - 1)
+        elif outcome in icepool.REROLL_TYPES or (isinstance(
+                outcome, icepool.Die) and outcome.is_empty()):
+            # Like compute_not_again_die, drop these so the roll is rerolled
+            # rather than counted as a roll that ends the chain.
+            return icepool.Reroll
         else:
             return icepool.tupleize(zero, 1, -1)
 
