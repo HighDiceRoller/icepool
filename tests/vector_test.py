@@ -192,3 +192,22 @@ def test_unequal_length_comparison():
     assert result
     with pytest.raises(ValueError):
         len(result)
+
+
+def test_nested_vectors_sort():
+    die = Die([Vector((Vector((2, )), )), Vector((Vector((1, )), ))])
+    assert die.outcomes() == (Vector((Vector((1, )), )), Vector(
+        (Vector((2, )), )))
+
+
+def test_nested_vector_comparison_is_not_exponential():
+    # Equal but not identical, so that tuple comparison can't shortcut.
+    t = 1
+    u = 1
+    for _ in range(40):
+        t = Vector([t])
+        u = Vector([u])
+    assert bool(t == u)
+    assert not bool(t != u)
+    assert not bool(t < u)
+    assert bool(t <= u)
