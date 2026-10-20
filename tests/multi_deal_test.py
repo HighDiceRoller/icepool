@@ -1,5 +1,5 @@
 import pytest
-from icepool import Deck, multiset_function
+from icepool import Deck, MultisetEvaluator, multiset_function
 
 
 def test_bare_expression():
@@ -28,3 +28,15 @@ def test_union_size():
 
     deck = Deck(range(20))
     assert union_size(deck.deal((5, 5))).probability(10) == 1
+
+
+def test_denominator_three_hands():
+
+    class Counts(MultisetEvaluator):
+
+        def next_state(self, state, order, outcome, counts):
+            return (state or ()) + (counts, )
+
+    for sizes in [(2, 2), (2, 2, 1), (1, 1, 1)]:
+        deal = Deck(range(5)).deal(sizes)
+        assert deal.denominator() == Counts().evaluate(deal).denominator()
