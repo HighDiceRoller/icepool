@@ -54,3 +54,7 @@ def test_pointwise_min_single_argument():
         assert result.probability('<=', outcome) == max(
             (3 @ d6).probability('<=', outcome),
             d20.probability('<=', outcome))
+
+
+def test_consecutive_iterator():
+    assert icepool.consecutive(iter([1, 3])) == (1, 2, 3)
