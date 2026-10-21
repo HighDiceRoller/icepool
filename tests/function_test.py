@@ -58,3 +58,11 @@ def test_pointwise_min_single_argument():
 
 def test_consecutive_iterator():
     assert icepool.consecutive(iter([1, 3])) == (1, 2, 3)
+
+
+def test_pointwise_max_single_die():
+    assert pointwise_max(d6).equals(d6)
+
+
+def test_pointwise_min_single_die():
+    assert pointwise_min(d6).equals(d6)

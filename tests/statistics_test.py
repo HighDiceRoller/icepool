@@ -73,3 +73,13 @@ def test_pad_to_denominator_zero():
 def test_pad_to_denominator_negative_error():
     with pytest.raises(ValueError):
         deck = Deck([0, 0, 0, 1, 2, 3]).pad_to_denominator(2, 0)
+
+
+def test_pad_to_same_denominator_absent_outcome():
+    assert icepool.d6.pad_to_denominator(6, 7).equals(icepool.d6)
+
+
+def test_empty_quantities_ge():
+    assert icepool.Die([]).quantities('>=') == ()
+    assert icepool.Die([]).quantities('<') == ()
+    assert icepool.Die([]).probabilities('>=') == ()

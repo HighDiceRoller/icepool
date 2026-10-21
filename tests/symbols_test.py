@@ -71,3 +71,9 @@ def test_count_subset_missing_does_not_add_symbol():
     symbols = Symbols('a')
     assert symbols.count_subset('b') == 0
     assert list(symbols) == ['a']
+
+
+def test_isdisjoint():
+    assert not Symbols('ab').isdisjoint('bc')
+    assert Symbols('ab').isdisjoint('c')
+    assert Symbols('').isdisjoint('a')
