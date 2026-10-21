@@ -279,6 +279,8 @@ class Population(ABC, Expandable[T_co], Mapping[Any, int]):
             case '<=':
                 return tuple(itertools.accumulate(self.values()))
             case '>=':
+                if self.is_empty():
+                    return ()
                 return tuple(
                     itertools.accumulate(self.values()[:-1],
                                          operator.sub,

@@ -54,3 +54,11 @@ def test_pointwise_min_single_argument():
         assert result.probability('<=', outcome) == max(
             (3 @ d6).probability('<=', outcome),
             d20.probability('<=', outcome))
+
+
+def test_pointwise_max_single_die():
+    assert pointwise_max(d6).equals(d6)
+
+
+def test_pointwise_min_single_die():
+    assert pointwise_min(d6).equals(d6)

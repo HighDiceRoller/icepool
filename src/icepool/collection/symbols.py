@@ -360,14 +360,14 @@ class Symbols(Mapping[str, int]):
                    for s in itertools.chain(self, other))
 
     def isdisjoint(self, other: Iterable[str] | Mapping[str, int]) -> bool:
-        """Whether `self` has any positive elements in common with the other.
+        """Whether `self` has no positive elements in common with the other.
         
         Raises:
             ValueError if either has negative elements.
         """
         other = Symbols(other)
-        return any(self[s] > 0 and other[s] > 0  # type: ignore
-                   for s in self)
+        return not any(self[s] > 0 and other[s] > 0  # type: ignore
+                       for s in self)
 
     def __eq__(self, other) -> bool:
         if isinstance(other, (icepool.Population, icepool.AgainExpression)):

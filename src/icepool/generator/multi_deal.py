@@ -97,9 +97,13 @@ class MultiDeal(MultisetTupleGenerator[T, IntTupleOut]):
     def _denominator(self) -> int:
         d_total = icepool.math.comb(self.deck().size(),
                                     self.total_cards_dealt())
-        d_split = math.prod(
-            icepool.math.comb(self.total_cards_dealt(), h)
-            for h in self.hand_sizes()[1:])
+        # The ways to split the dealt cards into hands of the given sizes:
+        # the multinomial coefficient total! / (h1! h2! ... hn!).
+        d_split = 1
+        remaining = self.total_cards_dealt()
+        for h in self.hand_sizes():
+            d_split *= icepool.math.comb(remaining, h)
+            remaining -= h
         return d_total * d_split
 
     def denominator(self) -> int:
@@ -202,9 +206,13 @@ class MultiDealSource(MultisetTupleSource[T, IntTupleOut]):
     @cached_property
     def _denominator(self) -> int:
         d_total = icepool.math.comb(self.deck.size(), self.total_cards_dealt())
-        d_split = math.prod(
-            icepool.math.comb(self.total_cards_dealt(), h)
-            for h in self.hand_sizes()[1:])
+        # The ways to split the dealt cards into hands of the given sizes:
+        # the multinomial coefficient total! / (h1! h2! ... hn!).
+        d_split = 1
+        remaining = self.total_cards_dealt()
+        for h in self.hand_sizes():
+            d_split *= icepool.math.comb(remaining, h)
+            remaining -= h
         return d_total * d_split
 
     def denominator(self) -> int:

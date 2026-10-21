@@ -132,7 +132,8 @@ def gather_cols(mapping: Population,
 def make_rows(mapping: Population,
               format_tokens: Sequence[str]) -> Sequence[Sequence[str]]:
     cols = gather_cols(mapping, format_tokens)
-    return [[c for c in row_data] for row_data in zip(*cols)]
+    # One row per outcome, even if there are no columns.
+    return [[col[i] for col in cols] for i in range(len(mapping))]
 
 
 def compute_col_widths(headers: Sequence[str],
@@ -148,6 +149,8 @@ def compute_alignments(rows: Sequence[Sequence[str]]) -> Sequence[str]:
 
     Columns are aligned right iff all values are numeric.
     """
+    if not rows:
+        return []
     result: list[str] = ['>'] * len(rows[0])
     for row in rows:
         for i, cell in enumerate(row):

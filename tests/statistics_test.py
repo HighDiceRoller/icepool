@@ -77,3 +77,9 @@ def test_pad_to_denominator_negative_error():
 
 def test_pad_to_same_denominator_absent_outcome():
     assert icepool.d6.pad_to_denominator(6, 7).equals(icepool.d6)
+
+
+def test_empty_quantities_ge():
+    assert icepool.Die([]).quantities('>=') == ()
+    assert icepool.Die([]).quantities('<') == ()
+    assert icepool.Die([]).probabilities('>=') == ()
