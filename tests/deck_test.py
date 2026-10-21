@@ -122,3 +122,10 @@ def test_remove():
 def test_deck_tuple_with_reroll_drops_out():
     assert Deck([(1, icepool.Reroll), 2]) == Deck([2])
     assert Deck([(1, icepool.Reroll), 2], times=[0, 1]) == Deck([2])
+
+
+def test_sequence_zero_and_repeated():
+    deck = Deck([1, 2, 2])
+    assert deck.sequence(0).equals(icepool.Die([()]))
+    assert deck.sequence(2).equals(deck.sequence(2))
+    assert deck.sequence(1).equals(icepool.Die([(1, ), (2, ), (2, )]))

@@ -294,3 +294,10 @@ def test_keep_known_size_descending():
         return x.force_order(Order.Descending)[0]
 
     assert test(d6.pool(3)) == d6.lowest(3)
+
+
+def test_middle_keep_more_than_size_keeps_all():
+    assert d6.pool(3).middle(5).keep_tuple() == (1, 1, 1)
+    assert d6.pool(3).middle(4, tie='low').keep_tuple() == (1, 1, 1)
+    assert d6.pool(3).middle(4).keep_tuple() == (1, 1, 1)
+    assert d6.middle(3, 5).equals(3 @ d6)

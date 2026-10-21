@@ -37,3 +37,11 @@ format_specs = [
 @pytest.mark.parametrize('format_spec', format_specs)
 def test_format_spec(die, format_spec):
     f'{die:{format_spec}}'
+
+
+def test_format_no_columns():
+    assert f'{icepool.d6:md:}' == 'Die with denominator 6\n\n|\n|\n' + '|\n' * 6 + '\n'
+    assert icepool.Die([()]).format('md:*o') == 'Die with denominator 1\n\n|\n|\n|\n\n'
+    assert f'{icepool.d6:csv:}' == '\r\n' * 7
+    assert f'{icepool.d6:html:}'
+    assert f'{icepool.d6:bbcode:}'
