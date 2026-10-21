@@ -72,3 +72,10 @@ def test_empty_tuple():
 def test_denominator():
     result = icepool.Die([icepool.d(3), icepool.d(4), icepool.d(6)])
     assert result.denominator() == 36
+
+
+def test_tuple_with_reroll_drops_out():
+    assert icepool.Die([(1, icepool.Reroll), 2]).equals(icepool.Die([2]))
+    result = icepool.d6.map(lambda x: (x, icepool.Reroll)
+                            if x == 6 else (x, x))
+    assert result.equals(icepool.d5.map(lambda x: (x, x)))
