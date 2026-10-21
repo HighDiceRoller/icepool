@@ -169,6 +169,11 @@ class Dungeon(Generic[T], MaybeHashKeyed):
         pop_order, pop_order_reason = merge_order_preferences(
             (Order.Descending, OrderReason.Default),
             *(source.order_preference() for source in sources))
+        if pop_order == Order.Any:
+            # Conflicting preferences cancelled out; fall back to the default.
+            # Room.pop and the sources would otherwise disagree on which end
+            # Order.Any pops from.
+            pop_order, pop_order_reason = Order.Descending, OrderReason.Default
 
         source_outcomes = sorted_union(*(source.outcomes()
                                          for source in sources))
