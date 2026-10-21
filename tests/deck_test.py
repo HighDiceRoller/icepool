@@ -117,3 +117,10 @@ def test_remove():
     assert base.remove(3) == Deck([1, 2, 2])
     assert base.remove(3, 1) == Deck([1, 2, 2, 3, 3])
     assert base.remove(1, 3) == Deck([2, 2, 3, 3, 3])
+
+
+def test_sequence_zero_and_repeated():
+    deck = Deck([1, 2, 2])
+    assert deck.sequence(0).equals(icepool.Die([()]))
+    assert deck.sequence(2).equals(deck.sequence(2))
+    assert deck.sequence(1).equals(icepool.Die([(1, ), (2, ), (2, )]))

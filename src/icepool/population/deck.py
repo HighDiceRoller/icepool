@@ -323,7 +323,7 @@ class Deck(Population[T_co], MaybeHashKeyed):
             result: 'icepool.Die[tuple[T_co, ...]]' = self._sequence_cache[
                 i - 1].map(transition)
             self._sequence_cache.append(result)
-        return result
+        return self._sequence_cache[deals]
 
     @cached_property
     def hash_key(self) -> tuple:
