@@ -105,3 +105,24 @@ def test_break_example():
 
     result = map(example, 0, d(6), repeat=20)
     assert set(result.outcomes()) == {10, 11, 12, 13, 14, 15}
+
+
+@pytest.mark.parametrize('repeat', [1, 3, 'inf'])
+def test_break_reroll_repeat(repeat):
+    # Break(Reroll) should behave like Reroll rather than raise.
+    result = map(lambda x: Break(Reroll) if x == 1 else x + 1,
+                 0,
+                 repeat=repeat)
+    expected = map(lambda x: Reroll if x == 1 else x + 1, 0, repeat=repeat)
+    assert result == expected
+
+
+@pytest.mark.parametrize('repeat', [1, 2, 'inf'])
+def test_break_reroll_repeat_d6(repeat):
+
+    def f(x, y):
+        if y == 1:
+            return Break(Reroll)
+        return Break(x + y)
+
+    assert map(f, 0, d(6), repeat=repeat) == map(f, 0, d(6))

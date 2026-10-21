@@ -1,5 +1,5 @@
 import pytest
-from icepool import Deck, Die, MultisetMixture, multiset_function
+from icepool import Deck, Die, MultisetEvaluator, MultisetMixture, multiset_function
 
 
 def test_bare_expression():
@@ -41,3 +41,15 @@ def test_hand_slices_of_different_deals_are_not_equal():
     a = Deck([1, 2]).deal((1, 1))
     b = Deck([5, 6]).deal((1, 1))
     assert not a[0:1].equals(b[0:1])
+
+
+def test_denominator_three_hands():
+
+    class Counts(MultisetEvaluator):
+
+        def next_state(self, state, order, outcome, counts):
+            return (state or ()) + (counts, )
+
+    for sizes in [(2, 2), (2, 2, 1), (1, 1, 1)]:
+        deal = Deck(range(5)).deal(sizes)
+        assert deal.denominator() == Counts().evaluate(deal).denominator()

@@ -234,3 +234,17 @@ def test_empty():
     assert result == (d6 != d6)
     result_any = (d6.pool(1) & d6.pool(1)).any()
     assert result.mean() + result_any.mean() == 1
+
+
+def test_opposite_keep_skip_preferences():
+    # d4.pool(3)[1:] prefers descending and d4.pool(3)[:2] ascending, which
+    # merges to Order.Any.
+    a = d4.pool(3)[1:]
+    b = d4.pool(3)[:2]
+
+    def function(x, y):
+        return all(
+            x.count(o) <= y.count(o) for o in set(x))
+
+    expected = icepool.map(function, a, b)
+    assert a.issubset(b).equals(expected)
