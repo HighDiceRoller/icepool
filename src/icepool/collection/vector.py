@@ -236,16 +236,16 @@ class Vector(Outcome, Sequence[T_co]):
         """
         if isinstance(other, Vector):
             if len(self) == len(other):
+                data = tuple(
+                    op(x, y, *args, **kwargs) for x, y in zip(self, other))
                 if compare_for_truth:
-                    truth_value = cast(bool, op(self._data, other._data))
+                    truth_value = _lexicographic_truth(self, other, op, data)
                 else:
                     truth_value = None
-                return Vector(
-                    (op(x, y, *args, **kwargs) for x, y in zip(self, other)),
-                    truth_value=truth_value)
+                return Vector(data, truth_value=truth_value)
             else:
                 if compare_for_truth:
-                    truth_value = cast(bool, op(self._data, other._data))
+                    truth_value = _lexicographic_truth(self, other, op)
                     return icepool.VectorWithTruthOnly(truth_value)
                 else:
                     raise IndexError(
@@ -406,3 +406,37 @@ class Vector(Outcome, Sequence[T_co]):
 
     def __str__(self) -> str:
         return type(self).__qualname__ + '(' + str(self._data) + ')'
+
+
+def _lexicographic_truth(left: Vector,
+                         right: Vector,
+                         op: Callable,
+                         elementwise: Sequence | None = None) -> bool:
+    """The truth value of `op(left._data, right._data)`, as a `bool`.
+
+    This follows Python's tuple comparison: the first pair of elements that
+    are not identical and not equal decides, otherwise the lengths do. Unlike
+    tuple comparison, the deciding comparison is converted to `bool`, so that
+    nested vectors compare. It also reuses already-computed `==` results, so
+    that comparing nested vectors takes linear rather than exponential time.
+
+    Args:
+        elementwise: The results of `op` on each pair of elements, if known.
+    """
+    for i, (x, y) in enumerate(zip(left, right)):
+        if x is y:
+            continue
+        if op is operator.eq and elementwise is not None:
+            equal = bool(elementwise[i])
+        else:
+            equal = bool(x == y)
+        if equal:
+            continue
+        if op is operator.eq:
+            return False
+        if op is operator.ne:
+            return True
+        if elementwise is not None:
+            return bool(elementwise[i])
+        return bool(op(x, y))
+    return bool(op(len(left), len(right)))
