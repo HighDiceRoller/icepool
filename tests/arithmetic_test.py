@@ -175,3 +175,8 @@ def test_d():
 def test_d_negative():
     result = (icepool.d7 - 4) @ icepool.d(3)
     assert result.equals(-result)
+
+
+def test_matmul_large_count():
+    result = 2000 @ icepool.Die([1])
+    assert result.equals(icepool.Die([2000]))

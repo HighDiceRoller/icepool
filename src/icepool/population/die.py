@@ -725,7 +725,19 @@ class Die(Population[T_co], MaybeHashKeyed):
         else:
             # In addition to working similar to reduce(), this seems to perform
             # better than binary split.
-            result = self._sum_all(rolls - 1) + self
+            # Iterative rather than recursive so that large counts don't hit
+            # the recursion limit: count down to the largest sum already
+            # computed, then add one roll at a time, caching each sum.
+            pending = []
+            k = rolls - 1
+            while k not in self._sum_cache and k > 1:
+                pending.append(k)
+                k -= 1
+            result = self._sum_all(k)
+            for k in reversed(pending):
+                result = result + self
+                self._sum_cache[k] = result
+            result = result + self
 
         self._sum_cache[rolls] = result
         return result
