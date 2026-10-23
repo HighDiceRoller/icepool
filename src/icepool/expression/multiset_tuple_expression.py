@@ -108,8 +108,14 @@ class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
         return False
 
     @property
-    def hash_key(self):
+    def _expression_key(self):
         return type(self), self._index
+
+    @property
+    def hash_key(self):
+        # The child is part of the expression's identity: hands of different
+        # deals must not compare equal.
+        return self._expression_key, self._children[0].hash_key
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
                        child_sizes: Sequence, source_sizes: Iterator,
@@ -132,7 +138,7 @@ class MultisetTupleIndex(Generic[T, IntTupleIn], MultisetExpression[T]):
                 0]._prepare():
             child_indexes = (-1, )
             dungeonlet = BodyDungeonlet[T, int](self._next_state,
-                                                self.hash_key, child_indexes)
+                                                self._expression_key, child_indexes)
             questlet = BodyQuestlet[T, int](self._initial_state, child_indexes)
 
             yield dungeonlets + (dungeonlet, ), tuple(questlets) + (
@@ -157,9 +163,15 @@ class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
         return False
 
     @property
-    def hash_key(self):
+    def _expression_key(self):
         return type(self), (self._index.start, self._index.step,
                             self._index.stop)
+
+    @property
+    def hash_key(self):
+        # The child is part of the expression's identity: hands of different
+        # deals must not compare equal.
+        return self._expression_key, self._children[0].hash_key
 
     def _initial_state(self, order: Order, outcomes: Sequence[T],
                        child_sizes: Sequence, source_sizes: Iterator,
@@ -182,7 +194,7 @@ class MultisetTupleSlice(Generic[T, IntTupleIn, IntTupleOut],
                 0]._prepare():
             child_indexes = (-1, )
             dungeonlet = BodyDungeonlet[T, IntTupleOut](self._next_state,
-                                                        self.hash_key,
+                                                        self._expression_key,
                                                         child_indexes)
             questlet = BodyQuestlet[T, IntTupleOut](self._initial_state,
                                                     child_indexes)
