@@ -119,3 +119,15 @@ def test_again_count_double_reroll():
                  again_end=icepool.Reroll)
     expected = d6.map({6: 6 + 2 @ d(5)})
     assert result == expected
+
+
+def test_again_count_reroll_outcome():
+    result = Die([icepool.Reroll, 2, Again + 1], again_count=2)
+    expected = Die([2, Again + 1], again_count=2)
+    assert result == expected
+
+
+def test_again_count_empty_die_outcome():
+    result = Die([Die([]), 2, Again + 1], again_count=2)
+    expected = Die([2, Again + 1], again_count=2)
+    assert result == expected
